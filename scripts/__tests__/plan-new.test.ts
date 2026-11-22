@@ -9,22 +9,34 @@ type Issue = {
   title: string;
   type?: null | string;
 };
+type Parent = {
+  repository_url?: string;
+  type?: { name: string };
+} & Related;
 type Related = { body?: string; number: number; state: string; title: string };
 
-const notFound = () => {
-  throw new Error('gh: Not Found (HTTP 404)');
-};
+const HOME = 'https://api.github.com/repos/owner/home';
+const FOLDERS = { Bug: 'plans/bugs', Chore: 'plans/chores', Spec: 'plans' };
+const PREFIXES = { Bug: 'bug', Chore: 'chore', Spec: 'spec' };
+
+// The error that execFileSync throws: the message starts with the command, and stderr holds the reason.
+const ghError = (stderr: string, message = 'Command failed: gh api') =>
+  Object.assign(new Error(`${message}\n${stderr}`), { stderr });
 
 const setup = (
   issue: Issue,
   options: {
     blocking?: Related[];
     branches?: string;
+    dirty?: string;
     files?: string[];
-    parent?: 'broken' | 'none' | ({ type?: { name: string } } & Related);
+    parent?: 'broken' | 'none' | Error | Parent;
+    remote?: string;
     siblings?: Related[];
   } = {}
 ) => {
+  const type = (issue.type ?? 'Spec') as keyof typeof FOLDERS;
+  const id = type === 'Spec' ? 'M1.1' : `${type[0]}7`;
   const calls: string[][] = [];
   const written: [string, string][] = [];
   const gitCalls: string[][] = [];
@@ -36,32 +48,35 @@ const setup = (
     if (args[0] === 'issue') {
       return JSON.stringify({
         body: issue.body ?? '',
-        issueType: issue.type === null ? null : { name: issue.type ?? 'Spec' },
+        issueType: issue.type === null ? null : { name: type },
         number: 7,
         title: issue.title,
       });
     }
 
-    const path = args[args.length - 3] ?? '';
-    const target = args.find(a => a.startsWith('repos/')) ?? path;
+    const target = args.find(a => a.startsWith('repos/'));
 
-    if (target.endsWith('/dependencies/blocking')) {
+    if (target === 'repos/{owner}/{repo}/issues/7/dependencies/blocking') {
       return lines(options.blocking ?? []);
     }
 
-    if (target.endsWith('/parent')) {
+    if (target === 'repos/{owner}/{repo}/issues/7/parent') {
       if (options.parent === 'broken') {
-        throw new Error('gh: Server Error (HTTP 500)');
+        throw ghError('gh: Server Error (HTTP 500)');
+      }
+
+      if (options.parent instanceof Error) {
+        throw options.parent;
       }
 
       if (options.parent === undefined || options.parent === 'none') {
-        return notFound();
+        throw ghError('gh: Not Found (HTTP 404)');
       }
 
-      return JSON.stringify(options.parent);
+      return JSON.stringify({ repository_url: HOME, ...options.parent });
     }
 
-    if (target.endsWith('/sub_issues')) {
+    if (target?.endsWith('/sub_issues')) {
       return lines(options.siblings ?? []);
     }
 
@@ -69,7 +84,8 @@ const setup = (
   });
   const deps: Deps = {
     files: {
-      list: () => options.files ?? [],
+      // Only the plan folder of the Type holds the files, so a wrong folder finds nothing.
+      list: dir => (dir === FOLDERS[type] ? (options.files ?? []) : []),
       read: () => '# Plan: x\n\n- **Spec:** #\n- **Status:** draft\n',
       write: (path, text) => {
         written.push([path, text]);
@@ -79,7 +95,31 @@ const setup = (
     git: args => {
       gitCalls.push(args);
 
-      return args[0] === 'for-each-ref' ? (options.branches ?? '') : '';
+      const local = [
+        'for-each-ref',
+        '--format=%(refname:short)',
+        `refs/heads/${PREFIXES[type]}/${id}-*`,
+      ];
+      const remote = [
+        'ls-remote',
+        '--heads',
+        'origin',
+        `refs/heads/${PREFIXES[type]}/${id}-*`,
+      ];
+
+      if (args.join(' ') === local.join(' ')) {
+        return options.branches ?? '';
+      }
+
+      if (args.join(' ') === remote.join(' ')) {
+        return options.remote ?? '';
+      }
+
+      if (args.join(' ') === 'status --porcelain') {
+        return options.dirty ?? '';
+      }
+
+      return '';
     },
   };
 
@@ -113,6 +153,13 @@ const go = (args: string[], deps: Deps) => {
   c.restore();
 
   return { code, err: c.err.join('\n'), out: c.out.join('\n') };
+};
+
+const intent: Parent = {
+  number: 5,
+  state: 'open',
+  title: 'The intent',
+  type: { name: 'Intent' },
 };
 
 describe('plan-new', () => {
@@ -160,12 +207,7 @@ describe('plan-new', () => {
       { title: 'Chore: A', type: 'Chore' },
       {
         blocking: [{ number: 11, state: 'open', title: 'Blocked one' }],
-        parent: {
-          number: 5,
-          state: 'open',
-          title: 'The intent',
-          type: { name: 'Intent' },
-        },
+        parent: intent,
       }
     );
     const { out } = go(['7', 'a'], deps);
@@ -180,12 +222,7 @@ describe('plan-new', () => {
     const { deps } = setup(
       { body: body('PIN-01, PIN-02'), title: 'Spec: M1.1 A' },
       {
-        parent: {
-          number: 5,
-          state: 'open',
-          title: 'Intent',
-          type: { name: 'Intent' },
-        },
+        parent: intent,
         siblings: [
           { body: body('PIN-02'), number: 20, state: 'open', title: 'Shares' },
           { body: body('MAP-01'), number: 21, state: 'open', title: 'Other' },
@@ -205,16 +242,45 @@ describe('plan-new', () => {
     expect(out).not.toContain('#7 ');
   });
 
-  it('lists no parent that is not an Intent', () => {
+  it("reads the siblings from the parent's own repo", () => {
     const { calls, deps } = setup(
       { title: 'Spec: M1.1 A' },
       {
         parent: {
-          number: 5,
-          state: 'open',
-          title: 'Not intent',
-          type: { name: 'Spec' },
+          ...intent,
+          repository_url: 'https://api.github.com/repos/other/place',
         },
+      }
+    );
+
+    expect(go(['7', 'a'], deps).code).toBe(0);
+    expect(calls).toContainEqual([
+      'api',
+      '--paginate',
+      'repos/other/place/issues/5/sub_issues',
+      '--jq',
+      '.[] | @json',
+    ]);
+  });
+
+  it('stops on a parent with no repo URL', () => {
+    const { code, err } = go(
+      ['7', 'a'],
+      setup(
+        { title: 'Spec: M1.1 A' },
+        { parent: { ...intent, repository_url: 'https://evil.test/x' } }
+      ).deps
+    );
+
+    expect(code).toBe(1);
+    expect(err).toContain('repo URL');
+  });
+
+  it('lists no parent that is not an Intent', () => {
+    const { calls, deps } = setup(
+      { title: 'Spec: M1.1 A' },
+      {
+        parent: { ...intent, type: { name: 'Spec' } },
         siblings: [{ number: 20, state: 'open', title: 'S' }],
       }
     );
@@ -250,6 +316,23 @@ describe('plan-new', () => {
     expect(err).toContain('Server Error');
   });
 
+  it('reads a 404 from stderr only, not from the message', () => {
+    const inCommand = ghError(
+      'gh: Server Error (HTTP 500)',
+      'Command failed: gh api repos/{owner}/{repo}/issues/1404/parent'
+    );
+    const noStderr = new Error('gh: Not Found (HTTP 404)');
+
+    for (const parent of [inCommand, noStderr]) {
+      const { code } = go(
+        ['7', 'a'],
+        setup({ title: 'Spec: M1.1 A' }, { parent }).deps
+      );
+
+      expect(code).toBe(1);
+    }
+  });
+
   it('stops on a failed issue read', () => {
     const { deps } = setup({ title: 'Spec: M1.1 A' });
     const failing: Deps = {
@@ -264,7 +347,7 @@ describe('plan-new', () => {
     expect(err).toContain('plain failure');
   });
 
-  it('sets up the branch and the plan file', () => {
+  it('makes the branch and the plan file', () => {
     const { deps, gitCalls, written } = setup({
       title: 'Chore: Do it',
       type: 'Chore',
@@ -284,45 +367,84 @@ describe('plan-new', () => {
         '# Plan: x\n\n- **Spec:** #7\n- **Status:** draft\n',
       ],
     ]);
-    expect(out).toContain('Set up chore/C7-do-it and plans/chores/C7-do-it.md');
+    expect(out).toContain('Made chore/C7-do-it and plans/chores/C7-do-it.md');
   });
 
-  it('skips the setup if the branch or the plan file exists', () => {
-    const branch = setup(
+  it('stops before the switch if the working tree has changes', () => {
+    const { deps, gitCalls, written } = setup(
       { title: 'Chore: Do it', type: 'Chore' },
-      { branches: 'origin/chore/C7-other\n' }
+      { dirty: ' M package.json\n' }
     );
-    const file = setup(
-      { title: 'Chore: Do it', type: 'Chore' },
-      { files: ['C7-other.md', 'C70-x.md', 'notes.txt'] }
-    );
-    const none = setup(
-      { title: 'Chore: Do it', type: 'Chore' },
-      { files: ['C70-x.md', 'C7-x.txt'] }
-    );
-    const b = go(['7', 'do-it'], branch.deps);
+    const { code, err } = go(['7', 'do-it'], deps);
+
+    expect(code).toBe(1);
+    expect(err).toContain('changes');
+    expect(gitCalls.some(c => c[0] === 'switch')).toBe(false);
+    expect(written).toEqual([]);
+  });
+
+  it('skips the setup if a local branch, a branch on origin or a plan file exists', () => {
+    const chore = { title: 'Chore: Do it', type: 'Chore' };
+    const local = setup(chore, { branches: 'chore/C7-old\n' });
+    const remote = setup(chore, {
+      remote: 'abc123\trefs/heads/chore/C7-other\n',
+    });
+    const file = setup(chore, {
+      files: ['C7-plan.md', 'C70-x.md', 'notes.txt'],
+    });
+    const none = setup(chore, { files: ['C70-x.md', 'C7-x.txt'] });
+    const l = go(['7', 'do-it'], local.deps);
+    const r = go(['7', 'do-it'], remote.deps);
     const f = go(['7', 'do-it'], file.deps);
 
-    expect(b.out).toContain('Skipped the setup: origin/chore/C7-other exists.');
+    expect(l.out).toContain('Skipped the setup: chore/C7-old exists.');
+    expect(r.out).toContain('Skipped the setup: origin/chore/C7-other exists.');
     expect(f.out).toContain(
-      'Skipped the setup: plans/chores/C7-other.md exists.'
+      'Skipped the setup: plans/chores/C7-plan.md exists.'
     );
-    expect(branch.written).toEqual([]);
-    expect(file.written).toEqual([]);
-    expect(
-      [...branch.gitCalls, ...file.gitCalls].some(c => c[0] === 'switch')
-    ).toBe(false);
-    expect(go(['7', 'do-it'], none.deps).out).toContain('Set up');
+
+    for (const { gitCalls, written } of [local, remote, file]) {
+      expect(written).toEqual([]);
+      expect(gitCalls.some(c => c[0] === 'switch')).toBe(false);
+    }
+
+    expect(go(['7', 'do-it'], none.deps).out).toContain('Made');
+  });
+
+  it('prints the names that it found, not the names of the new slug', () => {
+    const { deps } = setup(
+      { title: 'Chore: Do it', type: 'Chore' },
+      { remote: 'abc123\trefs/heads/chore/C7-old\n' }
+    );
+    const { out } = go(['7', 'new-slug'], deps);
+
+    expect(out).toContain('Plan path: plans/chores/C7-old.md');
+    expect(out).toContain('Branch: chore/C7-old');
+    expect(out).not.toContain('new-slug');
+  });
+
+  it('takes the slug of a found plan file', () => {
+    const { deps } = setup(
+      { title: 'Spec: M1.1 A' },
+      { files: ['M1.1-found.md'] }
+    );
+    const { out } = go(['7', 'new-slug'], deps);
+
+    expect(out).toContain('Plan path: plans/M1.1-found.md');
+    expect(out).toContain('Branch: spec/M1.1-found');
   });
 
   it('stops on a Type other than Spec, Bug or Chore', () => {
     const none = go(['7', 'a'], setup({ title: 'x', type: null }).deps);
-    const intent = go(['7', 'a'], setup({ title: 'x', type: 'Intent' }).deps);
+    const intentType = go(
+      ['7', 'a'],
+      setup({ title: 'x', type: 'Intent' }).deps
+    );
 
     expect(none.code).toBe(1);
     expect(none.err).toContain('no Type');
-    expect(intent.code).toBe(1);
-    expect(intent.err).toContain('Intent');
+    expect(intentType.code).toBe(1);
+    expect(intentType.err).toContain('Intent');
   });
 
   it('stops on a Spec title with no id', () => {

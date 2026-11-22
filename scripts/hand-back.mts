@@ -2,6 +2,8 @@ import { execFileSync } from 'node:child_process';
 
 import type { Gh } from '#ks/scripts/types.ts';
 
+import { ghList } from '#ks/scripts/gh-list.mts';
+
 // Runs on a pull request (claude-hand-back.yml): the marker of plans/README.md#hand-back. Adds the
 // label `hand-back` when a path in the diff, or in the Files that change table of a plan the PR
 // changes (read from the head commit as data), matches a pattern of HAND_BACK. Does nothing for a
@@ -142,17 +144,8 @@ export const run = (
     return 0;
   }
 
-  const files = attempt('listing the changed files', (): Changed[] =>
-    gh([
-      'api',
-      '--paginate',
-      `repos/${repo}/pulls/${pr}/files`,
-      '--jq',
-      '.[] | @json',
-    ])
-      .split('\n')
-      .filter(line => line !== '')
-      .map(line => JSON.parse(line))
+  const files = attempt('listing the changed files', () =>
+    ghList<Changed>(gh, `repos/${repo}/pulls/${pr}/files`)
   );
 
   if (files === undefined) {

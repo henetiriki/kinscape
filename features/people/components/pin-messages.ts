@@ -1,5 +1,6 @@
+import type { PinMessages } from '@ks/features/people/components/types.ts';
 import type { PinFieldErrors } from '@ks/lib/domain/pins/types.ts';
-import type { CoordinateError } from '@ks/lib/domain/places/coordinates.mts';
+import type { CoordinateError } from '@ks/lib/domain/places/types.ts';
 
 import { fuzzyDateMessage } from '@ks/lib/domain/dates/fuzzy-date-text.mts';
 import { MAX_ADDRESS } from '@ks/lib/domain/pins/schemas.mts';
@@ -26,15 +27,6 @@ const COORDINATE_MESSAGES: Record<CoordinateError, string> = {
   'not-decimal': DECIMAL,
   'out-of-range': DECIMAL,
   required: 'Enter the coordinates.',
-};
-
-/** The error text under each field of the Pin form that has one. */
-export type PinMessages = {
-  address?: string;
-  coordinates?: string;
-  date?: string;
-  eventType?: string;
-  personId?: string;
 };
 
 /**

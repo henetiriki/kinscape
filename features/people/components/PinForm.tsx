@@ -4,7 +4,7 @@ import type { FormEvent } from 'react';
 
 import { useEffect, useId, useState } from 'react';
 
-import type { PinMessages } from '@ks/features/people/components/pin-messages.ts';
+import type { PinMessages } from '@ks/features/people/components/types.ts';
 import type { PersonSummary } from '@ks/lib/domain/persons/types.ts';
 
 import { Button } from '@ks/app/components/actions/Button';
@@ -42,7 +42,7 @@ const LOADING_FIELDS = [
 /** What the form reads from its fields at Save. */
 const readFields = (form: HTMLFormElement) => {
   const data = new FormData(form);
-  const text = (name: string) => String(data.get(name) ?? '');
+  const text = (name: string) => String(data.get(name));
 
   return {
     address: text('address'),

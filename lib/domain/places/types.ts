@@ -2,6 +2,10 @@ import type { z } from 'zod';
 
 import type { placeInputSchema } from '@ks/lib/domain/places/schemas.mts';
 
+/** Why a text is not a point: `dms` is degrees, minutes and seconds, which the form does not read. */
+export type CoordinateError =
+  'dms' | 'not-decimal' | 'out-of-range' | 'required';
+
 /** A saved Place. `version` starts at 1 and rises by 1 for each update. */
 export type Place = { version: number } & PlaceInput;
 

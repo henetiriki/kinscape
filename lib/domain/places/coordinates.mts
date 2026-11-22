@@ -1,10 +1,7 @@
+import type { CoordinateError } from '#ks/lib/domain/places/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
 
 import { err, ok } from '#ks/lib/domain/result/result.mts';
-
-/** Why a text is not a point: `dms` is degrees, minutes and seconds, which the form does not read. */
-export type CoordinateError =
-  'dms' | 'not-decimal' | 'out-of-range' | 'required';
 
 const DEGREE_MARKS = /[°′″'"]/;
 const DECIMAL = /^[+-]?\d+(\.\d+)?$/;

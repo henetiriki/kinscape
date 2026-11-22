@@ -113,17 +113,6 @@ it('joins a given aria-describedby with the helper id, and marks nothing without
   expect(screen.queryByRole('alert')).toBeNull();
 });
 
-// PIN-02
-it('puts the icon at the top right and keeps the text clear of it in error', () => {
-  expect(css).toMatch(/\.field > \.box\[data-mark\] \{[^}]*padding: 0;/);
-  expect(css).toMatch(
-    /\.field > \.box\[data-mark\] \.area \{[^}]*padding: 9px 37px 9px 11px/
-  );
-  expect(css).toMatch(
-    /\.field > \.box\[data-mark\] > svg \{[^}]*position: absolute[^}]*right: 11px[^}]*top: 8px/s
-  );
-});
-
 // PPL-01
 it('takes the text field box, padding 10 12, and 16 / 24 text on a phone', () => {
   expect(css).toContain("composes: box from '@ks/app/components/forms/");

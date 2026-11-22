@@ -1,9 +1,8 @@
 import type { ComponentProps, ReactNode } from 'react';
 
-import { useId } from 'react';
-
 import type { ControlState } from '@ks/app/components/foundation/types';
 
+import { useFieldMessage } from '@ks/app/components/forms/useFieldMessage';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
 
@@ -23,16 +22,15 @@ export const TextAreaField = ({
   label: string;
   state?: ControlState;
 } & Omit<ComponentProps<'textarea'>, 'className' | 'id'>) => {
-  const id = useId();
-  const messageId = `${id}-message`;
-  const message = error ?? helper;
-  const describedBy = [rest['aria-describedby'], message ? messageId : null]
-    .filter(Boolean)
-    .join(' ');
+  const field = useFieldMessage({
+    describedBy: rest['aria-describedby'],
+    error,
+    helper,
+  });
 
   return (
     <div className={styles.field}>
-      <Text as='label' htmlFor={id} variant='label'>
+      <Text as='label' htmlFor={field.id} variant='label'>
         {label}
       </Text>
       <span
@@ -43,21 +41,13 @@ export const TextAreaField = ({
           className={styles.area}
           rows={4}
           {...rest}
-          aria-describedby={describedBy || undefined}
+          aria-describedby={field.describedBy}
           aria-invalid={error ? true : undefined}
-          id={id}
+          id={field.id}
         />
         {error && <Icon name='error' />}
       </span>
-      {message && (
-        <Text
-          id={messageId}
-          role={error ? 'alert' : undefined}
-          tone={error ? 'error' : undefined}
-          variant='small'>
-          {message}
-        </Text>
-      )}
+      {field.message}
     </div>
   );
 };

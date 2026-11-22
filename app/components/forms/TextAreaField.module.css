@@ -26,14 +26,14 @@
   padding: 9px 11px;
 }
 
-/* In error the box keeps no padding, as in focus. The text takes the focus padding, 1px less than the 2px border takes,
-   plus room on the right (11px, the 18px icon and an 8px gap) so it never runs under the icon. */
+/* In error the text takes the focus padding. The box keeps a 37px gutter on the right: 11px, the 18px icon and an 8px gap.
+   The textarea, and so its scrollbar, ends before the gutter. */
 .field > .box[data-mark] {
-  padding: 0;
+  padding: 0 37px 0 0;
 }
 
 .field > .box[data-mark] .area {
-  padding: 9px 37px 9px 11px;
+  padding: 9px 11px;
 }
 
 .field > .box[data-mark] > svg {

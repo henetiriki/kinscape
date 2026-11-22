@@ -1,9 +1,8 @@
 import type { ComponentProps, ReactNode } from 'react';
 
-import { useId } from 'react';
-
 import type { ControlState } from '@ks/app/components/foundation/types';
 
+import { useFieldMessage } from '@ks/app/components/forms/useFieldMessage';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
 
@@ -26,16 +25,15 @@ export const SelectField = ({
   options: { label: string; value: string }[];
   state?: ControlState;
 } & Omit<ComponentProps<'select'>, 'children' | 'className' | 'id'>) => {
-  const id = useId();
-  const messageId = `${id}-message`;
-  const describedBy = [rest['aria-describedby'], error ? messageId : null]
-    .filter(Boolean)
-    .join(' ');
+  const field = useFieldMessage({
+    describedBy: rest['aria-describedby'],
+    error,
+  });
 
   return (
     <div className={styles.field}>
       {!hideLabel && (
-        <Text as='label' htmlFor={id} variant='label'>
+        <Text as='label' htmlFor={field.id} variant='label'>
           {label}
         </Text>
       )}
@@ -47,9 +45,9 @@ export const SelectField = ({
           aria-label={hideLabel ? label : undefined}
           className={styles.select}
           {...rest}
-          aria-describedby={describedBy || undefined}
+          aria-describedby={field.describedBy}
           aria-invalid={error ? true : undefined}
-          id={id}>
+          id={field.id}>
           {options.map(option => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -61,11 +59,7 @@ export const SelectField = ({
         </span>
         {error && <Icon name='error' />}
       </span>
-      {error && (
-        <Text id={messageId} role='alert' tone='error' variant='small'>
-          {error}
-        </Text>
-      )}
+      {field.message}
     </div>
   );
 };

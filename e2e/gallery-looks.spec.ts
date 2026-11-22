@@ -759,7 +759,7 @@ test.describe('at 1440px', () => {
   });
 
   // PIN-02
-  test('a text area in error has the icon at the top right and keeps its rows', async ({
+  test('a text area in error has the icon at the top right, keeps its height, and ends 8px before the icon', async ({
     page,
   }) => {
     await open(page, 'TextAreaField');
@@ -769,10 +769,18 @@ test.describe('at 1440px', () => {
     const wrap = area.locator('xpath=..');
     const icon = (await wrap.locator('> svg').boundingBox())!;
     const outer = (await wrap.boundingBox())!;
+    const text = (await area.boundingBox())!;
+    const rest = (await state(page, 'TextAreaField · default')
+      .getByRole('textbox', { name: 'Notes' })
+      .locator('xpath=..')
+      .boundingBox())!;
 
     expect(Math.round(outer.x + outer.width - (icon.x + icon.width))).toBe(13);
     expect(Math.round(icon.y - outer.y)).toBe(10);
-    await expect(area).toHaveAttribute('rows', '4');
+    // The icon does not cover the textarea or its scrollbar.
+    expect(Math.round(icon.x - (text.x + text.width))).toBe(8);
+    // The 2px border takes 1px more on each side than at rest, so the height can differ by 2px.
+    expect(Math.abs(outer.height - rest.height)).toBeLessThanOrEqual(2);
   });
 
   test('"Clear filters" on the Panel is 44px tall and narrower than the body', async ({

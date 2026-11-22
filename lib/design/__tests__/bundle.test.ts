@@ -103,6 +103,11 @@ const EXCLUDED: { path: string; reason: string }[] = [
     reason: 'An inner part of PersonRow, RelationshipRow and PickerRow.',
   },
   {
+    path: 'app/components/forms/useFieldMessage.tsx',
+    reason:
+      'The message and the ids that TextField, SelectField and TextAreaField share.',
+  },
+  {
     path: 'app/components/overlays/PlacedAt.tsx',
     reason: 'The wrapper that Popup and PinPopup share to sit at a map point.',
   },

@@ -2,7 +2,7 @@
 
 - **Spec:** #1139
 - **Requirement IDs:** None: test tooling
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The approving review starts the CI build at once ([building](../../docs/building
 - **B.** Approve first. The CI build fixes only what it can find without the plugin, such as the 88 `toBeTruthy()` asserts, and writes a "Big:" line for the package. Then the local session adds the plugin, turns on the rules and fixes the rest. Cost: most of the 700 fixes move to the local session.
 - **Other:** your own.
 
-Recommended: A, because the CI build can then run `npm run lint` and prove each fix.
+**Answer: A** (@henetiriki)
 
 **D2 · A test that checks DOM nodes on purpose** · Decides: Tech lead
 
@@ -35,7 +35,7 @@ The options:
 - **C.** Turn the plugin on only for `**/__tests__/**/*.tsx`. Cost: `design-export.test.ts` and `groups.test.ts` stay outside the rules; this changes step 2 of "What to change" and the first done check.
 - **Other:** your own.
 
-Recommended: A, because it matches the done checks, and each reason stays beside its code.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

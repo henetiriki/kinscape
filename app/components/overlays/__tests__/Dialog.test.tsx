@@ -56,9 +56,9 @@ it('is named by its title, with a subtitle, the body and a footnote', () => {
   expect(dialog().getAttribute('aria-labelledby')).toBe(
     screen.getByRole('heading', { hidden: true, name: 'Example' }).id
   );
-  expect(screen.getByText('Sub')).toBeTruthy();
-  expect(screen.getByText('Body')).toBeTruthy();
-  expect(screen.getByText('Foot')).toBeTruthy();
+  screen.getByText('Sub');
+  screen.getByText('Body');
+  screen.getByText('Foot');
 });
 
 it('leaves out the subtitle and footnote it is not given', () => {

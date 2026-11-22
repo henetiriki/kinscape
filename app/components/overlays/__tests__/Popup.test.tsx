@@ -51,16 +51,15 @@ it('is a non-modal dialog with the overline, name and coordinates', () => {
   });
 
   expect(dialog.getAttribute('aria-modal')).toBeNull();
-  expect(screen.getByText('On this spot in 1901')).toBeTruthy();
-  expect(
-    screen.getByRole('heading', { level: 3, name: 'Kimberley' })
-  ).toBeTruthy();
-  expect(screen.getByText('28.738° S · 24.764° E')).toBeTruthy();
+  screen.getByText('On this spot in 1901');
+  screen.getByRole('heading', { level: 3, name: 'Kimberley' });
+  screen.getByText('28.738° S · 24.764° E');
 });
 
 // NFR-06
 it("draws a pin row's Event glyph before its title, with no glyph character", () => {
   const { container } = show();
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the glyph is an aria-hidden svg; the test checks its tag and its sibling
   const glyph = container.querySelector('[data-event="marriage"]')!;
 
   expect(glyph.tagName.toLowerCase()).toBe('svg');
@@ -91,16 +90,16 @@ it('makes a pin with an address a link and a pin without one plain text', () => 
 
   show();
   expect(screen.queryByRole('link')).toBeNull();
-  expect(screen.getByText('Marriage')).toBeTruthy();
+  screen.getByText('Marriage');
 });
 
 it('counts the pins, and draws no pins box without any', () => {
   const { container, unmount } = show();
 
-  expect(screen.getByText('1 pin here')).toBeTruthy();
+  screen.getByText('1 pin here');
   unmount();
   show({ pins: [PIN, { ...PIN, id: 'p2' }] });
-  expect(screen.getByText('2 pins here')).toBeTruthy();
+  screen.getByText('2 pins here');
   unmount();
 
   const { container: empty } = show({ pins: [] });
@@ -130,7 +129,7 @@ it('draws without handlers', () => {
   show();
   fireEvent.click(screen.getByRole('button', { name: 'Close' }));
   fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
-  expect(screen.getByRole('dialog')).toBeTruthy();
+  screen.getByRole('dialog');
 });
 
 it('writes a line per level, smallest first', () => {
@@ -179,23 +178,23 @@ it('copies without a listener', async () => {
 it('is a region named by its overline on a phone, with no Close, Copy chain or pins box', () => {
   const { container } = show({ form: 'sheet' });
 
-  expect(
-    screen.getByRole('region', { name: 'On this spot in 1901' })
-  ).toBeTruthy();
+  screen.getByRole('region', { name: 'On this spot in 1901' });
   expect(screen.queryByRole('dialog')).toBeNull();
   expect(screen.queryByRole('button')).toBeNull();
   expect(screen.queryByText('1 pin here')).toBeNull();
-  expect(screen.getByText('Marriage')).toBeTruthy();
+  screen.getByText('Marriage');
   expect(container.textContent).toContain('Look-up only on a phone');
 });
 
 it('draws a pointer as decoration, with the caller’s class', () => {
   const { container, rerender } = render(<PopupPointer className='mine' />);
+  // eslint-disable-next-line testing-library/no-node-access -- the pointer is an aria-hidden span with no role or text
+  const pointer = () => container.firstElementChild!;
 
-  expect(container.firstElementChild!.getAttribute('aria-hidden')).toBe('true');
-  expect(container.firstElementChild!.className).toContain('mine');
+  expect(pointer().getAttribute('aria-hidden')).toBe('true');
+  expect(pointer().className).toContain('mine');
   rerender(<PopupPointer />);
-  expect(container.firstElementChild!.className).toBe('pointer');
+  expect(pointer().className).toBe('pointer');
 });
 
 // MAP-05
@@ -212,6 +211,7 @@ it('places a popup at a point, with the pointer on its right edge', () => {
     />
   );
 
+  // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its style
   const placed = container.firstElementChild as HTMLElement;
 
   expect(placed.style.getPropertyValue('--x')).toBe('420px');
@@ -219,7 +219,10 @@ it('places a popup at a point, with the pointer on its right edge', () => {
   expect(placed.style.getPropertyValue('--gap')).toBe(
     'var(--layout-popup-gap)'
   );
-  expect(screen.getByRole('dialog')).toBeTruthy();
-  expect(placed.lastElementChild!.className).toContain('placedPointer');
-  expect(placed.lastElementChild!.getAttribute('aria-hidden')).toBe('true');
+  screen.getByRole('dialog');
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks that an aria-hidden pointer is the last child
+  const pointer = placed.lastElementChild!;
+
+  expect(pointer.className).toContain('placedPointer');
+  expect(pointer.getAttribute('aria-hidden')).toBe('true');
 });

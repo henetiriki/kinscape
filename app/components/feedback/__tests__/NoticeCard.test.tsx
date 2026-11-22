@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
 import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
@@ -60,8 +60,9 @@ it('draws the plain, phone and large forms', () => {
   const { rerender } = render(<NoticeCard title='Title'>Line</NoticeCard>);
   const card = () => screen.getByRole('status');
 
+  // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg with no role or text
   expect(card().querySelector('svg')).toBeNull();
-  expect(card().querySelector('button')).toBeNull();
+  expect(within(card()).queryByRole('button', { hidden: true })).toBeNull();
 
   rerender(
     <NoticeCard actions={[{ label: 'Go' }]} phone title='Title'>
@@ -76,6 +77,7 @@ it('draws the plain, phone and large forms', () => {
     </NoticeCard>
   );
   expect(card().getAttribute('data-size')).toBe('large');
+  // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg with no role or text
   expect(card().querySelector('svg')!.getAttribute('width')).toBe('28');
 });
 

@@ -40,7 +40,7 @@ it('stays when nobody is told to remove it', () => {
   act(() => {
     vi.advanceTimersByTime(60_000);
   });
-  expect(screen.getByRole('status')).toBeTruthy();
+  screen.getByRole('status');
 });
 
 it('keeps an error toast, announced at once, until Esc or its action', () => {
@@ -102,5 +102,5 @@ it('presses an action that has no handlers', () => {
   );
 
   fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
-  expect(screen.getByRole('alert')).toBeTruthy();
+  screen.getByRole('alert');
 });

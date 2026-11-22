@@ -37,6 +37,17 @@ The options:
 
 **Answer: A** (@henetiriki)
 
+**D3 · 215 disables, not about 40** · Decides: Tech lead
+
+The build needs 215 disables under D2 A. Of these, 102 are on nodes with no role, 61 on aria-hidden icons and 35 are focus checks.
+
+- **A.** Keep the 215 disables and mark the PR ready. A later Chore adds `@testing-library/jest-dom` for the focus checks. Cost: 215 disable lines for now.
+- **B.** Keep the disables and leave the PR a draft for review. Cost: a later ready step.
+- **C.** Add `@testing-library/jest-dom` here for the 35 focus checks. Cost: a new package and a "Big:" line.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Alternatives considered
 
 - `prefer-explicit-assert` with `@testing-library/jest-dom`: it adds a second package and keeps the `expect` wrappers. The issue names `prefer-implicit-assert`.
@@ -102,5 +113,5 @@ The options:
 - The local session builds every row. The CI build ran before the plugin was on the branch, so it built nothing.
 - The commits go by folder, not by rule. The pre-commit hook lints each staged file with `--max-warnings 0`, so a commit takes a file only with all its hits fixed.
 - `npm run lint:fix` changed 12 `getBy*` reads of an attribute or a child node to `queryBy*`. The build reverts these. It reads an absent attribute with `hasAttribute(...)` and `toBe(false)`.
-- The build adds 215 disables, not about 40 (D2). 35 of them check focus through `document.activeElement`, because `toHaveFocus()` needs `@testing-library/jest-dom`.
+- The build adds 215 disables, not about 40 ([D3](#decisions)).
 - `prefer-implicit-assert` had 87 hits, not about 280.

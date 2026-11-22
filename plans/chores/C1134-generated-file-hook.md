@@ -73,7 +73,7 @@ The removed sentence "Only the tech lead, or a local session that the tech lead 
 | `scripts/__tests__/agent-settings.test.ts` | Changed       | The hook tests of the done checks; a test that `review-settings.json` denies `Edit` and `Write`; the test "is the same in settings.json and review-settings.json" (line 434) compares the Bash entries, not the whole `PreToolUse` list, and its length |
 | `design/CANVAS.md`                         | Changed       | _Making the snapshots and JPGs_: remove "Nobody edits them by hand." Step 3 of the design path names the tech lead (D5)                                                                                                                                 |
 | `.claude/settings.json`                    | Changed       | A `PreToolUse` key with the `Edit\|Write` entry: the local hook, with the two local reasons                                                                                                                                                             |
-| `AGENTS.md`                                | Changed       | _Source of truth_: remove the four sentences of step 6; add the D4 sentence                                                                                                                                                                             |
+| `AGENTS.md`                                | Changed       | _Source of truth_: remove the four sentences of step 6; add the D4 rule                                                                                                                                                                                 |
 
 `.claude/settings.json` and `AGENTS.md` are [hand-back paths](../README.md#hand-back). The tech lead builds those two rows in a local session.
 
@@ -119,4 +119,6 @@ The line 434 test asserts that `settings.json` has one `PreToolUse` entry. Step 
 ## Deviations
 
 - The "has one entry" test also checks that `review-settings.json` keeps only the Bash entry.
-- After the review of #1149: the hook tests share one settings reader and one runner. D4 adds a sentence to `AGENTS.md`. D5 names the tech lead in step 3 of the design path in `design/CANVAS.md`.
+- The hook tests share one settings reader and one runner.
+- The D4 rule in `AGENTS.md` is three short sentences, not one. They name the three generated paths.
+- D5 names the tech lead in step 3 of the design path in `design/CANVAS.md`.

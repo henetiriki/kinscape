@@ -320,7 +320,7 @@ it('collapses the credits to one line on desktop', () => {
 
 // PIN-01
 it('puts `action` in the action slot and `panel` in the place of the Layers panel', () => {
-  const { container, rerender } = render(
+  const { rerender } = render(
     <MapShell
       {...account}
       action={<button type='button'>Add a pin</button>}
@@ -331,14 +331,8 @@ it('puts `action` in the action slot and `panel` in the place of the Layers pane
     />
   );
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot is a div with no role; the test checks what it holds
-  expect(container.querySelector('[data-slot="action"]')?.textContent).toBe(
-    'Add a pin'
-  );
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot is a div with no role; the test checks what it holds
-  expect(container.querySelector('[data-slot="panel"]')?.textContent).toBe(
-    'The form panel'
-  );
+  expect(screen.getByTestId('action-slot').textContent).toBe('Add a pin');
+  expect(screen.getByTestId('panel-slot').textContent).toBe('The form panel');
 
   rerender(
     <MapShell
@@ -348,12 +342,8 @@ it('puts `action` in the action slot and `panel` in the place of the Layers pane
       sources={sources}
     />
   );
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot is a div with no role; the test checks what it holds
-  expect(container.querySelector('[data-slot="action"]')).toBeNull();
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot is a div with no role; the test checks what it holds
-  expect(container.querySelector('[data-slot="panel"]')?.textContent).toContain(
-    'Polities'
-  );
+  expect(screen.queryByTestId('action-slot')).toBeNull();
+  expect(screen.getByTestId('panel-slot').textContent).toContain('Polities');
 });
 
 describe('on a phone', () => {
@@ -373,7 +363,7 @@ describe('on a phone', () => {
 
   // NFR-05
   it('draws no panel, even when the caller gives one', () => {
-    const { container } = render(
+    render(
       <MapShell
         {...account}
         coverage={coverage}
@@ -383,8 +373,7 @@ describe('on a phone', () => {
       />
     );
 
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot is a div with no role; the test checks what it holds
-    expect(container.querySelector('[data-slot="panel"]')).toBeNull();
+    expect(screen.queryByTestId('panel-slot')).toBeNull();
   });
 
   // NFR-03

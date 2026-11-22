@@ -45,9 +45,8 @@ it('draws the plain sign-in form, still named by its label', () => {
   const box = screen.getByRole('checkbox', {
     name: 'Keep me signed in on this device',
   });
+  const row = screen.getByTestId('field-row');
 
-  // eslint-disable-next-line testing-library/no-node-access -- the row div has no role; the test checks its data-plain
-  const row = box.closest('[data-plain]') as HTMLElement;
-
+  expect(row.contains(box)).toBe(true);
   expect(row.dataset.plain).toBe('true');
 });

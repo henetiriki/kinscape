@@ -211,21 +211,25 @@ it('opens a Menu with no footer and the same items', () => {
 
 // NFR-03
 it('sets data-form on the anchor and the drop only in the phone form', () => {
-  const { container } = render(
-    <Menu {...MENU} form='phone' onSelect={vi.fn()} />
-  );
+  render(<Menu {...MENU} form='phone' onSelect={vi.fn()} />);
 
   fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the anchor and the drop are divs with no role or text
-  expect(container.querySelectorAll('[data-form=phone]')).toHaveLength(2);
+  expect(
+    ['menu-anchor', 'menu-drop'].map(id =>
+      screen.getByTestId(id).getAttribute('data-form')
+    )
+  ).toEqual(['phone', 'phone']);
 });
 
 it('sets no data-form without a form', () => {
-  const { container } = render(<Menu {...MENU} onSelect={vi.fn()} />);
+  render(<Menu {...MENU} onSelect={vi.fn()} />);
 
   fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the anchor and the drop are divs with no role or text
-  expect(container.querySelector('[data-form]')).toBeNull();
+  expect(
+    ['menu-anchor', 'menu-drop'].map(id =>
+      screen.getByTestId(id).hasAttribute('data-form')
+    )
+  ).toEqual([false, false]);
 });
 
 it.each(FORMS)(
@@ -248,10 +252,9 @@ it.each(FORMS)(
 );
 
 it('draws a panel inert, with one item hovered', () => {
-  const { container } = render(<MenuPanel {...MENU} hovered='sources' inert />);
+  render(<MenuPanel {...MENU} hovered='sources' inert />);
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the inert wrapper is a div with no role or text
-  expect(container.querySelector('[inert]')).toBeTruthy();
+  expect(screen.getByTestId('menu-wrapper').hasAttribute('inert')).toBe(true);
   expect(
     screen
       .getAllByRole('menuitem', { hidden: true })

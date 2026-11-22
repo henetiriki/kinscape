@@ -30,7 +30,7 @@ vi.mock('@ks/features/map', async () => ({
     return (
       <div data-testid='map-shell'>
         {props.layers.map(layer => (
-          <p data-layer={layer.id} key={layer.id}>
+          <p data-layer={layer.id} data-testid='layer-row' key={layer.id}>
             {typeof layer.description === 'function'
               ? `${layer.description(toDay('1850-06-01'))} | ${layer.description(toDay('1860-06-01'))}`
               : layer.description}
@@ -79,8 +79,8 @@ const props = {
 const fetchStub = vi.fn();
 // The row text of the Pins layer at 1850 and at 1860.
 const captions = () =>
-  // eslint-disable-next-line testing-library/no-node-access -- the mock layer row is a bare p with no role or label; the test reads its text
-  document.querySelector('[data-layer="pins"]')?.textContent;
+  screen.queryAllByTestId('layer-row').find(row => row.dataset.layer === 'pins')
+    ?.textContent;
 const EMPTY = '0 of 0 true on this date | 0 of 0 true on this date';
 const LOADED = '1 of 3 true on this date | 0 of 3 true on this date';
 

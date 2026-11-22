@@ -16,8 +16,7 @@ const show = (path: string) => {
   );
 };
 
-// eslint-disable-next-line testing-library/no-node-access -- the host div has no role; the test checks its attributes
-const host = () => screen.getByTestId('map').parentElement!;
+const host = () => screen.getByTestId('map-host');
 
 describe('MapHost', () => {
   // MAP-01

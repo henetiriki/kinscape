@@ -141,7 +141,10 @@ export const DateField = ({
     <div className={styles.wrap}>
       <div className={styles.row}>
         {before}
-        <span className={styles.anchor} data-fill={fill || undefined}>
+        <span
+          className={styles.anchor}
+          data-fill={fill || undefined}
+          data-testid='date-anchor'>
           <TextField
             aria-describedby={problem || notice ? messageId : undefined}
             date={fill ? 'fill' : true}

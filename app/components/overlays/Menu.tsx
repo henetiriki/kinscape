@@ -71,7 +71,7 @@ export const MenuPanel = ({
   onSelect,
 }: MenuPanelArgs) => (
   <Surface className={styles.panel} level='floating'>
-    <div inert={inert}>
+    <div data-testid='menu-wrapper' inert={inert}>
       <div className={styles.header}>
         <span className={styles.caption}>Signed in as</span>
         <span className={styles.label}>{email}</span>
@@ -162,14 +162,18 @@ export const Menu = ({
   };
 
   return (
-    <div className={styles.anchor} data-form={form} ref={anchor}>
+    <div
+      className={styles.anchor}
+      data-form={form}
+      data-testid='menu-anchor'
+      ref={anchor}>
       <Avatar
         expanded={open}
         initial={initial}
         onClick={() => setOpen(!open)}
       />
       {open && (
-        <div className={styles.drop} data-form={form}>
+        <div className={styles.drop} data-form={form} data-testid='menu-drop'>
           <MenuPanel
             {...panel}
             menuRef={menu}

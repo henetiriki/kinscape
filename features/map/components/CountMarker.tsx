@@ -29,7 +29,12 @@ export const CountMarker = ({
     type='button'
     {...rest}>
     {selected && (
-      <span aria-hidden='true' className={styles.ring} data-ring='' />
+      <span
+        aria-hidden='true'
+        className={styles.ring}
+        data-ring=''
+        data-testid='ring'
+      />
     )}
     <span className={styles.disc}>{count}</span>
   </button>

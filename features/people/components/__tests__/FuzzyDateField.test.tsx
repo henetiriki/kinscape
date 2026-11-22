@@ -23,8 +23,7 @@ const setup = (props: Partial<Parameters<typeof FuzzyDateField>[0]> = {}) => {
 const type = (field: HTMLInputElement, text: string) =>
   fireEvent.change(field, { target: { value: text } });
 
-// eslint-disable-next-line testing-library/no-node-access -- the live region div has no role; the test reads what it holds
-const slot = () => document.querySelector<HTMLElement>('[aria-live="polite"]')!;
+const slot = () => screen.getByTestId('message-slot');
 
 it('shows the helper when empty, and an empty check is no error', () => {
   const field = setup();
@@ -80,8 +79,9 @@ it('checks on blur: 31 FEB 1850 keeps its text and shows the message', () => {
     'February 1850 has 28 days.'
   );
   expect(slot().contains(screen.getByRole('alert'))).toBe(true);
-  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its error mark
-  expect(field.closest('span')!.getAttribute('data-mark')).toBe('error');
+  expect(screen.getByTestId('field-box').getAttribute('data-mark')).toBe(
+    'error'
+  );
 });
 
 it('checks on Enter, not on another key', () => {
@@ -166,8 +166,9 @@ it('shows the error of the caller in the slot, with the error mark', () => {
 
   expect(screen.getByRole('alert').textContent).toBe('Enter a date.');
   expect(field.getAttribute('aria-invalid')).toBe('true');
-  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its error mark
-  expect(document.querySelector('[data-mark="error"]')).not.toBeNull();
+  expect(screen.getByTestId('field-box').getAttribute('data-mark')).toBe(
+    'error'
+  );
 });
 
 it('shows its own error before the error of the caller, and the caller error again after a good check', () => {
@@ -235,8 +236,9 @@ it.each([
 
   expect(screen.getByRole('alert').textContent).toBe(message);
   expect(field.getAttribute('aria-invalid')).toBe('true');
-  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its error mark
-  expect(field.closest('span')!.getAttribute('data-mark')).toBe('error');
+  expect(screen.getByTestId('field-box').getAttribute('data-mark')).toBe(
+    'error'
+  );
 });
 
 it('shows nothing when there is no helper', () => {

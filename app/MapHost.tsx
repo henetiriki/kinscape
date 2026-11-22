@@ -24,6 +24,7 @@ export const MapHost = ({ children }: { children: ReactNode }) => {
     <div
       className={styles.host}
       data-hidden={onPeople ? '' : undefined}
+      data-testid='map-host'
       inert={onPeople}>
       {children}
     </div>

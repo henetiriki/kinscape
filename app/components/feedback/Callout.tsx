@@ -25,5 +25,6 @@ export const CalloutPointer = ({ className }: { className?: string }) => (
   <span
     aria-hidden
     className={className ? `${styles.pointer} ${className}` : styles.pointer}
+    data-testid='pointer'
   />
 );

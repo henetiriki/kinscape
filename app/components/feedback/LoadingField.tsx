@@ -19,7 +19,10 @@ export const LoadingField = ({
 }) => (
   <div className={styles.field}>
     <Text variant='label'>{label}</Text>
-    <div className={styles.bars} data-rows={widths.length}>
+    <div
+      className={styles.bars}
+      data-rows={widths.length}
+      data-testid='loading-bars'>
       {widths.map((width, index) => (
         <LoadingBar key={index} width={width} />
       ))}

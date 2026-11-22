@@ -84,6 +84,7 @@ export const DateSlider = ({
           <span
             className={styles.contested}
             data-from={from}
+            data-testid='contested-span'
             data-to={to}
             key={`${from}-${to}`}
             style={
@@ -97,6 +98,7 @@ export const DateSlider = ({
         {ticks.map(year => (
           <span
             className={styles.tick}
+            data-testid='slider-tick'
             data-year={year}
             key={year}
             style={mark(at(year, precision, lastDay))}

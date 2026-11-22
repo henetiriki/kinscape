@@ -187,9 +187,8 @@ it('is a region named by its overline on a phone, with no Close, Copy chain or p
 });
 
 it('draws a pointer as decoration, with the caller’s class', () => {
-  const { container, rerender } = render(<PopupPointer className='mine' />);
-  // eslint-disable-next-line testing-library/no-node-access -- the pointer is an aria-hidden span with no role or text
-  const pointer = () => container.firstElementChild!;
+  const { rerender } = render(<PopupPointer className='mine' />);
+  const pointer = () => screen.getByTestId('pointer');
 
   expect(pointer().getAttribute('aria-hidden')).toBe('true');
   expect(pointer().className).toContain('mine');

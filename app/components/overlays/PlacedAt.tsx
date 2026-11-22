@@ -21,6 +21,7 @@ export const PlacedAt = ({
 }) => (
   <div
     className={styles.placed}
+    data-testid='placed-at'
     style={
       {
         '--gap': `var(--layout-${gap})`,

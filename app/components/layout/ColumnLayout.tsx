@@ -23,7 +23,7 @@ export const ColumnLayout = ({
   column: Column;
   header: ReactNode;
 }) => (
-  <div className={styles.page} data-column={column}>
+  <div className={styles.page} data-column={column} data-testid='column-frame'>
     {header}
     <main className={styles.main}>
       <div className={styles.content}>{children}</div>

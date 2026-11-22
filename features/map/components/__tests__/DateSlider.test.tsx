@@ -29,9 +29,8 @@ const f = (element: Element) =>
 
 // MAP-08
 it('draws a tick at each epoch, as the thumb would sit', () => {
-  const { container } = setup({ ticks: [1652, 1902] });
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the ticks are aria-hidden spans with no role or text
-  const ticks = [...container.querySelectorAll('[data-year]')];
+  setup({ ticks: [1652, 1902] });
+  const ticks = screen.getAllByTestId('slider-tick');
 
   expect(ticks.map(tick => tick.getAttribute('data-year'))).toEqual([
     '1652',
@@ -42,9 +41,8 @@ it('draws a tick at each epoch, as the thumb would sit', () => {
 });
 
 it('draws a hatched span over the contested years', () => {
-  const { container } = setup({ contested: [{ from: 1900, to: 1902 }] });
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the contested span is aria-hidden with no role or text
-  const span = container.querySelector('[data-from="1900"]') as HTMLElement;
+  setup({ contested: [{ from: 1900, to: 1902 }] });
+  const span = screen.getByTestId('contested-span');
 
   expect(span.getAttribute('data-to')).toBe('1902');
   expect(f(span)).toBeCloseTo((1900 - 1652) / (2026 - 1652));
@@ -80,10 +78,9 @@ it('drops a year label that would touch Today', () => {
 });
 
 it('places the marks at month precision', () => {
-  const { container } = setup({ precision: 'month', ticks: [1652] });
+  setup({ precision: 'month', ticks: [1652] });
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the tick is an aria-hidden span with no role or text
-  expect(f(container.querySelector('[data-year]')!)).toBe(0);
+  expect(f(screen.getByTestId('slider-tick'))).toBe(0);
 });
 
 it('moves ten steps with Shift and an arrow', () => {

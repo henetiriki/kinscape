@@ -24,19 +24,16 @@ it('calls its click handler', () => {
 
 // PIN-02
 it('draws the selection ring only while selected (#862 D3)', () => {
-  const { container, rerender } = render(<CountMarker count={3} selected />);
+  const { rerender } = render(<CountMarker count={3} selected />);
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the ring is an aria-hidden span with no role or text
-  expect(container.querySelectorAll('[data-ring]')).toHaveLength(1);
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the ring is an aria-hidden span with no role or text
-  const ring = container.querySelector('[data-ring]')!;
+  expect(screen.getAllByTestId('ring')).toHaveLength(1);
+  const ring = screen.getByTestId('ring');
 
   expect(ring.getAttribute('aria-hidden')).toBe('true');
 
   rerender(<CountMarker count={3} />);
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the ring is an aria-hidden span with no role or text
-  expect(container.querySelector('[data-ring]')).toBeNull();
+  expect(screen.queryByTestId('ring')).toBeNull();
 });
 
 it('shows a card look from its state', () => {

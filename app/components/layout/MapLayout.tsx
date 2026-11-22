@@ -69,6 +69,7 @@ export const MapLayout = ({
             className={styles[slot]}
             data-at={slot === 'overlay' ? overlayAt : undefined}
             data-slot={slot}
+            data-testid={`${slot}-slot`}
             key={slot}>
             {slots[slot]}
           </div>

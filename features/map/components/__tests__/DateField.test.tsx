@@ -367,17 +367,19 @@ it('opens a message above the field with no fix when the date has none', () => {
 });
 
 it('takes the width of its row when asked to fill it', () => {
-  const { field } = setup({ fill: true });
+  setup({ fill: true });
 
-  // eslint-disable-next-line testing-library/no-node-access -- the fill mark is on a span with no role around the field
-  expect(field.closest('[data-fill]')).toBeTruthy();
+  expect(screen.getByTestId('date-anchor').hasAttribute('data-fill')).toBe(
+    true
+  );
 });
 
 it('keeps its own width unless asked to fill the row', () => {
-  const { field } = setup();
+  setup();
 
-  // eslint-disable-next-line testing-library/no-node-access -- the fill mark is on a span with no role around the field
-  expect(field.closest('[data-fill]')).toBeNull();
+  expect(screen.getByTestId('date-anchor').hasAttribute('data-fill')).toBe(
+    false
+  );
 });
 
 it('shows a notice while it is passed, as a status', () => {
@@ -428,8 +430,7 @@ it('marks a warning without blocking', () => {
   });
 
   expect(field.getAttribute('aria-invalid')).toBeNull();
-  // eslint-disable-next-line testing-library/no-node-access -- the mark is on a wrapper with no role around the field
-  expect(field.closest('[data-mark]')?.getAttribute('data-mark')).toBe(
+  expect(screen.getByTestId('field-box').getAttribute('data-mark')).toBe(
     'warning'
   );
 });

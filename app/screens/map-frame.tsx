@@ -42,6 +42,7 @@ export const AtPoint = ({
   y: number;
 }) => (
   <div
+    data-testid='placed-at'
     style={{
       left: x,
       position: 'absolute',

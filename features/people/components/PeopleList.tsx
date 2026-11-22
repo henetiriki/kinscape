@@ -159,7 +159,10 @@ export const PeopleList = ({
       )}
       {shown.length > 0 && !phone && (
         <section aria-label='People, by surname' className={styles.list}>
-          <div aria-hidden='true' className={styles.heads}>
+          <div
+            aria-hidden='true'
+            className={styles.heads}
+            data-testid='header-row'>
             <Text variant='overline'>Name</Text>
             <Text variant='overline'>Dates</Text>
             <span />

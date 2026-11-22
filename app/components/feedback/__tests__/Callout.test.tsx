@@ -5,7 +5,7 @@ import { Callout, CalloutPointer } from '@ks/app/components/feedback/Callout';
 
 // NFR-06
 it('renders a callout as an alert with its id, and a hidden pointer', () => {
-  const { container } = render(
+  render(
     <>
       <Callout className='mine' id='why'>
         Bad date
@@ -18,8 +18,7 @@ it('renders a callout as an alert with its id, and a hidden pointer', () => {
 
   const first = screen.getByText('Bad date');
   const second = screen.getByText('Plain');
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- a pointer is an aria-hidden span with no role or text
-  const pointers = Array.from(container.querySelectorAll('span'));
+  const pointers = screen.getAllByTestId('pointer');
 
   expect([first, second].map(node => node.getAttribute('role'))).toEqual([
     'alert',

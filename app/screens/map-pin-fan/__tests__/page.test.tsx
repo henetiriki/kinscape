@@ -29,11 +29,10 @@ it('fans the three Pins of Example Farm out, with the pointer on Birth', async (
   expect(
     NAMES.map(name => screen.getByRole('button', { name }).dataset.state)
   ).toEqual([undefined, undefined, 'hover']);
-  expect(
-    // eslint-disable-next-line testing-library/no-node-access -- the placed wrapper div has no role; the test checks its position
-    (marker.parentElement!.parentElement!.parentElement as HTMLElement).style
-      .left
-  ).toBe('940px');
+  const placed = screen.getByTestId('placed-at');
+
+  expect(placed.contains(marker)).toBe(true);
+  expect(placed.style.left).toBe('940px');
 });
 
 // NFR-05
@@ -50,11 +49,10 @@ it('fans them out at the phone point with no hover look on a phone', async () =>
   expect(
     NAMES.map(name => screen.getByRole('button', { name }).dataset.state)
   ).toEqual([undefined, undefined, undefined]);
-  expect(
-    // eslint-disable-next-line testing-library/no-node-access -- the placed wrapper div has no role; the test checks its position
-    (marker.parentElement!.parentElement!.parentElement as HTMLElement).style
-      .left
-  ).toBe('264px');
+  const placed = screen.getByTestId('placed-at');
+
+  expect(placed.contains(marker)).toBe(true);
+  expect(placed.style.left).toBe('264px');
   screen.getByRole('button', { name: 'Layers and filters' });
 });
 

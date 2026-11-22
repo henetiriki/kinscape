@@ -63,6 +63,7 @@ describe('CONTROLS', () => {
       'NoticeCard',
       'ProgressBar',
       'LoadingBar',
+      'LoadingField',
       'Avatar',
       'Divider',
       'Icon',

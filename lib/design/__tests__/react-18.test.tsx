@@ -44,6 +44,7 @@ import { Alert } from '@ks/app/components/feedback/Alert';
 import { Banner } from '@ks/app/components/feedback/Banner';
 import { Callout } from '@ks/app/components/feedback/Callout';
 import { LoadingBar } from '@ks/app/components/feedback/LoadingBar';
+import { LoadingField } from '@ks/app/components/feedback/LoadingField';
 import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { ProgressBar } from '@ks/app/components/feedback/ProgressBar';
 import { Toast } from '@ks/app/components/feedback/Toast';
@@ -228,6 +229,7 @@ const COMPONENTS = {
   LayersButton,
   Legend,
   LoadingBar,
+  LoadingField,
   MapLayout,
   Menu,
   MenuPanel,
@@ -1179,6 +1181,14 @@ const CASES: [string, ReactElement][] = [
     `LoadingBar · ${width}`,
     <LoadingBar key={width} width={width} />,
   ]),
+  [
+    'LoadingField · one bar',
+    <LoadingField key='one' label='Precision' widths={[120]} />,
+  ],
+  [
+    'LoadingField · two bars',
+    <LoadingField key='two' label='Sources' widths={[220, 160]} />,
+  ],
   ...states('Avatar', (state, disabled) => (
     <Avatar disabled={disabled} initial='R' state={state} />
   )),

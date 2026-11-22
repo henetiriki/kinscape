@@ -1,7 +1,7 @@
 # Plan: C1145: Move the build rules of plans/README.md to plans/BUILD.md
 
 - **Spec:** #1145
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

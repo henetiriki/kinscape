@@ -214,8 +214,8 @@ it('closes the sheet from its Close button', () => {
   expect(onClose).toHaveBeenCalledTimes(1);
 });
 
-it('places the popup at a point in pixels', () => {
-  const { container } = render(
+it('shows the Pin in a popup at a point', () => {
+  render(
     <PlacedPinPopup
       address='Farm Example'
       event='birth'
@@ -227,13 +227,6 @@ it('places the popup at a point in pixels', () => {
       y={80}
     />
   );
-  // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its style
-  const placed = container.firstElementChild as HTMLElement;
 
-  expect(placed.style.getPropertyValue('--x')).toBe('120px');
-  expect(placed.style.getPropertyValue('--y')).toBe('80px');
-  expect(placed.style.getPropertyValue('--gap')).toBe(
-    'var(--layout-pin-popup-gap)'
-  );
   expect(screen.getByText('Birth').textContent).toBe('Birth');
 });

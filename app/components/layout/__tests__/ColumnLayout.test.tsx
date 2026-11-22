@@ -71,7 +71,7 @@ const COLUMNS = [
 
 // NFR-05
 it('puts the header, the column and the action bar in slots, in that order', () => {
-  const { container } = render(
+  render(
     <ColumnLayout
       actions={<button>Save</button>}
       column='form'
@@ -79,22 +79,16 @@ it('puts the header, the column and the action bar in slots, in that order', () 
       <p>body</p>
     </ColumnLayout>
   );
-  // eslint-disable-next-line testing-library/no-node-access -- the frame div has no role; the test checks the order of its slots
-  const root = container.firstElementChild as HTMLElement;
 
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks the tag order of the frame's children
-  expect([...root.children].map(child => child.tagName)).toEqual([
-    'DIV',
-    'MAIN',
-    'DIV',
-  ]);
-
-  expect(root.children[0]?.textContent).toBe('head');
+  screen.getByText('head');
   expect(within(screen.getByRole('main')).getByText('body').textContent).toBe(
     'body'
   );
-  // eslint-disable-next-line testing-library/no-node-access -- the spacer div has no role; the test checks that it is in the last slot
-  expect(root.children[2]?.querySelector('[data-spacer]')?.tagName).toBe('DIV');
+  // eslint-disable-next-line testing-library/no-node-access -- the spacer div has no role; the test checks that it is in the slot after main
+  const bar = screen.getByRole('main').nextElementSibling!;
+
+  // eslint-disable-next-line testing-library/no-node-access -- the spacer div has no role; the test checks that it is in the slot after main
+  expect(bar.querySelector('[data-spacer]')?.tagName).toBe('DIV');
   expect(screen.getByRole('button').textContent).toBe('Save');
 });
 

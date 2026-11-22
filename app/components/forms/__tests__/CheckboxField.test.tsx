@@ -39,16 +39,6 @@ it('can be disabled and shows a state', () => {
   expect(box.dataset.state).toBe('hover');
 });
 
-it('draws a 44 row with size m', () => {
-  render(<CheckboxField label='Pins' size='m' />);
-
-  const box = screen.getByRole('checkbox');
-  // eslint-disable-next-line testing-library/no-node-access -- the row div has no role; the test checks its data-size
-  const row = box.closest('[data-size]') as HTMLElement;
-
-  expect(row.dataset.size).toBe('m');
-});
-
 it('draws the plain sign-in form, still named by its label', () => {
   render(<CheckboxField label='Keep me signed in on this device' plain />);
 

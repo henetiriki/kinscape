@@ -145,6 +145,13 @@ export const PIN_DETAILS = {
   name: 'Example Person',
 };
 
+/**
+ * The map point of a `PlacedPopup` or `PlacedPinPopup` card, in px from the corner of its box.
+ * `PLACED_Y` is more than `furniture-top` plus `popup-point-y`, so the popup top is not at `furniture-top`.
+ */
+export const PLACED_X = 380;
+export const PLACED_Y = 240;
+
 /** The tabs of a `Panel` card state: Layers and Filters, with one active filter. `body` is the id of the state's tabpanel. */
 export const panelTabs = (body: string) => [
   { controls: body, label: 'Layers', value: 'layers' },

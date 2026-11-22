@@ -26,6 +26,8 @@ import {
   PIN_DETAILS,
   PIN_POPUP,
   PINS,
+  PLACED_X,
+  PLACED_Y,
   SURNAME_HELPER,
   TODAY,
   TWELVE_PINS,
@@ -269,6 +271,17 @@ const PHONE_SHEET = { expanded: false };
 /** The props that every `PinPopup` state shares: the Pin of the map, in a floating popup. */
 const PIN_STATE = { ...PIN_POPUP, form: 'floating', state: 'loaded' };
 
+/** The map text and the text in each slot of a `MapLayout` state. */
+const MAP_TEXT: Slot[] = [
+  { children: 'The map', control: 'Text', props: { variant: 'small' } },
+];
+const MAP_SLOTS: Record<string, Slot> = Object.fromEntries(
+  SLOTS.map(slot => [
+    slot,
+    { children: slot, control: 'Text', props: { variant: 'small' } },
+  ])
+);
+
 const checkboxes = (name: string, make: (checked: boolean) => Make) =>
   [false, true].flatMap(checked =>
     grid(`${name} ${checked ? 'on' : 'off'}`, make(checked))
@@ -297,6 +310,11 @@ export const CARDS: Card[] = [
         label: `Button · size ${size}`,
         props: { icon: 'copy', size },
       })),
+      one(
+        'Button · round',
+        { icon: 'play', round: true, size: 'l', variant: 'primary' },
+        'Play'
+      ),
       ...linkGrid('Button link', state => ({
         children: 'See all people',
         props: { href: '/people', state, variant: 'primary' },
@@ -593,6 +611,7 @@ export const CARDS: Card[] = [
         type: 'search',
       }),
       one('TextField · password', { label: 'Password', type: 'password' }),
+      one('TextField · size l', { label: 'Name', size: 'l' }),
     ],
   },
   {
@@ -665,6 +684,7 @@ export const CARDS: Card[] = [
           state,
         },
       })),
+      one('CheckboxField · size m', { label: 'Pins', size: 'm' }),
       one('CheckboxField · plain', { label: 'Keep me', plain: true }),
     ],
   },
@@ -1469,6 +1489,44 @@ export const CARDS: Card[] = [
     ],
   },
   {
+    contain: true,
+    design: [],
+    group: 'Overlays',
+    handlers: ['onClose', 'onCopied'],
+    height: 520,
+    name: 'PlacedPopup',
+    pad: 0,
+    states: [
+      one('PlacedPopup · placed', {
+        chain: CHAIN,
+        coordinates: '28.738° S · 24.764° E',
+        pins: PINS,
+        place: 'Kimberley',
+        x: PLACED_X,
+        y: PLACED_Y,
+        year: 1901,
+      }),
+    ],
+  },
+  {
+    contain: true,
+    design: [],
+    group: 'Overlays',
+    handlers: ['onClose', 'onRetry'],
+    height: 520,
+    name: 'PlacedPinPopup',
+    pad: 0,
+    states: [
+      one('PlacedPinPopup · placed', {
+        ...PIN_POPUP,
+        ...PIN_DETAILS,
+        state: 'loaded',
+        x: PLACED_X,
+        y: PLACED_Y,
+      }),
+    ],
+  },
+  {
     design: ['Phone date sheet'],
     group: 'Overlays',
     handlers: ['onExpandedChange'],
@@ -1627,26 +1685,12 @@ export const CARDS: Card[] = [
     name: 'MapLayout',
     pad: 0,
     states: [
+      one('MapLayout · text in each slot', {}, MAP_TEXT, MAP_SLOTS),
       one(
-        'MapLayout · text in each slot',
-        {},
-        [
-          {
-            children: 'The map',
-            control: 'Text',
-            props: { variant: 'small' },
-          },
-        ],
-        Object.fromEntries(
-          SLOTS.map(slot => [
-            slot,
-            {
-              children: slot,
-              control: 'Text',
-              props: { variant: 'small' },
-            },
-          ])
-        )
+        'MapLayout · overlay at the top',
+        { overlayAt: 'top' },
+        MAP_TEXT,
+        MAP_SLOTS
       ),
     ],
     width: 1440,

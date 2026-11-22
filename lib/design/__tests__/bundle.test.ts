@@ -76,6 +76,8 @@ describe('CONTROLS', () => {
       'MenuPanel',
       'Popup',
       'PinPopup',
+      'PlacedPopup',
+      'PlacedPinPopup',
       'BottomSheet',
       'Modal',
       'Dialog',

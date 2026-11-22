@@ -1228,7 +1228,7 @@ export declare const Popup: ({ chain, coordinates, form, onClose, onCopied, pins
  * The floating Popup at a map point, in pixels from the corner of the overlay area:
  * left of the point, with its pointer on the right edge.
  */
-declare const PlacedPopup: ({ x, y, ...rest }: {
+export declare const PlacedPopup: ({ x, y, ...rest }: {
     x: number;
     y: number;
 } & Omit<Parameters<typeof Popup>[0], "form">) => import("react").JSX.Element;
@@ -1237,6 +1237,7 @@ declare const PopupPointer: ({ className }: {
     className?: string;
 }) => import("react").JSX.Element;
 export type PopupProps = Parameters<typeof Popup>[0];
+export type PlacedPopupProps = Parameters<typeof PlacedPopup>[0];
 
 type PinPopupArgs = {
     /** The address as recorded; the loaded state shows it, and an empty one reads as no address. */
@@ -1261,11 +1262,12 @@ type PinPopupArgs = {
 /** The popup of a Pin (PIN-02): the Person, the event type, both date lines and the address. */
 export declare const PinPopup: ({ address, event, form, name, onClose, onRetry, reading, recorded, state, }: PinPopupArgs) => import("react").JSX.Element;
 /** The floating popup at a map point, in pixels from the corner of the overlay area. */
-declare const PlacedPinPopup: ({ x, y, ...rest }: {
+export declare const PlacedPinPopup: ({ x, y, ...rest }: {
     x: number;
     y: number;
 } & Omit<PinPopupArgs, "form">) => import("react").JSX.Element;
 export type PinPopupProps = Parameters<typeof PinPopup>[0];
+export type PlacedPinPopupProps = Parameters<typeof PlacedPinPopup>[0];
 
 /** The phone's non-modal date sheet: the map stays usable behind it. Collapsed or expanded; the grabber toggles it. */
 export declare const BottomSheet: ({ children, expanded, onExpandedChange, }: {

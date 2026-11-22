@@ -48,11 +48,7 @@ it('sets the height, width, shape and icon of a button from its props', () => {
   expect(xs.dataset.size).toBe('xs');
   expect(xs.dataset.full).toBe('true');
   expect(xs.dataset.iconOnly).toBeUndefined();
-  // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg; the test checks its width
-  expect(xs.querySelector('svg')!.getAttribute('width')).toBe('14');
   expect(play.dataset.round).toBe('true');
-  // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg; the test checks its width
-  expect(play.querySelector('svg')!.getAttribute('width')).toBe('20');
 });
 
 it('names an icon-only button, and the type check rejects one without a name', () => {

@@ -12,6 +12,15 @@
           }
         ],
         "matcher": "Bash"
+      },
+      {
+        "hooks": [
+          {
+            "command": "jq -c 'def cut($d): if $d != \"\" and startswith($d + \"/\") then .[($d | length) + 1:] else . end;\ndef deny($m): {hookSpecificOutput: {hookEventName: \"PreToolUse\", permissionDecision: \"deny\", permissionDecisionReason: $m}};\n((.tool_input.file_path // \"\") | cut($ENV.CLAUDE_PROJECT_DIR // \"\") | cut($ENV.GITHUB_WORKSPACE // \"\") | sub(\"^\\\\.claude/worktrees/[^/]+/\"; \"\")) as $r\n| if ($r | test(\"^design/(source/[^/]+\\\\.html|[^/]+\\\\.jpg|cards/[^/]+\\\\.png)$\")) then deny(\"The workflow Design: Render snapshots writes `\" + $r + \"`. Never edit it. In a merge conflict, run `git checkout --theirs -- \" + $r + \"`, then ask in the PR for a run of the workflow. If a snapshot looks wrong or the app can\\u0027t match it, say so in the PR and raise a Bug that names the screen.\")\n  elif ($r | test(\"^design/canvas/\")) then deny(\"Only the tech lead, or a local session that the tech lead starts, edits `design/canvas/`. Ask in the PR.\")\n  else empty end'",
+            "type": "command"
+          }
+        ],
+        "matcher": "Edit|Write"
       }
     ]
   },

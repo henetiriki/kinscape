@@ -21,6 +21,21 @@ const openPinForm = async (page: Page) => {
     .waitFor();
 };
 
+/** A field of the add panel. The map has its own "Precision" and "Sources" controls. */
+const panelField = (page: Page, name: string) =>
+  page
+    .getByRole('form', { name: 'Add a pin' })
+    .getByLabel(name, { exact: true });
+
+/**
+ * Scrolls the panel body and each text area to the top. A fill puts the caret at the end and the
+ * browser scrolls to it, but the boards show the start.
+ */
+const showTop = (page: Page) =>
+  page.getByRole('form', { name: 'Add a pin' }).evaluate(form => {
+    for (const node of form.querySelectorAll('*')) node.scrollTop = 0;
+  });
+
 /** What the boards `pin-form`, `pin-form-saving` and `pin-form-save-failed` hold in the fields. */
 const fillPinForm = async (page: Page) => {
   await page.getByRole('combobox', { name: 'Person' }).fill('Maria Magdalena');
@@ -35,11 +50,12 @@ const fillPinForm = async (page: Page) => {
   await page
     .getByLabel('Address as recorded')
     .fill('Farm Example, district Example');
-  await page.getByLabel('Precision').selectOption('farm');
-  await page.getByLabel('Sources').fill('Example parish register, 1890.');
-  await page.getByLabel('Notes').fill('Lived here with the Example family.');
+  await panelField(page, 'Precision').selectOption('farm');
+  await panelField(page, 'Sources').fill('Example parish register, 1890.');
+  await panelField(page, 'Notes').fill('Lived here with the Example family.');
+  await showTop(page);
   // The boards show no focus border.
-  await page.getByLabel('Notes').blur();
+  await panelField(page, 'Notes').blur();
 };
 
 /** Fills the panel and chooses "Save". The server action then never answers (`hold`) or fails as a network failure does (`abort`). */
@@ -113,17 +129,11 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
       .repeat(201)
       .slice(0, 10_001);
 
-    await page.getByLabel('Sources').fill(long);
-    await page.getByLabel('Notes').fill(long);
+    await panelField(page, 'Sources').fill(long);
+    await panelField(page, 'Notes').fill(long);
     await page.getByRole('button', { name: 'Save' }).click();
     await page.getByText('Choose a person.').waitFor();
-    // A fill leaves the caret at the end; the board shows the start.
-    for (const name of ['Sources', 'Notes']) {
-      await page
-        .getByLabel(name)
-        .evaluate(node => ((node as HTMLTextAreaElement).scrollTop = 0));
-    }
-
+    await showTop(page);
     await page.getByRole('button', { name: 'Save' }).blur();
   },
   // The Researcher Tree has no Person.

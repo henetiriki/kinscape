@@ -604,7 +604,9 @@ export declare const TextField: ({ date, defaultShown, error, helper, hideLabel,
 export type TextFieldProps = Parameters<typeof TextField>[0];
 
 /** A multi-line field with its label and helper text. It resizes up and down only; long content scrolls inside it. */
-export declare const TextAreaField: ({ helper, label, state, ...rest }: {
+export declare const TextAreaField: ({ error, helper, label, state, ...rest }: {
+    /** The problem, shown under the field in place of `helper`. Marks the field as in error. */
+    error?: ReactNode;
     helper?: ReactNode;
     label: string;
     state?: ControlState;
@@ -723,7 +725,9 @@ export type PersonFieldProps = Parameters<typeof PersonField>[0];
 export type PersonFieldListProps = Parameters<typeof PersonFieldList>[0];
 
 /** A native select with its label and a drawn chevron. The open list is the browser's. */
-export declare const SelectField: ({ hideLabel, label, options, state, ...rest }: {
+export declare const SelectField: ({ error, hideLabel, label, options, state, ...rest }: {
+    /** The problem, shown under the field. Marks the field as in error. */
+    error?: ReactNode;
     /** Names the select without showing the label. */
     hideLabel?: boolean;
     label: string;

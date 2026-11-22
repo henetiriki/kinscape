@@ -96,4 +96,4 @@ Three run types load `spec-checks.md`: the refresh (`refresh.md`), a respond run
 ## Deviations
 
 - Steps 2–4: the tech lead built them in a local session, because the CI run could not write `SKILL.md` and `chore.md`.
-- `docs/how-we-work.md` "Drafting with Claude": the model line keeps "Opus with High effort" and links to the `SKILL.md` model step for the commands. The skill checks only the model.
+- `docs/how-we-work.md` "Drafting with Claude": the model line keeps "Opus with High effort" and leaves the commands to the `SKILL.md` model step. It has no link, because a link back to `SKILL.md` makes a link cycle. The skill checks only the model.

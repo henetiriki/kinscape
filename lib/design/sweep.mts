@@ -37,15 +37,14 @@ export const jpegSize = (bytes: Uint8Array): Size => {
  * - an image with no entry that is not in `noEntry`;
  * - an entry that is also in `noEntry` or has no image;
  * - an entry that is not the size of its snapshot;
- * - an `ignore` area on an entry that is not in `mayIgnore`;
+ * - an `ignore` area;
  * - a mode other than `blocking`;
  * - a threshold other than 0.5.
  */
 export const sweepProblems = (
   raw: unknown,
   images: Record<string, Size>,
-  noEntry: string[],
-  mayIgnore: string[] = []
+  noEntry: string[]
 ): string[] => {
   const config = isRecord(raw) ? raw : {};
   const screens = (Array.isArray(config.screens) ? config.screens : []).filter(
@@ -72,9 +71,7 @@ export const sweepProblems = (
 
     if (noEntry.includes(name)) problems.push(`${name}: also in NO_ENTRY`);
 
-    if (screen.ignore !== undefined && !mayIgnore.includes(name)) {
-      problems.push(`${name}: has ignore`);
-    }
+    if (screen.ignore !== undefined) problems.push(`${name}: has ignore`);
 
     if (screen.mode !== 'blocking') problems.push(`${name}: is not blocking`);
 

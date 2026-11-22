@@ -131,6 +131,25 @@ describe('createPinAction', () => {
     });
   });
 
+  it('saves the precision on the new Place, and the sources and the notes on the Pin', async () => {
+    const { a } = await setup();
+
+    await createPinAction({
+      ...valid,
+      notes: 'Moved here after the war.',
+      place: { ...valid.place, precision: 'farm' },
+      sources: 'Deeds office, 1890',
+    });
+
+    expect(await a.places.get(NEW_PLACE as PlaceId)).toMatchObject({
+      precision: 'farm',
+    });
+    expect((await a.pins.list())[0]).toMatchObject({
+      notes: 'Moved here after the war.',
+      sources: 'Deeds office, 1890',
+    });
+  });
+
   it('reads "ABT 1850" back as a Fuzzy date', async () => {
     const { a } = await setup();
 

@@ -9,9 +9,10 @@ import type { PersonSummary } from '@ks/lib/domain/persons/types.ts';
 
 import { Button } from '@ks/app/components/actions/Button';
 import { Alert } from '@ks/app/components/feedback/Alert';
-import { LoadingBar } from '@ks/app/components/feedback/LoadingBar';
+import { LoadingField } from '@ks/app/components/feedback/LoadingField';
 import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { SelectField } from '@ks/app/components/forms/SelectField';
+import { TextAreaField } from '@ks/app/components/forms/TextAreaField';
 import { TextField } from '@ks/app/components/forms/TextField';
 import { Surface } from '@ks/app/components/foundation/Surface';
 import { Text } from '@ks/app/components/foundation/Text';
@@ -20,6 +21,7 @@ import { PersonField } from '@ks/features/people/components/PersonField';
 import {
   EVENT_OPTIONS,
   pinMessages,
+  PRECISION_OPTIONS,
 } from '@ks/features/people/components/pin-messages.ts';
 import { usePeople } from '@ks/features/people/query';
 import { uuidV7 } from '@ks/lib/domain/ids/ids.mts';
@@ -30,13 +32,16 @@ import styles from '@ks/features/people/components/PinForm.module.css';
 
 const DATE_HELPER = 'For example 1850, ABT 1850 or BET 1850 AND 1855.';
 
-/** The loading look of a field: its label over a bar, as the Pin popup draws a loading name. */
+/** The loading look of each field, as `pin-edit-loading` draws it: the label and the width of each bar. */
 const LOADING_FIELDS = [
-  ['Person', 168],
-  ['Event type', 140],
-  ['Date', 150],
-  ['Coordinates', 190],
-  ['Address as recorded', 220],
+  ['Person', [168]],
+  ['Event type', [140]],
+  ['Date', [150]],
+  ['Coordinates', [190]],
+  ['Address as recorded', [220]],
+  ['Precision', [120]],
+  ['Sources', [220, 160]],
+  ['Notes', [220, 160]],
 ] as const;
 
 /** What the form reads from its fields at Save. */
@@ -49,6 +54,9 @@ const readFields = (form: HTMLFormElement) => {
     coordinates: text('coordinates'),
     date: text('date'),
     eventType: text('eventType'),
+    notes: text('notes'),
+    precision: text('precision'),
+    sources: text('sources'),
   };
 };
 
@@ -113,12 +121,15 @@ export const PinForm = ({
       date: values.date,
       eventType: values.eventType,
       id: ids.pin,
+      notes: values.notes,
       personId: person?.id ?? '',
       place: {
         id: ids.place,
         kind: 'new',
+        precision: values.precision,
         ...(point.ok ? point.value : { latitude: 0, longitude: 0 }),
       },
+      sources: values.sources,
     };
     const checked = checkPin(raw);
     const fields =
@@ -175,13 +186,8 @@ export const PinForm = ({
         </div>
         <div className={styles.body}>
           {loading ? (
-            LOADING_FIELDS.map(([name, width]) => (
-              <div className={styles.loading} key={name}>
-                <Text variant='label'>{name}</Text>
-                <div className={styles.bars}>
-                  <LoadingBar width={width} />
-                </div>
-              </div>
+            LOADING_FIELDS.map(([label, widths]) => (
+              <LoadingField key={label} label={label} widths={widths} />
             ))
           ) : loadFailed ? (
             <>
@@ -247,6 +253,24 @@ export const PinForm = ({
                 error={messages.address}
                 label='Address as recorded'
                 name='address'
+              />
+              <SelectField
+                defaultValue='approximate'
+                label='Precision'
+                name='precision'
+                options={PRECISION_OPTIONS}
+              />
+              <TextAreaField
+                error={messages.sources}
+                label='Sources'
+                name='sources'
+                rows={2}
+              />
+              <TextAreaField
+                error={messages.notes}
+                label='Notes'
+                name='notes'
+                rows={2}
               />
             </>
           )}

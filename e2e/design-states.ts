@@ -35,8 +35,11 @@ const fillPinForm = async (page: Page) => {
   await page
     .getByLabel('Address as recorded')
     .fill('Farm Example, district Example');
+  await page.getByLabel('Precision').selectOption('farm');
+  await page.getByLabel('Sources').fill('Example parish register, 1890.');
+  await page.getByLabel('Notes').fill('Lived here with the Example family.');
   // The boards show no focus border.
-  await page.getByLabel('Address as recorded').blur();
+  await page.getByLabel('Notes').blur();
 };
 
 /** Fills the panel and chooses "Save". The server action then never answers (`hold`) or fails as a network failure does (`abort`). */
@@ -98,7 +101,7 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
     await fillPinForm(page);
   },
   'pin-form-empty': openPinForm,
-  // The board's coordinates are in degrees, minutes and seconds, its date has the wrong format and its address has 501 characters.
+  // The board's coordinates are in degrees, minutes and seconds, its date has the wrong format, its address has 501 characters, and its sources and notes have 10,001.
   'pin-form-errors': async page => {
     await openPinForm(page);
     await page.getByLabel('Date', { exact: true }).fill('14/03/1850');
@@ -106,8 +109,22 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
     await page
       .getByLabel('Address as recorded')
       .fill('Farm Example, district Example, '.repeat(16).slice(0, 501));
+    const long = 'Example text that runs past the end of the field. '
+      .repeat(201)
+      .slice(0, 10_001);
+
+    await page.getByLabel('Sources').fill(long);
+    await page.getByLabel('Notes').fill(long);
     await page.getByRole('button', { name: 'Save' }).click();
     await page.getByText('Choose a person.').waitFor();
+    // A fill leaves the caret at the end; the board shows the start.
+    for (const name of ['Sources', 'Notes']) {
+      await page
+        .getByLabel(name)
+        .evaluate(node => ((node as HTMLTextAreaElement).scrollTop = 0));
+    }
+
+    await page.getByRole('button', { name: 'Save' }).blur();
   },
   // The Researcher Tree has no Person.
   'pin-form-no-people': async page => {

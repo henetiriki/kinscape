@@ -14,6 +14,20 @@ Each query keeps the scope of the old line, with one rule:
 - If the old line searched `container` or a box span that has no role, use `screen`. The render then holds the same SVGs, because `afterEach(cleanup)` in `vitest.setup.ts` unmounts each render.
 - If the old line found an SVG by `data-icon` or `data-event`, keep that attribute in the check. Filter or map the result of `getAllByRole` by it.
 
+## Decisions
+
+**D1 · Whether `Legend.test.tsx` 58 belongs to this Chore** · Decides: Tech lead
+
+`Legend.test.tsx` 58 counts the 7 `svg[aria-hidden="true"]` nodes with `querySelectorAll` and a disable. The issue lists 23 disables and does not list this one. Step 2 of #1158 says "each test that finds a hidden SVG only to read an attribute or check that it exists". After step 1, the disable reason "no query returns them" is false.
+
+- **A.** Convert it. The test uses `screen.getAllByRole('img', { hidden: true })` and checks 7 images that each have `aria-hidden` `true`. The disable goes. Cost: one test, about 4 lines.
+- **B.** Leave it, and list it under Out of scope. The stale reason stays in the test until a later Chore. Cost: a later Chore.
+- **Other:** your own.
+
+Recommended: A, because step 2 names "each test", and the check does not change.
+
+**Answer: A** (@henetiriki)
+
 ## Files that change
 
 | File                                                           | New / changed | What                                                                                                                                 |
@@ -37,7 +51,7 @@ Each query keeps the scope of the old line, with one rule:
 | `app/components/foundation/__tests__/Icon.test.tsx`            | changed       | 10: `svgOf` becomes `screen.getByRole('img', { hidden: true })`. 52: `getAllByRole` gives the 3 icons in document order.             |
 | `app/components/foundation/__tests__/PageHeader.test.tsx`      | changed       | 30: the first image `within(links[0])`.                                                                                              |
 | `app/components/overlays/__tests__/PinPopup.test.tsx`          | changed       | 37: the image with `data-event` `residence`.                                                                                         |
-| `features/map/components/__tests__/Legend.test.tsx`            | changed       | 22, 36: the images with a `data-event`, in order.                                                                                    |
+| `features/map/components/__tests__/Legend.test.tsx`            | changed       | 22, 36: the images with a `data-event`, in order. 58: `screen.getAllByRole` gives the 7 images, and each has `aria-hidden` `true`.   |
 | `features/map/components/__tests__/PinFan.test.tsx`            | changed       | 42: as `Legend`.                                                                                                                     |
 | `features/map/components/__tests__/SearchBar.test.tsx`         | changed       | 18: the `data-icon` values of the images `within(form)` contain `search`.                                                            |
 | `lib/ui/__tests__/EventGlyph.test.tsx`                         | changed       | 23, 69: `screen.getByRole('img', { hidden: true })`.                                                                                 |
@@ -85,3 +99,5 @@ No test changes what it checks. Each test keeps its name, so the Vitest count st
 - The test ids of #1159.
 
 ## Deviations
+
+- `Legend.test.tsx` 58 changes too, so 24 disables go (D1 of this plan). The check stays the same.

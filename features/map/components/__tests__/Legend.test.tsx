@@ -54,10 +54,12 @@ it('draws each Event glyph before its name, with no glyph character', () => {
 
 it('hides every swatch from assistive tech', () => {
   const { container } = render(<Legend />);
+  const svgs = screen.getAllByRole('img', { hidden: true });
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the test checks the aria-hidden swatches, which no query returns
-  expect(container.querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(7);
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the test checks the aria-hidden swatches, which no query returns
+  expect(svgs.map(svg => svg.getAttribute('aria-hidden'))).toEqual(
+    Array(7).fill('true')
+  );
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the test checks the aria-hidden swatch span, which no query returns
   expect(container.querySelector('span[aria-hidden="true"]')).toBeTruthy();
 });
 

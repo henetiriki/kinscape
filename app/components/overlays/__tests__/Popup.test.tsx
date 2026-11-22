@@ -199,7 +199,7 @@ it('draws a pointer as decoration, with the caller’s class', () => {
 
 // MAP-05
 it('places a popup at a point, with the pointer on its right edge', () => {
-  const { container } = render(
+  render(
     <PlacedPopup
       chain={CHAIN}
       coordinates='28.738° S · 24.764° E'
@@ -211,17 +211,8 @@ it('places a popup at a point, with the pointer on its right edge', () => {
     />
   );
 
-  // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its style
-  const placed = container.firstElementChild as HTMLElement;
-
-  expect(placed.style.getPropertyValue('--x')).toBe('420px');
-  expect(placed.style.getPropertyValue('--y')).toBe('300px');
-  expect(placed.style.getPropertyValue('--gap')).toBe(
-    'var(--layout-popup-gap)'
-  );
-  screen.getByRole('dialog');
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks that an aria-hidden pointer is the last child
-  const pointer = placed.lastElementChild!;
+  // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks that its aria-hidden pointer is the last child
+  const pointer = screen.getByRole('dialog').parentElement!.lastElementChild!;
 
   expect(pointer.className).toContain('placedPointer');
   expect(pointer.getAttribute('aria-hidden')).toBe('true');

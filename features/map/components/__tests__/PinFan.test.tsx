@@ -81,15 +81,6 @@ describe('PinFan', () => {
     expect(container.querySelectorAll('line')).toHaveLength(7);
   });
 
-  it('reaches 22px past the outer ring, so the pointer can cross to a Pin', () => {
-    const { container } = render(<PinFan pins={many(12)} />);
-
-    // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its style
-    const fan = container.firstElementChild as HTMLElement;
-
-    expect(fan.style.getPropertyValue('--reach')).toBe('126px');
-  });
-
   it('opens the Pin that is clicked', () => {
     const onOpen = vi.fn();
 

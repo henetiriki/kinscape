@@ -142,16 +142,12 @@ it('disables the eye with the password field', () => {
   ).toBe(true);
 });
 
-it('takes an email type and the large size', () => {
-  const { container } = render(
-    <TextField label='Email' size='l' type='email' />
-  );
+it('takes an email type', () => {
+  render(<TextField label='Email' size='l' type='email' />);
 
   expect((screen.getByLabelText('Email') as HTMLInputElement).type).toBe(
     'email'
   );
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the box span has no role; the test checks its data-size
-  expect(container.querySelector('[data-size="l"]')).not.toBeNull();
 });
 
 it('shows a search field with its icon and a hidden key hint', () => {

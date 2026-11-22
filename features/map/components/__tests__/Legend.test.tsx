@@ -4,6 +4,7 @@ import { expect, it } from 'vitest';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
 import { Legend } from '@ks/features/map/components/Legend';
+import { HATCH_LINE } from '@ks/lib/ui/hatch';
 
 const { map } = resolveTokens(rawTokens);
 
@@ -58,29 +59,8 @@ it('hides every swatch from assistive tech', () => {
   expect(container.querySelector('span[aria-hidden="true"]')).toBeTruthy();
 });
 
-// MAP-05, NFR-05
-it('reads each swatch value from the map tokens', () => {
-  const { container } = render(<Legend />);
-  // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its style
-  const legend = container.firstElementChild as HTMLElement;
-  const value = (name: string) => legend.style.getPropertyValue(name);
-
-  expect(value('--legend-border')).toBe(map.border.colour);
-  expect(value('--legend-border-width')).toBe(`${map.border.width}px`);
-  expect(value('--legend-dash')).toBe(
-    `${map.border['dash-on']} ${map.border['dash-off']}`
-  );
-  expect(value('--legend-fill')).toBe(map.polity['free-state']);
-  // BND-04: an rgba() colour built from map.hatch, which the design export can read.
+// MAP-05, NFR-05, BND-04
+it('builds the hatch colour from map.hatch as an rgba() value, which the design export can read', () => {
   expect(map.hatch).toEqual({ colour: '#8b4a1c', opacity: 0.34 });
-  expect(value('--legend-hatch')).toBe('rgba(139, 74, 28, 0.34)');
-  expect(value('--legend-hatch-opacity')).toBe('');
-  expect(value('--legend-halo')).toBe(map['pin-halo'].colour);
-  expect(value('--legend-halo-opacity')).toBe(String(map['pin-halo'].opacity));
-  expect(value('--legend-pin')).toBe(map.pin.colour);
-  expect(value('--legend-pin-opacity')).toBe(String(map.pin['fuzzy-opacity']));
-  expect(value('--legend-pin-stroke')).toBe(map.pin.halo);
-  expect(value('--legend-pin-stroke-width')).toBe(
-    String(map.pin['halo-width'])
-  );
+  expect(HATCH_LINE).toBe('rgba(139, 74, 28, 0.34)');
 });

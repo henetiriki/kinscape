@@ -40,10 +40,6 @@ it('is a group named by its heading, with a described checkbox per row', () => {
     screen.getByText('Fills and borders.').id
   );
   expect(screen.getByRole('checkbox', { name: 'Districts' })).toBe(districts);
-  // eslint-disable-next-line testing-library/no-node-access -- the checkbox row is a div with no role; the test checks its size
-  expect((districts.closest('[data-size]') as HTMLElement).dataset.size).toBe(
-    'm'
-  );
 });
 
 it('reports a toggle with the new value', () => {

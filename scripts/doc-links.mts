@@ -171,8 +171,8 @@ export const checkDocLinks = (
   return errors;
 };
 
-// Tracked Markdown files, except plans, the two design copies and symlinks. A symlink in
-// .claude/rules/ has the text of its target, whose relative links would break from there.
+// Tracked Markdown files, except plans, the two design copies, symlinks and files gone from disk.
+// A symlink in .claude/rules/ has the text of its target, whose relative links would break from there.
 export const docFiles = (root: string): string[] =>
   execFileSync('git', ['ls-files', '-z', '*.md'], {
     cwd: root,
@@ -183,5 +183,6 @@ export const docFiles = (root: string): string[] =>
       path =>
         path !== '' &&
         !/^(?:plans|design\/canvas|design\/source)\//.test(path) &&
+        existsSync(`${root}/${path}`) &&
         !lstatSync(`${root}/${path}`).isSymbolicLink()
     );

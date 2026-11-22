@@ -68,7 +68,8 @@ jobs:
 
       # The rules, settings, plugin marketplace, the files CLAUDE.md imports and main's copy of this file
       # come from main, not the checked-out branch. The action retries a failed download, then fails the
-      # job (Claude doesn't start, and the report step says so), and shows the system prompt.
+      # job (Claude doesn't start, and the report step says so), and shows the system prompt. A 404 for a
+      # main file leaves that file out.
       - name: Load the review rules and settings
         uses: henetiriki/kinscape/.github/actions/load-agent-files@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
         with:
@@ -98,7 +99,7 @@ jobs:
       # main's copies there. `git status` shows an M for each one the PR changed.
       - name: Put main's rule files in the checkout
         run: |
-          # A file that main lacks (a pull request adds it) is deleted, as run-claude does.
+          # A file that main lacks (a pull request adds it) is not main's to trust, so delete it, as run-claude does.
           for f in AGENTS.md docs/security.md docs/writing.md docs/code-rules.md docs/patterns/auth.md docs/patterns/ci-images.md docs/patterns/components.md docs/patterns/data.md docs/patterns/dev-screens.md docs/patterns/domain.md docs/patterns/map.md docs/patterns/tree-data.md; do
             if [ -f "$RUNNER_TEMP/agent/main/$f" ]; then
               mkdir -p "$(dirname "$f")"

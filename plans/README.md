@@ -35,7 +35,7 @@ If a check fails, stop. Comment each mismatch. Name who fixes each one. If the P
 
 In a [decision's](../docs/how-we-work.md#decisions) question, name each related issue that holds a value for the same thing, with its value. Name the issues that each differing option changes. If the plan sets a value that differs from a related issue, write a decision for it. A clash never stops a run. Only the build edits a related issue.
 
-**Pattern files.** Read each pattern file that `npm run plan:new` lists, and the one for each other area in _Files that change_ ([`docs/architecture.md`](../docs/architecture.md#patterns) names them).
+**Pattern files.** Read each pattern file that `npm run plan:new` lists. Read the file for each other area in _Files that change_ ([`docs/architecture.md`](../docs/architecture.md#patterns) names them).
 
 ## Plan PR
 

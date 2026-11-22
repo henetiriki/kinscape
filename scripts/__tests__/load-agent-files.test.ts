@@ -57,9 +57,9 @@ const MARKETPLACE = '.github/claude-plugins/.claude-plugin/marketplace.json';
 const REVIEW_WORKFLOW = '.github/workflows/claude-code-review.yml';
 const CODE_RULES = 'docs/code-rules.md';
 const SPEC_CHECKS = '.github/agent/spec-checks.md';
-// Each file of docs/patterns/ is a rule that a run follows through its symlink in .claude/rules/. The
-// symlink reads its target from the checkout, so each caller takes main's copy of each file, and a new
-// file without an entry fails the tests below (plans/chores/C1146-area-patterns.md).
+// A run follows each file of docs/patterns/ as a rule, through its symlink in .claude/rules/. The
+// symlink reads the file from the checkout. So each caller takes main's copy, and a new file with no
+// entry fails the tests below (plans/chores/C1146-area-patterns.md).
 const PATTERN_FILES = readdirSync(join(root, 'docs/patterns'))
   .filter(name => name.endsWith('.md'))
   .sort()
@@ -610,6 +610,29 @@ describe('the main_files input of the run-claude action', () => {
       expect(readFileSync(join(repo, 'docs/writing.md'), 'utf8')).toBe('new\n');
       git(repo, 'add', '-A');
       expect(git(repo, 'diff', '--cached', '--name-only').stdout).toBe('');
+      rmSync(dir, { force: true, recursive: true });
+    });
+
+    // resolve-conflict.md merges main into the branch. A copy that the branch does not track would
+    // stop that merge, and `git add -A` would stage it, so the step excludes it.
+    it('lets git merge main over a copy that the branch does not track', () => {
+      const { dir, repo } = checkout();
+
+      git(repo, 'checkout', '-q', 'main');
+      mkdirSync(join(repo, 'docs/patterns'), { recursive: true });
+      writeFileSync(join(repo, 'docs/patterns/y.md'), 'main\n');
+      git(repo, 'add', '-A');
+      git(repo, 'commit', '-q', '-m', 'main adds a rule file');
+      git(repo, 'checkout', '-q', 'pr');
+      mkdirSync(join(dir, 'agent/main/docs/patterns'), { recursive: true });
+      writeFileSync(join(dir, 'agent/main/docs/patterns/y.md'), 'main\n');
+
+      expect(runStep(repo, dir, 'docs/patterns/y.md').status).toBe(0);
+      git(repo, 'add', '-A');
+      expect(git(repo, 'diff', '--cached', '--name-only').stdout).toBe('');
+      expect(git(repo, 'merge', '--no-commit', '--no-ff', 'main').status).toBe(
+        0
+      );
       rmSync(dir, { force: true, recursive: true });
     });
 

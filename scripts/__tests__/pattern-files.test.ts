@@ -153,6 +153,21 @@ describe('the pattern files of the repo', () => {
     expect(readlinkSync(link)).toBe(`../../${path}`);
   });
 
+  // The index of docs/architecture.md copies the globs, so a change to `paths:` must reach it.
+  it.each(files)(
+    '$path has its globs in the index of docs/architecture.md',
+    ({ globs, path }) => {
+      const index = readFileSync('docs/architecture.md', 'utf8')
+        .split('\n')
+        .find(line => line.includes(`](${path.replace('docs/', '')})`));
+
+      expect(index, `no index line for ${path}`).toBeDefined();
+      expect(
+        Array.from(index?.matchAll(/`([^`]+)`/g) ?? [], ([, glob]) => glob)
+      ).toEqual(globs);
+    }
+  );
+
   it('have no symlink in .claude/rules/ to anything else', () => {
     expect(
       readdirSync('.claude/rules').filter(

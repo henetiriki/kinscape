@@ -210,6 +210,16 @@ describe('docFiles', () => {
     ]);
   });
 
+  // The copy step of a Claude run deletes a rule file that main lacks, and git still lists it.
+  it('leaves out a tracked file that is gone from disk', () => {
+    writeFileSync(join(root, 'a.md'), 'x');
+    writeFileSync(join(root, 'b.md'), 'x');
+    execFileSync('git', ['add', '-A'], { cwd: root });
+    rmSync(join(root, 'b.md'));
+
+    expect(docFiles(root)).toEqual(['a.md']);
+  });
+
   // A symlink in .claude/rules/ holds the text of its target, so its relative links would resolve
   // from the wrong folder, and the target would count twice.
   it('leaves out a symlink', () => {

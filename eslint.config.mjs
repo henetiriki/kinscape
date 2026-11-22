@@ -74,6 +74,61 @@ const TEST_MODIFIERS = [
   },
 ];
 
+const TYPE_EXPORTS = [
+  {
+    message: 'Export types from the folder’s types.ts.',
+    selector: 'ExportNamedDeclaration > TSTypeAliasDeclaration',
+  },
+  {
+    message: 'Export types from the folder’s types.ts.',
+    selector: 'ExportNamedDeclaration > TSInterfaceDeclaration',
+  },
+];
+
+// Each block replaces the options of `no-restricted-syntax`, so each lists BASE_SYNTAX again.
+const BASE_SYNTAX = [...ARROW_FUNCTIONS, ...TEST_MODIFIERS, ...TYPE_EXPORTS];
+
+// The `KINSCAPE_` rows that docs/infrastructure.md marks "Test-only"; a test keeps the two in step.
+export const TEST_ONLY_VARIABLES = [
+  'KINSCAPE_DATABASE_CA_FILE',
+  'KINSCAPE_DEV_PAGES',
+  'KINSCAPE_MEMORY_ADAPTERS',
+  'KINSCAPE_MEMORY_SIGN_IN',
+  'KINSCAPE_TEST_DATABASE_URL',
+];
+
+// A read of a `KINSCAPE_` variable from `process.env`: a member, a computed string or a destructured
+// key. `allowed` names the variables that the rule does not report.
+const envReads = (allowed = []) => {
+  const env = "[object.object.name='process'][object.property.name='env']";
+  const named = path =>
+    `[${path}=/^KINSCAPE_/]${allowed.length > 0 ? `:not([${path}=/^(${allowed.join('|')})$/])` : ''}`;
+
+  return [
+    {
+      message:
+        'Read a KINSCAPE_ variable only in server/env.mts. To pass the environment, give process.env to parseEnv, parseCaFile or devPagesVisible.',
+      selector: [
+        `MemberExpression[computed=false]${env}${named('property.name')}`,
+        `MemberExpression[computed=true]${env}${named('property.value')}`,
+        `MemberExpression[computed=true]${env}[property.expressions.length=0]${named('property.quasis.0.value.cooked')}`,
+        `VariableDeclarator[init.object.name='process'][init.property.name='env'] > ObjectPattern > Property${named('key.name')}`,
+        `VariableDeclarator[init.object.name='process'][init.property.name='env'] > ObjectPattern > Property${named('key.value')}`,
+      ].join(', '),
+    },
+  ];
+};
+
+// design/DESIGN.md#in-the-repo: a page composes components. A Page under app/screens/ is exempt.
+const PAGE_LOOK = [
+  {
+    message:
+      'A page composes components and has no look of its own (design/DESIGN.md#in-the-repo). Move the part into a component.',
+    selector:
+      'JSXAttribute[name.name=/^(className|style)$/], ImportDeclaration[source.value=/\\.css$/]',
+  },
+];
+
 export default defineConfig([
   globalIgnores([
     '.claude-pr/**',
@@ -143,24 +198,48 @@ export default defineConfig([
     files: ['**/*.{js,jsx,mjs,mts,ts,tsx}'],
     ignores: ['**/types.ts', 'types/*.d.ts'],
     rules: {
-      'no-restricted-syntax': [
-        'error',
-        ...ARROW_FUNCTIONS,
-        ...TEST_MODIFIERS,
-        {
-          message: 'Export types from the folder’s types.ts.',
-          selector: 'ExportNamedDeclaration > TSTypeAliasDeclaration',
-        },
-        {
-          message: 'Export types from the folder’s types.ts.',
-          selector: 'ExportNamedDeclaration > TSInterfaceDeclaration',
-        },
-      ],
+      'no-restricted-syntax': ['error', ...BASE_SYNTAX, ...envReads()],
     },
   },
   {
     files: ['**/types.ts', 'types/*.d.ts'],
-    rules: { 'no-restricted-syntax': ['error', ...ARROW_FUNCTIONS] },
+    rules: {
+      'no-restricted-syntax': ['error', ...ARROW_FUNCTIONS, ...envReads()],
+    },
+  },
+  {
+    // The page rule of design/DESIGN.md#in-the-repo.
+    files: ['app/**/page.tsx'],
+    ignores: ['app/screens/**'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        ...BASE_SYNTAX,
+        ...envReads(),
+        ...PAGE_LOOK,
+      ],
+    },
+  },
+  {
+    // Only server/env.mts reads a KINSCAPE_ variable; test code reads the Test-only ones.
+    files: ['server/env.mts'],
+    rules: { 'no-restricted-syntax': ['error', ...BASE_SYNTAX] },
+  },
+  {
+    files: [
+      '**/__tests__/**',
+      'e2e/**',
+      'playwright.config.ts',
+      'vitest.config.mts',
+    ],
+    ignores: ['**/types.ts'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        ...BASE_SYNTAX,
+        ...envReads(TEST_ONLY_VARIABLES),
+      ],
+    },
   },
   {
     // Next.js, Playwright and tool config loaders require a default export here, and

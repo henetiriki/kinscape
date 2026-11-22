@@ -18,8 +18,8 @@ export const fetchPeople = async (): Promise<PersonSummary[]> => {
 };
 
 /**
- * The Persons of the Tree. The query asks once for each open (`staleTime: Infinity`). With
- * `gcTime: 0` it drops the Persons when its last reader unmounts, so the next reader asks again.
+ * The Persons of the Tree. The query asks once each time a form opens (`staleTime: Infinity`).
+ * With `gcTime: 0` it drops the Persons when its last reader unmounts, so the next reader asks again.
  * The Persons stay in memory only (NFR-03).
  */
 export const usePeople = () =>

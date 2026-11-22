@@ -11,6 +11,7 @@ vi.mock('@ks/server/adapters.mts', () => ({
 import { PERSON, seedTrees } from '@ks/app/__tests__/pin-trees';
 import { GET } from '@ks/app/data/people/route';
 import { personSummary } from '@ks/lib/domain/persons/dates.mts';
+import { startSession } from '@ks/server/auth/sessions.mts';
 import { openTree } from '@ks/server/trees/repository.mts';
 
 // PIN-01, NFR-03, NFR-10. Data is synthetic.
@@ -78,13 +79,23 @@ describe('GET /data/people', () => {
 
   // PIN-01
   it('answers an empty list for a Tree with no Person', async () => {
-    const { signInAs, store } = await setup();
+    const { sessions, store } = await setup();
+    const added = await store.addAccount({
+      issuer: 'test',
+      subject: 'c',
+      treeName: 'Tree c',
+    });
 
-    signInAs('a');
-    adapters.current = {
-      ...(adapters.current as object),
-      store: { ...store, listPersons: async () => [] },
-    };
+    if (!added.ok) {
+      throw new Error('setup failed');
+    }
+
+    const token = await startSession(sessions, () => new Date(), {
+      accountId: added.value.accountId,
+      email: 'c@example.test',
+    });
+
+    jar.get.mockReturnValue({ value: token });
 
     const response = await GET();
 

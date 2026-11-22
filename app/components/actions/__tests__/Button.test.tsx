@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
 import { Button } from '@ks/app/components/actions/Button';
@@ -79,8 +79,9 @@ it('draws a link with the button look when it has an href', () => {
   expect(link.getAttribute('href')).toBe('/people');
   expect(link.className).toBe('btn btnPrimary');
   expect(link.hasAttribute('type')).toBe(false);
-  // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg with no role or text
-  expect(link.querySelector('svg')).not.toBeNull();
+  expect(within(link).getAllByRole('img', { hidden: true })).not.toHaveLength(
+    0
+  );
   expect(screen.queryByRole('button')).toBeNull();
 });
 

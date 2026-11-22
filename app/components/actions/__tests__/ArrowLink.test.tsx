@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -19,8 +19,11 @@ describe('with an href', () => {
 
     expect(link.getAttribute('href')).toBe('/people/1');
     expect(link.textContent).toBe('Edit');
-    // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg; the test checks its data-icon
-    expect(link.querySelector('svg[data-icon="forward"]')).not.toBeNull();
+    expect(
+      within(link)
+        .getAllByRole('img', { hidden: true })
+        .map(icon => icon.dataset.icon)
+    ).toContain('forward');
   });
 
   it('takes a state and the attributes of a link', () => {
@@ -75,8 +78,11 @@ describe('without an href', () => {
     const label = screen.getByText('Edit');
 
     expect(label).toBeInstanceOf(HTMLSpanElement);
-    // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg; the test checks its data-icon
-    expect(label.querySelector('svg[data-icon="forward"]')).not.toBeNull();
+    expect(
+      within(label)
+        .getAllByRole('img', { hidden: true })
+        .map(icon => icon.dataset.icon)
+    ).toContain('forward');
   });
 
   it('takes no attribute and no state, so none is dropped without a warning', () => {

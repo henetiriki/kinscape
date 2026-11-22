@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
@@ -20,8 +20,7 @@ it.each(EVENT_ORDER)(
   'draws the %s glyph as one currentColor path in a 24 by 24 box, hidden from assistive tech',
   event => {
     const { container } = render(<EventGlyph event={event} />);
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the svg is aria-hidden; no query reaches it
-    const svg = container.querySelector('svg')!;
+    const svg = screen.getByRole('img', { hidden: true });
 
     expect(svg.getAttribute('viewBox')).toBe('0 0 24 24');
     expect(svg.getAttribute('fill')).toBe('currentColor');
@@ -64,8 +63,9 @@ it('sizes a glyph 1em square in --pin, so it follows the text around it', () => 
   expect(rule).toContain('color: var(--pin)');
   expect(rule).toContain('height: 1em');
   expect(rule).toContain('width: 1em');
-  const { container } = render(<EventGlyph event='birth' />);
+  render(<EventGlyph event='birth' />);
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the svg is aria-hidden; no query reaches it
-  expect(container.querySelector('svg')!.classList).toContain('glyph');
+  expect(screen.getByRole('img', { hidden: true }).classList).toContain(
+    'glyph'
+  );
 });

@@ -23,6 +23,7 @@ export const Checkbox = ({
       aria-hidden='true'
       className={styles.tick}
       fill='none'
+      role='img'
       stroke='currentColor'
       strokeLinecap='round'
       strokeLinejoin='round'

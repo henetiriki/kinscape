@@ -124,6 +124,7 @@ export const Icon = ({
     data-icon={name}
     fill='none'
     height={size}
+    role='img'
     stroke='currentColor'
     strokeLinecap='round'
     strokeLinejoin='round'
@@ -141,6 +142,7 @@ export const FilledIcon = ({ name }: { name: FilledIconName }) => (
     data-icon={name}
     fill='none'
     height='20'
+    role='img'
     viewBox='0 0 24 24'
     width='20'>
     <circle cx='12' cy='12' fill='currentColor' r='12' />

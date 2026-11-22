@@ -104,3 +104,6 @@ Step 5 replaces "Use the plan path and the branch from the table." with "Run `np
 - A commit, a push, a PR or an issue edit by the script.
 
 ## Deviations
+
+- D4 B: `plans/README.md` puts "Run `npm run plan:new`." second, after "Refresh the issue", and drops the old line.
+- `PlanNewDeps` is in `scripts/types.ts`, as the lint rule requires.

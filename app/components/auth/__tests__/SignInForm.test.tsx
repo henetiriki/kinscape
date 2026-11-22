@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { SignInState } from '@ks/app/components/auth/types';
@@ -8,12 +14,8 @@ import { SignInForm } from '@ks/app/components/auth/SignInForm';
 const type = (label: string, value: string) =>
   fireEvent.change(screen.getByLabelText(label), { target: { value } });
 
-const submit = async () => {
-  // eslint-disable-next-line testing-library/no-unnecessary-act -- the click starts a form action; the async act waits for its state update
-  await act(async () => {
-    fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
-  });
-};
+const submit = () =>
+  fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
 
 const field = (label: string) =>
   screen.getByLabelText(label) as HTMLInputElement;
@@ -39,7 +41,8 @@ describe('SignInForm', () => {
     render(<SignInForm action={action} returnTo='/screens/add-pin' />);
     type('Email', 'researcher@example.com');
     type('Password', 'example-password');
-    await submit();
+    submit();
+    await waitFor(() => expect(action).toHaveBeenCalled());
 
     const data = (
       action.mock.calls[0] as unknown as [SignInState, FormData]
@@ -56,7 +59,8 @@ describe('SignInForm', () => {
     render(<SignInForm action={action} />);
     type('Email', 'a@example.com');
     type('Password', 'x');
-    await submit();
+    submit();
+    await waitFor(() => expect(action).toHaveBeenCalled());
 
     expect(
       (action.mock.calls[0] as unknown as [SignInState, FormData])[1].has(
@@ -69,7 +73,8 @@ describe('SignInForm', () => {
     render(<SignInForm action={async () => 'refused'} />);
     type('Email', 'researcher@example.com');
     type('Password', 'wrong');
-    await submit();
+    submit();
+    await screen.findByRole('alert');
 
     expect(screen.getByRole('alert').textContent).toContain(
       "That email and password don't match."
@@ -88,7 +93,8 @@ describe('SignInForm', () => {
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the form has no name, so it has no role
     expect(container.querySelector('form')?.noValidate).toBe(true);
 
-    await submit();
+    submit();
+    await screen.findByText('Enter your email.');
 
     expect(action).not.toHaveBeenCalled();
     screen.getByText('Enter your email.');
@@ -110,7 +116,8 @@ describe('SignInForm', () => {
     render(<SignInForm action={async () => 'unavailable'} />);
     type('Email', 'researcher@example.com');
     type('Password', 'example-password');
-    await submit();
+    submit();
+    await screen.findByRole('alert');
 
     expect(screen.getByRole('alert').textContent).toContain(
       "KinScape can't sign you in right now."
@@ -130,11 +137,12 @@ describe('SignInForm', () => {
     render(<SignInForm action={action} />);
     type('Email', 'a@example.com');
     type('Password', 'x');
-    await submit();
-
-    expect(
-      screen.getByRole('button', { name: 'Sign in' }).hasAttribute('disabled')
-    ).toBe(true);
+    submit();
+    await waitFor(() =>
+      expect(
+        screen.getByRole('button', { name: 'Sign in' }).hasAttribute('disabled')
+      ).toBe(true)
+    );
 
     await act(async () => finish(undefined));
 

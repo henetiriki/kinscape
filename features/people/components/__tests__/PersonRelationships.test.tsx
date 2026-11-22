@@ -1,5 +1,4 @@
 import {
-  act,
   fireEvent,
   render,
   screen,
@@ -523,10 +522,7 @@ describe('"Edit"', () => {
   it('opens again on "Edit" while the address still holds `edit`', async () => {
     open({ edit: RELATION, groups: { ...empty, parents } });
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
-    // eslint-disable-next-line testing-library/no-unnecessary-act -- the empty act lets the work after Cancel settle before the absence check
-    await act(async () => {});
-
-    expect(screen.queryByRole('dialog')).toBeNull();
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
 
     fireEvent.click(
       screen.getByRole('link', { name: 'Edit, Rossouw, Jacobus' })

@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { SaveResult } from '@ks/features/people/components/types.ts';
@@ -67,12 +67,8 @@ const open = (
 const type = (label: string, value: string) =>
   fireEvent.change(screen.getByLabelText(label), { target: { value } });
 
-const save = async () => {
-  // eslint-disable-next-line testing-library/no-unnecessary-act -- the async act waits for the save promise that the click starts
-  await act(async () => {
-    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
-  });
-};
+const save = () =>
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
 const fill = () => {
   type('Given names', 'Ana');
@@ -126,7 +122,8 @@ describe('a new Person', () => {
     fireEvent.keyDown(screen.getByLabelText('Spelling variants'), {
       key: 'Enter',
     });
-    await save();
+    save();
+    await waitFor(() => expect(nav.push).toHaveBeenCalledWith('/people'));
 
     expect(update).not.toHaveBeenCalled();
     expect(create).toHaveBeenCalledOnce();
@@ -160,11 +157,9 @@ describe('a new Person', () => {
 
     open({ create });
     fill();
-    await save();
-    // eslint-disable-next-line testing-library/no-unnecessary-act -- the async act waits for the save promise that the click starts
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
-    });
+    save();
+    fireEvent.click(await screen.findByRole('button', { name: 'Try again' }));
+    await waitFor(() => expect(nav.push).toHaveBeenCalledWith('/people'));
 
     expect(sent).toHaveLength(2);
     expect(sent[1]).toBe(sent[0]);
@@ -203,7 +198,8 @@ describe('validation', () => {
   it('saves nothing for blank names, and the alert counts the errors', async () => {
     const { create } = open();
 
-    await save();
+    save();
+    await screen.findByText('2 fields need fixing');
 
     expect(create).not.toHaveBeenCalled();
     screen.getByText('Enter the given names.');
@@ -215,9 +211,8 @@ describe('validation', () => {
   it('says "1 field needs fixing" for one error', async () => {
     open();
     type('Given names', 'Ana');
-    await save();
-
-    screen.getByText('1 field needs fixing');
+    save();
+    await screen.findByText('1 field needs fixing');
   });
 
   it('saves nothing for a birth of 31 FEB 1850 and shows its message', async () => {
@@ -228,7 +223,8 @@ describe('validation', () => {
       target: { value: '31 FEB 1850' },
     });
     fireEvent.blur(screen.getByLabelText('Birth'));
-    await save();
+    save();
+    await screen.findByText('1 field needs fixing');
 
     expect(create).not.toHaveBeenCalled();
     expect(screen.getAllByText('February 1850 has 28 days.')).toHaveLength(1);
@@ -242,7 +238,8 @@ describe('validation', () => {
     fireEvent.input(screen.getByLabelText('Birth'), {
       target: { value: '31 FEB 1850' },
     });
-    await save();
+    save();
+    await screen.findByText('1 field needs fixing');
 
     expect(create).not.toHaveBeenCalled();
     expect(screen.getAllByText('February 1850 has 28 days.')).toHaveLength(1);
@@ -258,7 +255,8 @@ describe('validation', () => {
     fireEvent.input(screen.getByLabelText('Death'), {
       target: { value: '31 FEB 1850' },
     });
-    await save();
+    save();
+    await screen.findByText('1 field needs fixing');
 
     expect(create).not.toHaveBeenCalled();
     expect(screen.getAllByText('February 1850 has 28 days.')).toHaveLength(1);
@@ -275,7 +273,8 @@ describe('validation', () => {
       },
     });
 
-    await save();
+    save();
+    await screen.findByText('1 field needs fixing');
 
     expect(update).not.toHaveBeenCalled();
     screen.getByText('Use at most 20 spellings.');
@@ -312,7 +311,8 @@ describe('Deceased', () => {
 
     fill();
     fireEvent.click(screen.getByLabelText('Deceased'));
-    await save();
+    save();
+    await waitFor(() => expect(create).toHaveBeenCalled());
 
     expect(create).toHaveBeenCalledWith(
       expect.objectContaining({ deceased: true })
@@ -355,7 +355,8 @@ describe('an existing Person', () => {
     const { create, update } = open({ person: saved });
 
     type('Surname', 'Smit');
-    await save();
+    save();
+    await waitFor(() => expect(nav.push).toHaveBeenCalledWith('/people'));
 
     expect(create).not.toHaveBeenCalled();
     expect(update).toHaveBeenCalledWith({
@@ -368,9 +369,8 @@ describe('an existing Person', () => {
   it('shows the conflict state, saves nothing more, and Reload refreshes', async () => {
     open({ person: saved }, { error: 'conflict', ok: false });
 
-    await save();
-
-    screen.getByText('This person changed while you were editing');
+    save();
+    await screen.findByText('This person changed while you were editing');
     screen.getByText(
       'Nothing was saved. Reload to see the latest version, then make your changes again.'
     );
@@ -389,9 +389,8 @@ describe('a failed save', () => {
   ])('shows the toast and keeps every value for %s', async (_kind, stub) => {
     open({}, stub);
     fill();
-    await save();
-
-    screen.getByText("Couldn't save. Your changes are still here.");
+    save();
+    await screen.findByText("Couldn't save. Your changes are still here.");
     expect((screen.getByLabelText('Surname') as HTMLInputElement).value).toBe(
       'Smit'
     );
@@ -408,18 +407,18 @@ describe('a failed save', () => {
     fireEvent.keyDown(screen.getByLabelText('Spelling variants'), {
       key: 'Enter',
     });
-    await save();
+    save();
+    await screen.findByText("Couldn't save. Your changes are still here.");
 
     expect(create).not.toHaveBeenCalled();
-    screen.getByText("Couldn't save. Your changes are still here.");
   });
 
   it('shows the toast when the action throws, and Esc dismisses it', async () => {
     open({ create: () => Promise.reject(new Error('offline')) });
     fill();
-    await save();
+    save();
 
-    const toast = screen.getByText(
+    const toast = await screen.findByText(
       "Couldn't save. Your changes are still here."
     );
 
@@ -432,10 +431,10 @@ describe('a failed save', () => {
   it('shows a field error that the server gives', async () => {
     open({}, { error: { fields: { surname: 'required' } }, ok: false });
     fill();
-    await save();
+    save();
+    await screen.findByText('1 field needs fixing');
 
     screen.getByText('Enter the surname.');
-    screen.getByText('1 field needs fixing');
   });
 });
 

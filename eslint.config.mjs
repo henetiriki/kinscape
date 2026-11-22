@@ -1,3 +1,4 @@
+import comments from '@eslint-community/eslint-plugin-eslint-comments/configs';
 import stylistic from '@stylistic/eslint-plugin';
 import coreWebVitals from 'eslint-config-next/core-web-vitals';
 import typescript from 'eslint-config-next/typescript';
@@ -146,6 +147,18 @@ export default defineConfig([
   ...coreWebVitals,
   ...typescript,
   perfectionist.configs['recommended-alphabetical'],
+  {
+    // A disable gives its reason after `--`, so the lint report shows it. An `eslint-enable` only
+    // ends a block, and the block's disable gives the reason.
+    ...comments.recommended,
+    rules: {
+      ...comments.recommended.rules,
+      '@eslint-community/eslint-comments/require-description': [
+        'error',
+        { ignore: ['eslint-enable'] },
+      ],
+    },
+  },
   {
     rules: {
       'perfectionist/sort-imports': [

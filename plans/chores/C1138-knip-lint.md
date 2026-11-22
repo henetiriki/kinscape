@@ -1,7 +1,7 @@
 # Plan: C1138: Run knip in npm run lint and fix its findings
 
 - **Spec:** #1138
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -47,7 +47,7 @@ Step 4 adds `@types/geojson` and does not name the section of `package.json`. On
 - **B.** `dependencies`, as `@types/pg`. Cost: none now. The production install gets one more package.
 - **Other:** your own.
 
-Recommended: A, because only `npm run typecheck` and `next build` read the types, and `@types/react` sets that precedent.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

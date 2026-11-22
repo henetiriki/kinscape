@@ -10,7 +10,7 @@ const { map } = resolveTokens(rawTokens);
 
 // MAP-05
 it('names its heading and the four meanings, then the four Event glyphs', () => {
-  const { container } = render(<Legend />);
+  render(<Legend />);
 
   screen.getByRole('heading', { level: 3, name: 'Reading the map' });
   expect(
@@ -19,10 +19,11 @@ it('names its heading and the four meanings, then the four Event glyphs', () => 
       .map(row => row.textContent?.trim())
   ).toEqual(['Border as recorded', 'Approximate border', 'Contested claim']);
   screen.getByText('Uncertain date (ABT, BEF, AFT…)');
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the Event glyphs are aria-hidden SVGs with no role or text
-  const glyphs = [...container.querySelectorAll('[data-event]')];
+  const glyphs = screen
+    .getAllByRole('img', { hidden: true })
+    .filter(glyph => glyph.dataset.event);
 
-  expect(glyphs.map(glyph => (glyph as HTMLElement).dataset.event)).toEqual([
+  expect(glyphs.map(glyph => glyph.dataset.event)).toEqual([
     'birth',
     'residence',
     'marriage',
@@ -33,8 +34,9 @@ it('names its heading and the four meanings, then the four Event glyphs', () => 
 // NFR-06
 it('draws each Event glyph before its name, with no glyph character', () => {
   const { container } = render(<Legend />);
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the Event glyphs are aria-hidden SVGs with no role or text
-  const glyphs = [...container.querySelectorAll('[data-event]')];
+  const glyphs = screen
+    .getAllByRole('img', { hidden: true })
+    .filter(glyph => glyph.dataset.event);
   // eslint-disable-next-line testing-library/no-node-access -- the test checks that each glyph's row starts with the glyph
   const rows = glyphs.map(glyph => glyph.parentElement!);
 
@@ -52,10 +54,12 @@ it('draws each Event glyph before its name, with no glyph character', () => {
 
 it('hides every swatch from assistive tech', () => {
   const { container } = render(<Legend />);
+  const svgs = screen.getAllByRole('img', { hidden: true });
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the test checks the aria-hidden swatches, which no query returns
-  expect(container.querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(7);
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the test checks the aria-hidden swatches, which no query returns
+  expect(svgs.map(svg => svg.getAttribute('aria-hidden'))).toEqual(
+    Array(7).fill('true')
+  );
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the test checks the aria-hidden swatch span, which no query returns
   expect(container.querySelector('span[aria-hidden="true"]')).toBeTruthy();
 });
 

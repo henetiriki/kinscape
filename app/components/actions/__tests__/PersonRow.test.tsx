@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -198,8 +198,11 @@ it('shows Edit as an ArrowLink label, with no rule of its own', () => {
   const edit = screen.getByText('Edit');
 
   expect(edit).toBeInstanceOf(HTMLSpanElement);
-  // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg; the test checks its data-icon
-  expect(edit.querySelector('svg[data-icon="forward"]')).not.toBeNull();
+  expect(
+    within(edit)
+      .getAllByRole('img', { hidden: true })
+      .map(icon => icon.dataset.icon)
+  ).toContain('forward');
   // eslint-disable-next-line testing-library/no-node-access -- the test checks that the link is the direct parent of the label
   expect(edit.parentElement).toBe(screen.getByRole('link'));
   expect(css).not.toContain('.edit');

@@ -27,10 +27,9 @@ it('is a header with one back link that shows the back icon', () => {
   expect(links).toHaveLength(1);
   expect(links[0]!.textContent).toBe('Map');
   expect(links[0]!.getAttribute('href')).toBe('/map');
-  // eslint-disable-next-line testing-library/no-node-access -- the back icon is an aria-hidden svg; no query reaches it
-  const icon = links[0]!.querySelector('svg')!;
+  const [icon] = within(links[0]!).getAllByRole('img', { hidden: true });
 
-  expect(icon.getAttribute('data-icon')).toBe('back');
+  expect(icon!.getAttribute('data-icon')).toBe('back');
   expect(screen.getByRole('button', { name: 'Account menu' }).textContent).toBe(
     'R'
   );

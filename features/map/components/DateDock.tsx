@@ -42,6 +42,7 @@ const Chevron = ({ path }: { path: string }) => (
     aria-hidden='true'
     fill='none'
     height='16'
+    role='img'
     stroke='currentColor'
     strokeLinecap='round'
     strokeLinejoin='round'

@@ -51,7 +51,7 @@ it('names a field whose label is hidden', () => {
 });
 
 it('shows an error in place of the helper text, with an icon and aria-invalid', () => {
-  const { container } = render(
+  render(
     <TextField
       error='Add the rest of the address.'
       helper='Helper'
@@ -66,12 +66,13 @@ it('shows an error in place of the helper text, with an icon and aria-invalid', 
   expect(screen.queryByText('Helper')).toBeNull();
   expect(input.getAttribute('aria-invalid')).toBe('true');
   expect(input.getAttribute('aria-describedby')).toBe(alert.id);
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the error icon is an aria-hidden svg; no query reaches it
-  expect(container.querySelector('[data-icon="error"]')).not.toBeNull();
+  expect(
+    screen.getAllByRole('img', { hidden: true }).map(icon => icon.dataset.icon)
+  ).toContain('error');
 });
 
 it('marks a field without a message of its own, and keeps the caller’s description', () => {
-  const { container } = render(
+  render(
     <TextField aria-describedby='elsewhere' label='Date' mark='warning' />
   );
 
@@ -79,8 +80,9 @@ it('marks a field without a message of its own, and keeps the caller’s descrip
 
   expect(input.getAttribute('aria-describedby')).toBe('elsewhere');
   expect(input.getAttribute('aria-invalid')).toBeNull();
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the warning icon is an aria-hidden svg; no query reaches it
-  expect(container.querySelector('[data-icon="warning"]')).not.toBeNull();
+  expect(
+    screen.getAllByRole('img', { hidden: true }).map(icon => icon.dataset.icon)
+  ).toContain('warning');
 });
 
 it('takes a state for its component card and passes input props through', () => {
@@ -151,15 +153,14 @@ it('takes an email type', () => {
 });
 
 it('shows a search field with its icon and a hidden key hint', () => {
-  const { container } = render(
-    <TextField hideLabel label='Search' shortcut='/' type='search' />
-  );
+  render(<TextField hideLabel label='Search' shortcut='/' type='search' />);
 
   const input = screen.getByRole('searchbox', { name: 'Search' });
 
   expect(input.getAttribute('aria-keyshortcuts')).toBe('/');
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the search icon is an aria-hidden svg; no query reaches it
-  expect(container.querySelector('[data-icon="search"]')).not.toBeNull();
+  expect(
+    screen.getAllByRole('img', { hidden: true }).map(icon => icon.dataset.icon)
+  ).toContain('search');
   expect(screen.getByText('/').getAttribute('aria-hidden')).toBe('true');
 });
 

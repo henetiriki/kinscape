@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
 import { ChipGroup } from '@ks/app/components/actions/ChipGroup';
@@ -30,8 +30,13 @@ it('is a group of ten toggle chips, each with its glyph before its name and aria
   expect(chips.map(chip => chip.getAttribute('aria-pressed'))).toEqual(
     OPTIONS.map(({ value }) => String(value === 'birth'))
   );
-  // eslint-disable-next-line testing-library/no-node-access -- the glyph is an aria-hidden svg with no role or text
-  expect(chips.every(chip => chip.querySelector('[data-event]'))).toBe(true);
+  expect(
+    chips.every(chip =>
+      within(chip)
+        .getAllByRole('img', { hidden: true })
+        .some(glyph => glyph.dataset.event)
+    )
+  ).toBe(true);
   expect(
     chips.every(chip => chip.firstElementChild?.tagName.toLowerCase() === 'svg')
   ).toBe(true);

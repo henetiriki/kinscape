@@ -19,7 +19,7 @@ const show = (props: Partial<Parameters<typeof PinPopup>[0]> = {}) =>
 
 // PIN-02
 it('shows the event type, name, both date lines and the address when loaded', () => {
-  const { container } = show();
+  show();
 
   screen.getByRole('dialog', { name: 'Pin details' });
   expect(screen.getByText('Residence').textContent).toBe('Residence');
@@ -34,8 +34,9 @@ it('shows the event type, name, both date lines and the address when loaded', ()
     'Address as recorded'
   );
   screen.getByText('Farm Example, district Example');
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the event glyph is aria-hidden with no role or text
-  const glyph = container.querySelector('[data-event="residence"]');
+  const glyph = screen
+    .getAllByRole('img', { hidden: true })
+    .find(icon => icon.dataset.event === 'residence');
 
   expect(glyph?.getAttribute('aria-hidden')).toBe('true');
 });

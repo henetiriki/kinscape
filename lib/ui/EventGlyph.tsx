@@ -46,6 +46,7 @@ export const EventGlyph = ({ event }: { event: EventType }) => (
     className={styles.glyph}
     data-event={event}
     fill='currentColor'
+    role='img'
     viewBox='0 0 24 24'>
     <path d={EVENT_PATHS[event]} />
   </svg>

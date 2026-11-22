@@ -15,8 +15,11 @@ it('wraps a search input named "Search people and places" in a search form', () 
 
   expect(input.getAttribute('type')).toBe('search');
   expect(input.getAttribute('aria-keyshortcuts')).toBe('/');
-  // eslint-disable-next-line testing-library/no-node-access -- the search icon is an aria-hidden SVG with no role or text
-  expect(form.querySelector('[data-icon="search"]')).toBeTruthy();
+  expect(
+    within(form)
+      .getAllByRole('img', { hidden: true })
+      .map(icon => icon.dataset.icon)
+  ).toContain('search');
 });
 
 it('draws the bar as the Wordmark, a divider and the field, with a decorative icon', () => {

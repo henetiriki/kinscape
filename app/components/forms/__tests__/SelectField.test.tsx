@@ -49,8 +49,7 @@ it('shows an error in place of nothing: error box, icon, alert and aria links', 
   expect(select.getAttribute('aria-describedby')).toBe(alert.id);
   // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its data-mark
   expect(select.parentElement!.dataset.mark).toBe('error');
-  // eslint-disable-next-line testing-library/no-node-access -- the chevron and error icons are aria-hidden svgs; no query reaches them
-  expect(select.parentElement!.querySelectorAll('svg')).toHaveLength(2);
+  expect(screen.getAllByRole('img', { hidden: true })).toHaveLength(2);
   // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the error icon is an aria-hidden svg; the test checks that it comes last in the box
   expect(container.querySelector('[data-mark] > svg:last-child')).toBeTruthy();
 });

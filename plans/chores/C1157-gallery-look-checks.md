@@ -95,3 +95,11 @@ Two kept disables lose the line that they read:
 - A board edit. The follow-up issue holds the board swaps.
 
 ## Deviations
+
+- The `ColumnLayout` gallery test asserts `HEADER`, `MAIN`, `DIV`. The card header is a `PageHeader`, which draws a `header` element. The Vitest test passed a `div`.
+- The sea check reads the background of the hero slot. `--auth-sea` colours that slot, not the layout root.
+- `TextField · size l` sets no `type`. The Tab test reads a field that is not a text input as a ring, so `email` stays in Vitest.
+- `PlacedPopup` and `PlacedPinPopup` place the point at x 380, y 240. At x 400 the Close hit area leaves the 390px viewport.
+- The gallery map slots hold their own names as text, so the order test asserts `search:search`, not `search:s`.
+- Vitest keeps `HATCH_LINE` as `rgba(139, 74, 28, 0.34)` next to line 75, with no render.
+- Steps 3 to 5 of Changing the design system need claude.ai. The CI agent did not run them. The PR stays a draft.

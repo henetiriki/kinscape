@@ -48,9 +48,17 @@ const open = (form?: Form) => {
 };
 
 const items = () => screen.getAllByRole('menuitem');
-const key = (name: string) =>
-  // eslint-disable-next-line testing-library/no-node-access -- the key goes to the focused node, and no query returns it
-  fireEvent.keyDown(document.activeElement!, { key: name });
+const EXPORT = /^Export/;
+
+const item = (name: RegExp | string) => screen.getByRole('menuitem', { name });
+
+/** Checks that the menuitem `focused` has focus, then sends it the key. */
+const key = (name: string, focused: RegExp | string) => {
+  const target = item(focused);
+
+  expect(target).toHaveFocus();
+  fireEvent.keyDown(target, { key: name });
+};
 
 // NFR-05, NFR-06
 it('is a button named "Account menu" with the initial, haspopup and expanded', () => {
@@ -67,8 +75,7 @@ it('opens a menu named "Account" and focuses its first item', () => {
 
   expect(avatar.getAttribute('aria-expanded')).toBe('true');
   screen.getByRole('menu', { name: 'Account' });
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  expect(document.activeElement).toBe(items()[0]);
+  expect(items()[0]).toHaveFocus();
   screen.getByText('researcher@example.com');
   screen.getByText('Last backup: today, 02:00');
 });
@@ -92,25 +99,21 @@ it('keeps the header and footer out of the menu, so arrow keys skip them', () =>
 
 it('moves with the arrow keys and wraps at both ends', () => {
   open();
-  key('ArrowDown');
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  expect(document.activeElement).toBe(items()[1]);
-  key('ArrowUp');
-  key('ArrowUp');
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  expect(document.activeElement).toBe(items()[3]);
-  key('ArrowDown');
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  expect(document.activeElement).toBe(items()[0]);
+  key('ArrowDown', EXPORT);
+  expect(items()[1]).toHaveFocus();
+  key('ArrowUp', 'Sources');
+  key('ArrowUp', EXPORT);
+  expect(items()[3]).toHaveFocus();
+  key('ArrowDown', 'About');
+  expect(items()[0]).toHaveFocus();
 });
 
 it('keeps a disabled item in the key order, aria-disabled, and does nothing on Enter', () => {
   const { onSelect } = open();
 
-  key('ArrowDown');
-  key('ArrowDown');
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  expect(document.activeElement).toBe(items()[2]);
+  key('ArrowDown', EXPORT);
+  key('ArrowDown', 'Sources');
+  expect(items()[2]).toHaveFocus();
   expect(items()[2].getAttribute('aria-disabled')).toBe('true');
   fireEvent.click(items()[2]);
   expect(onSelect).not.toHaveBeenCalled();
@@ -118,16 +121,22 @@ it('keeps a disabled item in the key order, aria-disabled, and does nothing on E
 });
 
 it('focuses the Avatar, closes, then runs onSelect', () => {
-  const focused: unknown[] = [];
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  const { avatar } = setup(() => focused.push(document.activeElement));
+  const focused: boolean[] = [];
+  const { avatar } = setup(() =>
+    focused.push(
+      screen.getByRole('button', { name: 'Account menu' }).matches(':focus')
+    )
+  );
 
   fireEvent.click(avatar);
-  key('ArrowDown');
-  // eslint-disable-next-line testing-library/no-node-access -- the click goes to the focused node, and no query returns it
-  fireEvent.click(document.activeElement!);
+  key('ArrowDown', EXPORT);
 
-  expect(focused).toEqual([avatar]);
+  const sources = item('Sources');
+
+  expect(sources).toHaveFocus();
+  fireEvent.click(sources);
+
+  expect(focused).toEqual([true]);
   expect(screen.queryByRole('menu')).toBeNull();
 });
 
@@ -151,15 +160,14 @@ it('closes on Esc with focus on the Avatar, and the Esc goes no further', () => 
   expect(event.defaultPrevented).toBe(true);
   expect(outer).not.toHaveBeenCalled();
   expect(screen.queryByRole('menu')).toBeNull();
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  expect(document.activeElement).toBe(avatar);
+  expect(avatar).toHaveFocus();
 });
 
 it('closes on Tab, and ignores other keys', () => {
   open();
-  key('a');
+  key('a', EXPORT);
   screen.getByRole('menu');
-  key('Tab');
+  key('Tab', EXPORT);
   expect(screen.queryByRole('menu')).toBeNull();
 });
 
@@ -225,15 +233,13 @@ it.each(FORMS)(
   form => {
     const { avatar } = open(form);
 
-    key('ArrowDown');
-    // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-    expect(document.activeElement).toBe(items()[1]);
-    key('Escape');
+    key('ArrowDown', EXPORT);
+    expect(items()[1]).toHaveFocus();
+    key('Escape', 'Sources');
     expect(screen.queryByRole('menu')).toBeNull();
-    // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-    expect(document.activeElement).toBe(avatar);
+    expect(avatar).toHaveFocus();
     fireEvent.click(avatar);
-    key('Tab');
+    key('Tab', EXPORT);
     expect(screen.queryByRole('menu')).toBeNull();
     fireEvent.click(avatar);
     fireEvent.pointerDown(document.body);

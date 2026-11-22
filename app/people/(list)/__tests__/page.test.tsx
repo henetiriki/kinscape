@@ -116,7 +116,9 @@ describe('the People page', () => {
     await setup();
     render(await People());
 
-    expect(screen.getByText('Botha, Hendrik').closest('a')!.textContent).toBe(
+    expect(
+      screen.getByRole('link', { name: /^Botha, Hendrik/ }).textContent
+    ).toBe(
       'Botha, HendrikBorn about 1832, died between 1880 and 1885c. 1832 – 1880–1885Edit'
     );
     expect(screen.queryByText(/Stranger|Nel/)).toBeNull();
@@ -136,9 +138,9 @@ describe('the People page', () => {
     await setup();
     render(await People());
 
-    expect(screen.getByText('Cloete, Anna').closest('a')!.textContent).toBe(
-      'Cloete, AnnaBorn unknown? –Edit'
-    );
+    expect(
+      screen.getByRole('link', { name: /^Cloete, Anna/ }).textContent
+    ).toBe('Cloete, AnnaBorn unknown? –Edit');
   });
 
   it('shows the load-failed state when the cookie opens no Tree', async () => {

@@ -267,7 +267,10 @@ describe('the groups', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
       expect(screen.queryByRole('heading', { name: title })).toBeNull();
-      expect(document.querySelector('dialog')?.open).toBe(false);
+      expect(
+        screen.queryAllByRole<HTMLDialogElement>('dialog', { hidden: true })[0]
+          ?.open
+      ).toBe(false);
     }
   );
 
@@ -358,7 +361,10 @@ describe('step 2 of "Add"', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitFor(() =>
-      expect(document.querySelector('dialog')?.open).toBe(false)
+      expect(
+        screen.queryAllByRole<HTMLDialogElement>('dialog', { hidden: true })[0]
+          ?.open
+      ).toBe(false)
     );
     expect(create).toHaveBeenCalledWith(
       expect.objectContaining({ childId: MARIA, parentId: PIETER })
@@ -369,14 +375,12 @@ describe('step 2 of "Add"', () => {
   it('keeps step 2 open when the browser reports that the picker closed after the pick', () => {
     pick();
     fireEvent(
-      document.querySelectorAll('dialog')[0],
+      screen.getAllByRole('dialog', { hidden: true })[0],
       new Event('close', { bubbles: false })
     );
 
-    expect(
-      screen.getByRole('radiogroup', { name: 'Type of parent' })
-    ).not.toBeNull();
-    expect(document.querySelectorAll('dialog[open]')).toHaveLength(1);
+    screen.getByRole('radiogroup', { name: 'Type of parent' });
+    expect(screen.getAllByRole('dialog')).toHaveLength(1);
   });
 
   it('closes with "Close", and the next "Add" starts at the picker', () => {
@@ -519,6 +523,7 @@ describe('"Edit"', () => {
   it('opens again on "Edit" while the address still holds `edit`', async () => {
     open({ edit: RELATION, groups: { ...empty, parents } });
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    // eslint-disable-next-line testing-library/no-unnecessary-act -- the empty act lets the work after Cancel settle before the absence check
     await act(async () => {});
 
     expect(screen.queryByRole('dialog')).toBeNull();

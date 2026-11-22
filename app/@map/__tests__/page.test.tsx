@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const shell = vi.hoisted(() => vi.fn());
@@ -40,9 +40,9 @@ describe('the map slot page', () => {
   it('renders the map with the sources and coverage from the data folder', async () => {
     session.mockResolvedValue({ accountId: 'a', email: 'a@example.test' });
 
-    const { getByTestId } = render(await MapSlot());
+    render(await MapSlot());
 
-    getByTestId('map-shell');
+    screen.getByTestId('map-shell');
     expect(shell.mock.calls[0][0].sources.length).toBeGreaterThan(0);
     expect(shell.mock.calls[0][0].coverage.length).toBeGreaterThan(0);
   });

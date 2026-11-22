@@ -16,13 +16,16 @@ it('shows the count marker at Example Farm, and a card of its five looks', async
   const markers = screen.getAllByRole('button', { name: '3 Pins' });
 
   expect(markers).toHaveLength(6);
+  // eslint-disable-next-line testing-library/no-node-access -- the placed wrapper div has no role; the test checks its position
   expect(markers[0].parentElement!.style.left).toBe('940px');
+  // eslint-disable-next-line testing-library/no-node-access -- the placed wrapper div has no role; the test checks its position
   expect(markers[0].parentElement!.style.top).toBe('400px');
   expect(
     within(looks)
       .getAllByRole('button', { name: '3 Pins' })
       .map(({ dataset }) => dataset.state)
   ).toEqual([undefined, 'hover', 'focus', 'active', undefined]);
+  // eslint-disable-next-line testing-library/no-node-access -- the focus ring is an aria-hidden span; no query reaches it
   expect(looks.querySelectorAll('[data-ring]')).toHaveLength(1);
   screen.getByRole('complementary', { name: 'Layers and filters' });
 });

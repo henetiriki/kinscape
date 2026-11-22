@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
@@ -61,6 +61,11 @@ const open = (
 
 const names = () =>
   screen.queryAllByRole('listitem').map(item => item.textContent);
+// The row that holds the text.
+const rowWith = (text: string) =>
+  screen
+    .queryAllByRole('listitem')
+    .find(item => within(item).queryByText(text));
 
 // PPL-02
 describe('RelationshipPicker', () => {
@@ -96,10 +101,9 @@ describe('RelationshipPicker', () => {
       expect.stringContaining('Fourie, Pieter'),
       expect.stringContaining('Foury, Maria'),
     ]);
-    expect(
-      screen.getByText('Matches the spelling “Fourie”').closest('li')
-        ?.textContent
-    ).toContain('Foury, Maria');
+    expect(rowWith('Matches the spelling “Fourie”')?.textContent).toContain(
+      'Foury, Maria'
+    );
     expect(screen.getAllByText(/Matches the spelling/)).toHaveLength(1);
   });
 
@@ -109,9 +113,7 @@ describe('RelationshipPicker', () => {
       target: { value: 'fourie' },
     });
 
-    expect(screen.getByText('née Fourie').closest('li')?.textContent).toContain(
-      'Botha, Susanna'
-    );
+    expect(rowWith('née Fourie')?.textContent).toContain('Botha, Susanna');
   });
 
   it('shows the no-match notice, and "Clear the filter" lists everyone again', () => {

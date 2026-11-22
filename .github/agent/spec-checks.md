@@ -9,7 +9,7 @@ Run these four checks on the whole body of a Spec, Bug or Chore. Finish every ch
 
 Write one line for each check: `Checked: <files read>` or `Not checked: <reason>`. Write a question for each `Not checked`.
 
-After the four check lines, list each item of the parts that the [Ready check](../../plans/README.md#ready-check) names for the issue's type. Write one line for each item:
+After the four check lines, list each item of the parts that the [Ready check](../../plans/BUILD.md#ready-check) names for the issue's type. Write one line for each item:
 
 - `<part> <n>: matches main`
 - `<part> <n>: D<k>`, with the number of its Drift item

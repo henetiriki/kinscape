@@ -25,7 +25,7 @@ Run the [shared steps](../build-local/SKILL.md#shared-steps) of `build-local`, w
   - a finding that you would judge wrong;
   - a finding that you would leave for a person;
   - a fix that is a design decision.
-- Make a fix that is a big departure from the plan. Write a "Big:" line under `## Deviations` ([big-departures rule](../../../plans/README.md#big-departures)).
+- Make a fix that is a big departure from the plan. Write a "Big:" line under `## Deviations` ([big-departures rule](../../../plans/BUILD.md#big-departures)).
 - Ask every question before the first fix.
 - Fix a clear finding without a question.
 - The tech lead's answer decides each asked finding. Leave a thread open only if the tech lead says so.

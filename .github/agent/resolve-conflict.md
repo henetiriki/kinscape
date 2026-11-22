@@ -19,7 +19,7 @@ Your first command is `gh pr view <n> --json title,body,headRefName`. The plan t
 
 - Run lint, the affected tests and `format:check`. Leave `npm run e2e` to CI.
 - If a check fails because of the merge, fix it only if the fix stays within the PR's plan. If not, run `git merge --abort`. Push nothing. Say why.
-- Never change a test to make it pass (the [failing-tests rule](../../plans/README.md#failing-tests)).
+- Never change a test to make it pass (the [failing-tests rule](../../plans/BUILD.md#failing-tests)).
 - Never merge the PR. Never change its draft state, labels or reviewers.
 
 ## The push

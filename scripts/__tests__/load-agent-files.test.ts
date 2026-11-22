@@ -57,6 +57,13 @@ const MARKETPLACE = '.github/claude-plugins/.claude-plugin/marketplace.json';
 const REVIEW_WORKFLOW = '.github/workflows/claude-code-review.yml';
 const CODE_RULES = 'docs/code-rules.md';
 const SPEC_CHECKS = '.github/agent/spec-checks.md';
+// Each file of docs/patterns/ is a rule that a run follows through its symlink in .claude/rules/. The
+// symlink reads its target from the checkout, so each caller takes main's copy of each file, and a new
+// file without an entry fails the tests below (plans/chores/C1146-area-patterns.md).
+const PATTERN_FILES = readdirSync(join(root, 'docs/patterns'))
+  .filter(name => name.endsWith('.md'))
+  .sort()
+  .map(name => `docs/patterns/${name}`);
 const imports = () =>
   readFileSync(join(root, 'CLAUDE.md'), 'utf8')
     .match(/^@(\S+)$/gm)
@@ -64,6 +71,7 @@ const imports = () =>
 const mainFiles = () => [
   ...imports(),
   CODE_RULES,
+  ...PATTERN_FILES,
   MARKETPLACE,
   REVIEW_WORKFLOW,
 ];
@@ -654,14 +662,16 @@ describe('the main_files input of the run-claude action', () => {
     it.each(['claude-fix-review.yml', 'claude-resolve-conflict.yml'])(
       '%s names the files CLAUDE.md imports and the code rules',
       file => {
-        expect(given(file)).toEqual([[...imports(), CODE_RULES].join(' ')]);
+        expect(given(file)).toEqual([
+          [...imports(), CODE_RULES, ...PATTERN_FILES].join(' '),
+        ]);
       }
     );
 
     // The reword step of build.md runs the Spec checks, and a build loads that file in no prompt.
     it('claude-build.yml names those files and the Spec checks', () => {
       expect(given('claude-build.yml')).toEqual([
-        [...imports(), CODE_RULES, SPEC_CHECKS].join(' '),
+        [...imports(), CODE_RULES, ...PATTERN_FILES, SPEC_CHECKS].join(' '),
       ]);
       expect(existsSync(join(root, SPEC_CHECKS))).toBe(true);
     });
@@ -2446,7 +2456,11 @@ describe('the review job of claude-code-review.yml', () => {
   it("puts main's copies of the imports in the checkout before Claude", () => {
     const listed = /for f in (.+); do/.exec(stepNamed(COPY).run ?? '')?.[1];
 
-    expect(listed?.split(' ')).toEqual([...imports(), CODE_RULES]);
+    expect(listed?.split(' ')).toEqual([
+      ...imports(),
+      CODE_RULES,
+      ...PATTERN_FILES,
+    ]);
     expect(stepIndex(LOAD)).toBeLessThan(stepIndex(COPY));
     expect(stepIndex(COPY)).toBeLessThan(claudeAt());
   });

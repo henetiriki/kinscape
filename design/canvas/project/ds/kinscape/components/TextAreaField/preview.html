@@ -20,7 +20,7 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var noop = function () {};
   var Control = window.KinScape["TextAreaField"];
   var handlers = [];
-  var states = [{"label":"TextAreaField · default","props":{"helper":"Helper text","label":"Notes"}},{"label":"TextAreaField · hover","props":{"helper":"Helper text","label":"Notes","state":"hover"}},{"label":"TextAreaField · focus","props":{"helper":"Helper text","label":"Notes","state":"focus"}},{"label":"TextAreaField · disabled","props":{"disabled":true,"helper":"Helper text","label":"Notes"}},{"label":"TextAreaField · long content","props":{"defaultValue":"Line 1 of the notes.\nLine 2 of the notes.\nLine 3 of the notes.\nLine 4 of the notes.\nLine 5 of the notes.\nLine 6 of the notes.\nLine 7 of the notes.","helper":"Helper text","label":"Notes","maxLength":10000}}];
+  var states = [{"label":"TextAreaField · default","props":{"helper":"Helper text","label":"Notes"}},{"label":"TextAreaField · hover","props":{"helper":"Helper text","label":"Notes","state":"hover"}},{"label":"TextAreaField · focus","props":{"helper":"Helper text","label":"Notes","state":"focus"}},{"label":"TextAreaField · disabled","props":{"disabled":true,"helper":"Helper text","label":"Notes"}},{"label":"TextAreaField · error","props":{"error":"Add a note.","helper":"Helper text","label":"Notes"}},{"label":"TextAreaField · long content","props":{"defaultValue":"Line 1 of the notes.\nLine 2 of the notes.\nLine 3 of the notes.\nLine 4 of the notes.\nLine 5 of the notes.\nLine 6 of the notes.\nLine 7 of the notes.","helper":"Helper text","label":"Notes","maxLength":10000}}];
   var give = function (props, names) {
     names.forEach(function (name) {
       var at = name.indexOf('.');

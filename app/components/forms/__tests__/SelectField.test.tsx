@@ -30,6 +30,59 @@ it('is a native select named by its label, with a state', () => {
   expect(onChange).toHaveBeenCalledOnce();
 });
 
+// PIN-02
+it('shows an error in place of nothing: error box, icon, alert and aria links', () => {
+  const { container } = render(
+    <SelectField
+      error='Choose a polity.'
+      label='Polity'
+      options={[{ label: 'Anyone', value: 'any' }]}
+    />
+  );
+
+  const select = screen.getByRole('combobox', { name: 'Polity' });
+  const alert = screen.getByRole('alert');
+
+  expect(alert.textContent).toBe('Choose a polity.');
+  expect(select.getAttribute('aria-invalid')).toBe('true');
+  expect(select.getAttribute('aria-describedby')).toBe(alert.id);
+  expect(select.parentElement!.dataset.mark).toBe('error');
+  expect(select.parentElement!.querySelectorAll('svg')).toHaveLength(2);
+  expect(container.querySelector('[data-mark] > svg:last-child')).toBeTruthy();
+});
+
+// PIN-02
+it('joins a given aria-describedby with the error id', () => {
+  render(
+    <SelectField
+      aria-describedby='other'
+      error='Choose a polity.'
+      label='Polity'
+      options={[{ label: 'Anyone', value: 'any' }]}
+    />
+  );
+
+  expect(
+    screen
+      .getByRole('combobox', { name: 'Polity' })
+      .getAttribute('aria-describedby')
+  ).toBe(`other ${screen.getByRole('alert').id}`);
+});
+
+// PIN-02
+it('has no mark, alert or description without an error', () => {
+  render(
+    <SelectField label='Polity' options={[{ label: 'Anyone', value: 'any' }]} />
+  );
+
+  const select = screen.getByRole('combobox', { name: 'Polity' });
+
+  expect(select.parentElement!.hasAttribute('data-mark')).toBe(false);
+  expect(select.hasAttribute('aria-invalid')).toBe(false);
+  expect(select.hasAttribute('aria-describedby')).toBe(false);
+  expect(screen.queryByRole('alert')).toBeNull();
+});
+
 it('names a select whose label is hidden', () => {
   render(
     <SelectField

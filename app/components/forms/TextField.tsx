@@ -2,11 +2,12 @@
 
 import type { ComponentProps, ReactNode } from 'react';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { ControlState } from '@ks/app/components/foundation/types';
 
 import { KeyHint } from '@ks/app/components/actions/KeyHint';
+import { useFieldMessage } from '@ks/app/components/forms/useFieldMessage';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
 
@@ -49,15 +50,14 @@ export const TextField = ({
   state?: ControlState;
   type?: 'email' | 'password' | 'search' | 'text';
 } & Omit<ComponentProps<'input'>, 'className' | 'id' | 'size' | 'type'>) => {
-  const id = useId();
+  const field = useFieldMessage({
+    describedBy: rest['aria-describedby'],
+    error,
+    helper,
+  });
   const input = useRef<HTMLInputElement>(null);
   const [shown, setShown] = useState(defaultShown);
-  const messageId = `${id}-message`;
   const marked = error ? 'error' : mark;
-  const message = error ?? helper;
-  const describedBy = [rest['aria-describedby'], message ? messageId : null]
-    .filter(Boolean)
-    .join(' ');
 
   useEffect(() => {
     if (!shortcut) return;
@@ -85,7 +85,7 @@ export const TextField = ({
   return (
     <div className={styles.field}>
       {!hideLabel && (
-        <Text as='label' htmlFor={id} variant='label'>
+        <Text as='label' htmlFor={field.id} variant='label'>
           {label}
         </Text>
       )}
@@ -102,9 +102,9 @@ export const TextField = ({
           aria-label={hideLabel ? label : undefined}
           className={styles.input}
           {...rest}
-          aria-describedby={describedBy || undefined}
+          aria-describedby={field.describedBy}
           aria-invalid={marked === 'error' || undefined}
-          id={id}
+          id={field.id}
           ref={input}
           type={type === 'password' && shown ? 'text' : type}
         />
@@ -123,15 +123,7 @@ export const TextField = ({
           </button>
         )}
       </span>
-      {message && (
-        <Text
-          id={messageId}
-          role={error ? 'alert' : undefined}
-          tone={error ? 'error' : undefined}
-          variant='small'>
-          {message}
-        </Text>
-      )}
+      {field.message}
     </div>
   );
 };

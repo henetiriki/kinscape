@@ -222,6 +222,11 @@
   pointer-events: none;
 }
 
+/* The error icon of a select sits 8px after the chevron. */
+.chevron + svg {
+  margin-left: var(--space-8);
+}
+
 .box:has(:disabled) .chevron {
   color: var(--ink-disabled);
 }

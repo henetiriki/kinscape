@@ -498,11 +498,6 @@
       "file": "Draft-pin-click-popup.dc.html",
       "name": "draft-pin-click-popup",
       "viewport": { "height": 400, "width": 760 }
-    },
-    {
-      "file": "Draft-pin-field-errors.dc.html",
-      "name": "draft-pin-field-errors",
-      "viewport": { "height": 440, "width": 760 }
     }
   ]
 }

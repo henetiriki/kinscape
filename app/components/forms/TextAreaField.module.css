@@ -26,6 +26,22 @@
   padding: 9px 11px;
 }
 
+/* In error the text takes the focus padding. The box keeps a 37px gutter on the right: 11px, the 18px icon and an 8px gap.
+   The textarea, and so its scrollbar, ends before the gutter. */
+.field > .box[data-mark] {
+  padding: 0 37px 0 0;
+}
+
+.field > .box[data-mark] .area {
+  padding: 9px 11px;
+}
+
+.field > .box[data-mark] > svg {
+  position: absolute;
+  right: 11px;
+  top: 8px;
+}
+
 /* Only a vertical resize; content past the height scrolls inside the box. */
 .area {
   background: transparent;

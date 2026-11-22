@@ -1,10 +1,10 @@
 # What to look for
 
-Read `docs/code-rules.md` in the checkout.
+Read `docs/code-rules.md` and the three files in `docs/code-rules/` in the checkout.
 
 ## Rules
 
-Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quoting the rule broken. In the checkout, `AGENTS.md`, `docs/security.md`, `docs/writing.md` and `docs/code-rules.md` are `main`'s; the PR's changes to them are in the diff.
+Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quoting the rule broken. In the checkout, `AGENTS.md`, `docs/security.md`, `docs/writing.md`, `docs/code-rules.md` and `docs/code-rules/` are `main`'s; the PR's changes to them are in the diff.
 
 Flag a test change the [failing-tests rule](../../plans/BUILD.md#failing-tests) doesn't allow (never suggest `## Deviations` alone as the fix), and a new `v8 ignore` with no reason (`AGENTS.md` Commands).
 
@@ -24,7 +24,7 @@ Check the diff against the [Placement](../../docs/code-rules.md#placement) secti
 
 ## Pattern table
 
-Check the diff against the [Pattern table](../../docs/code-rules.md#pattern-table) section.
+Check the diff against the [Pattern table](../../docs/code-rules/pattern-table.md#pattern-table) section.
 
 ## New surface
 
@@ -34,7 +34,7 @@ Check the diff against the [Pattern table](../../docs/code-rules.md#pattern-tabl
 
 ## Test quality
 
-Check the diff against the [Test quality](../../docs/code-rules.md#test-quality) section.
+Check the diff against the [Test quality](../../docs/code-rules/test-quality.md#test-quality) section.
 
 ## Decision reversal
 
@@ -46,7 +46,7 @@ When the diff changes behaviour a doc describes (a setting, a default, a path, w
 
 ## Scale
 
-Check the diff against the [Scale](../../docs/code-rules.md#scale) section.
+Check the diff against the [Scale](../../docs/code-rules/scale.md#scale) section.
 
 ## Workflows
 

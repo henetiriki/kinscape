@@ -1,0 +1,1 @@
+../../docs/code-rules/test-quality.md

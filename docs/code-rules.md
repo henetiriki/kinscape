@@ -10,7 +10,6 @@ Write code that follows these rules. The reviewer flags a change that breaks one
 - Define a type or constant once. Search for its name first.
 - Use a domain type where one exists (`Day`, branded ids, `lib/domain/validity/`), not a list of primitives.
 - An export or file that only a test uses is not wired. Skip this only if the plan names the slice that wires it.
-- When a token holds the value for that role, use `var(--token)` in a `.module.css` file. A part's own dimension may stay a literal. A shared value with no token gets a token: see [Tokens are the one source](architecture.md#patterns).
 
 ## Placement
 
@@ -18,28 +17,10 @@ Write code that follows these rules. The reviewer flags a change that breaks one
 - Follow the pattern rows of `docs/architecture.md` and `docs/patterns/` whose _Enforced by_ is "Review".
 - Follow the naming rule in `AGENTS.md` › _Source of truth_.
 
-## Pattern table
+## Path-scoped rules
 
-- When you add a pattern, rule or guard, name the test or lint rule that fails when it breaks. Do the same when you call a rule "enforced". Write "Review" only for a rule no test can express.
-- List a new top-level folder or script in the _Where_ column of the pattern rows where it belongs.
-- Add a new path in a _Where_ cell of a pattern file to the `paths:` of that file too.
+A session loads each of these files when it reads a file in its paths:
 
-## Test quality
-
-- Write a test that can fail: no `toBeDefined()` where you know the value.
-- Make an `include` pattern in `vitest.config.mts` match each test file.
-- When a database adapter exists, test a behaviour on it, not only on the memory adapter.
-- Use an existing fake, not a hand-rolled one.
-- Tag the test of each shipped behaviour with its requirement (`// MAP-03`).
-- Put a test of how a shared component looks in a gallery spec that `e2e/gallery.config.ts` lists.
-- Put a test of how it behaves in the Vitest test of the component.
-- Put a behaviour that jsdom cannot prove in an e2e spec on an app route.
-- Put an e2e test that needs a fixture Account in `e2e/fixture-*.spec.ts`.
-
-## Scale
-
-On a request path, calculate the number at M4 scale (about 1,640 Boundary versions; Pins as sized in `docs/requirements.md` NFRs). Do not:
-
-- parse or load reference data per request without a memo;
-- loop in a nested or pairwise way over Boundary versions or Pins;
-- return a response that grows with the Tree with no pagination or cap.
+- [Pattern table](code-rules/pattern-table.md): `docs/architecture.md`, `docs/patterns/**`, `scripts/__tests__/**`
+- [Scale](code-rules/scale.md): `server/**`, `app/data/**`, `app/**/route.ts`
+- [Test quality](code-rules/test-quality.md): `**/__tests__/**`, `e2e/**`, `vitest.config.mts`, `playwright.config.ts`

@@ -11,6 +11,7 @@
 AGENTS.md @henetiriki
 CLAUDE.md @henetiriki
 docs/code-rules.md @henetiriki
+docs/code-rules/** @henetiriki
 docs/patterns/** @henetiriki
 docs/security.md @henetiriki
 docs/writing.md @henetiriki

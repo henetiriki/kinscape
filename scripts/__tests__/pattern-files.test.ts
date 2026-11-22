@@ -125,13 +125,81 @@ describe('patternsFor', () => {
   });
 });
 
-describe('the pattern files of the repo', () => {
-  const files = patternFiles({ list: FILES.list, read: FILES.read });
-  const tracked = execFileSync('git', ['ls-files', '-z'], {
-    encoding: 'utf8',
-  })
+const tracked = () =>
+  execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
     .split('\0')
     .filter(path => path !== '' && existsSync(path));
+const matchesTracked = (globs: string[]) => {
+  const paths = tracked();
+
+  expect(globs.length).toBeGreaterThan(0);
+  for (const glob of globs) {
+    expect(
+      paths.some(path => posix.matchesGlob(path, glob)),
+      glob
+    ).toBe(true);
+  }
+};
+// The index line of a file in a doc copies its globs, so a change to `paths:` must reach it.
+const expectIndexed = (doc: string, link: string, globs: string[]) => {
+  const index = readFileSync(doc, 'utf8')
+    .split('\n')
+    .find(line => line.includes(`](${link})`));
+
+  expect(index, `no index line for ${link} in ${doc}`).toBeDefined();
+  expect(
+    Array.from(index?.matchAll(/`([^`]+)`/g) ?? [], ([, glob]) => glob)
+  ).toEqual(globs);
+};
+// The sections of docs/code-rules.md that apply only to some paths: each loads as a rule through its
+// symlink .claude/rules/code-rules-<name>.md (plans/chores/C1147-code-rules-scoped.md).
+const CODE_RULE_FILES = readdirSync('docs/code-rules')
+  .filter(name => name.endsWith('.md'))
+  .sort()
+  .map(name => {
+    const path = `docs/code-rules/${name}`;
+
+    return {
+      globs: globsOf(readFileSync(path, 'utf8')),
+      link: `.claude/rules/code-rules-${name}`,
+      path,
+    };
+  });
+
+describe('the code rule files of the repo', () => {
+  it('are the three path-scoped sections', () => {
+    expect(CODE_RULE_FILES.map(({ path }) => path)).toEqual([
+      'docs/code-rules/pattern-table.md',
+      'docs/code-rules/scale.md',
+      'docs/code-rules/test-quality.md',
+    ]);
+  });
+
+  it.each(CODE_RULE_FILES)(
+    '$path has a symlink in .claude/rules/ to it',
+    ({ link, path }) => {
+      expect(lstatSync(link).isSymbolicLink()).toBe(true);
+      expect(readlinkSync(link)).toBe(`../../${path}`);
+    }
+  );
+
+  it.each(CODE_RULE_FILES)(
+    '$path has its globs in the index of docs/code-rules.md',
+    ({ globs, path }) => {
+      expectIndexed('docs/code-rules.md', path.replace('docs/', ''), globs);
+    }
+  );
+
+  it.each(CODE_RULE_FILES)(
+    '$path has globs that each match a tracked file',
+    ({ globs }) => {
+      matchesTracked(globs);
+    }
+  );
+});
+
+describe('the pattern files of the repo', () => {
+  const files = patternFiles({ list: FILES.list, read: FILES.read });
 
   it('are the eight area files', () => {
     expect(files.map(({ path }) => posix.basename(path)).sort()).toEqual([
@@ -153,39 +221,28 @@ describe('the pattern files of the repo', () => {
     expect(readlinkSync(link)).toBe(`../../${path}`);
   });
 
-  // The index of docs/architecture.md copies the globs, so a change to `paths:` must reach it.
   it.each(files)(
     '$path has its globs in the index of docs/architecture.md',
     ({ globs, path }) => {
-      const index = readFileSync('docs/architecture.md', 'utf8')
-        .split('\n')
-        .find(line => line.includes(`](${path.replace('docs/', '')})`));
-
-      expect(index, `no index line for ${path}`).toBeDefined();
-      expect(
-        Array.from(index?.matchAll(/`([^`]+)`/g) ?? [], ([, glob]) => glob)
-      ).toEqual(globs);
+      expectIndexed('docs/architecture.md', path.replace('docs/', ''), globs);
     }
   );
 
-  it('have no symlink in .claude/rules/ to anything else', () => {
+  it('and the code rule files have the only symlinks in .claude/rules/', () => {
+    const links = [
+      ...files.map(({ path }) => posix.basename(path)),
+      ...CODE_RULE_FILES.map(({ link }) => posix.basename(link)),
+    ];
+
     expect(
-      readdirSync('.claude/rules').filter(
-        name => !files.some(({ path }) => posix.basename(path) === name)
-      )
+      readdirSync('.claude/rules').filter(name => !links.includes(name))
     ).toEqual([]);
   });
 
   it.each(files)(
     '$path has globs that each match a tracked file',
     ({ globs }) => {
-      expect(globs.length).toBeGreaterThan(0);
-      for (const glob of globs) {
-        expect(
-          tracked.some(path => posix.matchesGlob(path, glob)),
-          glob
-        ).toBe(true);
-      }
+      matchesTracked(globs);
     }
   );
 });

@@ -64,6 +64,12 @@ const PATTERN_FILES = readdirSync(join(root, 'docs/patterns'))
   .filter(name => name.endsWith('.md'))
   .sort()
   .map(name => `docs/patterns/${name}`);
+// The path-scoped sections of the code rules load the same way, through .claude/rules/code-rules-*.md
+// (plans/chores/C1147-code-rules-scoped.md).
+const CODE_RULE_FILES = readdirSync(join(root, 'docs/code-rules'))
+  .filter(name => name.endsWith('.md'))
+  .sort()
+  .map(name => `docs/code-rules/${name}`);
 const imports = () =>
   readFileSync(join(root, 'CLAUDE.md'), 'utf8')
     .match(/^@(\S+)$/gm)
@@ -71,6 +77,7 @@ const imports = () =>
 const mainFiles = () => [
   ...imports(),
   CODE_RULES,
+  ...CODE_RULE_FILES,
   ...PATTERN_FILES,
   MARKETPLACE,
   REVIEW_WORKFLOW,
@@ -184,9 +191,9 @@ describe('the load-agent-files action', () => {
   it.each([
     ['Code smells (not style)', 'code-rules.md', 'code-smells-not-style'],
     ['Placement', 'code-rules.md', 'placement'],
-    ['Pattern table', 'code-rules.md', 'pattern-table'],
-    ['Test quality', 'code-rules.md', 'test-quality'],
-    ['Scale', 'code-rules.md', 'scale'],
+    ['Pattern table', 'code-rules/pattern-table.md', 'pattern-table'],
+    ['Test quality', 'code-rules/test-quality.md', 'test-quality'],
+    ['Scale', 'code-rules/scale.md', 'scale'],
     ['Workflows', 'security.md', 'workflows'],
   ])('points the group "%s" to rules in docs/%s', (heading, file, anchor) => {
     const doc = readFileSync(join(root, 'docs', file), 'utf8');
@@ -686,7 +693,9 @@ describe('the main_files input of the run-claude action', () => {
       '%s names the files CLAUDE.md imports and the code rules',
       file => {
         expect(given(file)).toEqual([
-          [...imports(), CODE_RULES, ...PATTERN_FILES].join(' '),
+          [...imports(), CODE_RULES, ...CODE_RULE_FILES, ...PATTERN_FILES].join(
+            ' '
+          ),
         ]);
       }
     );
@@ -694,7 +703,13 @@ describe('the main_files input of the run-claude action', () => {
     // The reword step of build.md runs the Spec checks, and a build loads that file in no prompt.
     it('claude-build.yml names those files and the Spec checks', () => {
       expect(given('claude-build.yml')).toEqual([
-        [...imports(), CODE_RULES, ...PATTERN_FILES, SPEC_CHECKS].join(' '),
+        [
+          ...imports(),
+          CODE_RULES,
+          ...CODE_RULE_FILES,
+          ...PATTERN_FILES,
+          SPEC_CHECKS,
+        ].join(' '),
       ]);
       expect(existsSync(join(root, SPEC_CHECKS))).toBe(true);
     });
@@ -2482,10 +2497,25 @@ describe('the review job of claude-code-review.yml', () => {
     expect(listed?.split(' ')).toEqual([
       ...imports(),
       CODE_RULES,
+      ...CODE_RULE_FILES,
       ...PATTERN_FILES,
     ]);
     expect(stepIndex(LOAD)).toBeLessThan(stepIndex(COPY));
     expect(stepIndex(COPY)).toBeLessThan(claudeAt());
+  });
+
+  // The status line shows which copies the PR changed, so it names the same files as the loop.
+  it('shows the status of each file that the copy step takes', () => {
+    const listed = /git status --short -- (.+)$/m.exec(
+      stepNamed(COPY).run ?? ''
+    )?.[1];
+
+    expect(listed?.split(' ')).toEqual([
+      ...imports(),
+      CODE_RULES,
+      ...CODE_RULE_FILES,
+      ...PATTERN_FILES,
+    ]);
   });
 
   // The same rule as the copy step of run-claude: a file that main lacks is deleted.

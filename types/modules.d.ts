@@ -5,6 +5,8 @@ declare module '*/eslint.config.mjs' {
 
   const config: Linter.Config[];
 
+  export const TEST_ONLY_VARIABLES: string[];
+
   export default config;
 }
 

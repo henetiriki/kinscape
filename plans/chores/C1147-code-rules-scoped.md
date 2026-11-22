@@ -79,3 +79,4 @@ Each commit passes `npm test`.
 ## Deviations
 
 - The session wrote this plan from the approved text, not from the `plan:new` stub. The related issues (#1137, #1138, #1139, #1146) are merged.
+- Steps 2 to 5 are one commit, because `load-agent-files.test.ts` and `pattern-files.test.ts` change in more than one step. Commit ea6b6b2e.

@@ -74,11 +74,20 @@ runs:
       env:
         MAIN_FILES: ${{ inputs.main_files }}
       run: |
+        # A file that main lacks (a pull request adds it) is deleted: its text is not main's to trust.
         for f in $MAIN_FILES; do
-          cp "$RUNNER_TEMP/agent/main/$f" "$f"
+          if [ -f "$RUNNER_TEMP/agent/main/$f" ]; then
+            mkdir -p "$(dirname "$f")"
+            cp "$RUNNER_TEMP/agent/main/$f" "$f"
+          else
+            rm -f "$f"
+          fi
         done
         git status --short -- $MAIN_FILES
-        git update-index --skip-worktree -- $MAIN_FILES
+        tracked=$(git ls-files -- $MAIN_FILES)
+        if [ -n "$tracked" ]; then
+          git update-index --skip-worktree -- $tracked
+        fi
 
     - name: Run Claude Code
       uses: anthropics/claude-code-action@f3b070c88125d33dbae5653df5f143101d4ea9dc # v1.0.276

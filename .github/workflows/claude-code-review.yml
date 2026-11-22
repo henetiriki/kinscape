@@ -98,10 +98,15 @@ jobs:
       # main's copies there. `git status` shows an M for each one the PR changed.
       - name: Put main's rule files in the checkout
         run: |
-          cp "$RUNNER_TEMP/agent/main/AGENTS.md" AGENTS.md
-          cp "$RUNNER_TEMP/agent/main/docs/security.md" docs/security.md
-          cp "$RUNNER_TEMP/agent/main/docs/writing.md" docs/writing.md
-          cp "$RUNNER_TEMP/agent/main/docs/code-rules.md" docs/code-rules.md
+          # A file that main lacks (a pull request adds it) is deleted, as run-claude does.
+          for f in AGENTS.md docs/security.md docs/writing.md docs/code-rules.md; do
+            if [ -f "$RUNNER_TEMP/agent/main/$f" ]; then
+              mkdir -p "$(dirname "$f")"
+              cp "$RUNNER_TEMP/agent/main/$f" "$f"
+            else
+              rm -f "$f"
+            fi
+          done
           git status --short -- AGENTS.md docs/security.md docs/writing.md docs/code-rules.md
 
       # `Review` is a required check, which a path filter would leave pending on a PR that changes only

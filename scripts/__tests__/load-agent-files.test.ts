@@ -581,10 +581,40 @@ describe('the main_files input of the run-claude action', () => {
       rmSync(dir, { force: true, recursive: true });
     });
 
-    it('fails when main has no copy of a file', () => {
+    // A file that main lacks has no rule text to trust, so the checkout loses it, and `git add -A`
+    // stages no deletion. A file that no one has needs no work.
+    it('deletes a file that main does not have, and git add stages no deletion', () => {
       const { dir, repo } = checkout();
 
-      expect(runStep(repo, dir, 'docs/missing.md').status).not.toBe(0);
+      mkdirSync(join(repo, 'docs/patterns'), { recursive: true });
+      writeFileSync(join(repo, 'docs/patterns/x.md'), 'pr only\n');
+      git(repo, 'add', '-A');
+      git(repo, 'commit', '-q', '-m', 'the pr adds a rule file');
+
+      const result = runStep(
+        repo,
+        dir,
+        'docs/writing.md docs/patterns/x.md docs/never.md'
+      );
+
+      expect(result.status).toBe(0);
+      expect(existsSync(join(repo, 'docs/patterns/x.md'))).toBe(false);
+      expect(readFileSync(join(repo, 'docs/writing.md'), 'utf8')).toBe('new\n');
+      git(repo, 'add', '-A');
+      expect(git(repo, 'diff', '--cached', '--name-only').stdout).toBe('');
+      rmSync(dir, { force: true, recursive: true });
+    });
+
+    it('makes the folder of a file that main has and the branch lacks', () => {
+      const { dir, repo } = checkout();
+
+      mkdirSync(join(dir, 'agent/main/docs/patterns'), { recursive: true });
+      writeFileSync(join(dir, 'agent/main/docs/patterns/y.md'), 'main\n');
+
+      expect(runStep(repo, dir, 'docs/patterns/y.md').status).toBe(0);
+      expect(readFileSync(join(repo, 'docs/patterns/y.md'), 'utf8')).toBe(
+        'main\n'
+      );
       rmSync(dir, { force: true, recursive: true });
     });
 
@@ -2120,7 +2150,8 @@ describe('review.md', () => {
 
 // A stand-in for `gh api -H "Accept: application/vnd.github.raw"
 // "repos/owner/repo/contents/<path>?ref=main"`: fails for any other arguments, prints the local
-// file, and fails for one that is not there or for a path with `..`, as the API does with a 404.
+// file, and fails for one that is not there or for a path with `..`, as the API does with a 404
+// (gh prints "gh: Not Found (HTTP 404)"). It logs each path it is asked for to $RUNNER_TEMP/gh-calls.
 // With STUB_FAIL_FIRST=n, the first n calls (for STUB_FAIL_PATH, if set) fail like a server error.
 const GH = `#!/bin/bash
 if [ "$#" -ne 4 ] || [ "$1" != api ] || [ "$2" != -H ] || [ "$3" != "Accept: application/vnd.github.raw" ]; then
@@ -2135,6 +2166,7 @@ path="\${path%\\?ref=main}"
 case "/$path/" in
   *\\?*|*/../*|*//*) echo "unexpected gh call: $*" >&2; exit 1 ;;
 esac
+echo "$path" >> "$RUNNER_TEMP/gh-calls"
 if [ -n "$STUB_FAIL_FIRST" ] && { [ -z "$STUB_FAIL_PATH" ] || [ "$path" = "$STUB_FAIL_PATH" ]; }; then
   failed=$(cat "$RUNNER_TEMP/gh-failed" 2>/dev/null || echo 0)
   if [ "$failed" -lt "$STUB_FAIL_FIRST" ]; then
@@ -2142,7 +2174,7 @@ if [ -n "$STUB_FAIL_FIRST" ] && { [ -z "$STUB_FAIL_PATH" ] || [ "$path" = "$STUB
   fi
 fi
 if ! [ -f "$STUB_ROOT/$path" ]; then
-  echo "HTTP 404: Not Found" >&2; exit 1
+  echo "gh: Not Found (HTTP 404)" >&2; exit 1
 fi
 cat "$STUB_ROOT/$path"
 `;
@@ -2213,6 +2245,9 @@ const load = (
     );
 
     return {
+      calls: existsSync(join(dir, 'gh-calls'))
+        ? out('gh-calls').split('\n').filter(Boolean)
+        : [],
       log,
       main,
       settings: out(`agent/${settingsFile}`),
@@ -2318,9 +2353,34 @@ describe('the load-agent-files script', () => {
       expect(() => load('review.md', undefined, failing('3'))).toThrow();
     });
 
-    it('fails on one that is not in the repo', () => {
+    // A pull request adds a guarded file to main_files before main has it (plans/chores/C1146-area-patterns.md).
+    it('leaves out one that main does not have, and does not retry it', () => {
+      const { calls, log, main } = load('review.md', undefined, {
+        MAIN_FILES: 'AGENTS.md docs/typo.md docs/writing.md',
+      });
+
+      expect(Object.keys(main).sort()).toEqual([
+        'AGENTS.md',
+        'docs/writing.md',
+      ]);
+      expect(calls.filter(path => path === 'docs/typo.md')).toHaveLength(1);
+      expect(log).toContain('main has no docs/typo.md');
+    });
+
+    it('fails on a settings file or an agent file that main does not have', () => {
+      expect(() => load('nope.md')).toThrow();
       expect(() =>
-        load('review.md', undefined, { MAIN_FILES: 'AGENTS.md docs/typo.md' })
+        load(files, undefined, { SETTINGS_FILE: 'nope.json' })
+      ).toThrow();
+    });
+
+    it('fails on a server error for a main file, after three tries', () => {
+      expect(() =>
+        load('review.md', undefined, {
+          MAIN_FILES: 'AGENTS.md',
+          STUB_FAIL_FIRST: '3',
+          STUB_FAIL_PATH: 'AGENTS.md',
+        })
       ).toThrow();
     });
   });
@@ -2384,13 +2444,45 @@ describe('the review job of claude-code-review.yml', () => {
   // checkout, so main's copies go there first. Adding an import to CLAUDE.md fails this until the
   // copy step takes it too.
   it("puts main's copies of the imports in the checkout before Claude", () => {
-    for (const path of [...imports(), CODE_RULES]) {
-      expect(stepNamed(COPY).run).toContain(
-        `cp "$RUNNER_TEMP/agent/main/${path}" ${path}`
-      );
-    }
+    const listed = /for f in (.+); do/.exec(stepNamed(COPY).run ?? '')?.[1];
+
+    expect(listed?.split(' ')).toEqual([...imports(), CODE_RULES]);
     expect(stepIndex(LOAD)).toBeLessThan(stepIndex(COPY));
     expect(stepIndex(COPY)).toBeLessThan(claudeAt());
+  });
+
+  // The same rule as the copy step of run-claude: a file that main lacks is deleted.
+  it("deletes a file that main does not have, and copies main's others", () => {
+    const dir = mkdtempSync(join(tmpdir(), 'review-copy-'));
+    const run = (stepNamed(COPY).run ?? '').replace(
+      /for f in .+; do/,
+      'for f in AGENTS.md docs/writing.md docs/patterns/x.md; do'
+    );
+
+    try {
+      mkdirSync(join(dir, 'repo/docs/patterns'), { recursive: true });
+      mkdirSync(join(dir, 'agent/main/docs'), { recursive: true });
+      writeFileSync(join(dir, 'repo/AGENTS.md'), 'branch\n');
+      writeFileSync(join(dir, 'repo/docs/patterns/x.md'), 'branch\n');
+      writeFileSync(join(dir, 'agent/main/AGENTS.md'), 'main\n');
+      writeFileSync(join(dir, 'agent/main/docs/writing.md'), 'main\n');
+      execFileSync('git', ['init', '-q'], { cwd: join(dir, 'repo') });
+
+      const result = spawnSync('bash', ['-e', '-c', run], {
+        cwd: join(dir, 'repo'),
+        encoding: 'utf8',
+        env: { ...process.env, RUNNER_TEMP: dir },
+      });
+
+      expect(result.status).toBe(0);
+      expect(readFileSync(join(dir, 'repo/AGENTS.md'), 'utf8')).toBe('main\n');
+      expect(readFileSync(join(dir, 'repo/docs/writing.md'), 'utf8')).toBe(
+        'main\n'
+      );
+      expect(existsSync(join(dir, 'repo/docs/patterns/x.md'))).toBe(false);
+    } finally {
+      rmSync(dir, { force: true, recursive: true });
+    }
   });
 
   it('installs the plugin from the marketplace loaded from main', () => {

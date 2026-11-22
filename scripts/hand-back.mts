@@ -28,6 +28,8 @@ export const HAND_BACK = [
   '.github/actions/**',
   '.github/CODEOWNERS',
   '.claude/settings*.json',
+  '.claude/rules/**',
+  'docs/patterns/**',
   'AGENTS.md',
   'docs/security.md',
   'docs/writing.md',

@@ -15,13 +15,14 @@ Write code that follows these rules. The reviewer flags a change that breaks one
 ## Placement
 
 - Put each new file where `docs/architecture.md` › _Where does X go_ and its layer table say (no domain type under `lib/ui`).
-- Follow the pattern table rows whose _Enforced by_ is "Review".
+- Follow the pattern rows of `docs/architecture.md` and `docs/patterns/` whose _Enforced by_ is "Review".
 - Follow the naming rule in `AGENTS.md` › _Source of truth_.
 
 ## Pattern table
 
 - When you add a pattern, rule or guard, name the test or lint rule that fails when it breaks. Do the same when you call a rule "enforced". Write "Review" only for a rule no test can express.
-- List a new top-level folder or script in the pattern table's _Where_ column where it belongs.
+- List a new top-level folder or script in the _Where_ column of the pattern rows where it belongs.
+- Add a new path in a _Where_ cell of a pattern file to the `paths:` of that file too.
 
 ## Test quality
 

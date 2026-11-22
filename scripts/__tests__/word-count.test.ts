@@ -1,5 +1,11 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -53,14 +59,15 @@ describe('budgetFor', () => {
     ['docs/dependencies.md', 275],
     ['docs/repo-settings.md', 900],
     ['docs/infrastructure.md', 1000],
-    ['docs/architecture.md', 1020],
+    ['docs/architecture.md', 570],
+    ['docs/patterns/tree-data.md', 130],
     ['docs/architecture-target.md', 650],
     ['docs/glossary.md', 1200],
     ['design/DESIGN.md', 4700],
     ['design/CANVAS.md', 1650],
     ['design/COMPONENTS.md', 600],
     ['plans/BUILD.md', 570],
-    ['plans/README.md', 760],
+    ['plans/README.md', 780],
     ['plans/DL.17-motion-rules.md', 1500],
     ['plans/M0.1-hello-vercel.md', 1500],
     ['plans/TEMPLATE.md', 1500],
@@ -166,7 +173,7 @@ describe('checkFiles and run', () => {
   it.each([
     ['CLAUDE.md', 150],
     ['plans/BUILD.md', 570],
-    ['plans/README.md', 760],
+    ['plans/README.md', 780],
   ])(
     'counts a Deviations section in %s, which is not a plan',
     (path, budget) => {
@@ -184,6 +191,15 @@ describe('checkFiles and run', () => {
     expect(checkFiles(root, ['CLAUDE.md'])).toEqual([
       'CLAUDE.md: 151 words, budget 150',
     ]);
+  });
+
+  // The target of a symlink has its own budget, so a link would count the same words twice.
+  it('skips a symlink', () => {
+    write('docs/requirements.md', words(5000));
+    symlinkSync('requirements.md', join(root, 'docs/README.md'));
+
+    expect(checkFiles(root, ['docs/README.md'])).toEqual([]);
+    expect(run(root, [], '')).toBe(0);
   });
 
   it('ignores a path with no budget and a path that is gone', () => {

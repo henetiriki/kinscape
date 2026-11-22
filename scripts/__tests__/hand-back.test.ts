@@ -18,6 +18,8 @@ const SAMPLES = [
   ['.github/actions/**', '.github/actions/a/action.yml'],
   ['.github/CODEOWNERS', '.github/CODEOWNERS'],
   ['.claude/settings*.json', '.claude/settings.local.json'],
+  ['.claude/rules/**', '.claude/rules/tree-data.md'],
+  ['docs/patterns/**', 'docs/patterns/tree-data.md'],
   ['AGENTS.md', 'AGENTS.md'],
   ['docs/security.md', 'docs/security.md'],
   ['docs/writing.md', 'docs/writing.md'],
@@ -57,6 +59,8 @@ describe('isHandBack', () => {
       '.github/actions/**',
       '.github/CODEOWNERS',
       '.claude/settings*.json',
+      '.claude/rules/**',
+      'docs/patterns/**',
       'AGENTS.md',
       'docs/security.md',
       'docs/writing.md',
@@ -72,6 +76,8 @@ describe('isHandBack', () => {
     '.github/CODEOWNERS',
     '.claude/settings.json',
     '.claude/settings.local.json',
+    '.claude/rules/tree-data.md',
+    'docs/patterns/tree-data.md',
     'AGENTS.md',
     'docs/security.md',
     'docs/writing.md',
@@ -98,6 +104,7 @@ describe('isHandBack', () => {
     '.claude/settings/a.json',
     'docs/security.mdx',
     'docs/other.md',
+    'docs/patterns.md',
   ])('is not a hand-back path: %s', path => {
     expect(isHandBack(path)).toBe(false);
   });

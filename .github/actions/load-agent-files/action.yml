@@ -11,7 +11,7 @@ inputs:
     description: "The file in .github/agent/ that is Claude's settings: settings.json, or review-settings.json for the review. Each caller names its own (a test checks), so none gets another agent's tools. The default is for a branch cut before this input existed."
     default: settings.json
   main_files:
-    description: 'Files anywhere in the repo, as main has them, space separated: each is written to $RUNNER_TEMP/agent/main/<path>. The review loads the files CLAUDE.md imports and its plugin marketplace this way.'
+    description: 'Files anywhere in the repo, as main has them, space separated: each is written to $RUNNER_TEMP/agent/main/<path>, or left out if main has no such file. The review loads the files CLAUDE.md imports and its plugin marketplace this way.'
     default: ''
   token:
     description: 'A token that can read the repo.'
@@ -34,26 +34,38 @@ runs:
         GH_REPO: ${{ github.repository }}
       run: |
         mkdir -p "$RUNNER_TEMP/agent"
-        # Downloads a file as main has it (the raw file, not JSON) to the given path. A failed
-        # download is tried 3 times, then fails the step.
+        # Downloads a file as main has it (the raw file, not JSON) to the given path. It tries a
+        # failed download 3 times, then returns 1. A 404 returns 4 at once and leaves no file.
+        # The error stays in agent.err.
         download() {
           for attempt in 1 2 3; do
             gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/$1?ref=main" > "$2" 2> "$RUNNER_TEMP/agent.err" && return 0
+            if grep -q '(HTTP 404)' "$RUNNER_TEMP/agent.err"; then
+              rm -f "$2"
+              return 4
+            fi
             if [ "$attempt" -lt 3 ]; then sleep $((attempt * 5)); fi
           done
-          cat "$RUNNER_TEMP/agent.err" >&2
           return 1
         }
         # The settings file and each file in AGENT_FILES. $AGENT_FILES is unquoted so it splits
-        # into one name per file; so is $MAIN_FILES below.
+        # into one name per file; so is $MAIN_FILES below. Each of these must be in main.
         for f in "$SETTINGS_FILE" $AGENT_FILES; do
-          download ".github/agent/$f" "$RUNNER_TEMP/agent/$f"
+          download ".github/agent/$f" "$RUNNER_TEMP/agent/$f" || { cat "$RUNNER_TEMP/agent.err" >&2; exit 1; }
         done
-        # Each file in MAIN_FILES, at its repo path under agent/main/, so a folder of them (the
-        # plugin marketplace) can be named as one.
+        # Each file in MAIN_FILES, at its repo path under agent/main/, so one name can stand for a
+        # folder of them (the plugin marketplace). A pull request that adds a guarded file names it
+        # here before main has it. A 404 leaves the file out, and the caller deletes its copy.
         for f in $MAIN_FILES; do
           mkdir -p "$RUNNER_TEMP/agent/main/$(dirname "$f")"
-          download "$f" "$RUNNER_TEMP/agent/main/$f"
+          status=0
+          download "$f" "$RUNNER_TEMP/agent/main/$f" || status=$?
+          if [ "$status" -eq 4 ]; then
+            echo "main has no $f"
+          elif [ "$status" -ne 0 ]; then
+            cat "$RUNNER_TEMP/agent.err" >&2
+            exit 1
+          fi
         done
         # The settings deny Read on a GitHub-hosted runner's temp folder, which holds checkout's
         # credentials and Claude's transcript. Deny this runner's too, wherever it is.

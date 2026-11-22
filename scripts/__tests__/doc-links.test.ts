@@ -1,5 +1,11 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -202,6 +208,28 @@ describe('docFiles', () => {
       'design/DESIGN.md',
       'docs/a.md',
     ]);
+  });
+
+  // The copy step of a Claude run deletes a rule file that main lacks, and git still lists it.
+  it('leaves out a tracked file that is gone from disk', () => {
+    writeFileSync(join(root, 'a.md'), 'x');
+    writeFileSync(join(root, 'b.md'), 'x');
+    execFileSync('git', ['add', '-A'], { cwd: root });
+    rmSync(join(root, 'b.md'));
+
+    expect(docFiles(root)).toEqual(['a.md']);
+  });
+
+  // A symlink in .claude/rules/ holds the text of its target, so its relative links would resolve
+  // from the wrong folder, and the target would count twice.
+  it('leaves out a symlink', () => {
+    mkdirSync(join(root, 'docs/patterns'), { recursive: true });
+    mkdirSync(join(root, '.claude/rules'), { recursive: true });
+    writeFileSync(join(root, 'docs/patterns/a.md'), 'x');
+    symlinkSync('../../docs/patterns/a.md', join(root, '.claude/rules/a.md'));
+    execFileSync('git', ['add', '-A'], { cwd: root });
+
+    expect(docFiles(root)).toEqual(['docs/patterns/a.md']);
   });
 });
 

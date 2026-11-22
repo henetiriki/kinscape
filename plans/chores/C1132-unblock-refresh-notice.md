@@ -1,7 +1,7 @@
 # Plan: C1132: Tell the owner that an unblock refresh is running and what it checks
 
 - **Spec:** #1132
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

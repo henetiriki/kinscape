@@ -37,6 +37,7 @@ export type PinMessages = {
   eventType?: string;
   notes?: string;
   personId?: string;
+  precision?: string;
   sources?: string;
 };
 

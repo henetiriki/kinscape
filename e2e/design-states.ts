@@ -117,7 +117,7 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
     await fillPinForm(page);
   },
   'pin-form-empty': openPinForm,
-  // The board's coordinates are in degrees, minutes and seconds, its date has the wrong format, its address has 501 characters, and its sources and notes have 10,001.
+  // The board's coordinates are in degrees, minutes and seconds, and its date has the wrong format. Its address has 501 characters, and its sources and notes have 10,001.
   'pin-form-errors': async page => {
     await openPinForm(page);
     await page.getByLabel('Date', { exact: true }).fill('14/03/1850');

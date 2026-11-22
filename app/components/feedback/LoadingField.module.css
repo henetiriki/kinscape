@@ -14,7 +14,7 @@
   min-height: var(--size-touch);
 }
 
-/* The two bars of a text area of two rows (66px and its border). */
+/* The two bars of a text area, 68px high as `pin-edit-loading` draws them. The text area is 66px. */
 .bars[data-rows='2'] {
   min-height: 68px;
 }

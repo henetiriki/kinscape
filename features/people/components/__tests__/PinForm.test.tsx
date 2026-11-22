@@ -191,6 +191,22 @@ it('shows an error and saves nothing for sources or notes over 10,000 characters
   expect(onSave).not.toHaveBeenCalled();
 });
 
+it('shows an error and saves nothing for a precision outside the nine', async () => {
+  const { onSave } = setup();
+
+  await fill();
+
+  const precision = screen.getByLabelText('Precision') as HTMLSelectElement;
+
+  precision.add(new Option('Planet', 'planet'));
+  fireEvent.change(precision, { target: { value: 'planet' } });
+  save();
+
+  expect(await screen.findByText('Choose a precision.')).toBeTruthy();
+  expect(precision.getAttribute('aria-invalid')).toBe('true');
+  expect(onSave).not.toHaveBeenCalled();
+});
+
 it('saves nothing when "Cancel" follows filled fields', async () => {
   const { onCancel, onSave } = setup();
 

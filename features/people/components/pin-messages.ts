@@ -55,7 +55,7 @@ export const pinMessages = (
   coordinates: CoordinateError | undefined,
   dateText: string
 ): PinMessages => ({
-  address: fields.address && `Use ${MAX_ADDRESS} characters or fewer.`,
+  address: fields.address && tooLong(MAX_ADDRESS),
   coordinates: coordinates && COORDINATE_MESSAGES[coordinates],
   date:
     fields.date &&
@@ -65,5 +65,6 @@ export const pinMessages = (
   eventType: fields.eventType && 'Choose an event type.',
   notes: fields.notes && tooLong(MAX_NOTES),
   personId: fields.personId && 'Choose a person.',
+  precision: fields.precision && 'Choose a precision.',
   sources: fields.sources && tooLong(MAX_SOURCES),
 });

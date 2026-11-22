@@ -256,6 +256,7 @@ export const PinForm = ({
               />
               <SelectField
                 defaultValue='approximate'
+                error={messages.precision}
                 label='Precision'
                 name='precision'
                 options={PRECISION_OPTIONS}

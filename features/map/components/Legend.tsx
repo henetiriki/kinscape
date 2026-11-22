@@ -13,7 +13,7 @@ import styles from '@ks/features/map/components/Legend.module.css';
 const { map } = resolveTokens(rawTokens);
 
 /** The swatch values, as the map draws them; the Legend follows `map.*` in `tokens.json`. */
-export const LEGEND_VARS = {
+const LEGEND_VARS = {
   '--legend-border': map.border.colour,
   '--legend-border-width': `${map.border.width}px`,
   '--legend-dash': `${map.border['dash-on']} ${map.border['dash-off']}`,

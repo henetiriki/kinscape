@@ -13,7 +13,7 @@ import { MODULE_CALL, SOURCE_EXTENSION } from '#ks/scripts/layers.mts';
 export const TEST_FILE = /(?:^|\/)__tests__\/|\.(?:test|spec)\./;
 
 /** The module a node names, if it is an import, re-export, `import()`, `import('…').T`, `import x = require()`, `require()` or `vi.mock()`. */
-export const moduleOf = (node: ts.Node): ts.Node | undefined => {
+const moduleOf = (node: ts.Node): ts.Node | undefined => {
   if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
     return node.moduleSpecifier;
   }

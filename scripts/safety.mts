@@ -21,11 +21,10 @@ const ROOT = join(import.meta.dirname, '..');
 export const TOP_LEVEL = ['instrumentation.ts', 'proxy.ts'];
 
 /** The files that may import `server/adapters.mts`: the request entry points and the Tree repository. */
-export const ADAPTER_IMPORTERS =
-  /^server\/(?:action\.mts|auth\/current\.mts|trees\/)/;
+const ADAPTER_IMPORTERS = /^server\/(?:action\.mts|auth\/current\.mts|trees\/)/;
 
 /** The `server/` modules `app/` and `features/` may take values from; types may come from any. */
-export const APP_SERVER_MODULES = [
+const APP_SERVER_MODULES = [
   'server/action',
   'server/auth/current',
   'server/boundaries/app-data',
@@ -326,7 +325,7 @@ export const ADDRESS_FOLDERS = ['[id]'];
 export const SEARCH_PARAMS = ['edit', 'returnTo'];
 
 /** The files under `app/` or `features/` that may name browser storage, each with its reason. */
-export const STORAGE_EXEMPT: Record<string, string> = {};
+const STORAGE_EXEMPT: Record<string, string> = {};
 
 const STORAGE_NAMES = ['localStorage', 'sessionStorage', 'indexedDB'];
 const SEARCH_METHODS = ['get', 'getAll', 'has'];
@@ -640,10 +639,7 @@ export const memoryOnlyBreaks = (files: Record<string, string>): string[] =>
     ]);
 
 /** The files under `app/` or `features/` that may call `fetch` and name a Tree data URL: the query layer. */
-export const QUERY_FILES = [
-  'features/people/query.ts',
-  'features/pins/query.ts',
-];
+const QUERY_FILES = ['features/people/query.ts', 'features/pins/query.ts'];
 
 const GLOBAL_OBJECTS = ['globalThis', 'self', 'window'];
 

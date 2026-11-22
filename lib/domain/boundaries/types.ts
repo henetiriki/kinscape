@@ -23,9 +23,9 @@ export type BoundaryVersion = { file: string } & Pick<
 /** UTC days since 1652-01-01, made only by `toDay`, `asDay` and `dayOf`. */
 export type Day = { brand: 'Day' } & number;
 
-export type Polity = z.output<typeof polityRow>;
-
-export type PolityName = z.output<typeof nameRow>;
-
 /** `processing` is what was done to the data, such as clipping and simplifying. */
 export type Source = z.output<typeof sourceRow>;
+
+type Polity = z.output<typeof polityRow>;
+
+type PolityName = z.output<typeof nameRow>;

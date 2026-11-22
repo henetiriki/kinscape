@@ -18,6 +18,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --max-warnings 0 --fix",
     "map:prepare": "node scripts/prepare-map-data.mts",
     "plan-approve": "node scripts/approve-plan.mts",
     "prepare": "husky",

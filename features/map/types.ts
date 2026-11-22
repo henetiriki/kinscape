@@ -8,12 +8,6 @@ import type { ReactNode } from 'react';
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { EventType } from '@ks/lib/ui/types';
 
-/** A MapLibre layer that can name the basemap layer it draws in front of. */
-export type DrawingLayer = {
-  /** The id of the basemap layer this one is placed ahead of; the end of the stack if absent. */
-  before?: string;
-} & LayerSpecification;
-
 /** A Pin of a fan: its id, its Event type and the reading of its date, such as "From 1890 to 1905". */
 export type FanPin = { event: EventType; id: string; reading: string };
 
@@ -63,15 +57,21 @@ export type MapHandle = {
   zoomOut: () => void;
 };
 
-/** An HTML marker at a map point: a key that stays the same from day to day, the point as longitude and latitude, and what it draws. */
-export type MapMarker = {
-  key: string;
-  node: ReactNode;
-  position: [number, number];
-};
-
 /** The Pin whose popup is open: its id and its position, as longitude and latitude. */
 export type OpenPin = { id: string; position: [number, number] };
 
 /** Whether the map zoom is at its minimum or maximum. */
 export type ZoomLimits = { atMax: boolean; atMin: boolean };
+
+/** A MapLibre layer that can name the basemap layer it draws in front of. */
+type DrawingLayer = {
+  /** The id of the basemap layer this one is placed ahead of; the end of the stack if absent. */
+  before?: string;
+} & LayerSpecification;
+
+/** An HTML marker at a map point: a key that stays the same from day to day, the point as longitude and latitude, and what it draws. */
+type MapMarker = {
+  key: string;
+  node: ReactNode;
+  position: [number, number];
+};

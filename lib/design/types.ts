@@ -43,15 +43,6 @@ export type Docs = {
   summary: string;
 };
 
-export type Group =
-  | 'Actions'
-  | 'Feedback'
-  | 'Forms'
-  | 'Foundation'
-  | 'Layout'
-  | 'Map'
-  | 'Overlays';
-
 export type Outcome = 'blocked' | 'matches';
 
 /** A prop in a control's README table. */
@@ -128,16 +119,6 @@ export type SystemGroup = {
   styles: SystemStyle[];
 };
 
-export type SystemStyle = {
-  fontSize: string;
-  fontStyle: string;
-  fontWeight: string;
-  letterSpacing: string;
-  lineHeight: string;
-  name: string;
-  usage: string;
-};
-
 export type SystemToken = {
   name: string;
   usage: string;
@@ -162,4 +143,23 @@ export type SystemTokens = {
   };
   version: number;
   z: { tokens: SystemToken[] };
+};
+
+type Group =
+  | 'Actions'
+  | 'Feedback'
+  | 'Forms'
+  | 'Foundation'
+  | 'Layout'
+  | 'Map'
+  | 'Overlays';
+
+type SystemStyle = {
+  fontSize: string;
+  fontStyle: string;
+  fontWeight: string;
+  letterSpacing: string;
+  lineHeight: string;
+  name: string;
+  usage: string;
 };

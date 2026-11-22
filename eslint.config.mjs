@@ -112,7 +112,7 @@ const envReads = (allowed = []) => {
         `MemberExpression[computed=false]${env}${named('property.name')}`,
         `MemberExpression[computed=true]${env}${named('property.value')}`,
         `MemberExpression[computed=true]${env}[property.expressions.length=0]${named('property.quasis.0.value.cooked')}`,
-        `VariableDeclarator[init.object.name='process'][init.property.name='env'] > ObjectPattern > Property${named('key.name')}`,
+        `VariableDeclarator[init.object.name='process'][init.property.name='env'] > ObjectPattern > Property[computed=false]${named('key.name')}`,
         `VariableDeclarator[init.object.name='process'][init.property.name='env'] > ObjectPattern > Property${named('key.value')}`,
       ].join(', '),
     },

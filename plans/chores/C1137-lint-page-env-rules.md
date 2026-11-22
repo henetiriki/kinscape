@@ -25,8 +25,8 @@ On `main`, no page outside `app/screens/` has a `className`, a `style` or a `.cs
 
 The issue asks for two ESLint rules. `eslint.config.mjs` already uses `no-restricted-syntax` selectors and the `layers` and `safety` plugins from `scripts/`.
 
-- **A.** Two custom rules in a new `scripts/lint-rules.mts`, as in the Approach. The config test reads `TEST_ONLY_VARIABLES` from the module. Cost: one new module of about 90 lines.
-- **B.** `no-restricted-syntax` selectors in `eslint.config.mjs`. The Test-only names go in a selector regular expression. Cost: no new module. Each block replaces the options of the rule, so the page block and the test block must list `ARROW_FUNCTIONS`, `TEST_MODIFIERS` and the two type selectors again. The list test must read the names out of a regular expression.
+- **A.** Two custom rules in a new `scripts/lint-rules.mts`. The config test reads `TEST_ONLY_VARIABLES` from the module. Cost: one new module of about 90 lines.
+- **B.** `no-restricted-syntax` selectors in `eslint.config.mjs`. The Test-only names go in a selector regular expression. Cost: no new module. Each block replaces the options of the rule. So the page block and the test block must list `ARROW_FUNCTIONS`, `TEST_MODIFIERS` and the two type selectors again. The list test must get the names from a regular expression.
 - **Other:** your own.
 
 **Answer: Other** (@henetiriki). B, with two fixes. Build the regular expression from an array. Use a `BASE_SYNTAX` constant.
@@ -83,5 +83,6 @@ Also `types/modules.d.ts` declares the `TEST_ONLY_VARIABLES` export of `eslint.c
 
 ## Deviations
 
-- The Approach follows the answer to D1 (option B). The `:not` clause replaces a negative-lookahead regular expression, which esquery did not apply.
-- `docs/code-rules.md`: the tech lead removed the bullet in a local session (hand-back path).
+- The allow list is a `:not` clause, because esquery does not apply a negative lookahead.
+- The destructure selector skips a computed key that is a variable, as in `{ [name]: v }`.
+- `scripts/__tests__/lint-config.ts` holds the `lintConfig` helper. `layers-config.test.ts` and `test-modifiers-config.test.ts` also use it.

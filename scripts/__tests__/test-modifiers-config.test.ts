@@ -1,20 +1,14 @@
-import { ESLint } from 'eslint';
 import { describe, expect, it } from 'vitest';
 
-import config from '@ks/eslint.config.mjs';
+import { lintConfig } from '@ks/scripts/__tests__/lint-config.ts';
 
-// Follows the failing-tests rule (plans/README.md#failing-tests). Lints text against the real
-// config, as layers-config.test.ts does.
-const lint = async (code: string): Promise<string[]> => {
-  const [result] = await new ESLint({
-    overrideConfig: config,
-    overrideConfigFile: true,
-  }).lintText(`${code}\n`, { filePath: 'lib/map/__tests__/x.test.ts' });
-
-  return result.messages
-    .filter(m => m.ruleId === 'no-restricted-syntax')
-    .map(m => m.message);
-};
+// Follows the failing-tests rule (plans/README.md#failing-tests).
+const lint = async (code: string): Promise<string[]> =>
+  (
+    await lintConfig(`${code}\n`, 'lib/map/__tests__/x.test.ts', [
+      'no-restricted-syntax',
+    ])
+  ).map(m => m.message);
 
 describe('the test modifier lint rule', () => {
   it.each([

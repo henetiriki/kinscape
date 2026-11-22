@@ -1,23 +1,16 @@
-import { ESLint } from 'eslint';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-import config, { TEST_ONLY_VARIABLES } from '@ks/eslint.config.mjs';
+import { TEST_ONLY_VARIABLES } from '@ks/eslint.config.mjs';
+import { lintConfig } from '@ks/scripts/__tests__/lint-config.ts';
 
 const PAGE_MESSAGE = 'A page composes components and has no look of its own';
 const ENV_MESSAGE = 'Read a KINSCAPE_ variable only in server/env.mts';
 
-// Lints text against the real config, as test-modifiers-config.test.ts does.
-const lint = async (code: string, filePath: string): Promise<string[]> => {
-  const [result] = await new ESLint({
-    overrideConfig: config,
-    overrideConfigFile: true,
-  }).lintText(`${code}\n`, { filePath });
-
-  return result.messages
-    .filter(m => m.ruleId === 'no-restricted-syntax')
-    .map(m => m.message);
-};
+const lint = async (code: string, filePath: string): Promise<string[]> =>
+  (await lintConfig(`${code}\n`, filePath, ['no-restricted-syntax'])).map(
+    m => m.message
+  );
 
 describe('the page look rule', () => {
   const SAMPLES = [
@@ -53,6 +46,7 @@ describe('the KINSCAPE_ variable rule', () => {
     'export const a = process.env[`KINSCAPE_X`];',
     'const { KINSCAPE_X } = process.env;\nexport const a = KINSCAPE_X;',
     "const { 'KINSCAPE_X': x } = process.env;\nexport const a = x;",
+    "const { ['KINSCAPE_X']: x } = process.env;\nexport const a = x;",
   ];
 
   it.each(READS)('flags %s in a features/ file', async code => {
@@ -79,6 +73,7 @@ describe('the KINSCAPE_ variable rule', () => {
     'const { NODE_ENV } = process.env;\nexport const a = NODE_ENV;',
     "export const a = process.env['NODE_ENV'];",
     'export const a = process.env[name];',
+    "const KINSCAPE_X = 'NODE_ENV';\nconst { [KINSCAPE_X]: v } = process.env;\nexport const a = v;",
     'export const a = env.KINSCAPE_X;',
   ])('allows %s', async code => {
     expect(await lint(code, 'features/map/x.ts')).toEqual([]);

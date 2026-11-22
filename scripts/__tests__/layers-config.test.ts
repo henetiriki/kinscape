@@ -1,27 +1,18 @@
-import { ESLint } from 'eslint';
 import { describe, expect, it } from 'vitest';
 
-import config from '@ks/eslint.config.mjs';
+import { lintConfig } from '@ks/scripts/__tests__/lint-config.ts';
 
-// NFR-09. Lints text against the real config, imported here so that
-// scripts/layers.mts loads once: a native copy loaded by ESLint's own config
-// loader corrupts its coverage.
+// NFR-09.
 const IMPORT_RULES = ['layers/imports', 'no-restricted-imports'];
 
 const lint = async (
   filePath: string,
   code: string,
   ruleIds: string[] = IMPORT_RULES
-): Promise<string[]> => {
-  const [result] = await new ESLint({
-    overrideConfig: config,
-    overrideConfigFile: true,
-  }).lintText(code, { filePath });
-
-  return result.messages
-    .filter(m => m.fatal || (m.ruleId !== null && ruleIds.includes(m.ruleId)))
-    .map(m => `${m.ruleId}: ${m.message}`);
-};
+): Promise<string[]> =>
+  (await lintConfig(code, filePath, ruleIds)).map(
+    m => `${m.ruleId}: ${m.message}`
+  );
 
 describe('the real lint config', () => {
   it('fails a kit file that imports lib/', async () => {

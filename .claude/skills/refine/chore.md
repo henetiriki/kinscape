@@ -18,7 +18,7 @@ Ask questions as described in `SKILL.md`, only about what the idea leaves open:
 - **Constraints:** anything it must not touch or break.
 - **Design system:** does the idea change a [design system input](../../../design/CANVAS.md#changing-the-design-system)? If it does, read that section. Add its **Issue text** to the draft: the done checks, and the Constraint sentence in Constraints. Add the output of step 5.4 in [Refreshing the canvas copy](../../../design/CANVAS.md#refreshing-the-canvas-copy) as another done check. If the Chore adds components, add this done check: "Each part that a board hand-draws has a line in one follow-up issue, with the reason."
 
-Ask about every open choice, so that none reach the plan. A Chore has no decisions box.
+Ask about every open choice, so that none reach the plan. A Chore has no decisions box. In a new draft and in [Edit a filed Chore](#edit-a-filed-chore), write each edge that the interview settles as one line in Constraints.
 
 ## Screen
 

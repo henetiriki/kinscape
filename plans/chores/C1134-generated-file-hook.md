@@ -1,7 +1,7 @@
 # Plan: C1134: Block edits to generated design files with a hook
 
 - **Spec:** #1134
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -27,7 +27,7 @@ The Constraints give the CI agent the `.github/agent/settings.json` row and its 
 - **B.** The CI agent writes only the CI hook's tests. The tech lead writes the local hook's tests with the hook. `npm test` passes after each commit, but the local hook gets no failing test first.
 - **Other:** your own.
 
-Recommended: A, because each hook then gets a test that fails first ([test-first rule](../README.md#test-first)), and the two hooks share one sample table. B loses little: the tech lead sees the tests pass in the same session.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

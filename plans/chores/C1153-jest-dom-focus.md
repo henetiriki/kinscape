@@ -2,7 +2,7 @@
 
 - **Chore:** #1153
 - **Requirement IDs:** None: test tooling
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -25,7 +25,7 @@ On `main`, `react-18.test.tsx:1473` to `:1495` spies on `console.error` and `con
 - **C.** Give the new file no console hooks. Cost: no lines. The `bundle` tests no longer fail on a React warning in the test runner, so this breaks Constraint 2 of #1153.
 - **Other:** your own.
 
-Recommended: A, because each test keeps its checks, and one copy of the hooks stays.
+**Answer: A** (@henetiriki)
 
 **D5 · When the package lands on the branch** · Decides: Tech lead
 
@@ -35,7 +35,7 @@ The approving review starts the CI build at once ([building](../../docs/building
 - **B.** Approve first. The CI build does steps 5 to 8 and writes a "Big:" line for the package. Then a local session does steps 1 to 4. Cost: two build sessions, and the CI build cannot check the done list.
 - **Other:** your own.
 
-Recommended: A, because one build then checks the whole done list.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

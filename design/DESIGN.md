@@ -44,8 +44,6 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Pin popup, details loading                        | [map-pin-popup-loading.jpg](map-pin-popup-loading.jpg)                       |
 | Pin popup, details did not load                   | [map-pin-popup-failed.jpg](map-pin-popup-failed.jpg)                         |
 | Pin popup, phone sheet                            | [map-pin-popup-phone.jpg](map-pin-popup-phone.jpg)                           |
-| Add a pin (provisional)                           | [add-pin.jpg](add-pin.jpg)                                                   |
-| Add a pin, phone (provisional)                    | [add-pin-phone.jpg](add-pin-phone.jpg)                                       |
 | Add a pin, the map with the button                | [map-add-pin.jpg](map-add-pin.jpg)                                           |
 | Add a pin, click popup                            | [pin-click-popup.jpg](pin-click-popup.jpg)                                   |
 | Add a pin, empty panel                            | [pin-form-empty.jpg](pin-form-empty.jpg)                                     |

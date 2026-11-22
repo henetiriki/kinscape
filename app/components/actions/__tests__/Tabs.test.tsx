@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
 import { Tabs } from '@ks/app/components/actions/Tabs';
@@ -16,8 +16,10 @@ it('names a tab with its count and hides the badge from assistive tech', () => {
   const filters = screen.getByRole('tab', { name: 'Filters, 1 active' });
 
   expect(filters.getAttribute('aria-controls')).toBe('filters-panel');
-  expect(filters.querySelector('[aria-hidden]')!.textContent).toBe('1');
-  expect(screen.getByRole('tab', { name: 'Layers' })).toBeTruthy();
+  expect(within(filters).getByText('1').getAttribute('aria-hidden')).toBe(
+    'true'
+  );
+  screen.getByRole('tab', { name: 'Layers' });
 });
 
 it('leaves out the badge when nothing is active', () => {
@@ -61,14 +63,17 @@ it('selects and focuses the next or previous tab on Left and Right, wrapping at 
 
   fireEvent.keyDown(layers, { key: 'ArrowRight' });
   expect(onSelect).toHaveBeenLastCalledWith('filters');
+  // eslint-disable-next-line testing-library/no-node-access -- no query finds the focused element; the test checks focus
   expect(document.activeElement).toBe(filters);
 
   fireEvent.keyDown(layers, { key: 'ArrowLeft' });
   expect(onSelect).toHaveBeenLastCalledWith('more');
+  // eslint-disable-next-line testing-library/no-node-access -- no query finds the focused element; the test checks focus
   expect(document.activeElement).toBe(more);
 
   fireEvent.keyDown(more, { key: 'ArrowRight' });
   expect(onSelect).toHaveBeenLastCalledWith('layers');
+  // eslint-disable-next-line testing-library/no-node-access -- no query finds the focused element; the test checks focus
   expect(document.activeElement).toBe(layers);
 });
 
@@ -78,7 +83,9 @@ it('ignores other keys, and arrows work without a handler', () => {
   const [layers, filters] = screen.getAllByRole('tab');
 
   fireEvent.keyDown(layers, { key: 'a' });
+  // eslint-disable-next-line testing-library/no-node-access -- no query finds the focused element; the test checks focus
   expect(document.activeElement).not.toBe(filters);
   fireEvent.keyDown(layers, { key: 'ArrowRight' });
+  // eslint-disable-next-line testing-library/no-node-access -- no query finds the focused element; the test checks focus
   expect(document.activeElement).toBe(filters);
 });

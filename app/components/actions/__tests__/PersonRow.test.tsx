@@ -166,6 +166,7 @@ describe('with a Relationships link', () => {
     const { container } = row({ relationshipsHref: '/people/1/relationships' });
 
     expect(screen.getAllByRole('link')).toHaveLength(2);
+    // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its tag
     expect(container.firstElementChild!.tagName).toBe('DIV');
 
     const link = screen.getByRole('link', { name: /^Relationships/ });
@@ -197,7 +198,9 @@ it('shows Edit as an ArrowLink label, with no rule of its own', () => {
   const edit = screen.getByText('Edit');
 
   expect(edit).toBeInstanceOf(HTMLSpanElement);
+  // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg; the test checks its data-icon
   expect(edit.querySelector('svg[data-icon="forward"]')).not.toBeNull();
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks that the link is the direct parent of the label
   expect(edit.parentElement).toBe(screen.getByRole('link'));
   expect(css).not.toContain('.edit');
 });

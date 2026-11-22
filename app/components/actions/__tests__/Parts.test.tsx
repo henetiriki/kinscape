@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
 import { Chip, RemovableChip } from '@ks/app/components/actions/Chip';
@@ -6,14 +6,15 @@ import { KeyHint } from '@ks/app/components/actions/KeyHint';
 
 // NFR-06
 it('draws a key hint as a kbd, hidden from assistive tech only when decorative', () => {
-  const { container } = render(
+  render(
     <>
       <KeyHint>Shift</KeyHint>
       <KeyHint decorative>/</KeyHint>
     </>
   );
 
-  const [shift, slash] = Array.from(container.querySelectorAll('kbd'));
+  const shift = screen.getByText('Shift', { selector: 'kbd' });
+  const slash = screen.getByText('/', { selector: 'kbd' });
 
   expect(shift.textContent).toBe('Shift');
   expect(shift.getAttribute('aria-hidden')).toBeNull();
@@ -54,5 +55,5 @@ it('removes a chip with a × named for it', () => {
 it('draws a removable chip without a handler', () => {
   render(<RemovableChip value='Rossouw' />);
 
-  screen.getByRole('button', { name: 'Remove Rossouw' }).click();
+  fireEvent.click(screen.getByRole('button', { name: 'Remove Rossouw' }));
 });

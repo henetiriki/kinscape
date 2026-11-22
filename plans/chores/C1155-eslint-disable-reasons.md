@@ -2,7 +2,7 @@
 
 - **Chore:** #1155
 - **Requirement IDs:** None: test tooling
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@ A local session adds `@eslint-community/eslint-plugin-eslint-comments` 4.8.1 as 
 - **C.** Replace the block with an `eslint-disable-next-line` on `close` and on `showModal`, each with the reason. Cost: 4 changed lines. This breaks the Constraint "Change only the place of their reason".
 - **Other:** your own.
 
-Recommended: A, because an `eslint-enable` ends a disable that already gives the reason. B loses nothing in lint, but it adds a reason that only repeats the disable.
+**Answer: A** (@henetiriki)
 
 **D2 · When the package lands on the branch** · Decides: Tech lead
 
@@ -34,7 +34,7 @@ The approving review starts the CI build at once ([building](../../docs/building
 - **B.** Approve first. The CI build does steps 4 and 5 and writes a "Big:" line for the package. Then a local session does steps 1 to 3. Cost: two build sessions, and the CI build cannot check the done list.
 - **Other:** your own.
 
-Recommended: A, because one build can then check every item of the done list.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

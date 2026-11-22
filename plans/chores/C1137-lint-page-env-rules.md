@@ -29,7 +29,7 @@ The issue asks for two ESLint rules. `eslint.config.mjs` already uses `no-restri
 - **B.** `no-restricted-syntax` selectors in `eslint.config.mjs`. The Test-only names go in a selector regular expression. Cost: no new module. Each block replaces the options of the rule, so the page block and the test block must list `ARROW_FUNCTIONS`, `TEST_MODIFIERS` and the two type selectors again. The list test must read the names out of a regular expression.
 - **Other:** your own.
 
-**Answer: B** (@henetiriki)
+**Answer: Other** (@henetiriki). B, with two fixes. Build the regular expression from an array. Use a `BASE_SYNTAX` constant.
 
 ## Files that change
 

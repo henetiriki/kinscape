@@ -98,3 +98,9 @@ The options:
 - The move of _Test quality_ to `docs/code-rules/test-quality.md`: #1147 does it after this Chore, and copies the new bullet as it is.
 
 ## Deviations
+
+- The local session builds every row. The CI build ran before the plugin was on the branch, so it built nothing.
+- The commits go by folder, not by rule. The pre-commit hook lints each staged file with `--max-warnings 0`, so a commit takes a file only with all its hits fixed.
+- `npm run lint:fix` changed 12 `getBy*` reads of an attribute or a child node to `queryBy*`. The build reverts these. It reads an absent attribute with `hasAttribute(...)` and `toBe(false)`.
+- The build adds 215 disables, not about 40 (D2). 35 of them check focus through `document.activeElement`, because `toHaveFocus()` needs `@testing-library/jest-dom`.
+- `prefer-implicit-assert` had 87 hits, not about 280.

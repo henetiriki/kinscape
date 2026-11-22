@@ -131,3 +131,5 @@ Then run the checks in [Verifying your work](../../AGENTS.md#verifying-your-work
 - The other sections of `docs/code-rules.md`. #1147 moves them.
 
 ## Deviations
+
+- `docs/architecture.md` was over its word budget with the knip bullet. The build cut seven words from the _Enforcement_ layers and fitness-test bullets.

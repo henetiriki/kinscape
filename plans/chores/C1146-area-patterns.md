@@ -116,3 +116,9 @@ Each commit passes `npm test`.
 
 - `design/DESIGN.md` (Constraint 7).
 - The #1147 body. Check it after this PR merges.
+
+## Deviations
+
+- The `plans/README.md` sentence has no anchor and links to `docs/architecture.md#patterns`. `plan-rule-citations.test.ts` demands an owner cite for each anchor of that file. 4d790e66 follows 63028466.
+- The copy steps of `run-claude` and the review make the folder of a file that main has and the branch lacks. `run-claude` marks only tracked files with `--skip-worktree`, because the mark fails on an untracked path. Commit 46f90674.
+- The `plans/README.md` budget is 780 and the `docs/architecture.md` budget is 570. The `docs/patterns/*.md` budget is 130. Commits 63028466 and 59e1251b.

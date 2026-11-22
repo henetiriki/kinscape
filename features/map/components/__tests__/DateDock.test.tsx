@@ -144,11 +144,9 @@ it('reaches Play and each speed by keyboard, with a checked speed', () => {
   const play = screen.getByRole('button', { name: 'Play through time' });
 
   play.focus();
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  expect(document.activeElement).toBe(play);
+  expect(play).toHaveFocus();
   screen.getByRole('radio', { name: '1' }).focus();
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  expect(document.activeElement).toBe(screen.getByRole('radio', { name: '1' }));
+  expect(screen.getByRole('radio', { name: '1' })).toHaveFocus();
   fireEvent.click(play);
   expect(onPlay).toHaveBeenLastCalledWith(5);
 

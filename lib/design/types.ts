@@ -91,7 +91,7 @@ export type State = {
   children?: Slot[] | string;
   /** The form that the state shows: its name, set as `data-form` on the state's box, and the CSS width of that box. */
   form?: { box: string; name: string };
-  /** Matches the case of the same label in `react-18.test.tsx`. */
+  /** Matches the case of the same label in `react-18-cases.tsx`. */
   label: string;
   props: Record<string, unknown>;
   /** A control for each prop that takes an element, by prop name. */

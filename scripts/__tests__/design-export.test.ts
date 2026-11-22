@@ -1012,7 +1012,6 @@ describe('inlinePseudoStyles and inlineStyles', () => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
     document.head.innerHTML = `<title>T</title><style data-bundle>${css}</style>`;
     document.body.replaceChildren(container);
-    // eslint-disable-next-line testing-library/no-unnecessary-act -- this act is React's own, and it wraps a direct createRoot render
     await act(async () => {
       createRoot(container).render(
         createElement(

@@ -245,10 +245,23 @@ export default defineConfig([
   {
     // A Testing Library query finds an element as a user does; e2e/ uses Playwright locators.
     ...testingLibrary.configs['flat/react'],
-    files: ['**/__tests__/**'],
+    files: ['**/__tests__/**/*.tsx'],
     rules: {
       ...testingLibrary.configs['flat/react'].rules,
       'testing-library/prefer-implicit-assert': 'error',
+    },
+    // A test helper that calls `render` is not a custom render: the rules flag its queries.
+    settings: { 'testing-library/custom-renders': 'off' },
+  },
+  {
+    // These tests read raw markup (the exported preview page and the SignInHero drawings), and no user view exists to query.
+    files: [
+      'app/components/auth/__tests__/SignInHero.test.tsx',
+      'lib/design/__tests__/react-18-bundle.test.tsx',
+    ],
+    rules: {
+      'testing-library/no-container': 'off',
+      'testing-library/no-node-access': 'off',
     },
   },
   {

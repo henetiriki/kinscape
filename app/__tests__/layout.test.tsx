@@ -29,7 +29,6 @@ const declaration = (options: FontOptions, prop: string) =>
   options.declarations?.find(d => d.prop === prop)?.value;
 
 it('wraps the children in an English document, after the map slot', () => {
-  // eslint-disable-next-line testing-library/render-result-naming-convention -- renderToStaticMarkup returns an HTML string, not a Testing Library result
   const html = renderToStaticMarkup(
     <RootLayout map={<p>slot</p>}>
       <p>child</p>
@@ -107,7 +106,6 @@ it('adds a latin-ext face to the same family, with its own unicode-range', () =>
 });
 
 it('puts the font variables on <html>', () => {
-  // eslint-disable-next-line testing-library/render-result-naming-convention -- renderToStaticMarkup returns an HTML string, not a Testing Library result
   const html = renderToStaticMarkup(<RootLayout map={null}>{null}</RootLayout>);
 
   for (const { variable } of withVariable()) {

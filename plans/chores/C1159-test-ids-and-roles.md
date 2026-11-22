@@ -2,7 +2,7 @@
 
 - **Spec:** #1159
 - **Requirement IDs:** [NFR-06](../../docs/requirements.md#nfr-06) (the sign-in form gets a name)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -50,7 +50,7 @@ If a `PersonField` or `DateField` box comes from `TextField`, the id comes from 
 - **B.** One id, `map-slot`, on each slot. A test takes `getAllByTestId('map-slot')` and picks the slot by its `dataset.slot`.
 - **Other:** your own.
 
-Recommended: A, because one query finds the slot and the test reads no attribute to pick it.
+**Answer: A** (@henetiriki)
 
 **D5 · What `PinPopup.test.tsx` 193 checks** · Decides: Tech lead
 
@@ -60,7 +60,7 @@ The test now checks that no `aria-hidden` node other than an `svg` exists. Its r
 - **B.** Keep the disable and the query. Change its reason to "the test checks that no aria-hidden node except an svg exists". Step 2 then has 66 disables, and step 4 has 45. The build rewords the issue.
 - **Other:** your own.
 
-Recommended: A, because the test is about the handle, and the Constraint "Do not change what a test checks" means the handle check.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

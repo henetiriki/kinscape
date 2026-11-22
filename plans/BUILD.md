@@ -51,6 +51,14 @@ If a change adds a dependency, build the work that needs no package. Write a "Bi
 
 If two readings of the plan are equally correct, build the one that changes less. Name the other reading in the "Big:" line. A "Big:" line never changes a Decisions box.
 
+<a id="too-big"></a>**Too big.** A plan is too big if it does not fit its word budget. It is also too big if the diff will pass the line cap in `/refine intent <n>` › Step 1. If the plan is too big, do these steps:
+
+- Stop.
+- Commit what works.
+- Ask the tech lead to split the Spec.
+
+If a Chore gets no plan PR, follow the [hand-back rule](README.md#hand-back).
+
 ## Before ready
 
 <a id="ready-check"></a>**Ready check.** Before the PR leaves the draft state, compare the plan and the diff with these parts of the issue:

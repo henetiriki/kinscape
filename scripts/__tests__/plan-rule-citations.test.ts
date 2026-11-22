@@ -17,7 +17,6 @@ const RULE_FILES = [
       { anchors: ['plan-pr-flow'], heading: 'Plan PR' },
       { anchors: ['hand-back', 'design-system'], heading: 'Who builds' },
       { anchors: ['missing-components'], heading: 'While you build' },
-      { anchors: ['too-big'], heading: 'When the plan changes' },
     ],
   },
   {
@@ -26,7 +25,7 @@ const RULE_FILES = [
       { anchors: ['build-ownership'], heading: 'Who builds' },
       { anchors: ['test-first', 'failing-tests'], heading: 'While you build' },
       {
-        anchors: ['small-departures', 'big-departures'],
+        anchors: ['small-departures', 'big-departures', 'too-big'],
         heading: 'When the plan changes',
       },
       { anchors: ['ready-check'], heading: 'Before ready' },

@@ -22,7 +22,7 @@ Ask about every open choice, so that none reach the plan. A Chore has no decisio
 
 ## Screen
 
-After you know the change, read the [hand-back rule](../../../plans/README.md#hand-back), the [too-big rule](../../../plans/README.md#too-big) and `HAND_BACK` in `scripts/hand-back.mts`. Read them again before you draft. Don't copy them here.
+After you know the change, read the [hand-back rule](../../../plans/README.md#hand-back), the [too-big rule](../../../plans/BUILD.md#too-big) and `HAND_BACK` in `scripts/hand-back.mts`. Read them again before you draft. Don't copy them here.
 
 If the [hand-back rule](../../../plans/README.md#hand-back) would hand the chore back, name the path or reason and continue the draft.
 

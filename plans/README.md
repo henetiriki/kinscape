@@ -60,13 +60,13 @@ The title and the body describe the work that the PR merges now. Evidence is the
 
 ## Who builds
 
-<a id="hand-back"></a>**Hand-back.** The CI build agent never edits a hand-back path. A hand-back path matches a pattern of `HAND_BACK` ([`scripts/hand-back.mts`](../scripts/hand-back.mts)). If a plan edits a hand-back path, [`claude-hand-back.yml`](../.github/workflows/claude-hand-back.yml) labels its PR `hand-back`. The CI agent builds the other rows ([`build.md`](../.github/agent/build.md#hand-back)). If each row is a hand-back path, no build runs. A chore gets no plan PR if it needs a secret or is too big ([too-big rule](#too-big)). The tech lead builds the hand-back rows in a local agent session. The tech lead also plans a Chore that gets no plan PR. If there is no plan PR, comment the reason on the issue.
+<a id="hand-back"></a>**Hand-back.** The CI build agent never edits a hand-back path. A hand-back path matches a pattern of `HAND_BACK` ([`scripts/hand-back.mts`](../scripts/hand-back.mts)). If a plan edits a hand-back path, [`claude-hand-back.yml`](../.github/workflows/claude-hand-back.yml) labels its PR `hand-back`. The CI agent builds the other rows ([`build.md`](../.github/agent/build.md#hand-back)). If each row is a hand-back path, no build runs. A chore gets no plan PR if it needs a secret or is too big ([too-big rule](BUILD.md#too-big)). The tech lead builds the hand-back rows in a local agent session. The tech lead also plans a Chore that gets no plan PR. If there is no plan PR, comment the reason on the issue.
 
 <a id="design-system"></a>**Design system.** This rule applies if a plan changes a [design system input](../design/CANVAS.md#changing-the-design-system). The tech lead runs steps 3 to 5, or a local Claude Code session that the tech lead starts runs them. If a board changed, the same person or session also runs step 7. The CI build agent cannot get access to claude.ai, so it asks in the PR. It keeps the PR as a draft. A canvas-only follow-up has its own plan: [`C689-canvas-refresh.md`](chores/C689-canvas-refresh.md).
 
 ## While you build
 
-<a id="missing-components"></a>**Missing components.** A screen plan has a `## Components` table. If the diff fits the size cap in the [too-big rule](#too-big), build a missing component in the same Spec. Give the component its own commit, with its test.
+<a id="missing-components"></a>**Missing components.** A screen plan has a `## Components` table. If the diff fits the size cap in the [too-big rule](BUILD.md#too-big), build a missing component in the same Spec. Give the component its own commit, with its test.
 
 If the diff does not fit, do these steps:
 
@@ -78,13 +78,3 @@ If the diff does not fit, do these steps:
 Build no stand-in. A style that you copy from another component is a stand-in.
 
 A Spec that builds a shared component adds it to `CONTROLS`. Run steps 2 to 7 of [Changing the design system](../design/CANVAS.md#changing-the-design-system) on the same branch ([`COMPONENTS.md`](../design/COMPONENTS.md)).
-
-## When the plan changes
-
-<a id="too-big"></a>**Too big.** A plan is too big if it does not fit its word budget. It is also too big if the diff will pass the line cap in `/refine intent <n>` › Step 1. If the plan is too big, do these steps:
-
-- Stop.
-- Commit what works.
-- Ask the tech lead to split the Spec.
-
-If a Chore gets no plan PR, follow the [hand-back rule](#hand-back).

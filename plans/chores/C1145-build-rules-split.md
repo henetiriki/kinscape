@@ -98,3 +98,5 @@ The tech lead can keep one file per list line, as on `main`.
 - The other cites of `plans/README.md` anchors that stay there.
 
 ## Deviations
+
+- Big: _Too big_ moves to `plans/BUILD.md` › _When the plan changes_, against step 2 of #1145. Its steps are build steps, and no file that a build loads linked to it in `plans/README.md`. The tech lead chose this in the review. `plans/README.md` loses _When the plan changes_, and the links in _Hand-back_, _Missing components_ and `.claude/skills/refine/chore.md` name `BUILD.md#too-big`. Budgets: `plans/BUILD.md` 560, `plans/README.md` 760.

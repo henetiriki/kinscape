@@ -132,4 +132,6 @@ Then run the checks in [Verifying your work](../../AGENTS.md#verifying-your-work
 
 ## Deviations
 
-- `docs/architecture.md` was over its word budget with the knip bullet. The build cut seven words from the _Enforcement_ layers and fitness-test bullets.
+- `docs/architecture.md` was over its word budget with the knip bullet. The build shortened the _Enforcement_ fitness-test and Layers bullets, and kept each fact.
+- A local `npm run design:export` rewrites the snapshots with macOS sub-pixel widths. The `design` job proves that no snapshot changed.
+- The Evidence gives one `shasum -a 256` digest of each folder's sorted hash list, not the 150 lines of each list.

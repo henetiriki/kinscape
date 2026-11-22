@@ -57,8 +57,8 @@ Import repo paths by alias: `#ks/` in `.mts` and `.mjs` files, `@ks/` elsewhere.
 
 - **Lint** (`eslint.config.mjs`): arrow functions only, exported types only in `types.ts`, alias imports by extension; the config lists the rest.
 - **knip** (`knip.json`, in `npm run lint`): unused files, exports, types and dependencies.
-- **Fitness tests** (`scripts/__tests__/`): `vercel-imports`; `scoping`, `gate` and `boundary` (safety rows of `scripts/safety.mts`); six in the Tree data row.
-- **Layers** (`scripts/layers.mts`, ESLint rule `layers/imports`, test `layers.test.ts`): a layer may import only the layers in its row. `lib/domain` may not import Node built-ins or `maplibre-gl`. `features/` holds only feature folders, imported through `index.ts`. Tests, `app/screens`, `scripts`, `e2e` and `lib/design` are outside the layers; layer code may not import them.
+- **Fitness tests** (`scripts/__tests__/`): `vercel-imports` (undeployed imports); `scoping`, `gate` and `boundary` (safety rows of `scripts/safety.mts`); six in the Tree data row.
+- **Layers** (`scripts/layers.mts`, ESLint rule `layers/imports`, test `layers.test.ts`): a layer may import only the layers in its row. `lib/domain` may not import Node built-ins or `maplibre-gl`. `features/` holds only feature folders, imported from outside through `index.ts`. Layer code may not import tests, `app/screens`, `scripts`, `e2e` or `lib/design`.
   | Layer             | Holds                                  | May import                                                                                   |
   | ----------------- | -------------------------------------- | -------------------------------------------------------------------------------------------- |
   | `design`          | `design/`                              | nothing                                                                                      |

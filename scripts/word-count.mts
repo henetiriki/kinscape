@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, lstatSync, readFileSync } from 'node:fs';
 import { isAbsolute, relative, sep } from 'node:path';
 
 // The single home of the word budgets. To change one, edit it here in a PR.
@@ -95,7 +95,12 @@ export const checkFiles = (root: string, paths: string[]): string[] =>
   paths.flatMap(path => {
     const entry = entryFor(path);
 
-    if (entry === undefined || !existsSync(`${root}/${path}`)) {
+    // A symlink has the text of its target, which has its own budget.
+    if (
+      entry === undefined ||
+      !existsSync(`${root}/${path}`) ||
+      lstatSync(`${root}/${path}`).isSymbolicLink()
+    ) {
       return [];
     }
 

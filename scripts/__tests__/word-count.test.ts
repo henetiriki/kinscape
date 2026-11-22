@@ -1,5 +1,11 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -184,6 +190,15 @@ describe('checkFiles and run', () => {
     expect(checkFiles(root, ['CLAUDE.md'])).toEqual([
       'CLAUDE.md: 151 words, budget 150',
     ]);
+  });
+
+  // The target of a symlink has its own budget, so a link would count the same words twice.
+  it('skips a symlink', () => {
+    write('docs/requirements.md', words(5000));
+    symlinkSync('requirements.md', join(root, 'docs/README.md'));
+
+    expect(checkFiles(root, ['docs/README.md'])).toEqual([]);
+    expect(run(root, [], '')).toBe(0);
   });
 
   it('ignores a path with no budget and a path that is gone', () => {

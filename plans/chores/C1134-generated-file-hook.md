@@ -57,7 +57,7 @@ The removed sentence "Only the tech lead, or a local session that the tech lead 
 - **B.** Put the rule in `design/CANVAS.md`.
 - **Other:** your own.
 
-**Answer: B** (@henetiriki)
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 
@@ -71,7 +71,7 @@ The removed sentence "Only the tech lead, or a local session that the tech lead 
 | ------------------------------------------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `.github/agent/settings.json`              | Changed       | The `Edit\|Write` entry: the CI hook, with the two CI reasons                                                                                                                                                                                           |
 | `scripts/__tests__/agent-settings.test.ts` | Changed       | The hook tests of the done checks; a test that `review-settings.json` denies `Edit` and `Write`; the test "is the same in settings.json and review-settings.json" (line 434) compares the Bash entries, not the whole `PreToolUse` list, and its length |
-| `design/CANVAS.md`                         | Changed       | _Making the snapshots and JPGs_: remove "Nobody edits them by hand." Step 3 of the design path names the tech lead (D5)                                                                                                                                 |
+| `design/CANVAS.md`                         | Changed       | _Making the snapshots and JPGs_: remove "Nobody edits them by hand."                                                                                                                                                                                    |
 | `.claude/settings.json`                    | Changed       | A `PreToolUse` key with the `Edit\|Write` entry: the local hook, with the two local reasons                                                                                                                                                             |
 | `AGENTS.md`                                | Changed       | _Source of truth_: remove the four sentences of step 6; add the D4 rule                                                                                                                                                                                 |
 
@@ -121,4 +121,3 @@ The line 434 test asserts that `settings.json` has one `PreToolUse` entry. Step 
 - The "has one entry" test also checks that `review-settings.json` keeps only the Bash entry.
 - The hook tests share one settings reader and one runner.
 - The D4 rule in `AGENTS.md` is three short sentences, not one. They name the three generated paths.
-- D5 names the tech lead in step 3 of the design path in `design/CANVAS.md`.

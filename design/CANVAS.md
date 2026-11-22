@@ -6,7 +6,7 @@ A design follows this path:
 
 1. For a user-visible Intent, `/refine intent <n>` slices a design Spec first.
 2. The tech lead starts a local Claude Code session. The session builds the design Spec with [Drawing a board](#drawing-a-board), then step 7 of [Changing the design system](#changing-the-design-system).
-3. Only the tech lead, or a local Claude Code session that the tech lead starts, edits the canvas.
+3. Only a local Claude Code session edits the canvas.
 
 ## Making the snapshots and JPGs
 

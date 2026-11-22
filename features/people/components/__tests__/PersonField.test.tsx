@@ -182,7 +182,7 @@ it('lets Enter through when no row is active', () => {
   expect(onChange).not.toHaveBeenCalled();
 });
 
-it('closes the list on Esc, stops the event, and keeps the text', () => {
+it('closes the list on Esc, stops and prevents the event, and keeps the text', () => {
   const { field } = setup();
 
   type(field, 'Exa');
@@ -202,6 +202,8 @@ it('closes the list on Esc, stops the event, and keeps the text', () => {
   expect(screen.queryByRole('listbox')).toBeNull();
   expect(field.value).toBe('Exa');
   expect(outer).not.toHaveBeenCalled();
+  // A listener on `document` is on the same node as React's, so only this flag keeps the panel open.
+  expect(keyDown.defaultPrevented).toBe(true);
 });
 
 it('lets Esc and other keys through when the list is closed', () => {

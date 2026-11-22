@@ -234,7 +234,9 @@ export const PersonField = ({
       event.preventDefault();
       pick(activeRow.person);
     } else if (event.key === 'Escape' && open) {
-      // The panel that holds the field stays open.
+      // The panel that holds the field stays open: a native listener on `document` reads
+      // `defaultPrevented`, and `stopPropagation` does not stop a listener on the same node.
+      event.preventDefault();
       event.stopPropagation();
       setOpen(false);
     }

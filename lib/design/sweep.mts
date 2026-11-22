@@ -33,10 +33,13 @@ export const jpegSize = (bytes: Uint8Array): Size => {
 };
 
 /**
- * Lists what stops `screens.json` covering every image: an image with no entry
- * and not in `noEntry`, an entry that is also in `noEntry` or has no image,
- * one that is not the snapshot's size, an `ignore` area on an entry that is not in `mayIgnore`, a mode
- * other than `blocking`, or a threshold other than 0.5.
+ * Lists what stops `screens.json` covering every image:
+ * - an image with no entry that is not in `noEntry`;
+ * - an entry that is also in `noEntry` or has no image;
+ * - an entry that is not the size of its snapshot;
+ * - an `ignore` area on an entry that is not in `mayIgnore`;
+ * - a mode other than `blocking`;
+ * - a threshold other than 0.5.
  */
 export const sweepProblems = (
   raw: unknown,

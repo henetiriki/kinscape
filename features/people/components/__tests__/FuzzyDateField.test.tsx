@@ -180,6 +180,19 @@ it('shows its own error before the error of the caller, and the caller error aga
   expect(screen.getByRole('alert').textContent).toBe('Enter a date.');
 });
 
+it('drops the error of the caller after a check that reads the date, and shows it again for an empty check', () => {
+  const field = setup({ error: 'Enter a date.' });
+
+  type(field, 'ABT 1850');
+  fireEvent.blur(field);
+  expect(screen.queryByRole('alert')).toBeNull();
+  expect(field.getAttribute('aria-invalid')).toBeNull();
+  expect(slot().textContent).toBe('Reads as About 1850');
+  type(field, '');
+  fireEvent.blur(field);
+  expect(screen.getByRole('alert').textContent).toBe('Enter a date.');
+});
+
 it('does not check a default value in the focus state', () => {
   setup({ defaultValue: '31 FEB 1850', state: 'focus' });
 

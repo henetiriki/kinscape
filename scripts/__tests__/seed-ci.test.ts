@@ -9,7 +9,7 @@ import {
 } from 'vitest';
 
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
-import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
+import { EVENT_TYPES, MAX_PINS } from '@ks/lib/domain/pins/schemas.mts';
 import { run, SEED } from '@ks/scripts/seed-ci.mts';
 import { SYNTHETIC } from '@ks/server/auth/synthetic.mts';
 import { sharedTestDb } from '@ks/server/db/__tests__/pglite.ts';
@@ -88,8 +88,9 @@ describe('seed-ci run', () => {
       treeId: SYNTHETIC.treeId,
     };
 
-    it('sets the size that the perf check needs', () => {
-      expect(SEED).toEqual({ persons: 10, pins: 10_000, places: 500 });
+    it('sets the size that the perf check needs, and leaves five places under the Pins list cap', () => {
+      expect(SEED).toEqual({ persons: 10, pins: 9_995, places: 500 });
+      expect(MAX_PINS - SEED.pins).toBe(5);
     });
 
     it('adds the counts that it is given, with no birth or death on a Person', async () => {

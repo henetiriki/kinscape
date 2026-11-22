@@ -6,11 +6,13 @@ import type { TestWindow } from '@ks/e2e/types';
 
 import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
 
-// The seed (scripts/seed-ci.mts) adds 10,000 Pins to the SYNTHETIC Tree of the Postgres that the
+// The seed (scripts/seed-ci.mts) adds 9,995 Pins to the SYNTHETIC Tree of the Postgres that the
 // CI `e2e` job uses. The memory adapters hold none, so playwright.config.ts leaves this file out
 // there.
 
-const SEEDED = 10_000;
+const SEEDED = 9_995;
+// The save test of pin-form.spec.ts adds one Pin to the same Tree, so a count reads one more once it ran.
+const ALL = `(?:${SEEDED}|${SEEDED + 1})`;
 
 const shownTypes = async (page: Page) => {
   await page.waitForFunction(() => 'kinscapeMap' in window);
@@ -68,12 +70,14 @@ test('the Pins row counts the Pins that are true on the Map date', async ({
 }) => {
   await page.goto('/');
   await goTo(page, '1950');
-  await expect(caption(page)).toHaveText(new RegExp(`of ${SEEDED} true`));
+  await expect(caption(page)).toHaveText(new RegExp(`of ${ALL} true`));
   await expect(caption(page)).not.toHaveText(
-    `0 of ${SEEDED} true on this date`
+    new RegExp(`^0 of ${ALL} true on this date$`)
   );
   await goTo(page, '2020');
-  await expect(caption(page)).toHaveText(`0 of ${SEEDED} true on this date`);
+  await expect(caption(page)).toHaveText(
+    new RegExp(`^0 of ${ALL} true on this date$`)
+  );
   await expect.poll(async () => (await shownTypes(page)).length).toBe(0);
 });
 
@@ -467,9 +471,9 @@ test.describe('on a phone', () => {
   });
 });
 
-// NFR-01: 10,000 Pins, 20 steps of the Map date by a day, each redraw under 2500 ms (software WebGL on CI).
+// NFR-01: about 10,000 Pins, 20 steps of the Map date by a day, each redraw under 2500 ms (software WebGL on CI).
 test(
-  'each redraw with 10,000 Pins stays under 2500 ms and asks for the Pins once',
+  'each redraw with about 10,000 Pins stays under 2500 ms and asks for the Pins once',
   { tag: '@perf' },
   async ({ page }) => {
     const pinRequests: string[] = [];

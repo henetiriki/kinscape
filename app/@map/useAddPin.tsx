@@ -12,7 +12,8 @@ import { PinForm } from '@ks/features/people';
 /**
  * The open state of the "Add a pin" panel (PIN-01, NFR-05). On a desktop it gives the button while
  * the panel is closed and the panel while it is open. A phone gets neither. A saved Pin closes the
- * panel and calls `onSaved`, so the caller loads the Pins again.
+ * panel and calls `onSaved`, so the caller loads the Pins again. A save that ends after Cancel or
+ * Esc closed the panel also calls `onSaved`, because the server has saved the Pin.
  */
 export const useAddPin = ({
   onSaved,
@@ -22,10 +23,16 @@ export const useAddPin = ({
   const phone = usePhone();
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
-  const saved = useCallback(() => {
-    setOpen(false);
-    onSaved();
-  }, [onSaved]);
+  const save = useCallback(
+    async (input: unknown) => {
+      const result = await createPinAction(input);
+
+      if (result.ok) onSaved();
+
+      return result;
+    },
+    [onSaved]
+  );
 
   if (phone) {
     return {};
@@ -33,9 +40,7 @@ export const useAddPin = ({
 
   return open
     ? {
-        panel: (
-          <PinForm onCancel={close} onSave={createPinAction} onSaved={saved} />
-        ),
+        panel: <PinForm onCancel={close} onSave={save} onSaved={close} />,
       }
     : { action: <AddPinButton onClick={() => setOpen(true)} /> };
 };

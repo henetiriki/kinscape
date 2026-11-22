@@ -2,7 +2,7 @@
 
 import type { FormEvent } from 'react';
 
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import type { PinMessages } from '@ks/features/people/components/types.ts';
 import type { PersonSummary } from '@ks/lib/domain/persons/types.ts';
@@ -68,6 +68,7 @@ export const PinForm = ({
   onSaved: () => void;
 }) => {
   const titleId = useId();
+  const form = useRef<HTMLFormElement>(null);
   const people = usePeople();
   const [ids] = useState(() => ({ pin: uuidV7(), place: uuidV7() }));
   const [person, setPerson] = useState<PersonSummary>();
@@ -77,17 +78,18 @@ export const PinForm = ({
   const loading = people.isPending || (people.isError && people.isFetching);
   const loadFailed = people.isError && !people.isFetching;
 
-  // Esc closes the panel. A dialog, such as the Pin popup, owns its own Esc, and the Person list stops
-  // the Esc that closes it.
+  // Esc closes the panel only when it starts in the panel, or on the page when no control holds the
+  // focus. The dock date field and the Pin popup own an Esc outside the panel, and the Person list
+  // prevents the Esc that closes it.
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
+      const { target } = event;
+
       if (
         event.key === 'Escape' &&
         !event.defaultPrevented &&
-        !(
-          event.target instanceof Element &&
-          event.target.closest('[role=dialog]')
-        )
+        (target === document.body ||
+          (target instanceof Node && form.current!.contains(target)))
       ) {
         onCancel();
       }
@@ -164,7 +166,8 @@ export const PinForm = ({
         aria-labelledby={titleId}
         className={styles.form}
         noValidate
-        onSubmit={event => void save(event)}>
+        onSubmit={event => void save(event)}
+        ref={form}>
         <div className={styles.head}>
           <Text as='h2' id={titleId} variant='h2'>
             Add a pin

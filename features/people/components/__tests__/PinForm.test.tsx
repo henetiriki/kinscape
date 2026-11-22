@@ -328,7 +328,7 @@ it('shows the alert and saves nothing when the Person id is not an id', async ()
   expect(onSave).not.toHaveBeenCalled();
 });
 
-it('closes on Cancel and on Esc, and not on an Esc that a dialog owns', async () => {
+it('closes on Cancel and on Esc, and not on an Esc outside the panel', async () => {
   const { onCancel } = setup();
 
   await ready();
@@ -348,6 +348,13 @@ it('closes on Cancel and on Esc, and not on an Esc that a dialog owns', async ()
   fireEvent.keyDown(document.body, { key: 'Enter' });
   expect(onCancel).toHaveBeenCalledTimes(3);
   dialog.remove();
+
+  // The dock date field and the map own an Esc that starts outside the panel.
+  const outside = document.body.appendChild(document.createElement('input'));
+
+  fireEvent.keyDown(outside, { key: 'Escape' });
+  expect(onCancel).toHaveBeenCalledTimes(3);
+  outside.remove();
 });
 
 it('leaves an Esc that closes the Person list to the list', async () => {

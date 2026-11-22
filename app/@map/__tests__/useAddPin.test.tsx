@@ -5,7 +5,11 @@ const form = vi.hoisted(() => vi.fn());
 
 vi.mock('@ks/app/@map/actions', () => ({ createPinAction: vi.fn() }));
 vi.mock('@ks/features/people', () => ({
-  PinForm: (props: { onCancel: () => void; onSaved: () => void }) => {
+  PinForm: (props: {
+    onCancel: () => void;
+    onSave: (input: unknown) => Promise<{ ok: boolean }>;
+    onSaved: () => void;
+  }) => {
     form(props);
 
     return (
@@ -71,14 +75,49 @@ it('closes the panel on cancel and gives the button again', () => {
   expect(onSaved).not.toHaveBeenCalled();
 });
 
-it('saves with createPinAction, and closes the panel and calls onSaved after a save', () => {
+it('closes the panel after a save, and leaves the Pins to the save itself', () => {
+  render(<Probe />);
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Saved form' }));
+
+  expect(slot('panel').textContent).toBe('');
+  expect(onSaved).not.toHaveBeenCalled();
+});
+
+it('saves with createPinAction, gives back its answer, and calls onSaved for a saved Pin', async () => {
+  vi.mocked(createPinAction).mockResolvedValue({ ok: true } as never);
   render(<Probe />);
   fireEvent.click(screen.getByRole('button', { name: 'Add a pin' }));
 
-  expect(form.mock.calls[0][0].onSave).toBe(createPinAction);
-  fireEvent.click(screen.getByRole('button', { name: 'Saved form' }));
+  const result = await form.mock.calls[0][0].onSave({ id: 'p' });
+
+  expect(createPinAction).toHaveBeenCalledWith({ id: 'p' });
+  expect(result).toEqual({ ok: true });
   expect(onSaved).toHaveBeenCalledTimes(1);
+});
+
+it('calls onSaved for a save that finishes after the panel closed, and not for a failed save', async () => {
+  let finish!: (value: never) => void;
+
+  vi.mocked(createPinAction).mockReturnValueOnce(
+    new Promise(done => {
+      finish = done;
+    })
+  );
+  vi.mocked(createPinAction).mockResolvedValueOnce({ ok: false } as never);
+  render(<Probe />);
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin' }));
+
+  const pending = form.mock.calls[0][0].onSave({});
+
+  fireEvent.click(screen.getByRole('button', { name: 'Cancel form' }));
   expect(slot('panel').textContent).toBe('');
+  finish({ ok: true } as never);
+  await pending;
+  expect(onSaved).toHaveBeenCalledTimes(1);
+
+  await form.mock.calls[0][0].onSave({});
+  expect(onSaved).toHaveBeenCalledTimes(1);
 });
 
 it('gives neither the button nor the panel on a phone', () => {

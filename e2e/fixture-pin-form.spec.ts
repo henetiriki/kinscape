@@ -76,13 +76,53 @@ test('draws the Person list above the date dock', async ({ page }) => {
   await expect(list).toBeVisible();
 
   const box = (await list.boundingBox())!;
+  const dock = (await page
+    .getByRole('region', { name: 'Map date' })
+    .boundingBox())!;
+  const left = Math.max(box.x, dock.x);
+  const right = Math.min(box.x + box.width, dock.x + dock.width);
+  const top = Math.max(box.y, dock.y);
+  const bottom = Math.min(box.y + box.height, dock.y + dock.height);
+
+  // The list crosses the dock, so the point below lies in both.
+  expect(right).toBeGreaterThan(left);
+  expect(bottom).toBeGreaterThan(top);
+
   const topmost = await page.evaluate(
     ({ x, y }) =>
-      document.elementFromPoint(x, y)?.closest('[role="listbox"]') !== null,
-    { x: box.x + box.width - 8, y: box.y + box.height - 8 }
+      document.elementFromPoint(x, y)?.closest('[role="listbox"]') != null,
+    { x: (left + right) / 2, y: (top + bottom) / 2 }
   );
 
   expect(topmost).toBe(true);
+});
+
+// PIN-01: an Esc that closes the Person list leaves the panel open, and the next Esc closes it.
+test('closes only the Person list on the first Esc', async ({ page }) => {
+  await page.goto('/');
+  await addButton(page).click();
+  await page.getByRole('combobox', { name: 'Person' }).fill('Maria');
+
+  const list = page.getByRole('listbox', { name: 'People' });
+
+  await expect(list).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(list).toHaveCount(0);
+  await expect(panel(page)).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(panel(page)).toHaveCount(0);
+});
+
+// PIN-01: the date field of the dock owns its Esc, which undoes an edit.
+test('keeps the panel open on an Esc in the date field of the dock', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await addButton(page).click();
+  await expect(panel(page)).toBeVisible();
+  await page.getByRole('textbox', { name: 'Date shown' }).fill('1900');
+  await page.keyboard.press('Escape');
+  await expect(panel(page)).toBeVisible();
 });
 
 // PIN-01: a scroll of the panel body closes the Person list.

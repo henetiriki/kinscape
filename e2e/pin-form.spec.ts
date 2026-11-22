@@ -39,8 +39,18 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   const family = surname();
 
   await createPerson(page, family);
+
+  // Until the Pins arrive, the caption reads "0 of 0", so the first count waits for them.
+  const pinsLoaded = page.waitForResponse(
+    response => new URL(response.url()).pathname === '/data/pins'
+  );
+
   await page.goto('/');
+
+  const loaded = ((await (await pinsLoaded).json()) as unknown[]).length;
+
   await page.waitForFunction(() => 'kinscapeMap' in window);
+  await expect.poll(async () => (await counts(page)).all).toBe(loaded);
   await goTo(page, '1850');
 
   const before = await counts(page);
@@ -58,18 +68,14 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   await page.getByRole('button', { name: 'Save' }).click();
   await expect(page.getByRole('form', { name: 'Add a pin' })).toHaveCount(0);
 
-  // The Pins list holds 10,000 Pins at most, and the seeded Tree holds that many, so it lists no new Pin.
-  if (before.all >= 10_000) return;
-
+  // The Pins list holds 10,000 Pins at most, and the seed leaves room for this Pin.
   await expect
-    .poll(async () => (await counts(page)).all)
-    .toBe(beforeLater.all + 1);
-  expect((await counts(page)).shown).toBe(beforeLater.shown);
+    .poll(async () => counts(page))
+    .toEqual({ all: beforeLater.all + 1, shown: beforeLater.shown });
   await goTo(page, '1850');
-  expect(await counts(page)).toEqual({
-    all: before.all + 1,
-    shown: before.shown + 1,
-  });
+  await expect
+    .poll(async () => counts(page))
+    .toEqual({ all: before.all + 1, shown: before.shown + 1 });
 
   await page.reload();
   await goTo(page, '1850');

@@ -39,7 +39,7 @@ export const FuzzyDateField = ({
 }: {
   /** Text to start with. The field checks it on the first render, unless `state` is `focus`. */
   defaultValue?: string;
-  /** A problem that the caller found, such as an empty date. The slot shows it after the field's own error. */
+  /** A problem that the caller found, such as an empty date. The slot shows it after the field's own error, until a check reads the date. */
   error?: ReactNode;
   /** The slot shows it while the text is empty or does not read as a date. */
   helper?: ReactNode;
@@ -62,12 +62,17 @@ export const FuzzyDateField = ({
   const [own, setOwn] = useState<null | string>(() =>
     state === 'focus' ? null : problemOf(defaultValue)
   );
-  const error = own ?? given;
+  // A check that reads a date drops the error of the caller, and an empty check brings it back.
+  const [read, setRead] = useState(false);
+  const error = own ?? (read ? undefined : given);
   // A new count at each check gives the error a new element, so a screen reader reads a repeat.
   const [checks, setChecks] = useState(0);
   const parsed = parseFuzzyDate(text);
   const check = () => {
-    setOwn(problemOf(text));
+    const problem = problemOf(text);
+
+    setOwn(problem);
+    setRead(problem === null && text.trim() !== '');
     setChecks(count => count + 1);
   };
 

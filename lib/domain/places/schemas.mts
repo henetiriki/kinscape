@@ -22,10 +22,14 @@ export const PLACE_PRECISIONS = [
   'approximate',
 ] as const;
 
+/** The largest latitude and longitude in degrees, north or south and east or west of zero. */
+export const MAX_LATITUDE = 90;
+export const MAX_LONGITUDE = 180;
+
 /** What a client may save for a Place (PIN-02). A map click gives no precision, so it defaults. */
 export const placeInputSchema = z.strictObject({
   id: idField(parsePlaceId),
-  latitude: z.number().min(-90).max(90),
-  longitude: z.number().min(-180).max(180),
+  latitude: z.number().min(-MAX_LATITUDE).max(MAX_LATITUDE),
+  longitude: z.number().min(-MAX_LONGITUDE).max(MAX_LONGITUDE),
   precision: z.enum(PLACE_PRECISIONS).default('approximate'),
 });

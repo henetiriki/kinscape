@@ -1,6 +1,7 @@
 import type { CoordinateError } from '#ks/lib/domain/places/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
 
+import { MAX_LATITUDE, MAX_LONGITUDE } from '#ks/lib/domain/places/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
 const DEGREE_MARKS = /[°′″'"]/;
@@ -31,7 +32,8 @@ export const parseCoordinates = (
 
   const [latitude, longitude] = parts.map(Number) as [number, number];
 
-  return Math.abs(latitude) > 90 || Math.abs(longitude) > 180
+  return Math.abs(latitude) > MAX_LATITUDE ||
+    Math.abs(longitude) > MAX_LONGITUDE
     ? err('out-of-range')
     : ok({ latitude, longitude });
 };

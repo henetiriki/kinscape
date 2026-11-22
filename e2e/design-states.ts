@@ -39,7 +39,7 @@ const fillPinForm = async (page: Page) => {
   await page.getByLabel('Address as recorded').blur();
 };
 
-/** Chooses "Save" on a filled panel, with the server action held, or failed as a network failure does. */
+/** Fills the panel and chooses "Save". The server action then never answers (`hold`) or fails as a network failure does (`abort`). */
 const saveWith = async (page: Page, answer: 'abort' | 'hold') => {
   await page.route('**/*', route =>
     route.request().headers()['next-action']

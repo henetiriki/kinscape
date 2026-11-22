@@ -93,7 +93,7 @@ The approving review starts the CI build at once ([building](../../docs/building
 
 ## Deviations
 
-- Big: `@eslint-community/eslint-plugin-eslint-comments` is not on the branch, so `npm install` is off and the build wrote no `eslint.config.mjs` change. Steps 1, 3 (config) and 4 (lint failure Evidence) remain for a local session. D1 A applies there.
+- A local session added the package after the CI build, not before the approving review (D2). It then did steps 3 (config) and 4.
 - `link.ts` casts the function child to `ReactNode`, because the types of `createElement` take a node as a child.
 
 ## Out of scope

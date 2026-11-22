@@ -191,22 +191,18 @@ it('focuses the field on its shortcut unless a text input has focus', () => {
   fireEvent.keyDown(document.body, { ctrlKey: true, key: '/' });
   fireEvent.keyDown(document.body, { altKey: true, key: '/' });
   fireEvent.keyDown(document.body, { key: '/', metaKey: true });
-  // eslint-disable-next-line testing-library/no-node-access -- no query reads focus; the test checks which element has it
-  expect(document.activeElement).not.toBe(search);
+  expect(search).not.toHaveFocus();
 
   // A handled key is cancelled so the "/" is not typed into the field.
   expect(fireEvent.keyDown(document.body, { key: '/' })).toBe(false);
-  // eslint-disable-next-line testing-library/no-node-access -- no query reads focus; the test checks which element has it
-  expect(document.activeElement).toBe(search);
+  expect(search).toHaveFocus();
 
   search.blur();
   fireEvent.keyDown(document, { key: '/' });
-  // eslint-disable-next-line testing-library/no-node-access -- no query reads focus; the test checks which element has it
-  expect(document.activeElement).toBe(search);
+  expect(search).toHaveFocus();
 
   search.blur();
   unmount();
   fireEvent.keyDown(document.body, { key: '/' });
-  // eslint-disable-next-line testing-library/no-node-access -- no query reads focus; the test checks which element has it
-  expect(document.activeElement).not.toBe(search);
+  expect(search).not.toHaveFocus();
 });

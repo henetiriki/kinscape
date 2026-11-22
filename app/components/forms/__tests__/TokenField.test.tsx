@@ -22,8 +22,7 @@ it('removes a chip with its × and moves focus to the input', () => {
   fireEvent.click(screen.getByRole('button', { name: 'Remove Rossouw' }));
 
   expect(chips()).toEqual(['Remove Naidoo']);
-  // eslint-disable-next-line testing-library/no-node-access -- no query reads focus; the test checks which element has it
-  expect(document.activeElement).toBe(screen.getByLabelText('Surname'));
+  expect(screen.getByLabelText('Surname')).toHaveFocus();
   expect(onChange).toHaveBeenCalledWith(['Naidoo']);
 });
 

@@ -58,7 +58,7 @@ runs:
 
     # From main, not this branch (see load-agent-files). settings.json is the build agent's tools.
     - name: Load the agent files
-      uses: henetiriki/kinscape/.github/actions/load-agent-files@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
+      uses: henetiriki/kinscape/.github/actions/load-agent-files@0c5deeac600c07487ec8429764ff3a389cf2456f
       with:
         files: ${{ inputs.files }}
         settings: settings.json

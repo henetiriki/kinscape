@@ -71,7 +71,7 @@ jobs:
       # job (Claude doesn't start, and the report step says so), and shows the system prompt. A 404 for a
       # main file leaves that file out.
       - name: Load the review rules and settings
-        uses: henetiriki/kinscape/.github/actions/load-agent-files@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
+        uses: henetiriki/kinscape/.github/actions/load-agent-files@0c5deeac600c07487ec8429764ff3a389cf2456f
         with:
           files: review.md review-code.md
           settings: review-settings.json

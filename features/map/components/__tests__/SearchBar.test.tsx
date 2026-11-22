@@ -55,15 +55,13 @@ it('focuses the bar on "/" and leaves the pill alone', () => {
 
   fireEvent.keyDown(document.body, { key: '/' });
 
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  expect(document.activeElement).toBe(screen.getByRole('searchbox'));
+  expect(screen.getByRole('searchbox')).toHaveFocus();
 
   unmount();
   render(<SearchBar form='pill' />);
   fireEvent.keyDown(document.body, { key: '/' });
 
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  expect(document.activeElement).toBe(document.body);
+  expect(document.body).toHaveFocus();
 });
 
 it.each(['bar', 'pill'] as const)(
@@ -82,13 +80,11 @@ it.each(['bar', 'pill'] as const)(
     expect(fireEvent.keyDown(input, { key: 'Escape' })).toBe(false);
     expect(input.value).toBe('');
     expect(onChange).toHaveBeenCalledTimes(1);
-    // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-    expect(document.activeElement).toBe(input);
+    expect(input).toHaveFocus();
 
     fireEvent.keyDown(input, { key: 'Escape' });
 
-    // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-    expect(document.activeElement).not.toBe(input);
+    expect(input).not.toHaveFocus();
   }
 );
 
@@ -101,8 +97,7 @@ it('ignores other keys', () => {
   fireEvent.keyDown(input, { key: 'a' });
 
   expect(input.value).toBe('Kimberley');
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  expect(document.activeElement).toBe(input);
+  expect(input).toHaveFocus();
 });
 
 it('lets the first of two bars take "/"', () => {
@@ -115,6 +110,5 @@ it('lets the first of two bars take "/"', () => {
 
   fireEvent.keyDown(document.body, { key: '/' });
 
-  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
-  expect(document.activeElement).toBe(screen.getAllByRole('searchbox')[0]);
+  expect(screen.getAllByRole('searchbox')[0]).toHaveFocus();
 });

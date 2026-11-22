@@ -1,0 +1,1 @@
+../../docs/code-rules/pattern-table.md

@@ -24,6 +24,7 @@ const SAMPLES = [
   ['docs/security.md', 'docs/security.md'],
   ['docs/writing.md', 'docs/writing.md'],
   ['docs/code-rules.md', 'docs/code-rules.md'],
+  ['docs/code-rules/**', 'docs/code-rules/scale.md'],
   ['.github/agent/spec-checks.md', '.github/agent/spec-checks.md'],
 ] as const;
 
@@ -65,6 +66,7 @@ describe('isHandBack', () => {
       'docs/security.md',
       'docs/writing.md',
       'docs/code-rules.md',
+      'docs/code-rules/**',
       '.github/agent/spec-checks.md',
     ]);
   });
@@ -82,6 +84,7 @@ describe('isHandBack', () => {
     'docs/security.md',
     'docs/writing.md',
     'docs/code-rules.md',
+    'docs/code-rules/scale.md',
     '.github/agent/spec-checks.md',
   ])('is a hand-back path: %s', path => {
     expect(isHandBack(path)).toBe(true);

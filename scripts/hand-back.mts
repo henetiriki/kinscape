@@ -34,6 +34,7 @@ export const HAND_BACK = [
   'docs/security.md',
   'docs/writing.md',
   'docs/code-rules.md',
+  'docs/code-rules/**',
   '.github/agent/spec-checks.md',
 ];
 

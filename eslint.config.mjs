@@ -254,9 +254,9 @@ export default defineConfig([
     settings: { 'testing-library/custom-renders': 'off' },
   },
   {
-    // These files read raw markup: the exported preview page, and the root of a panel that has no role.
+    // These tests read raw markup (the exported preview page and the SignInHero drawings), and no user view exists to query.
     files: [
-      'lib/design/__tests__/react-18.test.tsx',
+      'app/components/auth/__tests__/SignInHero.test.tsx',
       'lib/design/__tests__/react-18-bundle.test.tsx',
     ],
     rules: {

@@ -107,7 +107,6 @@ The approving review starts the CI build at once ([building](../../docs/building
 
 ## Deviations
 
-- Big: `@testing-library/jest-dom` is not on the branch (D5 A did not happen), and `npm install` is off. The build skips the focus checks, the `vitest.setup.ts` import, the `Menu` rewrite and the disable removals in the test files that those checks change. A local session adds the package, then a second build pass does these rows.
-- Lint reported `scripts/__tests__/*.test.ts` disables as errors (the plugin no longer applies to `.ts`), so the build removed them: 5 in `run-summary.test.ts` and 1 in `design-export.test.ts`. `layout.test.tsx` lost 2, and `react-18.test.tsx` lost 15.
-- `SignInHero.test.tsx` keeps its 6 disables: lint does not report them as unused.
-- The 2 raw-markup files are `react-18.test.tsx` and `react-18-bundle.test.tsx`.
+- The local session added `@testing-library/jest-dom` 8.0.0 after the approval, not before it (D5 A). The CI build did steps 5 to 7, and the local session did steps 1, 3 and 4.
+- Lint reported `scripts/__tests__/*.test.ts` disables as errors (the plugin no longer applies to `.ts`), so the build removed them: 5 in `run-summary.test.ts` and 1 in `design-export.test.ts`.
+- The raw-markup override names `SignInHero.test.tsx` and `react-18-bundle.test.tsx`, as #1153 step 7 says. `react-18.test.tsx` keeps 1 disable, on the DialogPanel root.

@@ -64,6 +64,7 @@ it('names the form attribute that DialogPanel sets, and the form of the list sta
   const list = CARDS.find(({ name }) => name === 'SourcesList')!.states[1];
 
   expect(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the DialogPanel root div has no role; the test checks its form attribute
     container.querySelector(`[${FORM_ATTRIBUTE}]`)?.getAttribute(FORM_ATTRIBUTE)
   ).toBe(list.form?.name);
   quiet();

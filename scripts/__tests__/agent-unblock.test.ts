@@ -505,7 +505,7 @@ describe('run', () => {
       expect(body).toContain('a new size and a new check');
       expect(body).toContain('`status: draft`');
       expect(body).not.toContain('ready-for-dev');
-      expect(body).toContain('@tech-lead: run `/refine spec 8`');
+      expect(body).toContain('Then run `/refine spec 8` and set the status.');
       expect(edits()[0][0]).toEqual([
         'issue',
         'edit',
@@ -742,6 +742,131 @@ describe('run', () => {
       expect(comments().map(([args]) => args[2])).toEqual(['9']);
       expect(edits().map(([args]) => args[2])).toEqual(['9']);
       expect(unblocked()).toEqual([{ blockers: [5], number: 9 }]);
+    });
+  });
+
+  // The refresh runs for a trusted author, so the comment tells the owner to wait for it.
+  describe('the wait lines', () => {
+    const WITH_OUTPUT = { ...ENV, GITHUB_OUTPUT: OUTPUT };
+    const BLOCKED = ['status: blocked'];
+    const WAIT = [
+      'A refresh against `main` is running.',
+      '@tech-lead: wait for its comment.',
+    ];
+    const DESIGN = {
+      mergedPrs: [{ closingIssuesReferences: [{ number: 5 }], number: 60 }],
+      prFiles: { 60: ['design/canvas/a'] },
+    };
+    const READY_PLAIN = [
+      '#5 is closed, so nothing blocks this any more. The label is now `status: ready-for-dev`.',
+      '',
+      '@tech-lead: set `status: ready-for-agent` to start the plan.',
+    ].join('\n');
+    const DRAFT_PLAIN = [
+      '#5 is closed, so nothing blocks this any more.',
+      '#5 changed the design in `design/canvas/`, so this Spec needs a new size and a new check. The label is now `status: draft`.',
+      '',
+      '@tech-lead: run `/refine spec 8`. Then set the status.',
+    ].join('\n');
+
+    it.each([
+      ['OWNER', undefined],
+      ['MEMBER', undefined],
+      ['COLLABORATOR', undefined],
+      [undefined, 'kinscape-agent[bot]'],
+    ])(
+      'puts them before the set line of a ready-for-dev comment (%s, %s)',
+      (association, login) => {
+        fakeGh({
+          blocking: [
+            {
+              author_association: association,
+              labels: BLOCKED,
+              login,
+              number: 8,
+            },
+          ],
+        });
+        run(
+          ['5'],
+          { ...WITH_OUTPUT, KINSCAPE_BOT_LOGIN: 'kinscape-agent[bot]' },
+          gh,
+          append
+        );
+
+        expect(comments()[0][1]).toBe(
+          [
+            '#5 is closed, so nothing blocks this any more. The label is now `status: ready-for-dev`.',
+            '',
+            ...WAIT,
+            '',
+            'Then set `status: ready-for-agent` to start the plan.',
+          ].join('\n')
+        );
+      }
+    );
+
+    it('puts them before the refine line of a draft comment', () => {
+      fakeGh({
+        ...DESIGN,
+        blocking: [
+          {
+            author_association: 'OWNER',
+            labels: BLOCKED,
+            number: 8,
+            type: 'Spec',
+          },
+        ],
+      });
+      run(['5'], WITH_OUTPUT, gh, append);
+
+      expect(comments()[0][1]).toBe(
+        [
+          '#5 is closed, so nothing blocks this any more.',
+          '#5 changed the design in `design/canvas/`, so this Spec needs a new size and a new check. The label is now `status: draft`.',
+          '',
+          ...WAIT,
+          '',
+          'Then run `/refine spec 8` and set the status.',
+        ].join('\n')
+      );
+    });
+
+    it('leaves the comments of another author as they were', () => {
+      fakeGh({
+        ...DESIGN,
+        blocking: [
+          {
+            author_association: 'CONTRIBUTOR',
+            labels: BLOCKED,
+            number: 8,
+            type: 'Spec',
+          },
+          { author_association: 'CONTRIBUTOR', labels: BLOCKED, number: 9 },
+        ],
+      });
+      run(['5'], WITH_OUTPUT, gh, append);
+
+      expect(comments().map(([, body]) => body)).toEqual([
+        DRAFT_PLAIN,
+        READY_PLAIN,
+      ]);
+    });
+
+    it('follows each issue when a trusted and another author are freed together', () => {
+      fakeGh({
+        blocking: [
+          { author_association: 'OWNER', labels: BLOCKED, number: 8 },
+          { author_association: 'CONTRIBUTOR', labels: BLOCKED, number: 9 },
+        ],
+      });
+      run(['5'], WITH_OUTPUT, gh, append);
+
+      const [first, second] = comments().map(([, body]) => body as string);
+
+      expect(first).toContain('A refresh against `main` is running.');
+      expect(second).toBe(READY_PLAIN);
+      expect(unblocked()).toEqual([{ blockers: [5], number: 8 }]);
     });
   });
 });

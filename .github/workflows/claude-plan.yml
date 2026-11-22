@@ -75,13 +75,8 @@ jobs:
         Pick up Spec, Bug or Chore #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
         First refresh it as .github/agent/refresh.md says; this is a plan run.
         The issues that blocked it are in `gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/dependencies/blocked_by`.
-        Before you draft, read its related issues as plans/README.md, related-issues rule says.
-        Run `gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/dependencies/blocking`.
-        Run `gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/parent`. A 404 means no parent.
-        If it has a parent, run `gh api repos/${{ github.repository }}/issues/<parent>/sub_issues --paginate`.
+        Run `npm run plan:new -- ${{ github.event.issue.number }} <slug>`. Pick a slug of two to four words. Read each issue that it lists, as plans/README.md, related-issues rule says.
         Add one line to your comment that lists the related issues you read. If you read none, write "Related issues read: none".
-        A Spec's id is on the Spec (`M1.4`). For a Bug or a Chore, `<n>` is ${{ github.event.issue.number }}.
-        Take the id, the plan path, the branch and the plan PR title from plans/README.md, item-types rule.
         If a Chore needs a secret or is too big, hand it back at plan time as plans/README.md, hand-back rule says.
         Write each open choice as a decision in the format in docs/how-we-work.md.
         Put `Closes #${{ github.event.issue.number }}` in the plan PR's body, so the gates and the safety net can find it.

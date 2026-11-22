@@ -84,4 +84,4 @@ Also `types/modules.d.ts` declares the `TEST_ONLY_VARIABLES` export of `eslint.c
 ## Deviations
 
 - The Approach follows the answer to D1 (option B). The `:not` clause replaces a negative-lookahead regular expression, which esquery did not apply.
-- `docs/code-rules.md` and its bullet: the tech lead removes it (hand-back path). The PR stays a draft.
+- `docs/code-rules.md`: the tech lead removed the bullet in a local session (hand-back path).

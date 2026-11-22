@@ -24,10 +24,15 @@ const NAMES = [
 it('fans the three Pins of Example Farm out, with the pointer on Birth', async () => {
   render(await Page());
 
+  const marker = screen.getByRole('button', { name: '3 Pins' });
+
   expect(
     NAMES.map(name => screen.getByRole('button', { name }).dataset.state)
   ).toEqual([undefined, undefined, 'hover']);
-  expect(screen.getByTestId('placed-at').style.left).toBe('940px');
+  const placed = screen.getByTestId('placed-at');
+
+  expect(placed.contains(marker)).toBe(true);
+  expect(placed.style.left).toBe('940px');
 });
 
 // NFR-05
@@ -39,10 +44,15 @@ it('fans them out at the phone point with no hover look on a phone', async () =>
   })) as unknown as typeof window.matchMedia;
   render(await Page());
 
+  const marker = screen.getByRole('button', { name: '3 Pins' });
+
   expect(
     NAMES.map(name => screen.getByRole('button', { name }).dataset.state)
   ).toEqual([undefined, undefined, undefined]);
-  expect(screen.getByTestId('placed-at').style.left).toBe('264px');
+  const placed = screen.getByTestId('placed-at');
+
+  expect(placed.contains(marker)).toBe(true);
+  expect(placed.style.left).toBe('264px');
   screen.getByRole('button', { name: 'Layers and filters' });
 });
 

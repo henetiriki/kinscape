@@ -42,7 +42,11 @@ it('can be disabled and shows a state', () => {
 it('draws the plain sign-in form, still named by its label', () => {
   render(<CheckboxField label='Keep me signed in on this device' plain />);
 
+  const box = screen.getByRole('checkbox', {
+    name: 'Keep me signed in on this device',
+  });
   const row = screen.getByTestId('field-row');
 
+  expect(row.contains(box)).toBe(true);
   expect(row.dataset.plain).toBe('true');
 });

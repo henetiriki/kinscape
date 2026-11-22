@@ -28,7 +28,9 @@ it('draws the bar as the Wordmark, a divider and the field, with a decorative ic
 
   expect(within(bar).getByRole('presentation').getAttribute('alt')).toBe('');
   screen.getByText('KinScape');
-  screen.getByTestId('divider');
+  expect(
+    screen.getByTestId('divider').matches('[aria-hidden="true"]:empty')
+  ).toBe(true);
 });
 
 it('draws the pill as the named icon, the bare field and the account slot', () => {

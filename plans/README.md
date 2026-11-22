@@ -31,14 +31,7 @@ Before you draft or build, check that a Bug still reproduces.
 
 If a check fails, stop. Comment each mismatch. Name who fixes each one. If the PO fixes it, swap the status label of the issue for `status: ready-for-po`. Do not edit the issue, except as the refresh does.
 
-<a id="related-issues"></a>**Related issues.** Before you draft or revise a plan, read each related issue:
-
-- Each `dependencies/blocking` issue.
-- The parent Intent. These have none:
-  - a Bug;
-  - a Chore;
-  - a milestone Spec.
-- Each open sub-issue of the parent that shares a requirement ID.
+<a id="related-issues"></a>**Related issues.** Before you draft or revise a plan, read each related issue. `npm run plan:new` lists them.
 
 In a [decision's](../docs/how-we-work.md#decisions) question, name each related issue that holds a value for the same thing, with its value. Name the issues that each differing option changes. If the plan sets a value that differs from a related issue, write a decision for it. A clash never stops a run. Only the build edits a related issue.
 
@@ -47,8 +40,8 @@ In a [decision's](../docs/how-we-work.md#decisions) question, name each related 
 <a id="plan-pr-flow"></a>**In GitHub Actions**, do these steps:
 
 - Refresh the issue ([stale-facts rule](#stale-facts)).
+- Run `npm run plan:new`.
 - Commit the plan as `plan(<id>): draft` with `Status: draft`.
-- Use the plan path and the branch from the [table](#item-types).
 - Open a draft PR with the plan PR title from the table.
 - Put `Closes #<issue>` in its body.
 - Stop.
@@ -63,7 +56,7 @@ After the tech lead approves the plan, the build agent does these steps:
 
 The title and the body describe the work that the PR merges now. Evidence is the exception ([test-first rule](#test-first)).
 
-**In a local session**, a plan that `agent-approve.mts` does not commit has `Status: approved` and the same commit text.
+**In a local session**, a plan that `agent-approve.mts` does not commit has `Status: approved` and the same commit text. A local Claude Code session hands the user `! npm run plan:new -- <n> <slug>`. A `gh` that a script starts fails in the sandbox.
 
 ## Who builds
 

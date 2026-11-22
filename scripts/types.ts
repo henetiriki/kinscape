@@ -83,6 +83,17 @@ export type HeaderRule = {
   source: string;
 };
 
+/** The `gh`, `git` and file calls of `plan-new.mts`; a test passes fakes. */
+export type PlanNewDeps = {
+  files: {
+    list: (dir: string) => string[];
+    read: (path: string) => string;
+    write: (path: string, text: string) => void;
+  };
+  gh: Gh;
+  git: (args: string[]) => string;
+};
+
 export type PrepareMapDataDeps = {
   applyCommands: (
     commands: string,

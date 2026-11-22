@@ -89,6 +89,8 @@ import {
   personRows,
   PICK_PEOPLE,
   PINS,
+  PLACED_X,
+  PLACED_Y,
   SURNAME_HELPER,
   TODAY,
   TWELVE_PINS,
@@ -1293,8 +1295,8 @@ export const CASES: [string, ReactElement][] = [
       key='placed-popup'
       pins={PINS}
       place='Kimberley'
-      x={380}
-      y={240}
+      x={PLACED_X}
+      y={PLACED_Y}
       year={1901}
     />,
   ],
@@ -1308,8 +1310,8 @@ export const CASES: [string, ReactElement][] = [
       reading='From 1890 to 1905'
       recorded='FROM 1890 TO 1905'
       state='loaded'
-      x={380}
-      y={240}
+      x={PLACED_X}
+      y={PLACED_Y}
     />,
   ],
   ...([false, true] as const).map((expanded): [string, ReactElement] => [

@@ -102,4 +102,5 @@ Two kept disables lose the line that they read:
 - `PlacedPopup` and `PlacedPinPopup` place the point at x 380, y 240. At x 400 the Close hit area leaves the 390px viewport.
 - The gallery map slots hold their own names as text, so the order test asserts `search:search`, not `search:s`.
 - Vitest keeps `HATCH_LINE` as `rgba(139, 74, 28, 0.34)` next to line 75, with no render.
-- Steps 3 to 5 of Changing the design system need claude.ai. The CI agent did not run them. The PR stays a draft.
+- Steps 3 to 5 of Changing the design system need claude.ai. A local session that the tech lead started ran them in 1be5430.
+- `PLACED_X` and `PLACED_Y` are in `lib/design/samples.mts`, so the cards, the React 18 cases and the gallery test read one value.

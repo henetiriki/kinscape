@@ -8,6 +8,7 @@ import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
 import { hitsControl } from '@ks/e2e/hits';
 import { GALLERY, OUTPUT, PREVIEW_PAD } from '@ks/lib/design/cards.mts';
+import { PLACED_X, PLACED_Y } from '@ks/lib/design/samples.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
 import { HATCH_LINE } from '@ks/lib/ui/hatch';
 
@@ -35,21 +36,6 @@ const buttonHeight = async (page: Page, label: string, name: string) =>
 
 // The --ink token, as the browser computes it.
 const INK = 'rgb(24, 33, 27)';
-
-// The shadow of a `floating` surface, as the browser computes it from the token.
-const floatingShadow = (page: Page) =>
-  page.evaluate(() => {
-    const probe = document.createElement('div');
-
-    probe.style.boxShadow = 'var(--shadow-floating)';
-    document.body.append(probe);
-
-    const shadow = getComputedStyle(probe).boxShadow;
-
-    probe.remove();
-
-    return shadow;
-  });
 
 // What the browser computes for `property: value`, set on a probe. A token or a colour then compares in px and `rgb()`.
 const computed = (
@@ -351,7 +337,12 @@ test.describe('on a phone', () => {
       height: 60,
       retry: 44,
       right: 8,
-      shadow: await floatingShadow(page),
+      shadow: await computed(
+        page,
+        'div',
+        'box-shadow',
+        'var(--shadow-floating)'
+      ),
       top: 8,
     });
   });
@@ -908,7 +899,12 @@ test.describe('at 1440px', () => {
       height: 52,
       retry: 36,
       right: 8,
-      shadow: await floatingShadow(page),
+      shadow: await computed(
+        page,
+        'div',
+        'box-shadow',
+        'var(--shadow-floating)'
+      ),
       top: 8,
     });
   });
@@ -1106,10 +1102,10 @@ test.describe('at 1440px', () => {
         );
 
       expect(Math.round(popup.x + popup.width - figure.x), label).toBe(
-        380 - (await px(gap))
+        PLACED_X - (await px(gap))
       );
       expect(Math.round(popup.y - figure.y), label).toBe(
-        240 - (await px('popup-point-y'))
+        PLACED_Y - (await px('popup-point-y'))
       );
     }
   });

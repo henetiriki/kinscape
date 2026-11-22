@@ -26,6 +26,8 @@ import {
   PIN_DETAILS,
   PIN_POPUP,
   PINS,
+  PLACED_X,
+  PLACED_Y,
   SURNAME_HELPER,
   TODAY,
   TWELVE_PINS,
@@ -268,13 +270,6 @@ const PHONE_SHEET = { expanded: false };
 
 /** The props that every `PinPopup` state shares: the Pin of the map, in a floating popup. */
 const PIN_STATE = { ...PIN_POPUP, form: 'floating', state: 'loaded' };
-
-/**
- * The map point of a `PlacedPopup` or `PlacedPinPopup` card, in px from the corner of its box.
- * `PLACED_Y` is more than `furniture-top` plus `popup-point-y`, so the popup top is not at `furniture-top`.
- */
-const PLACED_X = 380;
-const PLACED_Y = 240;
 
 /** The map text and the text in each slot of a `MapLayout` state. */
 const MAP_TEXT: Slot[] = [

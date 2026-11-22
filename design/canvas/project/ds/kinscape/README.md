@@ -2,7 +2,6 @@
 
 ## Brand
 
-- The name is **KinScape**, capital S, in UI text and docs.
 - The icon is `app/icon0.svg`: a white tree on forest green, with a 25% corner radius. Never recolour it.
 - Wordmark: the icon, then "KinScape" in Bricolage Grotesque 700.
 - Tagline: "Borders move. Places don't."
@@ -46,7 +45,7 @@ All three are OFL fonts. The app and the snapshots load the same `@fontsource` f
 | Mono M (`mono-m`)                 | JetBrains Mono 15 / 22 · 400               | Fuzzy date field                   |
 | Mono (`mono`)                     | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists     |
 
-Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line. Set no body text below 12.5px and no map label below 11px.
+Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line.
 
 ## Colours
 
@@ -70,12 +69,12 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 
 The `radius` and `shadow` notes in `tokens.json` say where each value goes.
 
-| Token   | Value                                                                                                                                                                    |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                                                                                  |
-| Touch   | Targets at least 44px. Buttons and fields 44–50px tall                                                                                                                   |
-| Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields: see Text field                                                                                 |
-| Icons   | 24px grid, 2px stroke, round caps and joins, `currentColor`. Draw at 16, 18 or 20px (24 on the phone layers button). `aria-hidden`; an icon-only button carries the name |
+| Token   | Value                                                                                                                                                     |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                                                                   |
+| Touch   | Targets at least 44px. Buttons and fields 44–50px tall                                                                                                    |
+| Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields: see Text field                                                                  |
+| Icons   | 24px grid, 2px stroke, round caps and joins, `currentColor`. Draw at 16, 18 or 20px (24 on the phone layers button). An icon-only button carries the name |
 
 ## Motion
 
@@ -160,8 +159,6 @@ Errors block until fixed, warnings don't, success confirms something finished, a
 - **A problem with one part of the screen:** an alert in that part, such as a failed sign-in above the form.
 - **The result of an action:** a toast.
 - **A problem with the app:** a banner.
-
-Errors use `role="alert"`. Everything else uses `role="status"`.
 
 ### Map date field
 

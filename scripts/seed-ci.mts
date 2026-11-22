@@ -7,10 +7,11 @@ import { parseDirectUrl } from '#ks/server/env.mts';
 import { databaseStore } from '#ks/server/trees/database-store.mts';
 
 /**
- * How many Persons, Places and Pins the seed adds. The map `@perf` check needs 10,000 Pins on 500
- * Places (NFR-01).
+ * How many Persons, Places and Pins the seed adds. The map `@perf` check needs about 10,000 Pins on
+ * 500 Places (NFR-01). A Pins list holds 10,000 Pins at most, so the seed leaves five free places
+ * for the Pins that the e2e save test adds.
  */
-export const SEED = { persons: 10, pins: 10_000, places: 500 };
+export const SEED = { persons: 10, pins: 9_995, places: 500 };
 
 type Size = typeof SEED;
 

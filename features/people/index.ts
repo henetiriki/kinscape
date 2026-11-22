@@ -6,6 +6,7 @@ export { PersonField } from '@ks/features/people/components/PersonField';
 export { PersonForm } from '@ks/features/people/components/PersonForm';
 export { PersonNotFound } from '@ks/features/people/components/PersonNotFound';
 export { PersonRelationships } from '@ks/features/people/components/PersonRelationships';
+export { PinForm } from '@ks/features/people/components/PinForm';
 export { SavedToast } from '@ks/features/people/components/SavedToast';
 export type {
   RelationshipEntry,

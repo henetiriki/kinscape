@@ -82,6 +82,38 @@ test.describe('the Account whose Pins fail to load', () => {
   });
 });
 
+test.describe('the add-pin panel on a Tree with no Person', () => {
+  test.use({ storageState: fixtureStateFor(researcher.email) });
+
+  // PIN-01: the Person field shows its notice.
+  test('shows the notice of the Person field, with a link to add a person', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Add a pin' }).click();
+    await expect(page.getByText('No people yet')).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Add a person' })
+    ).toHaveAttribute('href', '/people/new');
+  });
+});
+
+test.describe('the add-pin panel on the Account whose Tree fails to load', () => {
+  test.use({ storageState: fixtureStateFor(failing.email) });
+
+  // PIN-01: an alert and "Try again".
+  test('shows the alert for the Persons, and "Try again"', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Add a pin' }).click();
+    await expect(page.getByText("Couldn't load your people")).toBeVisible();
+    await expect(
+      page
+        .getByRole('form', { name: 'Add a pin' })
+        .getByRole('button', { name: 'Try again' })
+    ).toBeVisible();
+  });
+});
+
 test.describe('the researcher Tree, which has no Pins', () => {
   test.use({ storageState: fixtureStateFor(researcher.email) });
 

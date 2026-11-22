@@ -3,6 +3,7 @@
 import type { KeyboardEvent, ReactNode } from 'react';
 
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import type { ControlState } from '@ks/app/components/foundation/types';
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
@@ -164,7 +165,8 @@ export const PersonField = ({
   }));
   const activeRow = open ? rows[active] : undefined;
 
-  // The list sits 4px under the field box, on its left edge, and follows the box on scroll and resize.
+  // The list sits 4px under the field box, on its left edge, and follows the box on resize. A scroll
+  // outside the list closes it, so it never floats away from a field that scrolled out of its panel.
   // It is placed before the first paint, so it never shows in the flow.
   useLayoutEffect(() => {
     if (!open) return;
@@ -175,16 +177,21 @@ export const PersonField = ({
 
       setPlace({ left, top: bottom + 4 });
     };
+    const closeOnScroll = (event: Event) => {
+      if (!document.getElementById(listId)!.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
 
     follow();
     window.addEventListener('resize', follow);
-    window.addEventListener('scroll', follow, true);
+    window.addEventListener('scroll', closeOnScroll, true);
 
     return () => {
       window.removeEventListener('resize', follow);
-      window.removeEventListener('scroll', follow, true);
+      window.removeEventListener('scroll', closeOnScroll, true);
     };
-  }, [open]);
+  }, [listId, open]);
 
   // A press outside the field and the list closes the list.
   useEffect(() => {
@@ -227,7 +234,9 @@ export const PersonField = ({
       event.preventDefault();
       pick(activeRow.person);
     } else if (event.key === 'Escape' && open) {
-      // The panel that holds the field stays open.
+      // The panel that holds the field stays open: a native listener on `document` reads
+      // `defaultPrevented`, and `stopPropagation` does not stop a listener on the same node.
+      event.preventDefault();
       event.stopPropagation();
       setOpen(false);
     }
@@ -263,16 +272,18 @@ export const PersonField = ({
         state={state}
         value={text}
       />
-      {open && (
-        <PersonFieldList
-          activeId={activeRow ? rowId(listId, activeRow.person) : undefined}
-          id={listId}
-          onPick={pick}
-          place={place}
-          query={text}
-          rows={rows}
-        />
-      )}
+      {open &&
+        createPortal(
+          <PersonFieldList
+            activeId={activeRow ? rowId(listId, activeRow.person) : undefined}
+            id={listId}
+            onPick={pick}
+            place={place}
+            query={text}
+            rows={rows}
+          />,
+          document.body
+        )}
     </div>
   );
 };

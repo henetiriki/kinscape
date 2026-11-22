@@ -29,6 +29,15 @@ export type OtherPerson = {
   surname: string;
 } & PersonDates;
 
+/** The error text under each field of the Pin form that has one. */
+export type PinMessages = {
+  address?: string;
+  coordinates?: string;
+  date?: string;
+  eventType?: string;
+  personId?: string;
+};
+
 /** The two Relationship actions, as the page passes them to the dialog. */
 export type RelationshipActions = {
   create: (input: unknown) => Promise<RelationshipSaveResult>;

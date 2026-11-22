@@ -159,6 +159,40 @@ it('checks a default value on the first render', () => {
   );
 });
 
+it('shows the error of the caller in the slot, with the error mark', () => {
+  const field = setup({ error: 'Enter a date.' });
+
+  expect(screen.getByRole('alert').textContent).toBe('Enter a date.');
+  expect(field.getAttribute('aria-invalid')).toBe('true');
+  expect(document.querySelector('[data-mark="error"]')).not.toBeNull();
+});
+
+it('shows its own error before the error of the caller, and the caller error again after a good check', () => {
+  const field = setup({ error: 'Enter a date.' });
+
+  type(field, '31 FEB 1850');
+  fireEvent.blur(field);
+  expect(screen.getByRole('alert').textContent).toBe(
+    'February 1850 has 28 days.'
+  );
+  type(field, '');
+  fireEvent.blur(field);
+  expect(screen.getByRole('alert').textContent).toBe('Enter a date.');
+});
+
+it('drops the error of the caller after a check that reads the date, and shows it again for an empty check', () => {
+  const field = setup({ error: 'Enter a date.' });
+
+  type(field, 'ABT 1850');
+  fireEvent.blur(field);
+  expect(screen.queryByRole('alert')).toBeNull();
+  expect(field.getAttribute('aria-invalid')).toBeNull();
+  expect(slot().textContent).toBe('Reads as About 1850');
+  type(field, '');
+  fireEvent.blur(field);
+  expect(screen.getByRole('alert').textContent).toBe('Enter a date.');
+});
+
 it('does not check a default value in the focus state', () => {
   setup({ defaultValue: '31 FEB 1850', state: 'focus' });
 

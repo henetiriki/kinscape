@@ -43,6 +43,7 @@ import { isCurrentOn } from '@ks/lib/domain/validity/validity.mts';
 import styles from '@ks/features/map/components/MapShell.module.css';
 
 export const MapShell = ({
+  action,
   coverage,
   email,
   initial,
@@ -50,10 +51,13 @@ export const MapShell = ({
   onClosePin,
   onOpenPin,
   onSignOut,
+  panel,
   pin,
   sources,
   toast,
 }: {
+  /** The part in the `action` slot, such as "Add a pin". The caller gives none on a phone. */
+  action?: ReactNode;
   /** The days with a Boundary version; the first one is where the notice card jumps to. */
   coverage: Validity[];
   /** Shown in the account menu. */
@@ -67,6 +71,8 @@ export const MapShell = ({
   /** A click on a Pin, with its id. */
   onOpenPin?: (id: string) => void;
   onSignOut: () => Promise<unknown>;
+  /** The panel in the place of the Layers panel on a desktop. A phone shows none. */
+  panel?: ReactNode;
   /** The Pin whose popup is open. */
   pin?: {
     open: OpenPin;
@@ -155,6 +161,7 @@ export const MapShell = ({
     <>
       <MapLayout
         {...accountSlots(phone, account)}
+        action={action}
         credits={phone ? undefined : credits}
         dock={
           phone ? (
@@ -203,7 +210,7 @@ export const MapShell = ({
           ) : undefined
         }
         overlayAt='top'
-        panel={phone ? undefined : <LayersPanel {...layerProps} />}
+        panel={phone ? undefined : (panel ?? <LayersPanel {...layerProps} />)}
         zoom={
           phone ? undefined : (
             <ZoomControls

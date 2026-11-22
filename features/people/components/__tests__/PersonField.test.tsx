@@ -182,7 +182,7 @@ it('lets Enter through when no row is active', () => {
   expect(onChange).not.toHaveBeenCalled();
 });
 
-it('closes the list on Esc, stops the event, and keeps the text', () => {
+it('closes the list on Esc, stops and prevents the event, and keeps the text', () => {
   const { field } = setup();
 
   type(field, 'Exa');
@@ -202,6 +202,8 @@ it('closes the list on Esc, stops the event, and keeps the text', () => {
   expect(screen.queryByRole('listbox')).toBeNull();
   expect(field.value).toBe('Exa');
   expect(outer).not.toHaveBeenCalled();
+  // A listener on `document` is on the same node as React's, so only this flag keeps the panel open.
+  expect(keyDown.defaultPrevented).toBe(true);
 });
 
 it('lets Esc and other keys through when the list is closed', () => {
@@ -296,7 +298,7 @@ it('opens the list again when a closed field gets a key that types', () => {
   expect(screen.queryByRole('listbox')).not.toBeNull();
 });
 
-it('places the list 4px under the field box, on its left edge, and follows scroll and resize', () => {
+it('places the list 4px under the field box, on its left edge, and follows a resize', () => {
   const { field } = setup();
 
   type(field, 'Exa');
@@ -306,17 +308,34 @@ it('places the list 4px under the field box, on its left edge, and follows scrol
   expect(list().style.left).toBe('40px');
   expect(list().style.top).toBe('204px');
   vi.mocked(HTMLElement.prototype.getBoundingClientRect).mockReturnValue(
-    rect(60, 300)
-  );
-  fireEvent.scroll(document);
-  expect(list().style.left).toBe('60px');
-  expect(list().style.top).toBe('304px');
-  vi.mocked(HTMLElement.prototype.getBoundingClientRect).mockReturnValue(
     rect(10, 100)
   );
   fireEvent(window, new Event('resize'));
   expect(list().style.left).toBe('10px');
   expect(list().style.top).toBe('104px');
+});
+
+// PIN-01: the list sits in the body, so it counts above the date dock.
+it('renders the list in the document body, outside the field', () => {
+  const { field } = setup();
+
+  type(field, 'Exa');
+
+  const list = screen.getByRole('listbox');
+
+  expect(list.parentElement).toBe(document.body);
+  expect(field.closest('div')!.contains(list)).toBe(false);
+});
+
+// PIN-01
+it('closes the list when something outside it scrolls, and not when the list scrolls', () => {
+  const { field } = setup();
+
+  type(field, 'Exa');
+  fireEvent.scroll(screen.getByRole('listbox'));
+  expect(screen.queryByRole('listbox')).not.toBeNull();
+  fireEvent.scroll(document.body);
+  expect(screen.queryByRole('listbox')).toBeNull();
 });
 
 it('stops following the page when the list closes', () => {

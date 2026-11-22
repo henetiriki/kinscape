@@ -672,9 +672,11 @@ export type DateFieldProps = Parameters<typeof DateField>[0];
  * date that parses, or the error. It checks on Enter or when focus leaves, never while the user types.
  * An error stays with the text until the next check.
  */
-export declare const FuzzyDateField: ({ defaultValue, helper, label, state, ...rest }: {
+export declare const FuzzyDateField: ({ defaultValue, error: given, helper, label, state, ...rest }: {
     /** Text to start with. The field checks it on the first render, unless `state` is `focus`. */
     defaultValue?: string;
+    /** A problem that the caller found, such as an empty date. The slot shows it after the field's own error, until a check reads the date. */
+    error?: ReactNode;
     /** The slot shows it while the text is empty or does not read as a date. */
     helper?: ReactNode;
     label: string;
@@ -1053,6 +1055,15 @@ export declare const ProgressBar: ({ labelledBy, value, }: {
     value: number;
 }) => import("react").JSX.Element;
 export type ProgressBarProps = Parameters<typeof ProgressBar>[0];
+
+/**
+ * A grey bar, 20px high, that stands where text will be. A loading state uses it. A screen reader
+ * skips it (`aria-hidden`), because the part that holds it sets `aria-busy`.
+ */
+export declare const LoadingBar: ({ width }: {
+    width: number;
+}) => import("react").JSX.Element;
+export type LoadingBarProps = Parameters<typeof LoadingBar>[0];
 
 /** The 44 round button that opens the account Menu; `expanded` is its open look. */
 export declare const Avatar: ({ expanded, initial, state, ...rest }: {

@@ -1,0 +1,368 @@
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+
+import { QueryProvider } from '@ks/app/QueryProvider';
+import { EVENT_OPTIONS } from '@ks/features/people/components/pin-messages.ts';
+import { PinForm } from '@ks/features/people/components/PinForm';
+import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
+
+// PIN-01, PIN-02, PIN-04, NFR-03. Data is synthetic.
+const PERSON = {
+  born: '1861',
+  bornReading: 'In 1861',
+  deceased: false,
+  died: '1932',
+  diedReading: 'In 1932',
+  givenNames: 'Maria Magdalena',
+  id: '01900000-0000-7000-8000-0000000000a1',
+  maidenName: '',
+  surname: 'du Toit',
+  variants: [],
+};
+
+const fetchStub = vi.fn();
+
+const setup = (
+  props: Partial<Parameters<typeof PinForm>[0]> = {},
+  people: unknown = [PERSON]
+) => {
+  fetchStub.mockImplementation(async () => Response.json(people));
+
+  const handlers = {
+    onCancel: vi.fn(),
+    onSave: vi.fn(async () => ({ ok: true })),
+    onSaved: vi.fn(),
+    ...props,
+  };
+
+  render(
+    <QueryProvider>
+      <PinForm {...handlers} />
+    </QueryProvider>
+  );
+
+  return handlers;
+};
+
+const ready = () => screen.findByRole('combobox', { name: 'Person' });
+
+const fill = async (over: Record<string, string> = {}) => {
+  const person = await ready();
+
+  fireEvent.change(person, { target: { value: 'Maria' } });
+  fireEvent.keyDown(person, { key: 'ArrowDown' });
+  fireEvent.keyDown(person, { key: 'Enter' });
+  fireEvent.change(screen.getByLabelText('Event type'), {
+    target: { value: over.eventType ?? 'residence' },
+  });
+  fireEvent.change(screen.getByLabelText('Date'), {
+    target: { value: over.date ?? 'FROM 1840 TO 1855' },
+  });
+  fireEvent.change(screen.getByLabelText('Coordinates'), {
+    target: { value: over.coordinates ?? '-33.93, 18.42' },
+  });
+  fireEvent.change(screen.getByLabelText('Address as recorded'), {
+    target: { value: over.address ?? 'Farm Example, district Example' },
+  });
+};
+
+const save = () =>
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+beforeEach(() => {
+  fetchStub.mockReset();
+  vi.stubGlobal('fetch', fetchStub);
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+it('lists the Event types of the schema, after the empty choice', () => {
+  expect(EVENT_OPTIONS.slice(1).map(({ value }) => value)).toEqual([
+    ...EVENT_TYPES,
+  ]);
+  expect(EVENT_OPTIONS[0]).toEqual({
+    label: 'Choose an event type',
+    value: '',
+  });
+});
+
+it('shows the loading look until the Persons arrive, with the Save button off', async () => {
+  fetchStub.mockImplementation(() => new Promise(() => {}));
+  render(
+    <QueryProvider>
+      <PinForm onCancel={vi.fn()} onSave={vi.fn()} onSaved={vi.fn()} />
+    </QueryProvider>
+  );
+
+  expect(screen.getByRole('heading', { name: 'Add a pin' })).toBeInstanceOf(
+    HTMLElement
+  );
+  expect(document.querySelectorAll('[data-bar]')).toHaveLength(5);
+  expect(
+    screen.getByRole('form', { name: 'Add a pin' }).getAttribute('aria-busy')
+  ).toBe('true');
+  expect(
+    (screen.getByRole('button', { name: 'Save' }) as HTMLButtonElement).disabled
+  ).toBe(true);
+  expect(screen.queryByRole('combobox')).toBeNull();
+});
+
+it('shows an alert and "Try again" when the Persons do not load, and loads them again', async () => {
+  fetchStub.mockResolvedValueOnce(new Response(null, { status: 401 }));
+  fetchStub.mockResolvedValue(Response.json([PERSON]));
+  render(
+    <QueryProvider>
+      <PinForm onCancel={vi.fn()} onSave={vi.fn()} onSaved={vi.fn()} />
+    </QueryProvider>
+  );
+
+  expect((await screen.findByRole('alert')).textContent).toContain(
+    "Couldn't load your people"
+  );
+  expect(screen.queryByRole('button', { name: 'Save' })).toBeNull();
+  expect(screen.getByRole('button', { name: 'Cancel' })).toBeInstanceOf(
+    HTMLElement
+  );
+
+  fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+  expect(await ready()).toBeInstanceOf(HTMLElement);
+  expect(fetchStub).toHaveBeenCalledTimes(2);
+});
+
+it('shows the notice with a link to add a person when the Tree has none', async () => {
+  setup({}, []);
+
+  const link = await screen.findByRole('link', { name: 'Add a person' });
+
+  expect(link.getAttribute('href')).toBe('/people/new');
+  expect(screen.getByText('Add a person before you add a pin.')).toBeInstanceOf(
+    HTMLElement
+  );
+  expect(screen.queryByRole('combobox', { name: 'Person' })).toBeNull();
+});
+
+it('shows the person error under the notice when a Tree with no Person is saved', async () => {
+  const { onSave } = setup({}, []);
+
+  await screen.findByText('No people yet');
+  save();
+
+  expect((await screen.findAllByRole('alert'))[0].textContent).toBe(
+    'Choose a person.'
+  );
+  expect(onSave).not.toHaveBeenCalled();
+});
+
+it('shows each field error and saves nothing when the fields are empty', async () => {
+  const { onSave } = setup();
+
+  await ready();
+  save();
+
+  expect(await screen.findByText('Choose a person.')).toBeInstanceOf(
+    HTMLElement
+  );
+  expect(screen.getByText('Choose an event type.')).toBeInstanceOf(HTMLElement);
+  expect(screen.getByText('Enter a date.')).toBeInstanceOf(HTMLElement);
+  expect(screen.getByText('Enter the coordinates.')).toBeInstanceOf(
+    HTMLElement
+  );
+  expect(onSave).not.toHaveBeenCalled();
+});
+
+it.each([
+  [
+    '28°44′33″S 25°18′42″E',
+    'Use decimal degrees, not degrees, minutes and seconds. For example -33.93, 18.42.',
+  ],
+  ['Cape Town', 'Use decimal degrees, such as -33.93, 18.42.'],
+  ['-95, 18', 'Use decimal degrees, such as -33.93, 18.42.'],
+])('shows the coordinate error for "%s"', async (coordinates, message) => {
+  const { onSave } = setup();
+
+  await fill({ coordinates });
+  save();
+
+  expect(await screen.findByText(message)).toBeInstanceOf(HTMLElement);
+  expect(onSave).not.toHaveBeenCalled();
+});
+
+it('shows the error of a date that does not read, and of an address over 500 characters', async () => {
+  const { onSave } = setup();
+
+  await fill({ address: 'x'.repeat(501), date: '31 FEB 1850' });
+  save();
+
+  expect(
+    await screen.findByText('Use 500 characters or fewer.')
+  ).toBeInstanceOf(HTMLElement);
+  expect(screen.getAllByText('February 1850 has 28 days.')).not.toHaveLength(0);
+  expect(onSave).not.toHaveBeenCalled();
+});
+
+it('shows the live reading of "ABT 1850"', async () => {
+  setup();
+
+  fireEvent.change(await screen.findByLabelText('Date'), {
+    target: { value: 'ABT 1850' },
+  });
+
+  expect(document.body.textContent).toContain('Reads as');
+});
+
+it('sends the checked input to onSave, then calls onSaved', async () => {
+  const { onSave, onSaved } = setup();
+
+  await fill();
+  save();
+
+  await waitFor(() => expect(onSaved).toHaveBeenCalledTimes(1));
+
+  const [[input]] = vi.mocked(onSave).mock.calls as unknown as [
+    [
+      {
+        address: string;
+        date: string;
+        eventType: string;
+        id: string;
+        personId: string;
+        place: Record<string, unknown>;
+      },
+    ],
+  ];
+
+  expect(input).toMatchObject({
+    address: 'Farm Example, district Example',
+    date: 'FROM 1840 TO 1855',
+    eventType: 'residence',
+    personId: PERSON.id,
+    place: { kind: 'new', latitude: -33.93, longitude: 18.42 },
+  });
+  expect(input.id).toMatch(/^[0-9a-f-]{36}$/);
+  expect(input.place.id).toMatch(/^[0-9a-f-]{36}$/);
+  expect(input.place.id).not.toBe(input.id);
+});
+
+it('turns Save off while the save runs', async () => {
+  let finish: (value: { ok: boolean }) => void = () => {};
+  const { onSave } = setup({
+    onSave: vi.fn(
+      () =>
+        new Promise<{ ok: boolean }>(resolve => {
+          finish = resolve;
+        })
+    ),
+  });
+
+  await fill();
+  save();
+
+  await waitFor(() =>
+    expect(
+      (screen.getByRole('button', { name: 'Save' }) as HTMLButtonElement)
+        .disabled
+    ).toBe(true)
+  );
+  fireEvent.submit(screen.getByRole('form', { name: 'Add a pin' }));
+  expect(onSave).toHaveBeenCalledTimes(1);
+  finish({ ok: true });
+});
+
+it('shows an alert and keeps the values when the save fails, and a retry sends the same ids', async () => {
+  const { onSave, onSaved } = setup({
+    onSave: vi.fn(async () => ({ ok: false })),
+  });
+
+  await fill();
+  save();
+
+  expect(await screen.findByText("Couldn't save the pin")).toBeInstanceOf(
+    HTMLElement
+  );
+  expect((screen.getByLabelText('Coordinates') as HTMLInputElement).value).toBe(
+    '-33.93, 18.42'
+  );
+  expect((screen.getByLabelText('Person') as HTMLInputElement).value).toBe(
+    'Maria Magdalena du Toit'
+  );
+  expect(onSaved).not.toHaveBeenCalled();
+
+  save();
+  await waitFor(() => expect(onSave).toHaveBeenCalledTimes(2));
+
+  const [first, second] = vi.mocked(onSave).mock.calls as unknown as [
+    [{ id: string; place: { id: string } }],
+    [{ id: string; place: { id: string } }],
+  ];
+
+  expect(second[0].id).toBe(first[0].id);
+  expect(second[0].place.id).toBe(first[0].place.id);
+});
+
+it('shows the same alert when the save throws', async () => {
+  setup({
+    onSave: vi.fn(async () => {
+      throw new Error('offline');
+    }),
+  });
+
+  await fill();
+  save();
+
+  expect(await screen.findByText("Couldn't save the pin")).toBeInstanceOf(
+    HTMLElement
+  );
+});
+
+it('shows the alert and saves nothing when the Person id is not an id', async () => {
+  const { onSave } = setup({}, [{ ...PERSON, id: 'not-an-id' }]);
+
+  await fill();
+  save();
+
+  expect(await screen.findByText("Couldn't save the pin")).toBeInstanceOf(
+    HTMLElement
+  );
+  expect(onSave).not.toHaveBeenCalled();
+});
+
+it('closes on Cancel and on Esc, and not on an Esc outside the panel', async () => {
+  const { onCancel } = setup();
+
+  await ready();
+  fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+  expect(onCancel).toHaveBeenCalledTimes(1);
+
+  fireEvent.keyDown(document.body, { key: 'Escape' });
+  expect(onCancel).toHaveBeenCalledTimes(2);
+
+  fireEvent.keyDown(screen.getByLabelText('Coordinates'), { key: 'Escape' });
+  expect(onCancel).toHaveBeenCalledTimes(3);
+
+  const dialog = document.body.appendChild(document.createElement('div'));
+
+  dialog.setAttribute('role', 'dialog');
+  fireEvent.keyDown(dialog, { key: 'Escape' });
+  fireEvent.keyDown(document.body, { key: 'Enter' });
+  expect(onCancel).toHaveBeenCalledTimes(3);
+  dialog.remove();
+
+  // The dock date field and the map own an Esc that starts outside the panel.
+  const outside = document.body.appendChild(document.createElement('input'));
+
+  fireEvent.keyDown(outside, { key: 'Escape' });
+  expect(onCancel).toHaveBeenCalledTimes(3);
+  outside.remove();
+});
+
+it('leaves an Esc that closes the Person list to the list', async () => {
+  const { onCancel } = setup();
+  const person = await ready();
+
+  fireEvent.change(person, { target: { value: 'Maria' } });
+  fireEvent.keyDown(person, { key: 'Escape' });
+
+  expect(onCancel).not.toHaveBeenCalled();
+});

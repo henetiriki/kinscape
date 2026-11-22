@@ -93,15 +93,6 @@
   margin: auto 0 0;
 }
 
-/* The loading bar stands where the name or the address will be. */
-.bar {
-  background: var(--line);
-  border-radius: var(--radius-small);
-  display: block;
-  height: 20px;
-  max-width: 100%;
-}
-
 /* The pointer sits on the right edge, at the point: popup-point-y down, or less when the popup stops at the free area. */
 .popup > .pointer {
   left: 100%;

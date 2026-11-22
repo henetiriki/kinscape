@@ -9,7 +9,11 @@ import { jpegSize, sweepProblems } from '@ks/lib/design/sweep.mts';
  * the data or outcome that is missing. When an app route can show the page, delete the folder and its row.
  */
 const SCREEN_ONLY: { blocker: string; folder: string }[] = [
-  { blocker: 'No app route has the Add pin panel yet.', folder: 'add-pin' },
+  {
+    blocker:
+      'The boards draw the map at 1901 with its search bar and contested claims, which `/` does not.',
+    folder: 'pin-form',
+  },
   {
     blocker: 'The open menu is a state of the map, which has no People.',
     folder: 'map-account-menu',
@@ -63,7 +67,6 @@ const NO_ENTRY = [
   'fuzzy-date-readings',
   'map-account-menu-phone-proposed',
   'map-account-menu-proposed',
-  'map-add-pin',
   'map-credits-narrow',
   'map-credits-narrow-open',
   'map-date-invalid',
@@ -93,19 +96,23 @@ const NO_ENTRY = [
   'pin-edit-load-failed',
   'pin-edit-loading',
   'pin-edit-moved',
-  'pin-form',
-  'pin-form-empty',
-  'pin-form-errors',
   'pin-form-existing-place',
-  'pin-form-no-people',
-  'pin-form-save-failed',
-  'pin-form-saving',
   'relationship-messages',
   'sign-in-desktop-proposed',
   'sign-in-phone-error-proposed',
   'sign-in-phone-proposed',
   'sign-in-phone-unavailable',
   'sign-in-unavailable',
+];
+
+/** The entries whose `ignore` area covers the panel below the address, which M2.14.4 (#867) builds. #867 removes each area and this list. */
+const IGNORE_UNTIL_867 = [
+  'pin-form',
+  'pin-form-empty',
+  'pin-form-errors',
+  'pin-form-no-people',
+  'pin-form-save-failed',
+  'pin-form-saving',
 ];
 
 const jpeg = (width: number, height: number, ...before: number[][]) =>
@@ -227,6 +234,20 @@ describe('sweepProblems', () => {
     ).toEqual(['threshold must be 0.5', 'a-phone: has ignore']);
   });
 
+  // PIN-01
+  it('accepts an ignore area on a listed entry only', () => {
+    const area = { height: 10, width: 10, x: 0, y: 0 };
+    const raw = {
+      screens: [{ ...screen('a-phone', 390, 500), ignore: [area] }],
+      threshold: 0.5,
+    };
+
+    expect(sweepProblems(raw, images, ['b'], ['a-phone'])).toEqual([]);
+    expect(sweepProblems(raw, images, ['b'], ['other'])).toEqual([
+      'a-phone: has ignore',
+    ]);
+  });
+
   it('treats a malformed config as empty', () => {
     expect(sweepProblems('x', {}, [])).toEqual(['threshold must be 0.5']);
     expect(sweepProblems({ screens: [3] }, {}, [])).toEqual([
@@ -288,6 +309,6 @@ describe('design/screens.json', () => {
       readFileSync(join(dir, 'screens.json'), 'utf8')
     );
 
-    expect(sweepProblems(raw, images, NO_ENTRY)).toEqual([]);
+    expect(sweepProblems(raw, images, NO_ENTRY, IGNORE_UNTIL_867)).toEqual([]);
   });
 });

@@ -733,6 +733,11 @@ export const CARDS: Card[] = [
         helper: FUZZY_DATE_HELPER,
         label: 'Born',
       }),
+      one('FuzzyDateField · required', {
+        error: 'Enter a date.',
+        helper: FUZZY_DATE_HELPER,
+        label: 'Born',
+      }),
       one('FuzzyDateField · disabled', {
         disabled: true,
         helper: FUZZY_DATE_HELPER,
@@ -1267,6 +1272,15 @@ export const CARDS: Card[] = [
     states: [0, 40, 100].map((value, index) =>
       one(`ProgressBar · ${value}`, { labelledBy: `ks-case-${index}`, value })
     ),
+  },
+  {
+    design: [],
+    group: 'Feedback',
+    handlers: [],
+    height: 100,
+    name: 'LoadingBar',
+    pad: 0,
+    states: [168, 220].map(width => one(`LoadingBar · ${width}`, { width })),
   },
   {
     design: [],

@@ -61,6 +61,16 @@ const nextConfig: NextConfig = {
       source: '/:path*',
     },
     {
+      // The Pin action answers on the route of the map page, so its response carries Tree data.
+      headers: [{ key: 'Cache-Control', value: 'private, no-store' }],
+      source: '/',
+    },
+    {
+      // The dev page of the add-pin boards mounts the same action.
+      headers: [{ key: 'Cache-Control', value: 'private, no-store' }],
+      source: '/screens/pin-form',
+    },
+    {
       // Tree data: no shared cache may keep it (docs/security.md). `:path*` covers `/people`,
       // `/people/new` and `/people/{id}`.
       headers: [{ key: 'Cache-Control', value: 'private, no-store' }],

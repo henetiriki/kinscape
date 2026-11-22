@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { lintConfig } from '@ks/scripts/__tests__/lint-config.ts';
 
-// Follows the failing-tests rule (plans/README.md#failing-tests).
+// Follows the failing-tests rule (plans/BUILD.md#failing-tests).
 const lint = async (code: string): Promise<string[]> =>
   (
     await lintConfig(`${code}\n`, 'lib/map/__tests__/x.test.ts', [

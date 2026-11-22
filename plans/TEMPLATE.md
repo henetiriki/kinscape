@@ -29,6 +29,8 @@ Omit any section that would only say "none".
 
 ## Files that change
 
+<!-- List each test whose behaviour the plan changes. -->
+
 | File | New / changed | What |
 | ---- | ------------- | ---- |
 |      |               |      |

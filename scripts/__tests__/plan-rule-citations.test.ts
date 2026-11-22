@@ -2,29 +2,37 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-// A file names a plan rule by its anchor in plans/README.md, never by its number: a renumbered
-// list would leave every number wrong and no check would fail.
-const PLAN_RULES = 'plans/README.md';
-// Each `##` heading of plans/README.md, with the anchors under it in order.
-const SECTIONS = [
-  { anchors: ['item-types'], heading: 'Item types' },
-  { anchors: ['stale-facts', 'related-issues'], heading: 'Before you draft' },
-  { anchors: ['plan-pr-flow'], heading: 'Plan PR' },
+// A file names a plan rule by its anchor in plans/README.md or plans/BUILD.md, never by its
+// number: a renumbered list would leave every number wrong and no check would fail.
+// Each rule file lists its `##` headings, with the anchors under each in order.
+const RULE_FILES = [
   {
-    anchors: ['build-ownership', 'hand-back', 'design-system'],
-    heading: 'Who builds',
+    path: 'plans/README.md',
+    sections: [
+      { anchors: ['item-types'], heading: 'Item types' },
+      {
+        anchors: ['stale-facts', 'related-issues'],
+        heading: 'Before you draft',
+      },
+      { anchors: ['plan-pr-flow'], heading: 'Plan PR' },
+      { anchors: ['hand-back', 'design-system'], heading: 'Who builds' },
+      { anchors: ['missing-components'], heading: 'While you build' },
+      { anchors: ['too-big'], heading: 'When the plan changes' },
+    ],
   },
   {
-    anchors: ['test-first', 'missing-components', 'failing-tests'],
-    heading: 'While you build',
+    path: 'plans/BUILD.md',
+    sections: [
+      { anchors: ['build-ownership'], heading: 'Who builds' },
+      { anchors: ['test-first', 'failing-tests'], heading: 'While you build' },
+      {
+        anchors: ['small-departures', 'big-departures'],
+        heading: 'When the plan changes',
+      },
+      { anchors: ['ready-check'], heading: 'Before ready' },
+    ],
   },
-  {
-    anchors: ['small-departures', 'big-departures', 'too-big'],
-    heading: 'When the plan changes',
-  },
-  { anchors: ['ready-check'], heading: 'Before ready' },
 ];
-const RULE_NAMES = SECTIONS.flatMap(section => section.anchors);
 // An owner is a file that a run or a session loads: an agent file, a Claude workflow, a skill or
 // AGENTS.md. A rule that no owner cites has no step that points at it, so no run applies it.
 const OWNERS = [
@@ -35,7 +43,7 @@ const OWNERS = [
 ];
 // The other files that cite a plan rule. A cite here does not make the file an owner.
 const IN_SCOPE = [
-  'plans/README.md',
+  ...RULE_FILES.map(rule => rule.path),
   'docs/building.md',
   '.github/pull_request_template.md',
   'eslint.config.mjs',
@@ -47,9 +55,9 @@ const IN_SCOPE = [
 ];
 const BY_NUMBER = /\brules?\s+\d+/gi;
 const ANCHOR = /<a id="([^"]+)"><\/a>/g;
-const LINKED = /plans\/README\.md#([\w-]+)/g;
 const IN_FILE_LINK = /\]\(#([\w-]+)\)/g;
-const NAMED = /plans\/README\.md, ([\w-]+) rule/g;
+
+const escaped = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const numberCitations = (text: string) =>
   [...text.matchAll(BY_NUMBER)].map(m => m[0]);
@@ -66,19 +74,43 @@ const sections = (text: string) =>
       heading: block.split('\n')[0],
     }));
 
-// Anchor names a text cites: links to plans/README.md, links inside it and plain-text names.
-const citedNames = (text: string, inRules = false) => [
-  ...[...text.matchAll(LINKED)].map(m => m[1]),
-  ...(inRules ? [...text.matchAll(IN_FILE_LINK)].map(m => m[1]) : []),
-  ...[...text.matchAll(NAMED)].map(m => m[1]),
-];
+// Anchor names a text cites in one rule file: links to it, links inside it, links from a file
+// beside it and plain-text names.
+const citedNames = (
+  text: string,
+  rulePath: string,
+  where: { inPlans?: boolean; inRules?: boolean } = {}
+) => {
+  const name = escaped(rulePath);
+  const file = escaped(rulePath.replace('plans/', ''));
 
-const missingAnchors = (text: string, known: string[], inRules = false) =>
-  [...new Set(citedNames(text, inRules))].filter(name => !known.includes(name));
+  return [
+    ...[...text.matchAll(new RegExp(`${name}#([\\w-]+)`, 'g'))].map(m => m[1]),
+    ...(where.inRules ? [...text.matchAll(IN_FILE_LINK)].map(m => m[1]) : []),
+    ...(where.inPlans
+      ? [...text.matchAll(new RegExp(`\\]\\(${file}#([\\w-]+)\\)`, 'g'))].map(
+          m => m[1]
+        )
+      : []),
+    ...[...text.matchAll(new RegExp(`${name}, ([\\w-]+) rule`, 'g'))].map(
+      m => m[1]
+    ),
+  ];
+};
+
+const missingAnchors = (
+  text: string,
+  known: string[],
+  rulePath: string,
+  where: { inPlans?: boolean; inRules?: boolean } = {}
+) =>
+  [...new Set(citedNames(text, rulePath, where))].filter(
+    name => !known.includes(name)
+  );
 
 // Rule names that no owner text cites.
-const unowned = (names: string[], ownerTexts: string[]) => {
-  const cited = new Set(ownerTexts.flatMap(text => citedNames(text)));
+const unowned = (names: string[], ownerTexts: string[], rulePath: string) => {
+  const cited = new Set(ownerTexts.flatMap(text => citedNames(text, rulePath)));
 
   return names.filter(name => !cited.has(name));
 };
@@ -93,6 +125,9 @@ const ownerFiles = () =>
     .filter(Boolean);
 
 describe('plan rule citations (fixtures)', () => {
+  const README = 'plans/README.md';
+  const BUILD = 'plans/BUILD.md';
+
   it('finds a citation by number', () => {
     expect(
       numberCitations('Follow plans/README.md rule 10, then rules 2 and 4.')
@@ -102,7 +137,7 @@ describe('plan rule citations (fixtures)', () => {
   it('accepts a citation by name', () => {
     expect(
       numberCitations(
-        'Follow [the failing-tests rule](plans/README.md#failing-tests).'
+        'Follow [the failing-tests rule](plans/BUILD.md#failing-tests).'
       )
     ).toEqual([]);
   });
@@ -136,23 +171,53 @@ describe('plan rule citations (fixtures)', () => {
 
     expect(
       missingAnchors(
-        '[a](../plans/README.md#failing-tests) [b](../plans/README.md#test-first)',
-        known
+        '[a](../plans/BUILD.md#failing-tests) [b](../plans/BUILD.md#test-first)',
+        known,
+        BUILD
       )
     ).toEqual(['test-first']);
   });
 
   it('names a plain-text name that has no anchor', () => {
-    expect(missingAnchors('plans/README.md, failing-tests rule', [])).toEqual([
-      'failing-tests',
-    ]);
+    expect(
+      missingAnchors('plans/BUILD.md, failing-tests rule', [], BUILD)
+    ).toEqual(['failing-tests']);
   });
 
   it('names an in-file link to a removed anchor', () => {
-    expect(missingAnchors('see [the rule](#too-big)', [], true)).toEqual([
-      'too-big',
+    expect(
+      missingAnchors('see [the rule](#too-big)', [], README, {
+        inRules: true,
+      })
+    ).toEqual(['too-big']);
+    expect(missingAnchors('see [the rule](#too-big)', [], README)).toEqual([]);
+  });
+
+  it('names a sibling link to a removed anchor, only in a file under plans/', () => {
+    const text = 'see [the rule](BUILD.md#test-first)';
+
+    expect(missingAnchors(text, [], BUILD, { inPlans: true })).toEqual([
+      'test-first',
     ]);
-    expect(missingAnchors('see [the rule](#too-big)', [])).toEqual([]);
+    expect(missingAnchors(text, [], BUILD)).toEqual([]);
+    expect(
+      missingAnchors('see [the rule](../BUILD.md#test-first)', [], BUILD, {
+        inPlans: true,
+      })
+    ).toEqual([]);
+  });
+
+  it('does not take a cite of another rule file', () => {
+    expect(
+      missingAnchors('the [rule](../../plans/README.md#test-first)', [], BUILD)
+    ).toEqual([]);
+    expect(
+      missingAnchors(
+        'the [rule](../../plans/README.md#test-first)',
+        ['hand-back'],
+        README
+      )
+    ).toEqual(['test-first']);
   });
 
   it('names a rule that no owner cites', () => {
@@ -160,16 +225,20 @@ describe('plan rule citations (fixtures)', () => {
       unowned(
         ['too-big', 'test-first', 'hand-back'],
         [
-          'the [test-first rule](../../plans/README.md#test-first)',
-          'as plans/README.md, hand-back rule says',
-        ]
+          'the [test-first rule](../../plans/BUILD.md#test-first)',
+          'as plans/BUILD.md, hand-back rule says',
+        ],
+        BUILD
       )
     ).toEqual(['too-big']);
   });
 });
 
 describe('plan rule citations (repo)', () => {
-  const rules = readFileSync(PLAN_RULES, 'utf8');
+  const rules = RULE_FILES.map(rule => ({
+    ...rule,
+    text: readFileSync(rule.path, 'utf8'),
+  }));
   const owners = ownerFiles();
   const files = [...new Set([...IN_SCOPE, ...owners])];
 
@@ -181,18 +250,18 @@ describe('plan rule citations (repo)', () => {
     expect(owners.filter(path => path.startsWith('docs/'))).toEqual([]);
   });
 
-  it('an owner cites each rule in plans/README.md', () => {
+  it.each(rules)('an owner cites each rule in $path', rule => {
     expect(
       unowned(
-        anchors(rules),
-        owners.map(path => readFileSync(path, 'utf8'))
+        anchors(rule.text),
+        owners.map(path => readFileSync(path, 'utf8')),
+        rule.path
       )
     ).toEqual([]);
   });
 
-  it('plans/README.md has each named anchor under its heading', () => {
-    expect(sections(rules)).toEqual(SECTIONS);
-    expect(anchors(rules)).toEqual(RULE_NAMES);
+  it.each(rules)('$path has each named anchor under its heading', rule => {
+    expect(sections(rule.text)).toEqual(rule.sections);
   });
 
   it('no file cites a plan rule by number', () => {
@@ -205,14 +274,13 @@ describe('plan rule citations (repo)', () => {
     expect(cited).toEqual([]);
   });
 
-  it('every cited rule name has an anchor in plans/README.md', () => {
-    const known = anchors(rules);
+  it.each(rules)('every cited rule name has an anchor in $path', rule => {
+    const known = anchors(rule.text);
     const missing = files.flatMap(path =>
-      missingAnchors(
-        readFileSync(path, 'utf8'),
-        known,
-        path === PLAN_RULES
-      ).map(name => `${path}: ${name}`)
+      missingAnchors(readFileSync(path, 'utf8'), known, rule.path, {
+        inPlans: path.startsWith('plans/'),
+        inRules: path === rule.path,
+      }).map(name => `${path}: ${name}`)
     );
 
     expect(missing).toEqual([]);

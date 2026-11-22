@@ -19,7 +19,7 @@ Closes #<!-- spec issue -->
 
 ## Evidence
 
-<!-- Paste the test, lint and build output. For new logic, paste the failing line (plans/README.md, test-first rule). For UI changes, paste screenshots. -->
+<!-- Paste the test, lint and build output. For new logic, paste the failing line (plans/BUILD.md, test-first rule). For UI changes, paste screenshots. -->
 
 ## For the PO
 

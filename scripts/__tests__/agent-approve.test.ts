@@ -657,7 +657,10 @@ describe('run', () => {
     it.each([
       [[], 'has 0'],
       [[PATH, 'plans/chores/C501-other.md'], 'has 2'],
-      [['plans/README.md', 'plans/TEMPLATE.md', 'src/a.ts'], 'has 0'],
+      [
+        ['plans/README.md', 'plans/BUILD.md', 'plans/TEMPLATE.md', 'src/a.ts'],
+        'has 0',
+      ],
     ])('stops for files %j', (files, count) => {
       fakeGh({ files });
 

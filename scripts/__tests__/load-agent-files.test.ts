@@ -1714,9 +1714,9 @@ describe('the agent files a workflow loads', () => {
 describe('the item lines of spec-checks.md', () => {
   const checks = () => agent('spec-checks.md');
 
-  it('links to the Ready check, and plans/README.md has that anchor', () => {
-    expect(checks()).toContain('(../../plans/README.md#ready-check)');
-    expect(readFileSync(join(root, 'plans/README.md'), 'utf8')).toContain(
+  it('links to the Ready check, and plans/BUILD.md has that anchor', () => {
+    expect(checks()).toContain('(../../plans/BUILD.md#ready-check)');
+    expect(readFileSync(join(root, 'plans/BUILD.md'), 'utf8')).toContain(
       '<a id="ready-check"></a>'
     );
   });
@@ -1922,7 +1922,7 @@ describe('the fix-review workflow', () => {
     const text = agent('fix-review.md');
 
     expect(text).toContain(
-      'big-departures rule](../../plans/README.md#big-departures)), make it. Write a "Big:" line under `## Deviations` in the plan.'
+      'big-departures rule](../../plans/BUILD.md#big-departures)), make it. Write a "Big:" line under `## Deviations` in the plan.'
     );
     expect(text).not.toContain("don't make it");
     expect(text).toContain(

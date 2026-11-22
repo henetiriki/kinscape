@@ -1,6 +1,6 @@
 # Build a plan PR
 
-The caller names the PR and who approved or asked. Follow [plans/README.md](../../plans/README.md) and [docs/code-rules.md](../../docs/code-rules.md).
+The caller names the PR and who approved or asked. Follow [plans/BUILD.md](../../plans/BUILD.md) and [docs/code-rules.md](../../docs/code-rules.md).
 
 Your first command is `gh pr view <n> --json title,body,comments,reviews,headRefName,labels --jq '(.comments, .reviews) |= map(select(.authorAssociation | IN("OWNER", "MEMBER", "COLLABORATOR")))'`: the team's comments and reviews, and nobody else's. The bot's own and the review's findings are not needed here: the plan file and the PR body hold the state.
 
@@ -11,13 +11,13 @@ The plan is approved and its decisions are recorded: `scripts/agent-approve.mts`
 ## Rules
 
 - Never edit a hand-back path. Follow [Hand-back](#hand-back).
-- Add no package: `npm install` is off. If a plan needs one, build the rest and write a "Big:" line ([big-departures rule](../../plans/README.md#big-departures)).
+- Add no package: `npm install` is off. If a plan needs one, build the rest and write a "Big:" line ([big-departures rule](../../plans/BUILD.md#big-departures)).
 - Write an unlikely case in your final PR comment, not in code ([AGENTS.md](../../AGENTS.md#workflow-rules)).
-- Write each unit test for logic first (the [test-first rule](../../plans/README.md#test-first)).
+- Write each unit test for logic first (the [test-first rule](../../plans/BUILD.md#test-first)).
 - As you iterate, run only the affected test file.
-- If a test fails, read the error. Then follow the [failing-tests rule](../../plans/README.md#failing-tests).
+- If a test fails, read the error. Then follow the [failing-tests rule](../../plans/BUILD.md#failing-tests).
 - Don't add temporary debug output.
-- Record a small departure from the plan as the [small-departures rule](../../plans/README.md#small-departures) says.
+- Record a small departure from the plan as the [small-departures rule](../../plans/BUILD.md#small-departures) says.
 
 ## Steps
 
@@ -33,7 +33,7 @@ The plan is approved and its decisions are recorded: `scripts/agent-approve.mts`
 3. Run the full `npm test` and `npm run e2e` once.
 4. Push.
 5. If you built the work, run the checks in [Verifying your work](../../AGENTS.md#verifying-your-work).
-6. If every check passes, run the [ready check](../../plans/README.md#ready-check).
+6. If every check passes, run the [ready check](../../plans/BUILD.md#ready-check).
 7. Set the PR title and body to describe the work as it would merge now (the [plan-pr-flow rule](../../plans/README.md#plan-pr-flow)). Keep the reword line.
 8. If one of these is true, leave the PR a draft. If none is true, run `gh pr ready <n>`.
    - A check failed.

@@ -19,6 +19,7 @@ Each topic has one owner file, as the [writing rules](writing.md#all-text) say.
 | Requirements            | [Requirements](requirements.md)                                 |
 | Terms                   | [Glossary](glossary.md)                                         |
 | Plan rules              | [Plan rules](../plans/README.md)                                |
+| Build rules             | [Build rules](../plans/BUILD.md)                                |
 | Dependencies            | [Dependencies](dependencies.md)                                 |
 | Target architecture     | [Target architecture](architecture-target.md)                   |
 | Vulnerability reporting | [Security policy](../SECURITY.md)                               |

@@ -56,7 +56,8 @@ const RUN_URL = /^https:\/\/\S+$/;
 const AGENT = 'status: ready-for-agent';
 const DEV = 'status: ready-for-dev';
 const BLOCKED = 'status: blocked';
-const PLAN = /^plans\/(?:(?:bugs|chores)\/)?(?!README|TEMPLATE)[\w.-]+\.md$/;
+const PLAN =
+  /^plans\/(?:(?:bugs|chores)\/)?(?!BUILD|README|TEMPLATE)[\w.-]+\.md$/;
 const ANSWER =
   /^[\s>*-]*D(\d+)\s*[:=]\s*(?:([A-Za-z])\b|other\b[\s,:]*(\S.*))/i;
 

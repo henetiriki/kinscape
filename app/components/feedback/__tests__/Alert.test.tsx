@@ -42,7 +42,7 @@ it('renders an untitled alert as the message alone, with the same role and class
   expect(untitled.className).toBe(titled.className);
 });
 
-it('announces a banner at once and runs its one action', () => {
+it('announces a banner politely and runs its one action', () => {
   const calls: string[] = [];
 
   render(
@@ -51,7 +51,7 @@ it('announces a banner at once and runs its one action', () => {
     </Banner>
   );
 
-  expect(screen.getByRole('alert').textContent).toBe(
+  expect(screen.getByRole('status').textContent).toBe(
     "Terrain didn't load.Retry"
   );
   screen.getByRole('button', { name: 'Retry' }).click();
@@ -66,5 +66,5 @@ it('marks a placed banner for its phone position', () => {
     </Banner>
   );
 
-  expect(screen.getByRole('alert').hasAttribute('data-placed')).toBe(true);
+  expect(screen.getByRole('status').hasAttribute('data-placed')).toBe(true);
 });

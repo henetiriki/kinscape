@@ -175,9 +175,53 @@ describe('layout tokens', () => {
   });
 });
 
+// The only type styles under 12.5px, each with the reason it is small.
+const SMALL_TYPE: Record<string, { reason: string; size: number }> = {
+  credits: { reason: 'The credits line on the map.', size: 11 },
+  mono: { reason: 'Dates, coordinates, keyboard hints and code.', size: 12 },
+  overline: { reason: 'Section headings in capitals.', size: 11 },
+  'overline-tight': {
+    reason: 'Layer group headings in the map panel.',
+    size: 11,
+  },
+};
+
 describe('tokens.json', () => {
   it('has a note for every token that needs one, and none for any other', () => {
     expect(noteProblems(tokens)).toEqual([]);
+  });
+
+  it('sets each type style to 12.5px or more, except the styles in SMALL_TYPE', () => {
+    const small = Object.fromEntries(
+      Object.entries<{ size: string }>(tokens.type)
+        .map(([name, style]) => [name, Number.parseFloat(style.size)] as const)
+        .filter(([, size]) => size < 12.5)
+    );
+
+    expect(small).toEqual(
+      Object.fromEntries(
+        Object.entries(SMALL_TYPE).map(([name, entry]) => [name, entry.size])
+      )
+    );
+  });
+
+  it('sets each map label to 11px or more', () => {
+    const labels = Object.entries<{ size?: number }>(tokens.map).filter(
+      ([name, value]) =>
+        name.endsWith('-label') && typeof value === 'object' && 'size' in value
+    );
+
+    expect(labels.map(([name]) => name)).toEqual([
+      'polity-label',
+      'contested-label',
+      'place-label',
+      'water-label',
+      'river-label',
+      'context-label',
+    ]);
+    for (const [name, value] of labels) {
+      expect(value.size, name).toBeGreaterThanOrEqual(11);
+    }
   });
 
   it('keys the map polity tints by the ids in data/polities.json, plus default', () => {

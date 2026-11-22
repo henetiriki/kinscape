@@ -15,7 +15,7 @@ const wrongSpellings = () =>
     .filter(line => !SPELLINGS.has(line.split(':').slice(2).join(':')));
 
 describe('the brand name', () => {
-  it('is spelled KinScape, kinscape or KINSCAPE in each tracked text file', () => {
+  it('has the spelling KinScape, kinscape or KINSCAPE in each tracked text file', () => {
     expect(
       wrongSpellings(),
       'Write the name as KinScape in text, kinscape in code and KINSCAPE in a constant'

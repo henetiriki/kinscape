@@ -8,7 +8,7 @@
 
 Two new checks replace two prose rules of `design/DESIGN.md`. Tests on `main` already prove the other two rules, so the build adds no test for them (#1140 D2).
 
-- **Type floor.** A new test in the `tokens.json` block of `lib/design/__tests__/design.test.ts` reads each `type` style. The styles under 12.5px must equal `SMALL_TYPE` exactly: `credits`, `overline` and `overline-tight` at 11px, and `mono` at 12px (D3). Each entry of `SMALL_TYPE` gives its reason, from the "Used for" column of the Fonts table. A second test reads each `map` entry whose name ends in `-label` and has a `size`. It checks that the six names are `polity-label`, `contested-label`, `place-label`, `water-label`, `river-label` and `context-label`, and that each size is 11 or more. The name check stops a rename from making the test pass with no entries.
+- **Type floor.** A new test in the `tokens.json` block of `lib/design/__tests__/design.test.ts` reads each `type` style. The styles under 12.5px must equal `SMALL_TYPE` exactly: `credits`, `overline` and `overline-tight` at 11px, and `mono` at 12px (D3). Each entry of `SMALL_TYPE` gives its reason, from the "Used for" column of the Fonts table. A second test reads each `map` entry whose name ends in `-label` and has a `size`. It checks that the six names are `polity-label`, `contested-label`, `place-label`, `water-label`, `river-label` and `context-label`, and that each size is 11 or more. If a rename removes an entry, the name check fails.
 - **Brand name.** A new `scripts/__tests__/brand-name.test.ts` copies the shape of `repo-names.test.ts`. It runs `git grep -n -I -i -o -E 'kin[ ]?scape'` over the tree. Each match that is not `KinScape`, `kinscape` or `KINSCAPE` is a failure, with its path and line. `-I` skips binary files. The pattern holds `[ ]`, so the test file itself does not match it.
 - **Banner role.** `Banner.tsx` sets `role='status'`. Each test that finds the banner by `alert` changes to `status`.
 - **Prose.** The build removes the four lines of step 6 of #1140 from `design/DESIGN.md`. The Icons row then reads "… (24 on the phone layers button). An icon-only button carries the name".
@@ -46,9 +46,9 @@ Two new checks replace two prose rules of `design/DESIGN.md`. Tests on `main` al
 These are the steps of [Changing the design system](../../design/CANVAS.md#changing-the-design-system).
 
 1. The CI build agent changes the code:
-   1. Add the type floor and map label tests. Change `design/tokens.json` to a 12px `body` on the local tree only, and see the test fail. Undo the change.
-   2. Add the brand name test. Add a wrong spelling to a doc on the local tree only, and see the test fail. Undo the change.
-   3. Change the tests of the Banner role to `status`, and see them fail. Change `Banner.tsx`.
+   1. Add the type floor and map label tests. Change `design/tokens.json` to a 12px `body` on the local tree only. See the test fail. Undo the change.
+   2. Add the brand name test. Add a wrong spelling to a doc on the local tree only. See the test fail. Undo the change.
+   3. Change the tests of the Banner role to `status`. See them fail. Change `Banner.tsx`.
    4. Remove the four `DESIGN.md` lines.
    5. Paste each failing line in the Evidence of the PR.
 2. The CI build agent runs `npm run design-system`. It pushes the branch, asks the tech lead in the PR for steps 3 to 6, and keeps the PR a draft.
@@ -82,3 +82,6 @@ These are the steps of [Changing the design system](../../design/CANVAS.md#chang
 - The look of any component.
 
 ## Deviations
+
+- The type floor test also checks that each `size` is a finite number. The tech lead chose this guard.
+- The Banner role test and the two new `design.test.ts` tests carry `// NFR-06`, as the tone test does.

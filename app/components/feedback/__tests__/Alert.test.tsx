@@ -42,6 +42,7 @@ it('renders an untitled alert as the message alone, with the same role and class
   expect(untitled.className).toBe(titled.className);
 });
 
+// NFR-06
 it('announces a banner politely and runs its one action', () => {
   const calls: string[] = [];
 

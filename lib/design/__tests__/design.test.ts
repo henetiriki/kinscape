@@ -177,13 +177,10 @@ describe('layout tokens', () => {
 
 // The only type styles under 12.5px, each with the reason it is small.
 const SMALL_TYPE: Record<string, { reason: string; size: number }> = {
-  credits: { reason: 'The credits line on the map.', size: 11 },
-  mono: { reason: 'Dates, coordinates, keyboard hints and code.', size: 12 },
-  overline: { reason: 'Section headings in capitals.', size: 11 },
-  'overline-tight': {
-    reason: 'Layer group headings in the map panel.',
-    size: 11,
-  },
+  credits: { reason: 'Credits line and scale bar', size: 11 },
+  mono: { reason: 'Dates and coordinates in lists', size: 12 },
+  overline: { reason: 'Section headings', size: 11 },
+  'overline-tight': { reason: 'Layer group headings', size: 11 },
 };
 
 describe('tokens.json', () => {
@@ -191,13 +188,16 @@ describe('tokens.json', () => {
     expect(noteProblems(tokens)).toEqual([]);
   });
 
+  // NFR-06
   it('sets each type style to 12.5px or more, except the styles in SMALL_TYPE', () => {
-    const small = Object.fromEntries(
-      Object.entries<{ size: string }>(tokens.type)
-        .map(([name, style]) => [name, Number.parseFloat(style.size)] as const)
-        .filter(([, size]) => size < 12.5)
+    const sizes = Object.entries<{ size: string }>(tokens.type).map(
+      ([name, style]) => [name, Number.parseFloat(style.size)] as const
     );
+    const small = Object.fromEntries(sizes.filter(([, size]) => size < 12.5));
 
+    for (const [name, size] of sizes) {
+      expect(Number.isFinite(size), name).toBe(true);
+    }
     expect(small).toEqual(
       Object.fromEntries(
         Object.entries(SMALL_TYPE).map(([name, entry]) => [name, entry.size])
@@ -205,6 +205,7 @@ describe('tokens.json', () => {
     );
   });
 
+  // NFR-06
   it('sets each map label to 11px or more', () => {
     const labels = Object.entries<{ size?: number }>(tokens.map).filter(
       ([name, value]) =>

@@ -23,6 +23,17 @@
         ],
         "matcher": "Write|Edit"
       }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "jq -c 'def cut($d): if $d != \"\" and startswith($d + \"/\") then .[($d | length) + 1:] else . end;\ndef deny($m): {hookSpecificOutput: {hookEventName: \"PreToolUse\", permissionDecision: \"deny\", permissionDecisionReason: $m}};\n((.tool_input.file_path // \"\") | cut($ENV.CLAUDE_PROJECT_DIR // \"\") | cut($ENV.GITHUB_WORKSPACE // \"\") | sub(\"^\\\\.claude/worktrees/[^/]+/\"; \"\")) as $r\n| \"The workflow Design: Render snapshots writes `\" + $r + \"` (design/CANVAS.md#making-the-snapshots-and-jpgs). \" as $made\n| if $ENV.GITHUB_ACTIONS == \"true\" then empty\n  elif ($r | test(\"^design/cards/[^/]+\\\\.png$\")) then deny($made + \"Change its component or its states in `lib/design/states.mts`, then run the workflow. If a card image looks wrong, raise a Bug that names the component.\")\n  elif ($r | test(\"^design/(source/[^/]+\\\\.html|[^/]+\\\\.jpg)$\")) then deny($made + \"Change its board in `design/canvas/`, then run the workflow. If a snapshot looks wrong, raise a Bug that names the screen.\")\n  else empty end'",
+            "type": "command"
+          }
+        ],
+        "matcher": "Edit|Write"
+      }
     ]
   },
   "model": "opusplan"

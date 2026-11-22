@@ -61,6 +61,37 @@ const permissionsOf = (file: string) =>
     ) as { permissions: { allow: string[]; deny: string[] } }
   ).permissions;
 
+// The PreToolUse hooks of a settings file, by its path from the repo root.
+const preToolUseOf = (path: string) =>
+  (
+    JSON.parse(readFileSync(join(process.cwd(), path), 'utf8')) as {
+      hooks?: {
+        PreToolUse?: {
+          hooks: { command: string; type: string }[];
+          matcher: string;
+        }[];
+      };
+    }
+  ).hooks?.PreToolUse;
+
+// Runs a hook as Claude Code does: through the shell, with the call as JSON on stdin and the
+// job's environment. No output means the hook lets the call go on.
+const runHook = (
+  path: string,
+  matcher: string,
+  input: object,
+  env: Record<string, string | undefined>
+) => {
+  const entry = preToolUseOf(path)?.find(hook => hook.matcher === matcher);
+  const output = execFileSync('bash', ['-c', entry?.hooks[0].command ?? ''], {
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+    input: JSON.stringify(input),
+  }).trim();
+
+  return output === '' ? undefined : JSON.parse(output).hookSpecificOutput;
+};
+
 // A deny rule, as Claude Code reads one: `*` matches any text, the rule matches the whole command,
 // and a rule ending in ` *` matches the bare command too.
 const deniedBy = (deny: string[]) => (command: string) =>
@@ -220,6 +251,11 @@ describe('review-settings.json', () => {
   const { allow, deny } = permissionsOf('review-settings.json');
   const allowed = allowedBy(allow);
   const denied = deniedBy(deny);
+
+  // The review gets no Edit|Write hook (plan C1134): it may not edit at all.
+  it('denies Edit and Write', () => {
+    expect(deny).toEqual(expect.arrayContaining(['Edit', 'Write']));
+  });
 
   it.each([
     'git grep -n foo -- src',
@@ -398,44 +434,29 @@ describe('refresh-settings.json', () => {
 // rules.md warns against are denied with the alternative. The build and the review carry the same
 // hook, so neither gets other behaviour.
 describe('the Bash hook', () => {
-  const settingsOf = (file: string) =>
-    JSON.parse(
-      readFileSync(join(process.cwd(), '.github/agent', file), 'utf8')
-    ) as {
-      hooks?: {
-        PreToolUse?: {
-          hooks: { command: string; type: string }[];
-          matcher: string;
-        }[];
-      };
-    };
+  const agentHooksOf = (file: string) => preToolUseOf(`.github/agent/${file}`);
 
   const cwd = '/work/kin.x';
 
-  // Runs the hook as Claude Code does: through the shell, with the call as JSON on stdin and the
-  // job's environment. No output means it leaves the call to the allowlist.
+  // No output means the hook leaves the call to the allowlist.
   const hook = (
     command: string,
     file = 'settings.json',
     env: Record<string, string | undefined> = {}
-  ) => {
-    const entry = settingsOf(file).hooks?.PreToolUse?.find(
-      ({ matcher }) => matcher === 'Bash'
+  ) =>
+    runHook(
+      `.github/agent/${file}`,
+      'Bash',
+      { cwd, tool_input: { command } },
+      { ISSUE: undefined, ...env }
     );
-    const output = execFileSync('bash', ['-c', entry?.hooks[0].command ?? ''], {
-      encoding: 'utf8',
-      env: { ...process.env, ISSUE: undefined, ...env },
-      input: JSON.stringify({ cwd, tool_input: { command } }),
-    }).trim();
-
-    return output === '' ? undefined : JSON.parse(output).hookSpecificOutput;
-  };
 
   it('is the same in settings.json and review-settings.json', () => {
-    const { hooks } = settingsOf('settings.json');
+    const bashOf = (file: string) =>
+      agentHooksOf(file)?.filter(({ matcher }) => matcher === 'Bash');
 
-    expect(hooks?.PreToolUse).toHaveLength(1);
-    expect(settingsOf('review-settings.json').hooks).toEqual(hooks);
+    expect(bashOf('settings.json')).toHaveLength(1);
+    expect(bashOf('review-settings.json')).toEqual(bashOf('settings.json'));
   });
 
   // The rest goes on to the allowlist, so there is no permissionDecision; the marker tells the agent.
@@ -708,7 +729,7 @@ describe('the Bash hook', () => {
       `gh issue edit ${issue} --body-file - <<'EOF'\n${body}\nEOF`;
 
     it('is the one hook of the file', () => {
-      expect(settingsOf(file).hooks?.PreToolUse).toHaveLength(1);
+      expect(agentHooksOf(file)).toHaveLength(1);
     });
 
     it.each([
@@ -809,5 +830,135 @@ describe('the Bash hook', () => {
     ])('leaves %j to the allowlist', command => {
       expect(hook(command, file, { ISSUE: '5' })).toBeUndefined();
     });
+  });
+});
+
+// The Edit|Write hooks (plan C1134) deny an edit of a file that the workflow Design: Render
+// snapshots makes, and name the fix. The CI hook also denies design/canvas/.
+describe('the Edit|Write hook', () => {
+  const main = '/work/kin.x';
+  const workspace = '/work/ci.y';
+  const reasonOf = (output: { permissionDecisionReason?: string }) =>
+    output.permissionDecisionReason;
+
+  const hookOf =
+    (settings: string) =>
+    (
+      path: string,
+      env: Record<string, string | undefined> = {},
+      tool = 'Edit'
+    ) =>
+      runHook(
+        settings,
+        'Edit|Write',
+        { tool_input: { file_path: path }, tool_name: tool },
+        {
+          CLAUDE_PROJECT_DIR: main,
+          GITHUB_ACTIONS: undefined,
+          GITHUB_WORKSPACE: workspace,
+          ...env,
+        }
+      );
+
+  const ci = hookOf('.github/agent/settings.json');
+  const local = hookOf('.claude/settings.json');
+
+  const page = 'design/source/map-desktop.html';
+  const jpg = 'design/map-desktop.jpg';
+  const card = 'design/cards/Alert-1440.png';
+  // The reasons are in the active voice (plan C1134, D3).
+  const writes = (path: string) =>
+    `The workflow Design: Render snapshots writes \`${path}\``;
+  const canvasReason =
+    'Only the tech lead, or a local session that the tech lead starts, edits `design/canvas/`. Ask in the PR.';
+
+  const localReason = (path: string) =>
+    path.startsWith('design/cards/')
+      ? `${writes(path)} (design/CANVAS.md#making-the-snapshots-and-jpgs). Change its component or its states in \`lib/design/states.mts\`, then run the workflow. If a card image looks wrong, raise a Bug that names the component.`
+      : `${writes(path)} (design/CANVAS.md#making-the-snapshots-and-jpgs). Change its board in \`design/canvas/\`, then run the workflow. If a snapshot looks wrong, raise a Bug that names the screen.`;
+
+  const ciReason = (path: string) =>
+    `${writes(path)}. Never edit it. In a merge conflict, run \`git checkout --theirs -- ${path}\`, then ask in the PR for a run of the workflow. If a snapshot looks wrong or the app can't match it, say so in the PR and raise a Bug that names the screen.`;
+
+  it('has one entry in settings.json and none in review-settings.json', () => {
+    const matchers = (file: string) =>
+      preToolUseOf(`.github/agent/${file}`)?.map(({ matcher }) => matcher);
+
+    expect(matchers('settings.json')).toEqual(['Bash', 'Edit|Write']);
+    expect(matchers('review-settings.json')).toEqual(['Bash']);
+  });
+
+  it.each([page, jpg, card])('the CI hook denies %s', path => {
+    const output = ci(path);
+
+    expect(output.permissionDecision).toBe('deny');
+    expect(reasonOf(output)).toBe(ciReason(path));
+  });
+
+  it.each([page, jpg, card])('the local hook denies %s', path => {
+    const output = local(path);
+
+    expect(output.permissionDecision).toBe('deny');
+    expect(reasonOf(output)).toBe(localReason(path));
+  });
+
+  it('gives the card image reason for a card image and not for a snapshot', () => {
+    expect(reasonOf(local(card))).toContain('lib/design/states.mts');
+    expect(reasonOf(local(page))).not.toContain('lib/design/states.mts');
+  });
+
+  it('denies design/canvas/ in the CI hook only', () => {
+    const output = ci('design/canvas/project/index.html');
+
+    expect(output.permissionDecision).toBe('deny');
+    expect(reasonOf(output)).toBe(canvasReason);
+    expect(local('design/canvas/project/index.html')).toBeUndefined();
+  });
+
+  it.each([
+    'design/source/kse-birth.svg',
+    'design/source/fonts.css',
+    'design/DESIGN.md',
+    'app/page.tsx',
+  ])('allows %s', path => {
+    expect(ci(path)).toBeUndefined();
+    expect(local(path)).toBeUndefined();
+  });
+
+  it.each([
+    [`${main}/${page}`, page],
+    [`${main}/.claude/worktrees/feat-x/${page}`, page],
+    [`${workspace}/${page}`, page],
+    [`${main}/${card}`, card],
+    [`${workspace}/.claude/worktrees/feat-x/${jpg}`, jpg],
+  ])('treats %s as %s', (absolute, relative) => {
+    expect(reasonOf(ci(absolute))).toBe(ciReason(relative));
+    expect(reasonOf(local(absolute))).toBe(localReason(relative));
+  });
+
+  it('treats an absolute path to an allowed file as the relative path', () => {
+    expect(ci(`${main}/app/page.tsx`)).toBeUndefined();
+    expect(local(`${workspace}/design/source/kse-birth.svg`)).toBeUndefined();
+    expect(ci(`${workspace}/design/canvas/project/index.html`)).toMatchObject({
+      permissionDecision: 'deny',
+    });
+  });
+
+  it('does not match a path that only ends like a generated one', () => {
+    expect(ci('app/design/source/map-desktop.html')).toBeUndefined();
+    expect(ci('design/source/sub/map-desktop.html')).toBeUndefined();
+    expect(ci('design/cards/Alert-1440.jpg')).toBeUndefined();
+  });
+
+  it('denies a Write as an Edit', () => {
+    expect(ci(page, {}, 'Write').permissionDecision).toBe('deny');
+  });
+
+  it('makes the local hook silent when GITHUB_ACTIONS is true', () => {
+    const env = { GITHUB_ACTIONS: 'true' };
+
+    expect(local(page, env)).toBeUndefined();
+    expect(local(card, env)).toBeUndefined();
+    expect(ci(page, env).permissionDecision).toBe('deny');
   });
 });

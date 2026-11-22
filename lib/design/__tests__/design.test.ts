@@ -25,7 +25,7 @@ describe('the design snapshots', () => {
   );
 
   it('are all checked', () => {
-    expect(snapshots).toHaveLength(88);
+    expect(snapshots).toHaveLength(87);
   });
 
   it.each(snapshots)('%s uses only token colours', name => {

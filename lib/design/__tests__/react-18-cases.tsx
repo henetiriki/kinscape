@@ -49,8 +49,8 @@ import { BottomSheet } from '@ks/app/components/overlays/BottomSheet';
 import { Dialog, DialogPanel } from '@ks/app/components/overlays/Dialog';
 import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
 import { Modal } from '@ks/app/components/overlays/Modal';
-import { PinPopup } from '@ks/app/components/overlays/PinPopup';
-import { Popup } from '@ks/app/components/overlays/Popup';
+import { PinPopup, PlacedPinPopup } from '@ks/app/components/overlays/PinPopup';
+import { PlacedPopup, Popup } from '@ks/app/components/overlays/Popup';
 import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
 import sourceData from '@ks/data/sources.json';
 import { AddPinButton } from '@ks/features/map/components/AddPinButton';
@@ -222,6 +222,8 @@ export const COMPONENTS = {
   PickerRow,
   PinFan,
   PinPopup,
+  PlacedPinPopup,
+  PlacedPopup,
   Popup,
   ProgressBar,
   RelationshipRow,
@@ -372,6 +374,12 @@ export const CASES: [string, ReactElement][] = [
         </Button>,
       ] as [string, ReactElement]
   ),
+  [
+    'Button · round',
+    <Button icon='play' key='round' round size='l' variant='primary'>
+      Play
+    </Button>,
+  ],
   ...links('Button link', state => (
     <Button href='/people' state={state} variant='primary'>
       See all people
@@ -587,6 +595,7 @@ export const CASES: [string, ReactElement][] = [
     'TextField · password',
     <TextField key='p' label='Password' type='password' />,
   ],
+  ['TextField · size l', <TextField key='l' label='Name' size='l' />],
   ...(
     [
       ['default', {}],
@@ -621,6 +630,7 @@ export const CASES: [string, ReactElement][] = [
       />
     ))
   ),
+  ['CheckboxField · size m', <CheckboxField key='m' label='Pins' size='m' />],
   ['CheckboxField · plain', <CheckboxField key='n' label='Keep me' plain />],
   ['DateField · default', dateField()],
   ...STATES.map((state): [string, ReactElement] => [
@@ -1275,6 +1285,33 @@ export const CASES: [string, ReactElement][] = [
       state={state}
     />,
   ]),
+  [
+    'PlacedPopup · placed',
+    <PlacedPopup
+      chain={CHAIN}
+      coordinates='28.738° S · 24.764° E'
+      key='placed-popup'
+      pins={PINS}
+      place='Kimberley'
+      x={380}
+      y={240}
+      year={1901}
+    />,
+  ],
+  [
+    'PlacedPinPopup · placed',
+    <PlacedPinPopup
+      address='Farm Example, district Example'
+      event='residence'
+      key='placed-pin-popup'
+      name='Example Person'
+      reading='From 1890 to 1905'
+      recorded='FROM 1890 TO 1905'
+      state='loaded'
+      x={380}
+      y={240}
+    />,
+  ],
   ...([false, true] as const).map((expanded): [string, ReactElement] => [
     `BottomSheet · ${expanded ? 'expanded' : 'collapsed'}`,
     <BottomSheet
@@ -1439,6 +1476,27 @@ export const CASES: [string, ReactElement][] = [
       key='map'
       layers={<Text variant='small'>layers</Text>}
       overlay={<Text variant='small'>overlay</Text>}
+      panel={<Text variant='small'>panel</Text>}
+      search={<Text variant='small'>search</Text>}
+      zoom={<Text variant='small'>zoom</Text>}>
+      {[
+        <Text key='map' variant='small'>
+          The map
+        </Text>,
+      ]}
+    </MapLayout>,
+  ],
+  [
+    'MapLayout · overlay at the top',
+    <MapLayout
+      account={<Text variant='small'>account</Text>}
+      action={<Text variant='small'>action</Text>}
+      credits={<Text variant='small'>credits</Text>}
+      dock={<Text variant='small'>dock</Text>}
+      key='map-top'
+      layers={<Text variant='small'>layers</Text>}
+      overlay={<Text variant='small'>overlay</Text>}
+      overlayAt='top'
       panel={<Text variant='small'>panel</Text>}
       search={<Text variant='small'>search</Text>}
       zoom={<Text variant='small'>zoom</Text>}>

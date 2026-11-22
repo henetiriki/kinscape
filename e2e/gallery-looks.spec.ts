@@ -4,9 +4,14 @@ import { expect, test } from '@playwright/test';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/design/tokens.mts';
 import { hitsControl } from '@ks/e2e/hits';
 import { GALLERY, OUTPUT, PREVIEW_PAD } from '@ks/lib/design/cards.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
+import { HATCH_LINE } from '@ks/lib/ui/hatch';
+
+const { map } = resolveTokens(rawTokens);
 
 // NFR-05, NFR-06: the look of the shared controls, read from the gallery files in
 // .design-system/gallery/. Like e2e/design-gallery.spec.ts, each test opens files from disk, with no app.
@@ -45,6 +50,58 @@ const floatingShadow = (page: Page) =>
 
     return shadow;
   });
+
+// What the browser computes for `property: value`, set on a probe. A token or a colour then compares in px and `rgb()`.
+const computed = (
+  page: Page,
+  tag: 'div' | 'path',
+  property: string,
+  value: string
+) =>
+  page.evaluate(
+    ([name, prop, text]) => {
+      const probe =
+        name === 'path'
+          ? document.createElementNS('http://www.w3.org/2000/svg', 'path')
+          : document.createElement('div');
+
+      probe.style.setProperty(prop, text);
+      document.body.append(probe);
+
+      const result = getComputedStyle(probe).getPropertyValue(prop);
+
+      probe.remove();
+
+      return result;
+    },
+    [tag, property, value]
+  );
+
+const style = (node: Locator, property: string) =>
+  node.evaluate(
+    (element, name) => getComputedStyle(element).getPropertyValue(name),
+    property
+  );
+
+// The root of a card state: the last child of its figure.
+const root = (page: Page, label: string) =>
+  state(page, label).locator(':scope > :last-child');
+
+const round = async (node: Locator) => {
+  const box = (await node.boundingBox())!;
+
+  return { height: Math.round(box.height), width: Math.round(box.width) };
+};
+
+// The slots of a layout, in DOM order, as "name:text".
+const slots = (layout: Locator) =>
+  layout
+    .locator('[data-slot]')
+    .evaluateAll(nodes =>
+      nodes.map(
+        node => `${(node as HTMLElement).dataset.slot}:${node.textContent}`
+      )
+    );
 
 // The banner of "Banner · offline": its background, shadow and height, and the gaps from Retry to its top, bottom and right edge.
 // The caller opens the file first.
@@ -326,6 +383,19 @@ test.describe('on a phone', () => {
       expect(box.x).toBe(16);
       expect(box.x + box.width).toBe(374);
     }
+  });
+
+  // NFR-05
+  test('the hero of the sign-in layout has a 36px wordmark', async ({
+    page,
+  }) => {
+    await open(page, 'SignInLayout');
+
+    const hero = state(page, 'SignInLayout · hero and form').locator(
+      '[data-slot="hero"] img:visible'
+    );
+
+    expect((await round(hero)).height).toBe(36);
   });
 });
 
@@ -949,6 +1019,236 @@ test.describe('at 1440px', () => {
         ).toBe(true);
       }
     }
+  });
+
+  // NFR-06
+  test('the icon of a button is 14px wide on the xs size and 20px on a round button', async ({
+    page,
+  }) => {
+    await open(page, 'Button');
+
+    const icon = (label: string, name: string) =>
+      state(page, label).getByRole('button', { name }).locator('svg');
+
+    expect((await round(icon('Button · size xs', 'Copy chain'))).width).toBe(
+      14
+    );
+    expect((await round(icon('Button · round', 'Play'))).width).toBe(20);
+  });
+
+  // NFR-06
+  test('a checkbox row of size m is 44px tall', async ({ page }) => {
+    await open(page, 'CheckboxField');
+
+    const row = state(page, 'CheckboxField · size m')
+      .getByRole('checkbox', { name: 'Pins' })
+      .locator('xpath=ancestor::*[@data-size][1]');
+
+    expect((await round(row)).height).toBe(44);
+  });
+
+  // NFR-06
+  test('a large text field is as tall as the large field token', async ({
+    page,
+  }) => {
+    await open(page, 'TextField');
+
+    // The parent of the input draws the border of the field.
+    const box = state(page, 'TextField · size l')
+      .getByRole('textbox', { name: 'Name' })
+      .locator('xpath=..');
+
+    expect(await style(box, 'height')).toBe(
+      await computed(page, 'div', 'height', 'var(--size-field-l)')
+    );
+  });
+
+  // NFR-05
+  test('the sign-in layout has the hero before the form, a 44px wordmark in the form and the sea background', async ({
+    page,
+  }) => {
+    await open(page, 'SignInLayout');
+
+    const layout = root(page, 'SignInLayout · hero and form');
+
+    expect(
+      (await slots(layout)).map(slot => slot.slice(0, slot.indexOf(':')))
+    ).toEqual(['hero', 'form']);
+    await expect(layout.locator('[data-slot="hero"]')).toContainText(
+      'Your family, where they were.'
+    );
+    await expect(layout.locator('[data-slot="form"]')).toContainText(
+      'Sign in to see your family on the map.'
+    );
+    expect(
+      (await round(layout.locator('[data-slot="form"] img:visible'))).height
+    ).toBe(44);
+    expect(
+      await style(layout.locator('[data-slot="hero"]'), 'background-color')
+    ).toBe(await computed(page, 'div', 'background-color', map.sea));
+  });
+
+  // MAP-05
+  test('a placed popup and a placed Pin popup have their right edge a gap left of x and their top a point-y above y', async ({
+    page,
+  }) => {
+    for (const [file, label, gap] of [
+      ['PlacedPopup', 'PlacedPopup · placed', 'popup-gap'],
+      ['PlacedPinPopup', 'PlacedPinPopup · placed', 'pin-popup-gap'],
+    ] as const) {
+      await open(page, file);
+
+      const figure = (await state(page, label).boundingBox())!;
+      const popup = (await root(page, label).boundingBox())!;
+      const px = async (token: string) =>
+        Number.parseFloat(
+          await computed(page, 'div', 'width', `var(--layout-${token})`)
+        );
+
+      expect(Math.round(popup.x + popup.width - figure.x), label).toBe(
+        380 - (await px(gap))
+      );
+      expect(Math.round(popup.y - figure.y), label).toBe(
+        240 - (await px('popup-point-y'))
+      );
+    }
+  });
+
+  // MAP-05, NFR-05
+  test('each swatch of the legend has the value of its map token', async ({
+    page,
+  }) => {
+    await open(page, 'Legend');
+
+    const legend = state(page, 'Legend · default');
+    const [solid, dashed] = [0, 1].map(index =>
+      legend.locator('path').nth(index)
+    );
+    const [halo, pin] = [0, 1].map(index =>
+      legend.locator('circle').nth(index)
+    );
+    const hatch = legend.locator('span[aria-hidden="true"]').first();
+    const paint = (property: string, value: string) =>
+      computed(page, 'path', property, value);
+
+    for (const line of [solid, dashed]) {
+      expect(await style(line, 'stroke')).toBe(
+        await paint('stroke', map.border.colour)
+      );
+      expect(await style(line, 'stroke-width')).toBe(
+        await paint('stroke-width', `${map.border.width}px`)
+      );
+    }
+
+    expect(await style(solid, 'stroke-dasharray')).toBe('none');
+    expect(await style(dashed, 'stroke-dasharray')).toBe(
+      await paint(
+        'stroke-dasharray',
+        `${map.border['dash-on']} ${map.border['dash-off']}`
+      )
+    );
+    expect(await style(halo, 'fill')).toBe(
+      await paint('fill', map['pin-halo'].colour)
+    );
+    expect(await style(halo, 'opacity')).toBe(String(map['pin-halo'].opacity));
+    expect(await style(pin, 'fill')).toBe(await paint('fill', map.pin.colour));
+    expect(await style(pin, 'fill-opacity')).toBe(
+      String(map.pin['fuzzy-opacity'])
+    );
+    expect(await style(pin, 'stroke')).toBe(
+      await paint('stroke', map.pin.halo)
+    );
+    expect(await style(pin, 'stroke-width')).toBe(
+      await paint('stroke-width', `${map.pin['halo-width']}px`)
+    );
+    expect(await style(hatch, 'background-image')).toBe(
+      await computed(
+        page,
+        'div',
+        'background-image',
+        `repeating-linear-gradient(45deg, ${HATCH_LINE} 0 3px, ${map.polity['free-state']} 3px 9px)`
+      )
+    );
+  });
+
+  // PIN-06
+  test('a fan of twelve Pins is 252px wide and tall, twice its 126px reach', async ({
+    page,
+  }) => {
+    await open(page, 'PinFan');
+
+    expect(await round(root(page, 'PinFan · twelve Pins'))).toEqual({
+      height: 252,
+      width: 252,
+    });
+  });
+
+  // MAP-05
+  test('the "Place names" row of the Layers tab is 44px tall', async ({
+    page,
+  }) => {
+    await open(page, 'Panel');
+
+    const row = state(page, 'Panel · Layers tab')
+      .getByRole('checkbox', { name: 'Place names' })
+      .locator('xpath=ancestor::*[@data-size][1]');
+
+    expect((await round(row)).height).toBe(44);
+  });
+
+  // NFR-05
+  test('a column layout has the header, the column and the action bar in slots, in that order', async ({
+    page,
+  }) => {
+    await open(page, 'ColumnLayout');
+
+    const layout = root(page, 'ColumnLayout · form with an action bar');
+    const children = layout.locator(':scope > *');
+
+    expect(
+      await children.evaluateAll(nodes => nodes.map(node => node.tagName))
+    ).toEqual(['HEADER', 'MAIN', 'DIV']);
+    await expect(children.first()).toContainText('People');
+  });
+
+  // NFR-05
+  test('a map layout has its nine slots in order', async ({ page }) => {
+    await open(page, 'MapLayout');
+
+    expect(await slots(root(page, 'MapLayout · text in each slot'))).toEqual([
+      'search:search',
+      'action:action',
+      'account:account',
+      'zoom:zoom',
+      'layers:layers',
+      'panel:panel',
+      'dock:dock',
+      'credits:credits',
+      'overlay:overlay',
+    ]);
+  });
+
+  // NFR-05
+  test('the overlay text of a map layout is at the top of its slot only with overlayAt top', async ({
+    page,
+  }) => {
+    await open(page, 'MapLayout');
+
+    const gap = async (label: string) => {
+      const layout = root(page, label);
+      const slot = (await layout
+        .locator('[data-slot="overlay"]')
+        .boundingBox())!;
+      const text = (await layout
+        .locator('[data-slot="overlay"]')
+        .getByText('overlay', { exact: true })
+        .boundingBox())!;
+
+      return Math.round(text.y - slot.y);
+    };
+
+    expect(await gap('MapLayout · overlay at the top')).toBe(0);
+    expect(await gap('MapLayout · text in each slot')).toBeGreaterThan(0);
   });
 
   test.describe('a toast rises in', () => {

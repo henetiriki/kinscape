@@ -45,6 +45,10 @@ vi.mock('@ks/features/map', async () => ({
   polityLayer: (await import('@ks/features/map/layers/polities')).polityLayer,
 }));
 
+const addPin = vi.hoisted(() => vi.fn());
+
+vi.mock('@ks/app/@map/useAddPin', () => ({ useAddPin: addPin }));
+
 import { MapWithPins } from '@ks/app/@map/MapWithPins';
 import { QueryProvider } from '@ks/app/QueryProvider';
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
@@ -89,6 +93,8 @@ const renderMap = () =>
 beforeEach(() => {
   fetchStub.mockReset();
   shell.mockClear();
+  addPin.mockReset();
+  addPin.mockReturnValue({});
   vi.stubGlobal('fetch', fetchStub);
 });
 
@@ -107,6 +113,29 @@ describe('MapWithPins', () => {
     ).toEqual(['polity-borders', 'pins']);
     await waitFor(() => {
       expect(captions()).toBe(LOADED);
+    });
+  });
+
+  // PIN-01
+  it('passes the action and the panel of the add-pin hook, and loads the Pins again after a save', async () => {
+    fetchStub.mockResolvedValue(Response.json(PINS));
+    addPin.mockReturnValue({ action: 'ACTION', panel: 'PANEL' });
+    renderMap();
+
+    expect(shell.mock.calls[0][0]).toMatchObject({
+      action: 'ACTION',
+      panel: 'PANEL',
+    });
+    await waitFor(() => {
+      expect(captions()).toBe(LOADED);
+    });
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      addPin.mock.calls.at(-1)![0].onSaved();
+    });
+    await waitFor(() => {
+      expect(fetchStub).toHaveBeenCalledTimes(2);
     });
   });
 

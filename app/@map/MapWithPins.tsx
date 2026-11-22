@@ -6,6 +6,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import type { MapPin } from '@ks/lib/domain/pins/types.ts';
 
+import { useAddPin } from '@ks/app/@map/useAddPin';
 import { Toast } from '@ks/app/components/feedback/Toast';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
 import { PinPopup, PlacedPinPopup } from '@ks/app/components/overlays/PinPopup';
@@ -60,11 +61,12 @@ const OpenPinPopup = ({
 export const MapWithPins = (
   props: Omit<
     ComponentProps<typeof MapShell>,
-    'layers' | 'onClosePin' | 'onOpenPin' | 'pin' | 'toast'
+    'action' | 'layers' | 'onClosePin' | 'onOpenPin' | 'panel' | 'pin' | 'toast'
   >
 ) => {
   const { data, errorUpdatedAt, isError, refetch } = usePins();
   const phone = usePhone();
+  const add = useAddPin({ onSaved: () => void refetch() });
   // The toast of one failure stays hidden once dismissed; a new failure has a new time.
   const [dismissedAt, setDismissedAt] = useState(0);
   const [openId, setOpenId] = useState<string>();
@@ -75,9 +77,11 @@ export const MapWithPins = (
   return (
     <MapShell
       {...props}
+      action={add.action}
       layers={layers}
       onClosePin={close}
       onOpenPin={setOpenId}
+      panel={add.panel}
       pin={
         open && {
           open: { id: open.id, position: [open.longitude, open.latitude] },

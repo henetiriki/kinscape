@@ -320,6 +320,40 @@ it('collapses the credits to one line on desktop', () => {
   ).toBe('false');
 });
 
+// PIN-01
+it('puts `action` in the action slot and `panel` in the place of the Layers panel', () => {
+  const { container, rerender } = render(
+    <MapShell
+      {...account}
+      action={<button type='button'>Add a pin</button>}
+      coverage={coverage}
+      layers={layers}
+      panel={<p>The form panel</p>}
+      sources={sources}
+    />
+  );
+
+  expect(container.querySelector('[data-slot="action"]')?.textContent).toBe(
+    'Add a pin'
+  );
+  expect(container.querySelector('[data-slot="panel"]')?.textContent).toBe(
+    'The form panel'
+  );
+
+  rerender(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={layers}
+      sources={sources}
+    />
+  );
+  expect(container.querySelector('[data-slot="action"]')).toBeNull();
+  expect(container.querySelector('[data-slot="panel"]')?.textContent).toContain(
+    'Polities'
+  );
+});
+
 describe('on a phone', () => {
   const desktop = window.matchMedia;
 
@@ -333,6 +367,21 @@ describe('on a phone', () => {
 
   afterEach(() => {
     window.matchMedia = desktop;
+  });
+
+  // NFR-05
+  it('draws no panel, even when the caller gives one', () => {
+    const { container } = render(
+      <MapShell
+        {...account}
+        coverage={coverage}
+        layers={layers}
+        panel={<p>The form panel</p>}
+        sources={sources}
+      />
+    );
+
+    expect(container.querySelector('[data-slot="panel"]')).toBeNull();
   });
 
   // NFR-03

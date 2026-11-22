@@ -62,6 +62,16 @@ The test now checks that no `aria-hidden` node other than an `svg` exists. Its r
 
 **Answer: A** (@henetiriki)
 
+**D6 · What `Menu.test.tsx` 219 and 227 check** · Decides: Tech lead
+
+The old queries check `data-form` on each node of the Menu. A test id reaches one node only.
+
+- **A.** Check `data-form` on `menu-anchor` and `menu-drop` only. The check is narrower: a `data-form` on another Menu node does not fail it.
+- **B.** Keep both disables and queries. Step 2 then has 67 disables, and step 4 has 46. The build rewords the issue.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Alternatives considered
 
 - A role for slots and decorative nodes: no ARIA role fits them, and a role adds them to the accessibility tree (#1159 D3).

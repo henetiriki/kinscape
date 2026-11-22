@@ -11,6 +11,48 @@ const add = (page: Page, title: 'Children' | 'Parents' | 'Spouses') =>
 const pick = (page: Page, name: RegExp) =>
   page.getByRole('button', { name }).click();
 
+/** Chooses "Add a pin" and waits until the panel has its Persons. */
+const openPinForm = async (page: Page) => {
+  await page.getByRole('button', { name: 'Add a pin' }).click();
+  await page.getByRole('combobox', { name: 'Person' }).waitFor();
+  await page
+    .getByRole('button', { name: 'Save' })
+    .and(page.locator(':enabled'))
+    .waitFor();
+};
+
+/** What the boards `pin-form`, `pin-form-saving` and `pin-form-save-failed` hold in the fields. */
+const fillPinForm = async (page: Page) => {
+  await page.getByRole('combobox', { name: 'Person' }).fill('Maria Magdalena');
+  await page
+    .getByRole('option')
+    .filter({ hasText: 'Maria Magdalena' })
+    .first()
+    .click();
+  await page.getByLabel('Event type').selectOption('residence');
+  await page.getByLabel('Date', { exact: true }).fill('FROM 1890 TO 1905');
+  await page.getByLabel('Coordinates').fill('-28.742600, 25.311800');
+  await page
+    .getByLabel('Address as recorded')
+    .fill('Farm Example, district Example');
+  // The boards show no focus border.
+  await page.getByLabel('Address as recorded').blur();
+};
+
+/** Chooses "Save" on a filled panel, with the server action held, or failed as a network failure does. */
+const saveWith = async (page: Page, answer: 'abort' | 'hold') => {
+  await page.route('**/*', route =>
+    route.request().headers()['next-action']
+      ? answer === 'abort'
+        ? route.abort()
+        : new Promise<void>(() => {})
+      : route.continue()
+  );
+  await openPinForm(page);
+  await fillPinForm(page);
+  await page.getByRole('button', { name: 'Save' }).click();
+};
+
 /** Puts the page in the state a screen in `design/screens.json` names, before the screenshot. */
 export const states: Record<string, (page: Page) => Promise<void>> = {
   // The board draws the menu open with People hovered.
@@ -49,6 +91,43 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
     await page
       .getByRole('alert')
       .filter({ hasText: /Couldn't save|changed while/ })
+      .waitFor();
+  },
+  'pin-form': async page => {
+    await openPinForm(page);
+    await fillPinForm(page);
+  },
+  'pin-form-empty': openPinForm,
+  // The board's coordinates are in degrees, minutes and seconds, its date has the wrong format and its address has 501 characters.
+  'pin-form-errors': async page => {
+    await openPinForm(page);
+    await page.getByLabel('Date', { exact: true }).fill('14/03/1850');
+    await page.getByLabel('Coordinates').fill('28°44′33″S 25°18′42″E');
+    await page
+      .getByLabel('Address as recorded')
+      .fill('Farm Example, district Example, '.repeat(16).slice(0, 501));
+    await page.getByRole('button', { name: 'Save' }).click();
+    await page.getByText('Choose a person.').waitFor();
+  },
+  // The Researcher Tree has no Person.
+  'pin-form-no-people': async page => {
+    await page.getByRole('button', { name: 'Add a pin' }).click();
+    await page.getByText('No people yet').waitFor();
+  },
+  'pin-form-save-failed': async page => {
+    await saveWith(page, 'abort');
+    await page
+      .getByRole('alert')
+      .filter({ hasText: "Couldn't save the pin" })
+      .waitFor();
+    await page.unroute('**/*');
+  },
+  // The route holds the action request, so the panel stays in its saving state.
+  'pin-form-saving': async page => {
+    await saveWith(page, 'hold');
+    await page
+      .getByRole('button', { name: 'Save' })
+      .and(page.locator(':disabled'))
       .waitFor();
   },
   // A child of Maria as her parent makes a cycle, so Save shows the alert.

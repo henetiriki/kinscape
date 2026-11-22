@@ -35,12 +35,14 @@ export const jpegSize = (bytes: Uint8Array): Size => {
 /**
  * Lists what stops `screens.json` covering every image: an image with no entry
  * and not in `noEntry`, an entry that is also in `noEntry` or has no image,
- * one that is not the snapshot's size, an `ignore` area, a mode other than `blocking`, or a threshold other than 0.5.
+ * one that is not the snapshot's size, an `ignore` area on an entry that is not in `mayIgnore`, a mode
+ * other than `blocking`, or a threshold other than 0.5.
  */
 export const sweepProblems = (
   raw: unknown,
   images: Record<string, Size>,
-  noEntry: string[]
+  noEntry: string[],
+  mayIgnore: string[] = []
 ): string[] => {
   const config = isRecord(raw) ? raw : {};
   const screens = (Array.isArray(config.screens) ? config.screens : []).filter(
@@ -67,7 +69,9 @@ export const sweepProblems = (
 
     if (noEntry.includes(name)) problems.push(`${name}: also in NO_ENTRY`);
 
-    if (screen.ignore !== undefined) problems.push(`${name}: has ignore`);
+    if (screen.ignore !== undefined && !mayIgnore.includes(name)) {
+      problems.push(`${name}: has ignore`);
+    }
 
     if (screen.mode !== 'blocking') problems.push(`${name}: is not blocking`);
 

@@ -26,8 +26,8 @@ const ASKS = [
 
 // Each path with a segment to prefetch: its page, and the `/screens` layout above it.
 const PAGES = [
-  ['/screens/add-pin', '/screens/add-pin/__PAGE__'],
-  ['/screens/add-pin', '/screens'],
+  ['/screens/people-loading', '/screens/people-loading/__PAGE__'],
+  ['/screens/people-loading', '/screens'],
 ] as const;
 
 const expectHidden = async (page: Page) => {

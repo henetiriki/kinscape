@@ -1,17 +1,71 @@
 {
   "screens": [
     {
-      "name": "add-pin",
-      "route": "/screens/add-pin",
+      "name": "map-add-pin",
+      "account": "r.family@example.com",
+      "route": "/screens/pin-form",
       "width": 1440,
       "height": 900,
       "mode": "blocking"
     },
     {
-      "name": "add-pin-phone",
-      "route": "/screens/add-pin",
-      "width": 390,
-      "height": 844,
+      "name": "pin-form-empty",
+      "account": "r.family@example.com",
+      "route": "/screens/pin-form",
+      "state": "pin-form-empty",
+      "ignore": [{ "x": 24, "y": 636, "width": 320, "height": 155 }],
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "pin-form",
+      "account": "r.family@example.com",
+      "route": "/screens/pin-form",
+      "state": "pin-form",
+      "ignore": [{ "x": 24, "y": 636, "width": 320, "height": 155 }],
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "pin-form-errors",
+      "account": "r.family@example.com",
+      "route": "/screens/pin-form",
+      "state": "pin-form-errors",
+      "ignore": [{ "x": 24, "y": 636, "width": 320, "height": 155 }],
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "pin-form-saving",
+      "account": "r.family@example.com",
+      "route": "/screens/pin-form",
+      "state": "pin-form-saving",
+      "ignore": [{ "x": 24, "y": 636, "width": 320, "height": 155 }],
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "pin-form-save-failed",
+      "account": "r.family@example.com",
+      "route": "/screens/pin-form",
+      "state": "pin-form-save-failed",
+      "ignore": [{ "x": 24, "y": 636, "width": 320, "height": 155 }],
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "pin-form-no-people",
+      "account": "researcher@example.com",
+      "route": "/screens/pin-form",
+      "state": "pin-form-no-people",
+      "ignore": [{ "x": 24, "y": 636, "width": 320, "height": 155 }],
+      "width": 1440,
+      "height": 900,
       "mode": "blocking"
     },
     {

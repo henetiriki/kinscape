@@ -54,15 +54,20 @@ export const AtPoint = ({
 
 /**
  * The map screen's frame over the sea colour that stands in for the map, as the Pin boards draw it.
- * `children` sits on the map; on a phone, `details` fills the expanded Map date sheet. Synthetic
- * data throughout.
+ * `children` sits on the map; on a phone, `details` fills the expanded Map date sheet. On a desktop,
+ * `action` fills the action slot and `panel` takes the place of the tabbed panel. Synthetic data
+ * throughout.
  */
 export const MapFrame = ({
+  action,
   children,
   details,
+  panel,
 }: {
+  action?: ReactNode;
   children?: (phone: boolean) => ReactNode;
   details?: ReactNode;
+  panel?: ReactNode;
 }) => {
   const phone = usePhone();
   const menu = (
@@ -113,24 +118,27 @@ export const MapFrame = ({
       ) : (
         <MapLayout
           {...accountSlots(phone, menu)}
+          action={action}
           dock={dock}
           panel={
-            <Panel
-              bodyId='map-panel-body'
-              end={<Legend />}
-              gap={14}
-              label='Layers and filters'
-              onSelect={noop}
-              selected='layers'
-              tabs={panelTabs('map-panel-body')}>
-              {LAYER_GROUPS.map(({ heading, rows }) => (
-                <LayerGroup
-                  heading={heading}
-                  key={heading}
-                  rows={rows.map(row => ({ ...row, onChange: noop }))}
-                />
-              ))}
-            </Panel>
+            panel ?? (
+              <Panel
+                bodyId='map-panel-body'
+                end={<Legend />}
+                gap={14}
+                label='Layers and filters'
+                onSelect={noop}
+                selected='layers'
+                tabs={panelTabs('map-panel-body')}>
+                {LAYER_GROUPS.map(({ heading, rows }) => (
+                  <LayerGroup
+                    heading={heading}
+                    key={heading}
+                    rows={rows.map(row => ({ ...row, onChange: noop }))}
+                  />
+                ))}
+              </Panel>
+            )
           }
           search={<SearchBar form='bar' />}
           zoom={<ZoomControls />}>

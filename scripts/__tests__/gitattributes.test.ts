@@ -12,7 +12,7 @@ const attribute = (file: string) =>
     .pop();
 
 describe('.gitattributes', () => {
-  it.each(['design/source/add-pin.html', 'design/add-pin.jpg'])(
+  it.each(['design/source/pin-form.html', 'design/pin-form.jpg'])(
     'marks the generated file %s',
     file => {
       expect(attribute(file)).toBe('set');

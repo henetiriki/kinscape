@@ -28,6 +28,10 @@ describe('next.config', () => {
       },
       {
         headers: [{ key: 'Cache-Control', value: 'private, no-store' }],
+        source: '/screens/pin-form',
+      },
+      {
+        headers: [{ key: 'Cache-Control', value: 'private, no-store' }],
         source: '/people/:path*',
       },
     ]);

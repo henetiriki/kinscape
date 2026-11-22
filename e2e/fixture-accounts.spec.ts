@@ -22,7 +22,7 @@ const signInAs = async (
 
 // The fixture server hides the screens, as production does.
 test('the fixture server gives 404 for a screen', async ({ page }) => {
-  const response = await page.goto('/screens/add-pin');
+  const response = await page.goto('/screens/people-loading');
 
   expect(response?.status()).toBe(404);
 });

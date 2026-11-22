@@ -232,8 +232,7 @@ it('shows the loading look until the Persons arrive, with the Save button off', 
   expect(screen.getByRole('heading', { name: 'Add a pin' })).toBeInstanceOf(
     HTMLElement
   );
-  // eslint-disable-next-line testing-library/no-node-access -- the loading bars are aria-hidden; no query reaches them
-  expect(document.querySelectorAll('[data-bar]')).toHaveLength(10);
+  expect(screen.getAllByTestId('loading-bar')).toHaveLength(10);
   for (const name of [
     'Address as recorded',
     'Coordinates',

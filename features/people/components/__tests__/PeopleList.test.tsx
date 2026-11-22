@@ -167,8 +167,7 @@ describe('PeopleList', () => {
     open();
 
     const list = screen.getByRole('region', { name: 'People, by surname' });
-    // eslint-disable-next-line testing-library/no-node-access -- the header row is aria-hidden; no query reaches it
-    const heads = list.firstElementChild!;
+    const heads = within(list).getByTestId('header-row');
 
     expect(heads.textContent).toBe('NameDates');
     expect(

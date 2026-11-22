@@ -112,6 +112,10 @@ The assertions in each test stay the same. Only the query and the disable line c
 | Design system steps 2 to 6                                                               | The step commits on the branch                                                                         |
 | Each `canvas/project/ds/kinscape/` file has the same sha256 as `.design-system/project/` | Step 4.2 of "Updating the install"                                                                     |
 
+## Deviations
+
+- `app/screens/map-frame.tsx`: `AtPoint` also sets `placed-at`. The `map-pin-count` and `map-pin-fan` pages wrap the marker in `AtPoint`, not in `PlacedAt`.
+
 ## Out of scope
 
 - The 44 kept disables and their queries.

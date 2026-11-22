@@ -358,8 +358,7 @@ it('passes the error and the required state to the text field', () => {
 
 it('draws the focus look from a state prop', () => {
   setup({ state: 'focus' });
-  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its state mark
-  expect(document.querySelector('[data-state="focus"]')).not.toBeNull();
+  expect(screen.getByTestId('field-box').dataset.state).toBe('focus');
 });
 
 // A row with a note is 58px, so a max-height of three rows would cut the third.

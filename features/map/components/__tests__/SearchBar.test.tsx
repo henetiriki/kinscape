@@ -23,13 +23,12 @@ it('wraps a search input named "Search people and places" in a search form', () 
 });
 
 it('draws the bar as the Wordmark, a divider and the field, with a decorative icon', () => {
-  const { container } = render(<SearchBar form='bar' />);
+  render(<SearchBar form='bar' />);
   const bar = screen.getByRole('search');
 
   expect(within(bar).getByRole('presentation').getAttribute('alt')).toBe('');
   screen.getByText('KinScape');
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the divider is an empty aria-hidden span with no role
-  expect(container.querySelector('[aria-hidden="true"]:empty')).toBeTruthy();
+  screen.getByTestId('divider');
 });
 
 it('draws the pill as the named icon, the bare field and the account slot', () => {

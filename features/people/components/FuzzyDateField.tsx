@@ -84,7 +84,8 @@ export const FuzzyDateField = ({
       <span
         className={styles.box}
         data-mark={error ? 'error' : undefined}
-        data-state={state}>
+        data-state={state}
+        data-testid='field-box'>
         <input
           {...rest}
           aria-describedby={[rest['aria-describedby'], slotId]
@@ -107,7 +108,7 @@ export const FuzzyDateField = ({
         />
         {error && <Icon name='error' />}
       </span>
-      <div aria-live='polite' id={slotId}>
+      <div aria-live='polite' data-testid='message-slot' id={slotId}>
         {error ? (
           <Text as='p' key={checks} role='alert' tone='error' variant='small'>
             {error}

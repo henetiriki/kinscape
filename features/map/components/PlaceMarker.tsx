@@ -56,6 +56,7 @@ export const PlaceMarker = ({
     <div
       className={styles.place}
       data-open={open || undefined}
+      data-testid='place-marker'
       onPointerEnter={hover(true)}
       onPointerLeave={hover(false)}
       ref={root}>

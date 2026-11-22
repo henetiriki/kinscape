@@ -53,7 +53,11 @@ export const SearchBar = ({
     {form === 'bar' ? (
       <>
         <Wordmark size={32} />
-        <span aria-hidden='true' className={styles.divider} />
+        <span
+          aria-hidden='true'
+          className={styles.divider}
+          data-testid='divider'
+        />
         <span className={styles.field}>
           <TextField
             hideLabel

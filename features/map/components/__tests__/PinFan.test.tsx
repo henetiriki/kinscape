@@ -65,20 +65,20 @@ describe('PinFan', () => {
   it('joins the Pins of ring 1 to the Place, and draws no ring for one ring', () => {
     const { container } = render(<PinFan pins={PINS} />);
 
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the lines and rings are in an aria-hidden SVG with no role
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the lines and rings are inside an aria-hidden SVG; no query reaches them
     expect(container.querySelectorAll('line')).toHaveLength(3);
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the lines and rings are in an aria-hidden SVG with no role
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the lines and rings are inside an aria-hidden SVG; no query reaches them
     expect(container.querySelectorAll('circle')).toHaveLength(0);
   });
 
   it('draws each ring of a fan of more than one ring, and lines to ring 1 only', () => {
     const { container } = render(<PinFan pins={many(12)} />);
 
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the lines and rings are in an aria-hidden SVG with no role
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the lines and rings are inside an aria-hidden SVG; no query reaches them
     const rings = [...container.querySelectorAll('circle')];
 
     expect(rings.map(ring => ring.getAttribute('r'))).toEqual(['56', '104']);
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the lines and rings are in an aria-hidden SVG with no role
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the lines and rings are inside an aria-hidden SVG; no query reaches them
     expect(container.querySelectorAll('line')).toHaveLength(7);
   });
 

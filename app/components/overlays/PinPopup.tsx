@@ -6,6 +6,7 @@ import type { EventType } from '@ks/lib/ui/types';
 import { Button } from '@ks/app/components/actions/Button';
 import { IconButton } from '@ks/app/components/actions/IconButton';
 import { Alert } from '@ks/app/components/feedback/Alert';
+import { LoadingBar } from '@ks/app/components/feedback/LoadingBar';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
 import { PlacedAt } from '@ks/app/components/overlays/PlacedAt';
@@ -35,15 +36,6 @@ type PinPopupArgs = {
   state: PinPopupState;
 };
 
-const Bar = ({ width }: { width: number }) => (
-  <span
-    aria-hidden='true'
-    className={styles.bar}
-    data-bar=''
-    style={{ width }}
-  />
-);
-
 /** The popup of a Pin (PIN-02): the Person, the event type, both date lines and the address. */
 export const PinPopup = ({
   address,
@@ -72,7 +64,7 @@ export const PinPopup = ({
             {name}
           </Text>
         )}
-        {loading && <Bar width={168} />}
+        {loading && <LoadingBar width={168} />}
       </div>
       <span className={styles.close}>
         <IconButton label='Close' onClick={onClose}>
@@ -97,7 +89,7 @@ export const PinPopup = ({
         <div className={styles.address}>
           <Text variant='overline'>Address as recorded</Text>
           {loading ? (
-            <Bar width={220} />
+            <LoadingBar width={220} />
           ) : (
             <Text variant='body'>{address || 'No address recorded'}</Text>
           )}

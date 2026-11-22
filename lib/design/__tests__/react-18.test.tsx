@@ -43,6 +43,7 @@ import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Alert } from '@ks/app/components/feedback/Alert';
 import { Banner } from '@ks/app/components/feedback/Banner';
 import { Callout } from '@ks/app/components/feedback/Callout';
+import { LoadingBar } from '@ks/app/components/feedback/LoadingBar';
 import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { ProgressBar } from '@ks/app/components/feedback/ProgressBar';
 import { Toast } from '@ks/app/components/feedback/Toast';
@@ -226,6 +227,7 @@ const COMPONENTS = {
   LayerGroup,
   LayersButton,
   Legend,
+  LoadingBar,
   MapLayout,
   Menu,
   MenuPanel,
@@ -674,6 +676,7 @@ const CASES: [string, ReactElement][] = [
   ],
   ['FuzzyDateField · focus', fuzzyDateField({ state: 'focus' })],
   ['FuzzyDateField · error', fuzzyDateField({ defaultValue: '31 FEB 1850' })],
+  ['FuzzyDateField · required', fuzzyDateField({ error: 'Enter a date.' })],
   ['FuzzyDateField · disabled', fuzzyDateField({ disabled: true })],
   ['FuzzyDateField · exact', fuzzyDateField({ defaultValue: '14 MAR 1850' })],
   ['FuzzyDateField · about', fuzzyDateField({ defaultValue: 'ABT 1850' })],
@@ -1171,6 +1174,10 @@ const CASES: [string, ReactElement][] = [
   ...([0, 40, 100] as const).map((value, index): [string, ReactElement] => [
     `ProgressBar · ${value}`,
     <ProgressBar key={value} labelledBy={`ks-case-${index}`} value={value} />,
+  ]),
+  ...([168, 220] as const).map((width): [string, ReactElement] => [
+    `LoadingBar · ${width}`,
+    <LoadingBar key={width} width={width} />,
   ]),
   ...states('Avatar', (state, disabled) => (
     <Avatar disabled={disabled} initial='R' state={state} />

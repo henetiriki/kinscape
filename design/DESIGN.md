@@ -37,8 +37,6 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Map style, phone                                  | [map-style-phone.jpg](map-style-phone.jpg)                                   |
 | Invalid date typed in the dock                    | [map-date-invalid.jpg](map-date-invalid.jpg)                                 |
 | Invalid date typed in the dock, phone             | [map-date-invalid-phone.jpg](map-date-invalid-phone.jpg)                     |
-| Add a pin (provisional)                           | [add-pin.jpg](add-pin.jpg)                                                   |
-| Add a pin, phone (provisional)                    | [add-pin-phone.jpg](add-pin-phone.jpg)                                       |
 | Pins, count marker and its four looks             | [map-pin-count.jpg](map-pin-count.jpg)                                       |
 | Pins, fan-out, one Pin under hover                | [map-pin-fan.jpg](map-pin-fan.jpg)                                           |
 | Pins, fan-out, phone, after the first tap         | [map-pin-fan-phone.jpg](map-pin-fan-phone.jpg)                               |
@@ -120,7 +118,7 @@ The design system README does not include this section.
 | `foundation` | Text, Icon, Surface, Divider, focus, Avatar, Wordmark, PageHeader                                                                              |
 | `actions`    | Button, IconButton, TextLink, ArrowLink, PersonRow, RelationshipRow, PickerRow, Chip, ChipGroup, Segmented, Tabs, KeyHint, ActionBar, DateText |
 | `forms`      | TextField, TextAreaField, SelectField, TokenField, Checkbox, CheckboxField                                                                     |
-| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                                                                                         |
+| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, LoadingBar, Callout                                                                             |
 | `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup, PinPopup, PlacedAt                                                                             |
 | `layout`     | ColumnLayout, SignInLayout, MapLayout                                                                                                          |
 | `auth`       | What only sign-in uses: SignInHero, SignInForm                                                                                                 |
@@ -326,6 +324,11 @@ The FuzzyDateField component card shows it. It is a label, a 44px input and one 
 2. The reading follows the typing. The error shows on Enter or when focus leaves, never while the user types.
 3. An error keeps the text. It shows a 2px `--error-border` and an error icon inside the field. Set `aria-invalid` and link the message with `aria-describedby`.
 4. Empty text shows the helper, not an error. A good date gets no success styling.
+5. The `error` prop sets a form error. The slot shows the field's own error first.
+
+### Loading bar
+
+The LoadingBar card shows a 20px bar in `--line`, `radius.small`, of any width.
 
 ## Attributions
 
@@ -396,7 +399,6 @@ Avoid what MapLibre can't do: shadows, glows or gradients on polygons, dashed ci
 
 These have no design: see `AGENTS.md`.
 
-- The `pin-*` and `draft-pin-*` boards design the screens that add or edit a Pin. `/screens/add-pin` stays provisional until M2.14.3 builds them.
 - The screens that add or edit sources.
 - The popup for a click inside a contested area: how it shows both claims (BND-04, MAP-07).
 - Search results (EXP-04).

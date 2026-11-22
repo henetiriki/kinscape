@@ -1,0 +1,8 @@
+/* The loading bar stands where the name or the address will be. */
+.bar {
+  background: var(--line);
+  border-radius: var(--radius-small);
+  display: block;
+  height: 20px;
+  max-width: 100%;
+}

@@ -135,8 +135,7 @@ it('moves the active row with Down and Up, and keeps the focus in the field', ()
   expect(field.getAttribute('aria-activedescendant')).toBe(rows().at(-1)!.id);
   fireEvent.keyDown(field, { key: 'ArrowDown' });
   expect(field.getAttribute('aria-activedescendant')).toBe(rows()[0].id);
-  // eslint-disable-next-line testing-library/no-node-access -- no query reads the focused element; the test checks the focus stays in the field
-  expect(document.activeElement).toBe(field);
+  expect(field).toHaveFocus();
 });
 
 it('picks the active row on Enter, fills the field and prevents the default', () => {

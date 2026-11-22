@@ -44,7 +44,7 @@ Intent ──► Design ──► Spec ──► Plan ──► Build & test ─
 
 The `/refine` skill asks questions until you agree, then drafts the issue.
 
-**Before you start, choose Opus and High effort** (terminal: `/model opus`, `/effort high`).
+**Run `/refine` on Opus with High effort.** On another model, it says what to run.
 
 - **PO:** run `/refine intent` and answer in plain language.
 - **Tech lead:** run `/refine intent M<n>` to slice a milestone into child Intents. Run `/refine intent <Intent number>` to slice an Intent into Specs.

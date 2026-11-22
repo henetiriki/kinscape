@@ -1713,6 +1713,38 @@ describe('the agent files a workflow loads', () => {
   );
 });
 
+// A refresh lists each item of the parts that the Ready check names, so a partial pass shows
+// (plans/chores/C1133-spec-check-items.md). The link keeps one copy of that list of parts.
+describe('the item lines of spec-checks.md', () => {
+  const checks = () => agent('spec-checks.md');
+
+  it('links to the Ready check, and plans/README.md has that anchor', () => {
+    expect(checks()).toContain('(../../plans/README.md#ready-check)');
+    expect(readFileSync(join(root, 'plans/README.md'), 'utf8')).toContain(
+      '<a id="ready-check"></a>'
+    );
+  });
+
+  // The unblock run's closing line in refresh.md comes after the Spec-check lines.
+  it('puts the item lines after the four check lines, and keeps a last line last', () => {
+    const at = indexIn(checks(), 'spec-checks.md');
+    const items = at('After the four check lines, list each item');
+
+    expect(at('Write one line for each check')).toBeLessThan(items);
+
+    for (const line of [
+      '`<part> <n>: matches main`',
+      '`<part> <n>: D<k>`',
+      '`<part> <n>: Not checked: <reason>`',
+      '`<part>: empty`',
+      'A respond run and a build write only the four check lines.',
+      'If another file puts a line last, keep that line last.',
+    ]) {
+      expect(at(line)).toBeGreaterThan(items);
+    }
+  });
+});
+
 // Adding the label `fix-review` to a PR has Claude fix the review's findings
 // (plans/chores/C467-fix-review-label.md). The run-name repeats the job's `if:`.
 describe('the fix-review workflow', () => {

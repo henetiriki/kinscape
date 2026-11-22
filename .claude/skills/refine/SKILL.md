@@ -9,6 +9,8 @@ argument-hint: intent [your idea | M<n> | Intent number] | spec <Spec number> | 
 
 Ask questions first. Draft last.
 
+If the session's model is not Opus, say "Run `/model opus` and `/effort high`, then run `/refine` again." Then stop.
+
 The argument picks the mode. Read the matching file and follow it, with the method below:
 
 - `intent M<n>` → [slice-milestone.md](slice-milestone.md). For the tech lead. Slices the milestone's Intent into child Intents. `M` and digits only.
@@ -52,6 +54,12 @@ Treat the topic as a **design tree**: every decision opens smaller decisions ben
 
    Do not ask about an unlikely case ([AGENTS.md](../../../AGENTS.md#workflow-rules)). Redraft with each answer.
 
+8. **Spec checks.** In the `intent <number>`, `spec`, `chore` and `bug` modes, do these steps on each draft body:
+   - Run `git fetch origin main`.
+   - Run the [Spec checks](../../../.github/agent/spec-checks.md) against `origin/main`.
+   - Show the item list in chat. A mismatch line ends in `Q<m>`, the number of its question, in place of `D<k>`.
+   - Ask about each mismatch as a check-round question, one at a time. Redraft after each answer.
+
 ## Rules for every mode
 
 - **Never build anything:** no code, branches, pull requests or edits to repository files. The output is a draft in the conversation. A command that only formats text is fine.
@@ -63,7 +71,7 @@ Treat the topic as a **design tree**: every decision opens smaller decisions ben
 
 ## Filing with gh
 
-After the check round, file a Spec, Chore, Bug or child Intent as [filing.md](filing.md) says. [spec.md](spec.md) and [chore.md](chore.md) edit a filed Spec or Chore. [bug.md](bug.md) files a new Bug or edits a filed one.
+After step 8, file a Spec, Chore, Bug or child Intent as [filing.md](filing.md) says. [spec.md](spec.md) and [chore.md](chore.md) edit a filed Spec or Chore. [bug.md](bug.md) files a new Bug or edits a filed one.
 
 ## Prefilled links
 

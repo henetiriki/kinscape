@@ -13,7 +13,7 @@ const css = readFileSync(
 
 // PPL-01
 it('holds its buttons and an in-flow spacer of its own height', () => {
-  const { container } = render(
+  render(
     <ActionBar>
       <Button form='person' type='submit' variant='primary'>
         Save
@@ -29,8 +29,7 @@ it('holds its buttons and an in-flow spacer of its own height', () => {
   expect(
     screen.getByRole('link', { name: 'Cancel' }).getAttribute('href')
   ).toBe('/people');
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the spacer is an aria-hidden div with no role or text
-  const spacers = container.querySelectorAll('[data-spacer]');
+  const spacers = screen.getAllByTestId('spacer');
 
   expect(spacers).toHaveLength(1);
   expect(spacers[0].textContent).toBe('');

@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useId, useState } from 'react';
 
 import type { SignInAction, SignInState } from '@ks/app/components/auth/types';
 
@@ -31,6 +31,7 @@ export const SignInForm = ({
   returnTo?: string;
 }) => {
   const phone = usePhone();
+  const titleId = useId();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [missing, setMissing] = useState({ email: false, password: false });
@@ -62,16 +63,17 @@ export const SignInForm = ({
   return (
     <form
       action={submit}
+      aria-labelledby={titleId}
       className={styles.form}
       data-form={phone ? 'phone' : 'desktop'}
       noValidate>
       <div className={styles.head}>
         {phone ? (
-          <Text as='h1' variant='h1Phone'>
+          <Text as='h1' id={titleId} variant='h1Phone'>
             Sign in
           </Text>
         ) : (
-          <Text as='h1' variant='h1'>
+          <Text as='h1' id={titleId} variant='h1'>
             Sign in
           </Text>
         )}

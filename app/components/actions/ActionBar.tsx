@@ -9,7 +9,12 @@ import styles from '@ks/app/components/actions/ActionBar.module.css';
  */
 export const ActionBar = ({ children }: { children: ReactNode }) => (
   <div className={styles.wrap}>
-    <div aria-hidden='true' className={styles.spacer} data-spacer />
+    <div
+      aria-hidden='true'
+      className={styles.spacer}
+      data-spacer
+      data-testid='spacer'
+    />
     <div className={styles.bar}>
       <div className={styles.inner}>{children}</div>
     </div>

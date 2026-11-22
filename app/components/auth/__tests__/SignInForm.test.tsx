@@ -88,10 +88,12 @@ describe('SignInForm', () => {
 
   it('marks empty fields instead of using browser validation, and does not call the action', async () => {
     const action = vi.fn(async (): Promise<SignInState> => undefined);
-    const { container } = render(<SignInForm action={action} />);
 
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the form has no name, so it has no role
-    expect(container.querySelector('form')?.noValidate).toBe(true);
+    render(<SignInForm action={action} />);
+
+    expect(
+      screen.getByRole<HTMLFormElement>('form', { name: 'Sign in' }).noValidate
+    ).toBe(true);
 
     submit();
     await screen.findByText('Enter your email.');
@@ -169,12 +171,11 @@ describe('on a phone', () => {
 
   // NFR-05
   it('is the phone form with the phone title', () => {
-    const { container } = render(<SignInForm action={async () => undefined} />);
+    render(<SignInForm action={async () => undefined} />);
 
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the form has no name, so it has no role
-    expect(container.querySelector('form')?.getAttribute('data-form')).toBe(
-      'phone'
-    );
+    expect(
+      screen.getByRole('form', { name: 'Sign in' }).getAttribute('data-form')
+    ).toBe('phone');
     screen.getByRole('heading', { name: 'Sign in' });
   });
 });

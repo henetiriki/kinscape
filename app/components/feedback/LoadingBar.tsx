@@ -9,6 +9,7 @@ export const LoadingBar = ({ width }: { width: number }) => (
     aria-hidden='true'
     className={styles.bar}
     data-bar=''
+    data-testid='loading-bar'
     style={{ width }}
   />
 );

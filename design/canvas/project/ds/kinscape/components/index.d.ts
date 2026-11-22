@@ -675,7 +675,7 @@ export type DateFieldProps = Parameters<typeof DateField>[0];
 export declare const FuzzyDateField: ({ defaultValue, error: given, helper, label, state, ...rest }: {
     /** Text to start with. The field checks it on the first render, unless `state` is `focus`. */
     defaultValue?: string;
-    /** A problem that the caller found, such as an empty date. The slot shows it after the field's own error. */
+    /** A problem that the caller found, such as an empty date. The slot shows it after the field's own error, until a check reads the date. */
     error?: ReactNode;
     /** The slot shows it while the text is empty or does not read as a date. */
     helper?: ReactNode;
@@ -1057,8 +1057,8 @@ export declare const ProgressBar: ({ labelledBy, value, }: {
 export type ProgressBarProps = Parameters<typeof ProgressBar>[0];
 
 /**
- * A grey bar that stands where text will be, 20px high. It is for a loading state and is hidden
- * from a screen reader: the part that holds it sets `aria-busy`.
+ * A grey bar, 20px high, that stands where text will be. A loading state uses it. A screen reader
+ * skips it (`aria-hidden`), because the part that holds it sets `aria-busy`.
  */
 export declare const LoadingBar: ({ width }: {
     width: number;

@@ -1,4 +1,4 @@
-A grey bar that stands where text will be, 20px high.
+A grey bar, 20px high, that stands where text will be.
 
 ## Props
 

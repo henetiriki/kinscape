@@ -43,8 +43,8 @@ export const MAX_BOUNDS: [[number, number], [number, number]] = [
   [42, -14],
 ];
 
-export const MIN_ZOOM = 3;
-export const MAX_ZOOM = 10;
+const MIN_ZOOM = 3;
+const MAX_ZOOM = 10;
 
 /**
  * The map events that a marker keeps to itself. A drag or a pinch can still start on a marker,

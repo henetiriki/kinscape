@@ -1,4 +1,4 @@
-import type { CSSProperties, ComponentProps, ComponentPropsWithoutRef, ComponentType, KeyboardEvent, ReactNode, Ref } from 'react';
+import type { ComponentProps, ComponentPropsWithoutRef, ComponentType, KeyboardEvent, ReactNode, Ref } from 'react';
 import type { ExpressionSpecification, LayerSpecification, SourceSpecification } from 'maplibre-gl';
 import type { z } from 'zod';
 import { z } from 'zod';
@@ -54,7 +54,6 @@ export type LinkComponent = 'a' | ComponentType<{
 } & ComponentPropsWithoutRef<'a'>>;
 export type Other = 'body' | 'bodyL' | 'button' | 'buttonS' | 'caption' | 'chip' | 'chipOff' | 'control' | 'credits' | 'h1Phone' | 'label' | 'link' | 'linkS' | 'mono' | 'monoL' | 'overline' | 'overlineTight' | 'small' | 'title';
 export type SurfaceLevel = 'floating' | 'modal' | 'raised' | 'sheet';
-export type TextVariant = Heading | Other;
 export type Tone = 'error' | 'info' | 'warning';
 
 /** The `column` values of `ColumnLayout`, in the order of its card. */
@@ -88,11 +87,6 @@ export type PopupPin = {
     title: string;
 };
 
-/** A MapLibre layer that can name the basemap layer it draws in front of. */
-export type DrawingLayer = {
-    /** The id of the basemap layer this one is placed ahead of; the end of the stack if absent. */
-    before?: string;
-} & LayerSpecification;
 /** A Pin of a fan: its id, its Event type and the reading of its date, such as "From 1890 to 1905". */
 export type FanPin = {
     event: EventType;
@@ -137,12 +131,6 @@ export type MapHandle = {
     zoomIn: () => void;
     zoomOut: () => void;
 };
-/** An HTML marker at a map point: a key that stays the same from day to day, the point as longitude and latitude, and what it draws. */
-export type MapMarker = {
-    key: string;
-    node: ReactNode;
-    position: [number, number];
-};
 /** The Pin whose popup is open: its id and its position, as longitude and latitude. */
 export type OpenPin = {
     id: string;
@@ -153,27 +141,18 @@ export type ZoomLimits = {
     atMax: boolean;
     atMin: boolean;
 };
+/** A MapLibre layer that can name the basemap layer it draws in front of. */
+type DrawingLayer = {
+    /** The id of the basemap layer this one is placed ahead of; the end of the stack if absent. */
+    before?: string;
+} & LayerSpecification;
+/** An HTML marker at a map point: a key that stays the same from day to day, the point as longitude and latitude, and what it draws. */
+type MapMarker = {
+    key: string;
+    node: ReactNode;
+    position: [number, number];
+};
 
-declare const boundaryProperties: z.ZodObject<{
-    confidence: z.ZodEnum<{
-        high: "high";
-        low: "low";
-    }>;
-    contested: z.ZodBoolean;
-    level: z.ZodEnum<{
-        polity: "polity";
-        district: "district";
-    }>;
-    polity: z.ZodString;
-    source: z.ZodString;
-    validFrom: z.ZodPipe<z.ZodNumber, z.ZodTransform<import("./types.ts").Day, number>>;
-    validTo: z.ZodNullable<z.ZodPipe<z.ZodNumber, z.ZodTransform<import("./types.ts").Day, number>>>;
-}, z.core.$strip>;
-/** Only the outer array is checked; `validate-boundaries.mts` walks the coordinates. */
-declare const multiPolygon: z.ZodObject<{
-    coordinates: z.ZodCustom<number[][][][], number[][][][]>;
-    type: z.ZodLiteral<"MultiPolygon">;
-}, z.core.$strip>;
 declare const boundaryFeature: z.ZodObject<{
     geometry: z.ZodObject<{
         coordinates: z.ZodCustom<number[][][][], number[][][][]>;
@@ -230,10 +209,10 @@ export type BoundaryVersion = {
 export type Day = {
     brand: 'Day';
 } & number;
-export type Polity = z.output<typeof polityRow>;
-export type PolityName = z.output<typeof nameRow>;
 /** `processing` is what was done to the data, such as clipping and simplifying. */
 export type Source = z.output<typeof sourceRow>;
+type Polity = z.output<typeof polityRow>;
+type PolityName = z.output<typeof nameRow>;
 
 /**
  * A GEDCOM date. `date1` and `date2` are `1850`, `1850-03` or `1850-03-15`.
@@ -828,8 +807,6 @@ export declare const DateDock: ({ contestedCount, contestedYears, day, defaultTe
 }) => import("react").JSX.Element;
 export type DateDockProps = Parameters<typeof DateDock>[0];
 
-/** The swatch values, as the map draws them; the Legend follows `map.*` in `tokens.json`. */
-declare const LEGEND_VARS: CSSProperties;
 /** "Reading the map": how borders, contested claims, uncertain dates and Event types are drawn. The swatches are decoration. */
 export declare const Legend: () => import("react").JSX.Element;
 export type LegendProps = Parameters<typeof Legend>[0];
@@ -957,8 +934,6 @@ declare const SourcesDialog: ({ onClose, open, sources, }: {
 }) => import("react").JSX.Element;
 export type SourcesListProps = Parameters<typeof SourcesList>[0];
 
-/** Layers whose sources are credited only while that layer is on. */
-declare const POLITY_LAYER = "Polity borders";
 /** The sources of everything currently drawn. */
 declare const sourcesOnScreen: (sources: Source[], showPolities: boolean) => Source[];
 /**

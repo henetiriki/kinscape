@@ -37,6 +37,5 @@ export type Other =
   | 'small'
   | 'title';
 export type SurfaceLevel = 'floating' | 'modal' | 'raised' | 'sheet';
-export type TextVariant = Heading | Other;
 
 export type Tone = 'error' | 'info' | 'warning';

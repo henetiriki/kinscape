@@ -10,7 +10,7 @@ import { useDismiss } from '@ks/app/components/overlays/useDismiss';
 import styles from '@ks/features/map/components/Credits.module.css';
 
 /** Layers whose sources are credited only while that layer is on. */
-export const POLITY_LAYER = 'Polity borders';
+const POLITY_LAYER = 'Polity borders';
 
 /** The sources of everything currently drawn. */
 export const sourcesOnScreen = (

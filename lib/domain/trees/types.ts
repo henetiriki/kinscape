@@ -16,14 +16,6 @@ import type {
 } from '@ks/lib/domain/relationships/types.ts';
 import type { Result } from '@ks/lib/domain/result/types.ts';
 
-export type Account = { id: AccountId };
-
-export type NewAccount = {
-  issuer: string;
-  subject: string;
-  treeName: string;
-};
-
 /** A synthetic Account for `memoryStore`; `trees` may be empty. */
 export type SeedAccount = {
   id: AccountId;
@@ -31,12 +23,6 @@ export type SeedAccount = {
   subject: string;
   trees: SeedTree[];
 };
-
-/** A Tree with preset rows, saved at version 1. A Relationship's Persons must be in `persons`. */
-export type SeedTree = {
-  persons?: PersonInput[];
-  relationships?: RelationshipInput[];
-} & Tree;
 
 export type Tree = { id: TreeId; name: string };
 
@@ -177,3 +163,17 @@ export type TreeStore = {
 
 /** Whoever reads a Tree: an Account now; publishing adds anyone (NFR-10). Only `openTree` makes one. */
 export type Viewer = { accountId: AccountId };
+
+type Account = { id: AccountId };
+
+type NewAccount = {
+  issuer: string;
+  subject: string;
+  treeName: string;
+};
+
+/** A Tree with preset rows, saved at version 1. A Relationship's Persons must be in `persons`. */
+type SeedTree = {
+  persons?: PersonInput[];
+  relationships?: RelationshipInput[];
+} & Tree;

@@ -4,7 +4,7 @@ import type { Tree } from '#ks/design/types.ts';
 
 import { isTree, REFERENCE } from '#ks/design/tokens.mts';
 
-export const GENERATED_HEADER =
+const GENERATED_HEADER =
   '/* Generated from design/tokens.json by `npm run tokens`. Do not edit. */';
 
 /** The custom property for a token: colours are unprefixed, other groups keep their group. */

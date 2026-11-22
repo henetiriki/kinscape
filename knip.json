@@ -1,0 +1,10 @@
+{
+  "ignore": ["design/canvas/**", ".claude/skills/**"],
+  "ignoreDependencies": [
+    "@fontsource-variable/bricolage-grotesque",
+    "@fontsource-variable/public-sans",
+    "@fontsource/jetbrains-mono",
+    "react-18",
+    "react-dom-18"
+  ]
+}

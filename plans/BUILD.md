@@ -21,7 +21,7 @@ These rules apply to each build of an approved plan.
 - Delete the test.
 - Loosen an assertion.
 
-In each other case, leave a test that looks wrong as it is. Write a "Big:" line that names the test and the reason ([big-departures rule](#big-departures)).
+The plan must list that test under Files that change. In each other case, leave a test that looks wrong as it is. Write a "Big:" line that names the test and the reason ([big-departures rule](#big-departures)).
 
 ## When the plan changes
 

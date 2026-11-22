@@ -100,3 +100,4 @@ The tech lead can keep one file per list line, as on `main`.
 ## Deviations
 
 - Big: _Too big_ moves to `plans/BUILD.md` › _When the plan changes_, against step 2 of #1145. Its steps are build steps, and no file that a build loads linked to it in `plans/README.md`. The tech lead chose this in the review. `plans/README.md` loses _When the plan changes_, and the links in _Hand-back_, _Missing components_ and `.claude/skills/refine/chore.md` name `BUILD.md#too-big`. Budgets: `plans/BUILD.md` 560, `plans/README.md` 760.
+- Big: _Failing tests_ in `plans/BUILD.md` keeps "The plan must list that test under Files that change.", against step 4 and the second done check of #1145. A build and a review read only this rule, so without the line no check ties a changed test to the plan table. The tech lead chose this in the review. The `plans/TEMPLATE.md` comment stays. The `plans/BUILD.md` budget is 570.

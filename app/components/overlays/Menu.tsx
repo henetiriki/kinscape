@@ -77,8 +77,7 @@ export const MenuPanel = ({
         <span className={styles.label}>{email}</span>
       </div>
       <hr className={styles.divider} />
-      {/* The items are the tab stop; the menu only moves focus between them. */}
-      {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus */}
+      {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus -- the items are the tab stop; the menu only moves focus between them */}
       <div aria-label='Account' onKeyDown={onKeyDown} ref={menuRef} role='menu'>
         {groups.map((group, index) => (
           <div key={group[0].id} role='none'>

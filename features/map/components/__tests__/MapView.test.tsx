@@ -70,8 +70,7 @@ const maplibre = vi.hoisted(() => {
         element: HTMLElement;
         entry: (typeof markers)[number];
 
-        // MapLibre news a Marker, so the fake is a class with a constructor.
-        // eslint-disable-next-line no-restricted-syntax
+        // eslint-disable-next-line no-restricted-syntax -- MapLibre news a Marker, so the fake is a class with a constructor
         constructor({ element }: { element: HTMLElement }) {
           this.element = element;
           this.entry = { element, remove: vi.fn<() => void>() };

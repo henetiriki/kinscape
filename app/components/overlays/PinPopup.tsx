@@ -146,8 +146,7 @@ export const PinPopup = ({
   }
 
   return (
-    // Esc inside the popup closes it; the popup itself is not a tab stop.
-    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Esc inside the popup closes it; the popup itself is not a tab stop
     <div
       aria-busy={loading || undefined}
       aria-label='Pin details'

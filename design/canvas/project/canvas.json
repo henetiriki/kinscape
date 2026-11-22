@@ -734,14 +734,6 @@
       "h": 400,
       "title": "Draft — click popup",
       "page": "drafts"
-    },
-    "Draft-pin-field-errors.dc.html": {
-      "x": 840,
-      "y": 640,
-      "w": 760,
-      "h": 440,
-      "title": "Draft — field errors",
-      "page": "drafts"
     }
   },
   "order": [

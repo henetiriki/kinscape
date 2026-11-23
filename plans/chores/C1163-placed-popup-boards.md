@@ -2,7 +2,7 @@
 
 - **Spec:** #1163
 - **Requirement IDs:** [PIN-01](../../docs/requirements.md#pin-01), [PIN-02](../../docs/requirements.md#pin-02)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ No code and no design system input changes. Steps 2 to 5 of [Changing the design
 - **B.** The tech lead deletes the `Map-add-pin` row from #1163 before approval. Cost: the issue no longer records why the board needs no swap.
 - **Other:** your own.
 
-Recommended: A, because the issue then tells why `Map-add-pin` does not use `PlacedPopup`.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

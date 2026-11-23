@@ -64,11 +64,16 @@ describe('budgetFor', () => {
     ['docs/patterns/tree-data.md', 130],
     ['docs/architecture-target.md', 650],
     ['docs/glossary.md', 1200],
-    ['design/DESIGN.md', 4700],
+    ['design/DESIGN.md', 950],
+    ['design/foundations.md', 800],
+    ['design/layout.md', 350],
+    ['design/components.md', 1900],
+    ['design/feedback.md', 750],
+    ['design/map.md', 550],
     ['design/CANVAS.md', 1650],
     ['design/COMPONENTS.md', 600],
     ['plans/BUILD.md', 570],
-    ['plans/README.md', 780],
+    ['plans/README.md', 790],
     ['plans/DL.17-motion-rules.md', 1500],
     ['plans/M0.1-hello-vercel.md', 1500],
     ['plans/TEMPLATE.md', 1500],
@@ -174,7 +179,7 @@ describe('checkFiles and run', () => {
   it.each([
     ['CLAUDE.md', 150],
     ['plans/BUILD.md', 570],
-    ['plans/README.md', 780],
+    ['plans/README.md', 790],
   ])(
     'counts a Deviations section in %s, which is not a plan',
     (path, budget) => {

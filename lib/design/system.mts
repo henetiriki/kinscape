@@ -14,7 +14,17 @@ import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '#ks/lib/design/bundle.mts';
 import { familyName, systemName } from '#ks/lib/design/css.mts';
 import { roleSentences } from '#ks/lib/design/roles.mts';
 
-/** The `DESIGN.md` sections the README holds, in this order. */
+/** The design files that hold the README sections and the component bullets, relative to the repo root. */
+export const DESIGN_FILES = [
+  'design/DESIGN.md',
+  'design/foundations.md',
+  'design/layout.md',
+  'design/components.md',
+  'design/feedback.md',
+  'design/map.md',
+];
+
+/** The design file sections the README holds, in this order. */
 export const README_SECTIONS = [
   'Brand',
   'Fonts',
@@ -269,18 +279,25 @@ const CANVAS_SECTION = `## Using the controls on a canvas
 
 The controls are on \`window.${NAMESPACE}\`. After React 18, load \`components/${BUNDLE_CSS}\`, then \`components/${BUNDLE_JS}\`. Mount a control with \`<x-import component-from-global-scope="${NAMESPACE}.Button">\`.`;
 
-/** The README: the listed `DESIGN.md` sections as they are, then how a canvas uses the controls. */
-export const readme = (design: string): string => {
-  const sections = design.split(/^(?=## )/m);
+/** The `## ` sections of the design files, in file order. Each file's frontmatter and title go. */
+export const designSections = (texts: string[]): string[] =>
+  texts.flatMap(text =>
+    text
+      .replace(/^---\n[\s\S]*?\n---\n/, '')
+      .split(/^(?=## )/m)
+      .filter(section => section.startsWith('## '))
+  );
 
-  return plainLinks(
+/** The README: the listed design file sections as they are, then how a canvas uses the controls. */
+export const readme = (sections: string[]): string =>
+  plainLinks(
     [
       '# KinScape design',
       ...README_SECTIONS.map(name => {
         const section = sections.find(text => text.startsWith(`## ${name}\n`));
 
         if (section === undefined) {
-          throw new Error(`DESIGN.md has no "${name}" section`);
+          throw new Error(`The design files have no "${name}" section`);
         }
 
         return section.trim();
@@ -289,7 +306,6 @@ export const readme = (design: string): string => {
       '',
     ].join('\n\n')
   );
-};
 
 /** `design-system.json`: the index, synced from code (Spec #445 › Type format). */
 export const systemIndex = (

@@ -106,3 +106,7 @@ Step 8 says each line outside `plans/` that sends a reader to `DESIGN.md` for a 
 - Rewording any rule in the moved text.
 
 ## Deviations
+
+- The `plans/README.md` budget rises from 780 to 790 words (`scripts/word-count.mts` and its test): the step 7 line did not fit.
+- `scripts/__tests__/vercel-ignore.test.ts` drops the `design/other.md` visible row: step 9 makes each `design/*.md` file invisible.
+- Not built: the `.claude/skills/` rows (`slice-intent.md`, `bug.md`, `design.md`, `publish-design-system/SKILL.md`). The run had no write permission there. `doc-links.test.ts` fails until `slice-intent.md:25` and `docs/patterns/components.md:28` point to `design/components.md#in-the-repo`.

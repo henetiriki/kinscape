@@ -1,4 +1,4 @@
-/** What each shared control's design system card shows (Spec #450): its group, height, `DESIGN.md` bullets and states. */
+/** What each shared control's design system card shows (Spec #450): its group, height, design file bullets and states. */
 
 import type { Column } from '#ks/app/components/layout/types.ts';
 import type { Card, Slot, State } from '#ks/lib/design/types.ts';

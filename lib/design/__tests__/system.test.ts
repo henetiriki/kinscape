@@ -10,6 +10,8 @@ import { cssName } from '@ks/lib/design/css.mts';
 import { formatProblems } from '@ks/lib/design/format.mts';
 import { roleSentences } from '@ks/lib/design/roles.mts';
 import {
+  DESIGN_FILES,
+  designSections,
   fontFaces,
   fontFiles,
   readme,
@@ -22,7 +24,10 @@ import {
 } from '@ks/lib/design/system.mts';
 
 const raw = JSON.parse(readFileSync('design/tokens.json', 'utf8')) as Tree;
-const design = readFileSync('design/DESIGN.md', 'utf8');
+const design = designSections(
+  DESIGN_FILES.map(file => readFileSync(file, 'utf8'))
+);
+const foundations = readFileSync('design/foundations.md', 'utf8');
 const files = fontFiles(readFileSync('app/layout.tsx', 'utf8'));
 const fonts = systemFonts(files, raw);
 const system = systemTokens(raw, fonts);
@@ -354,8 +359,8 @@ describe('systemCss', () => {
 });
 
 // NFR-01, NFR-06
-describe('Motion in DESIGN.md', () => {
-  const section = /^## Motion$([\s\S]*?)(?=^## )/m.exec(design)?.[1] ?? '';
+describe('Motion in foundations.md', () => {
+  const section = /^## Motion$([\s\S]*)/m.exec(foundations)?.[1] ?? '';
 
   it('names each motion token once, as code, and no duration', () => {
     const missing = Object.keys(raw.motion as Tree).filter(
@@ -375,7 +380,7 @@ describe('Motion in DESIGN.md', () => {
 describe('readme', () => {
   const text = readme(design);
 
-  it('holds the listed sections, in order, as DESIGN.md has them', () => {
+  it('holds the listed sections, in order, as the design files have them', () => {
     expect(text.match(/^## Motion$/gm)).toHaveLength(1);
     expect(text.indexOf('## Shape and depth')).toBeLessThan(
       text.indexOf('## Motion')
@@ -425,12 +430,34 @@ describe('readme', () => {
       readme(
         README_SECTIONS.map(
           name => `## ${name}\n\n[a](https://x.test) [b](../b.md) ![c](c.jpg)`
-        ).join('\n\n')
+        )
       )
     ).toContain('[a](https://x.test) b c');
-    expect(() => readme('## Brand\n\ntext')).toThrow(
-      'DESIGN.md has no "Fonts" section'
+    expect(() => readme(['## Brand\n\ntext'])).toThrow(
+      'The design files have no "Fonts" section'
     );
+  });
+});
+
+describe('designSections', () => {
+  it('splits each file at its ## headings and drops the frontmatter and title', () => {
+    expect(
+      designSections([
+        "---\npaths:\n  - 'a/**'\n---\n\n# Title\n\n## One\n\nx\n\n### Sub\n\ny\n\n## Two\n\nz\n",
+        '# Other\n\nIntro.\n\n## Three\n\nw\n',
+      ])
+    ).toEqual([
+      '## One\n\nx\n\n### Sub\n\ny\n\n',
+      '## Two\n\nz\n',
+      '## Three\n\nw\n',
+    ]);
+  });
+
+  it('finds the README sections in the design files', () => {
+    const names = design.map(section => /^## (.+)$/m.exec(section)?.[1]);
+
+    expect(DESIGN_FILES).toHaveLength(6);
+    expect(names).toEqual(expect.arrayContaining(README_SECTIONS));
   });
 });
 

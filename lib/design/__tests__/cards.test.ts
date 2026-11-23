@@ -21,8 +21,11 @@ import {
   previewHtml,
 } from '@ks/lib/design/cards.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
+import { DESIGN_FILES, designSections } from '@ks/lib/design/system.mts';
 
-const design = readFileSync('design/DESIGN.md', 'utf8');
+const design = designSections(
+  DESIGN_FILES.map(file => readFileSync(file, 'utf8'))
+);
 const card = CARDS.find(({ name }) => name === 'Toast')!;
 const docs = {
   forms: [] as string[][],
@@ -60,7 +63,7 @@ describe('designBullets', () => {
       'Error: see Feedback and validation.'
     );
     expect(() => designBullets(design, ['Nope'])).toThrow(
-      'DESIGN.md has no bullet "Nope"'
+      'The design files have no bullet "Nope"'
     );
   });
 
@@ -71,13 +74,13 @@ describe('designBullets', () => {
   });
 
   it('throws if two sections hold the same bold name', () => {
-    const twice = '## A\n\n- **Same** one\n\n## B\n\n- **Same:** two\n';
+    const twice = ['## A\n\n- **Same** one\n', '## B\n\n- **Same:** two\n'];
 
     expect(() => designBullets(twice, ['Same'])).toThrow(
-      'DESIGN.md has the bullet "Same" in two sections'
+      'The design files have the bullet "Same" in two sections'
     );
     expect(
-      designBullets('## A\n\n- **Same** one\n- **Same** two\n', ['Same'])
+      designBullets(['## A\n\n- **Same** one\n- **Same** two\n'], ['Same'])
     ).toEqual(['- **Same** one']);
   });
 });

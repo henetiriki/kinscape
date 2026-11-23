@@ -3,8 +3,8 @@ import { parse } from 'yaml';
 
 import type { PatternFile, PlanNewDeps } from '#ks/scripts/types.ts';
 
-// The pattern files of docs/patterns/ and the paths that load each as a rule
-// (see docs/patterns/). `npm run plan:new` lists the files that match what an issue
+// The pattern files of docs/patterns/, the design files of design/ and the paths that load each as a
+// rule (see docs/patterns/). `npm run plan:new` lists the files that match what an issue
 // cites; scripts/__tests__/pattern-files.test.ts checks the files themselves.
 
 const FOLDER = 'docs/patterns';

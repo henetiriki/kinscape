@@ -89,6 +89,214 @@ type PersonRelationshipsProps = {
     }
 );
 
+const useRelationshipsState = (
+  groups: PersonRelationshipsProps['groups'],
+  edit: string | undefined,
+  personId: string | undefined
+) => {
+  const router = useRouter();
+  const [adding, setAdding] = useState<RelationshipGroup>();
+  const [open, setOpen] = useState(false);
+  const [opened, setOpened] = useState(0);
+  const [picked, setPicked] = useState<PersonSummary>();
+  const editing = findEntry(groups, edit);
+  const here = personId ? `/people/${personId}/relationships` : '/people';
+  // The refresh after a save still holds `?edit`: the dialog stays closed until the address drops it.
+  const [closedEdit, setClosedEdit] = useState<string>();
+
+  if (closedEdit && !edit) {
+    setClosedEdit(undefined);
+  }
+
+  const closeEdit = () => {
+    setClosedEdit(edit);
+    router.replace(here);
+  };
+
+  const add = (key: RelationshipGroup) => {
+    setAdding(key);
+    setPicked(undefined);
+    setOpen(true);
+    setOpened(times => times + 1);
+  };
+
+  return {
+    add,
+    adding,
+    closedEdit,
+    closeEdit,
+    editing,
+    here,
+    open,
+    opened,
+    picked,
+    setClosedEdit,
+    setOpen,
+    setPicked,
+  };
+};
+
+type State = ReturnType<typeof useRelationshipsState>;
+
+const Heading = ({ person }: { person?: RelationshipsPerson }) => (
+  <div className={styles.heading}>
+    <Text as='h1' variant='h1'>
+      Relationships
+    </Text>
+    <Text variant='small'>
+      {person && (
+        <>
+          <span className={styles.person}>
+            <Text variant='title'>
+              {person.givenNames} {person.surname}
+            </Text>
+          </span>
+          .{' '}
+        </>
+      )}
+      Each change saves at once.
+    </Text>
+    {person && <DateText dates={person} />}
+  </div>
+);
+
+const Failed = () => {
+  const router = useRouter();
+
+  return (
+    <div className={styles.failed}>
+      <NoticeCard
+        actions={[{ label: 'Try again', onClick: () => router.refresh() }]}
+        icon='cloudOff'
+        size='large'
+        title="Relationships didn't load">
+        Check your connection, then try again. Nothing in your Tree has changed.
+      </NoticeCard>
+    </div>
+  );
+};
+
+const Rows = ({
+  entries,
+  here,
+  name,
+  setClosedEdit,
+}: {
+  entries: RelationshipEntry[];
+  here: string;
+  name: string;
+  setClosedEdit: State['setClosedEdit'];
+}) =>
+  entries.length === 0 ? (
+    <div className={styles.none}>
+      <Text variant='body'>No {name} yet.</Text>
+    </div>
+  ) : (
+    // A click on "Edit" opens the dialog again, even if the address still holds `?edit` from the last close.
+
+    <ul className={styles.rows} onClickCapture={() => setClosedEdit(undefined)}>
+      {entries.map(entry => (
+        <li className={styles.item} key={entry.id}>
+          <RelationshipRow {...entry} href={`${here}?edit=${entry.id}`} />
+        </li>
+      ))}
+    </ul>
+  );
+
+const Groups = ({
+  groups,
+  s,
+}: {
+  groups: Record<RelationshipGroup, RelationshipEntry[]>;
+  s: State;
+}) =>
+  GROUPS.map(({ key, title }) => (
+    <section
+      aria-labelledby={`relationships-${key}`}
+      className={styles.group}
+      key={key}>
+      <div className={styles.head}>
+        <div className={styles.title}>
+          <Text as='h2' id={`relationships-${key}`} variant='h3'>
+            {title}
+          </Text>
+          <Text variant='small'>{count(groups[key].length)}</Text>
+        </div>
+        <Button onClick={() => s.add(key)} variant='secondary'>
+          Add
+        </Button>
+      </div>
+      <Rows
+        entries={groups[key]}
+        here={s.here}
+        name={key}
+        setClosedEdit={s.setClosedEdit}
+      />
+    </section>
+  ));
+
+const Dialogs = ({
+  actions,
+  edit,
+  people,
+  person,
+  s,
+}: {
+  actions: RelationshipActions;
+  edit?: string;
+  people: PersonSummary[];
+  person: RelationshipsPerson;
+  s: State;
+}) => {
+  const { adding, closedEdit, editing, opened, picked } = s;
+
+  return (
+    <>
+      {adding && (
+        <RelationshipPicker
+          group={adding}
+          key={opened}
+          onClose={() => {
+            if (!picked) s.setOpen(false);
+          }}
+          onPick={other => s.setPicked(other)}
+          open={s.open && !picked}
+          people={people}
+        />
+      )}
+      {adding && picked && (
+        <RelationshipDetails
+          actions={actions}
+          group={adding}
+          key={`${opened}-${picked.id}`}
+          onBack={() => s.setPicked(undefined)}
+          onClose={() => s.setOpen(false)}
+          open={s.open}
+          other={otherOf(picked, picked.id)}
+          self={person.id}
+        />
+      )}
+      {editing && (
+        <RelationshipDetails
+          actions={actions}
+          existing={editing.entry.relationship}
+          group={editing.group}
+          key={`${editing.entry.id}-${editing.entry.relationship.version}`}
+          onClose={s.closeEdit}
+          open={closedEdit !== edit}
+          other={otherOf(
+            editing.entry,
+            // The entry comes from a group of this Person, so `otherEnd` finds an end.
+
+            otherEnd(person.id as PersonId, editing.entry.relationship)![0]
+          )}
+          self={person.id}
+        />
+      )}
+    </>
+  );
+};
+
 /**
  * The Relationships page of a Person (PPL-02): three groups of Relationships, or the notice of a
  * load that failed. The subtitle is the name and a save note, with the dates on a line below. A
@@ -107,26 +315,8 @@ export const PersonRelationships = ({
   onSignOut,
   people,
   person,
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }: PersonRelationshipsProps) => {
-  const router = useRouter();
-  const [adding, setAdding] = useState<RelationshipGroup>();
-  const [open, setOpen] = useState(false);
-  const [opened, setOpened] = useState(0);
-  const [picked, setPicked] = useState<PersonSummary>();
-  const editing = findEntry(groups, edit);
-  const here = person ? `/people/${person.id}/relationships` : '/people';
-  // The refresh after a save still holds `?edit`: the dialog stays closed until the address drops it.
-  const [closedEdit, setClosedEdit] = useState<string>();
-
-  if (closedEdit && !edit) {
-    setClosedEdit(undefined);
-  }
-
-  const closeEdit = () => {
-    setClosedEdit(edit);
-    router.replace(here);
-  };
+  const s = useRelationshipsState(groups, edit, person?.id);
 
   return (
     <EditOnComputer email={email} initial={initial} onSignOut={onSignOut}>
@@ -145,124 +335,15 @@ export const PersonRelationships = ({
             backLabel={person ? 'Edit person' : 'People'}
           />
         }>
-        <div className={styles.heading}>
-          <Text as='h1' variant='h1'>
-            Relationships
-          </Text>
-          <Text variant='small'>
-            {person && (
-              <>
-                <span className={styles.person}>
-                  <Text variant='title'>
-                    {person.givenNames} {person.surname}
-                  </Text>
-                </span>
-                .{' '}
-              </>
-            )}
-            Each change saves at once.
-          </Text>
-          {person && <DateText dates={person} />}
-        </div>
-        {failed ? (
-          <div className={styles.failed}>
-            <NoticeCard
-              actions={[
-                { label: 'Try again', onClick: () => router.refresh() },
-              ]}
-              icon='cloudOff'
-              size='large'
-              title="Relationships didn't load">
-              Check your connection, then try again. Nothing in your Tree has
-              changed.
-            </NoticeCard>
-          </div>
-        ) : (
-          GROUPS.map(({ key, title }) => (
-            <section
-              aria-labelledby={`relationships-${key}`}
-              className={styles.group}
-              key={key}>
-              <div className={styles.head}>
-                <div className={styles.title}>
-                  <Text as='h2' id={`relationships-${key}`} variant='h3'>
-                    {title}
-                  </Text>
-                  <Text variant='small'>{count(groups[key].length)}</Text>
-                </div>
-                <Button
-                  onClick={() => {
-                    setAdding(key);
-                    setPicked(undefined);
-                    setOpen(true);
-                    setOpened(times => times + 1);
-                  }}
-                  variant='secondary'>
-                  Add
-                </Button>
-              </div>
-              {groups[key].length === 0 ? (
-                <div className={styles.none}>
-                  <Text variant='body'>No {key} yet.</Text>
-                </div>
-              ) : (
-                // A click on "Edit" opens the dialog again, even if the address still holds `?edit` from the last close.
-
-                <ul
-                  className={styles.rows}
-                  onClickCapture={() => setClosedEdit(undefined)}>
-                  {groups[key].map(entry => (
-                    <li className={styles.item} key={entry.id}>
-                      <RelationshipRow
-                        {...entry}
-                        href={`${here}?edit=${entry.id}`}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
-          ))
-        )}
-        {adding && !failed && (
-          <RelationshipPicker
-            group={adding}
-            key={opened}
-            onClose={() => {
-              if (!picked) setOpen(false);
-            }}
-            onPick={other => setPicked(other)}
-            open={open && !picked}
+        <Heading person={person} />
+        {failed ? <Failed /> : <Groups groups={groups} s={s} />}
+        {!failed && (
+          <Dialogs
+            actions={actions}
+            edit={edit}
             people={people}
-          />
-        )}
-        {adding && picked && !failed && (
-          <RelationshipDetails
-            actions={actions}
-            group={adding}
-            key={`${opened}-${picked.id}`}
-            onBack={() => setPicked(undefined)}
-            onClose={() => setOpen(false)}
-            open={open}
-            other={otherOf(picked, picked.id)}
-            self={person.id}
-          />
-        )}
-        {editing && !failed && (
-          <RelationshipDetails
-            actions={actions}
-            existing={editing.entry.relationship}
-            group={editing.group}
-            key={`${editing.entry.id}-${editing.entry.relationship.version}`}
-            onClose={closeEdit}
-            open={closedEdit !== edit}
-            other={otherOf(
-              editing.entry,
-              // The entry comes from a group of this Person, so `otherEnd` finds an end.
-
-              otherEnd(person.id as PersonId, editing.entry.relationship)![0]
-            )}
-            self={person.id}
+            person={person}
+            s={s}
           />
         )}
       </ColumnLayout>

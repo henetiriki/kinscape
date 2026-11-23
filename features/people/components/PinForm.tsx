@@ -1,6 +1,6 @@
 'use client';
 
-import type { FormEvent } from 'react';
+import type { FormEvent, RefObject } from 'react';
 
 import { useEffect, useId, useRef, useState } from 'react';
 
@@ -60,36 +60,19 @@ const readFields = (form: HTMLFormElement) => {
   };
 };
 
-/**
- * The panel that adds a Pin at a new point (PIN-01, PIN-02). It asks for the Persons when it
- * mounts, so a closed panel sends no request. `onSave` gets the input that `checkPin` accepted on
- * the client and says whether the server saved it; `onSaved` runs after a save. The fields stay
- * mounted through a failed save, so they keep their values, and a retry sends the same ids.
- */
-export const PinForm = ({
-  onCancel,
-  onSave,
-  onSaved,
-}: {
+type PinFormProps = {
   onCancel: () => void;
   onSave: (input: unknown) => Promise<{ ok: boolean }>;
   onSaved: () => void;
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-}) => {
-  const titleId = useId();
-  const form = useRef<HTMLFormElement>(null);
-  const people = usePeople();
-  const [ids] = useState(() => ({ pin: uuidV7(), place: uuidV7() }));
-  const [person, setPerson] = useState<PersonSummary>();
-  const [messages, setMessages] = useState<PinMessages>({});
-  const [saving, setSaving] = useState(false);
-  const [failed, setFailed] = useState(false);
-  const loading = people.isPending || (people.isError && people.isFetching);
-  const loadFailed = people.isError && !people.isFetching;
+};
 
-  // Esc closes the panel only when it starts in the panel, or on the page when no control holds the
-  // focus. The dock date field and the Pin popup own an Esc outside the panel, and the Person list
-  // prevents the Esc that closes it.
+// Esc closes the panel only when it starts in the panel, or on the page when no control holds the
+// focus. The dock date field and the Pin popup own an Esc outside the panel, and the Person list
+// prevents the Esc that closes it.
+const useEscClose = (
+  form: RefObject<HTMLFormElement | null>,
+  onCancel: () => void
+) => {
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
       const { target } = event;
@@ -107,38 +90,70 @@ export const PinForm = ({
     document.addEventListener('keydown', close);
 
     return () => document.removeEventListener('keydown', close);
-  }, [onCancel]);
+  }, [form, onCancel]);
+};
+
+/** The input that the fields make, and the message of each field that fails the check. */
+const checkFields = (
+  form: HTMLFormElement,
+  ids: { pin: string; place: string },
+  person?: PersonSummary
+) => {
+  const values = readFields(form);
+  const point = parseCoordinates(values.coordinates);
+  // A point that does not read still lets `checkPin` check the other fields.
+  const raw = {
+    address: values.address,
+    date: values.date,
+    eventType: values.eventType,
+    id: ids.pin,
+    notes: values.notes,
+    personId: person?.id ?? '',
+    place: {
+      id: ids.place,
+      kind: 'new',
+      precision: values.precision,
+      ...(point.ok ? point.value : { latitude: 0, longitude: 0 }),
+    },
+    sources: values.sources,
+  };
+  const checked = checkPin(raw);
+  const fields =
+    !checked.ok && checked.error !== 'invalid' ? checked.error.fields : {};
+  const next = pinMessages(
+    fields,
+    point.ok ? undefined : point.error,
+    values.date
+  );
+
+  return { checked, next, raw };
+};
+
+const usePinForm = (
+  { onCancel, onSave, onSaved }: PinFormProps,
+  form: RefObject<HTMLFormElement | null>
+) => {
+  const titleId = useId();
+  const people = usePeople();
+  const [ids] = useState(() => ({ pin: uuidV7(), place: uuidV7() }));
+  const [person, setPerson] = useState<PersonSummary>();
+  const [messages, setMessages] = useState<PinMessages>({});
+  const [saving, setSaving] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const loading = people.isPending || (people.isError && people.isFetching);
+  const loadFailed = people.isError && !people.isFetching;
+
+  useEscClose(form, onCancel);
 
   const save = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (saving) return;
 
-    const values = readFields(event.currentTarget);
-    const point = parseCoordinates(values.coordinates);
-    // A point that does not read still lets `checkPin` check the other fields.
-    const raw = {
-      address: values.address,
-      date: values.date,
-      eventType: values.eventType,
-      id: ids.pin,
-      notes: values.notes,
-      personId: person?.id ?? '',
-      place: {
-        id: ids.place,
-        kind: 'new',
-        precision: values.precision,
-        ...(point.ok ? point.value : { latitude: 0, longitude: 0 }),
-      },
-      sources: values.sources,
-    };
-    const checked = checkPin(raw);
-    const fields =
-      !checked.ok && checked.error !== 'invalid' ? checked.error.fields : {};
-    const next = pinMessages(
-      fields,
-      point.ok ? undefined : point.error,
-      values.date
+    const { checked, next, raw } = checkFields(
+      event.currentTarget,
+      ids,
+      person
     );
 
     setMessages(next);
@@ -165,128 +180,186 @@ export const PinForm = ({
     }
   };
 
-  const retry = (
-    <Button onClick={() => void people.refetch()} variant='secondary'>
-      Try again
-    </Button>
+  return {
+    failed,
+    loadFailed,
+    loading,
+    messages,
+    people,
+    save,
+    saving,
+    setPerson,
+    titleId,
+  };
+};
+
+type Form = ReturnType<typeof usePinForm>;
+
+const LoadingFields = () =>
+  LOADING_FIELDS.map(([label, widths]) => (
+    <LoadingField key={label} label={label} widths={widths} />
+  ));
+
+const LoadFailed = ({ people }: Pick<Form, 'people'>) => (
+  <>
+    <Alert title="Couldn't load your people" tone='error'>
+      The people of your Tree didn&apos;t load.
+    </Alert>
+    <div className={styles.retry}>
+      <Button onClick={() => void people.refetch()} variant='secondary'>
+        Try again
+      </Button>
+    </div>
+  </>
+);
+
+const PersonChoice = ({
+  messages,
+  people,
+  setPerson,
+}: Pick<Form, 'messages' | 'people' | 'setPerson'>) =>
+  people.data!.length === 0 ? (
+    <div className={styles.none}>
+      <Text variant='label'>Person</Text>
+      <NoticeCard
+        actions={[{ href: '/people/new', label: 'Add a person' }]}
+        icon='people'
+        title='No people yet'>
+        Add a person before you add a pin.
+      </NoticeCard>
+      {messages.personId && (
+        <Text as='p' role='alert' tone='error' variant='small'>
+          {messages.personId}
+        </Text>
+      )}
+    </div>
+  ) : (
+    <PersonField
+      error={messages.personId}
+      onChange={setPerson}
+      people={people.data!}
+    />
   );
+
+const EventFields = ({ messages }: Pick<Form, 'messages'>) => (
+  <>
+    <SelectField
+      aria-required='true'
+      defaultValue=''
+      error={messages.eventType}
+      label='Event type'
+      name='eventType'
+      options={EVENT_OPTIONS}
+    />
+    <FuzzyDateField
+      aria-required='true'
+      error={messages.date}
+      helper={DATE_HELPER}
+      label='Date'
+      name='date'
+    />
+  </>
+);
+
+const PlaceFields = ({ messages }: Pick<Form, 'messages'>) => (
+  <>
+    <TextField
+      aria-required='true'
+      autoComplete='off'
+      error={messages.coordinates}
+      helper='In decimal degrees, such as -33.93, 18.42.'
+      label='Coordinates'
+      name='coordinates'
+      spellCheck={false}
+    />
+    <TextField
+      error={messages.address}
+      label='Address as recorded'
+      name='address'
+    />
+    <SelectField
+      defaultValue='approximate'
+      error={messages.precision}
+      label='Precision'
+      name='precision'
+      options={PRECISION_OPTIONS}
+    />
+  </>
+);
+
+const NoteFields = ({ messages }: Pick<Form, 'messages'>) => (
+  <>
+    <TextAreaField
+      error={messages.sources}
+      label='Sources'
+      name='sources'
+      rows={2}
+    />
+    <TextAreaField error={messages.notes} label='Notes' name='notes' rows={2} />
+  </>
+);
+
+const Fields = ({ f }: { f: Form }) => (
+  <>
+    {f.failed && (
+      <Alert title="Couldn't save the pin" tone='error'>
+        Your values are still here. Try again.
+      </Alert>
+    )}
+    <PersonChoice
+      messages={f.messages}
+      people={f.people}
+      setPerson={f.setPerson}
+    />
+    <EventFields messages={f.messages} />
+    <PlaceFields messages={f.messages} />
+    <NoteFields messages={f.messages} />
+  </>
+);
+
+/**
+ * The panel that adds a Pin at a new point (PIN-01, PIN-02). It asks for the Persons when it
+ * mounts, so a closed panel sends no request. `onSave` gets the input that `checkPin` accepted on
+ * the client and says whether the server saved it; `onSaved` runs after a save. The fields stay
+ * mounted through a failed save, so they keep their values, and a retry sends the same ids.
+ */
+export const PinForm = (props: PinFormProps) => {
+  const form = useRef<HTMLFormElement>(null);
+  const f = usePinForm(props, form);
 
   return (
     <Surface className={styles.panel} level='raised'>
       <form
-        aria-busy={saving || loading || undefined}
-        aria-labelledby={titleId}
+        aria-busy={f.saving || f.loading || undefined}
+        aria-labelledby={f.titleId}
         className={styles.form}
         noValidate
-        onSubmit={event => void save(event)}
+        onSubmit={event => void f.save(event)}
         ref={form}>
         <div className={styles.head}>
-          <Text as='h2' id={titleId} variant='h2'>
+          <Text as='h2' id={f.titleId} variant='h2'>
             Add a pin
           </Text>
         </div>
         <div className={styles.body}>
-          {loading ? (
-            LOADING_FIELDS.map(([label, widths]) => (
-              <LoadingField key={label} label={label} widths={widths} />
-            ))
-          ) : loadFailed ? (
-            <>
-              <Alert title="Couldn't load your people" tone='error'>
-                The people of your Tree didn&apos;t load.
-              </Alert>
-              <div className={styles.retry}>{retry}</div>
-            </>
+          {f.loading ? (
+            <LoadingFields />
+          ) : f.loadFailed ? (
+            <LoadFailed people={f.people} />
           ) : (
-            <>
-              {failed && (
-                <Alert title="Couldn't save the pin" tone='error'>
-                  Your values are still here. Try again.
-                </Alert>
-              )}
-              {people.data!.length === 0 ? (
-                <div className={styles.none}>
-                  <Text variant='label'>Person</Text>
-                  <NoticeCard
-                    actions={[{ href: '/people/new', label: 'Add a person' }]}
-                    icon='people'
-                    title='No people yet'>
-                    Add a person before you add a pin.
-                  </NoticeCard>
-                  {messages.personId && (
-                    <Text as='p' role='alert' tone='error' variant='small'>
-                      {messages.personId}
-                    </Text>
-                  )}
-                </div>
-              ) : (
-                <PersonField
-                  error={messages.personId}
-                  onChange={setPerson}
-                  people={people.data!}
-                />
-              )}
-              <SelectField
-                aria-required='true'
-                defaultValue=''
-                error={messages.eventType}
-                label='Event type'
-                name='eventType'
-                options={EVENT_OPTIONS}
-              />
-              <FuzzyDateField
-                aria-required='true'
-                error={messages.date}
-                helper={DATE_HELPER}
-                label='Date'
-                name='date'
-              />
-              <TextField
-                aria-required='true'
-                autoComplete='off'
-                error={messages.coordinates}
-                helper='In decimal degrees, such as -33.93, 18.42.'
-                label='Coordinates'
-                name='coordinates'
-                spellCheck={false}
-              />
-              <TextField
-                error={messages.address}
-                label='Address as recorded'
-                name='address'
-              />
-              <SelectField
-                defaultValue='approximate'
-                error={messages.precision}
-                label='Precision'
-                name='precision'
-                options={PRECISION_OPTIONS}
-              />
-              <TextAreaField
-                error={messages.sources}
-                label='Sources'
-                name='sources'
-                rows={2}
-              />
-              <TextAreaField
-                error={messages.notes}
-                label='Notes'
-                name='notes'
-                rows={2}
-              />
-            </>
+            <Fields f={f} />
           )}
         </div>
         <div className={styles.actions}>
-          {!loadFailed && (
+          {!f.loadFailed && (
             <Button
-              disabled={saving || loading}
+              disabled={f.saving || f.loading}
               type='submit'
               variant='primary'>
               Save
             </Button>
           )}
-          <Button onClick={onCancel} variant='secondary'>
+          <Button onClick={props.onCancel} variant='secondary'>
             Cancel
           </Button>
         </div>

@@ -13,7 +13,7 @@ The popup of a Pin (PIN-02): the Person, the event type, both date lines and the
 | --- | --- | --- | --- |
 | `address` | `string` | no | The address as recorded; the loaded state shows it, and an empty one reads as no address. |
 | `event` | `"other" \| "baptism" \| "birth" \| "burial" \| "death" \| "divorce" \| "land" \| "marriage" \| "occupation" \| "residence"` | yes | The Event type of the Pin. |
-| `form` | `"inline" \| "sheet" \| "floating"` | no | A floating popup on a desktop; a sheet region on a phone; `inline` fills the details of the date sheet. |
+| `form` | `"inline" \| "floating" \| "sheet"` | no | A floating popup on a desktop; a sheet region on a phone; `inline` fills the details of the date sheet. |
 | `name` | `string` | no | The Person's name; the loaded state shows it. |
 | `onClose` | `(() => void)` | no | Called by Close and by Esc inside the floating popup. |
 | `onRetry` | `(() => void)` | no | Called by "Try again" in the failed state. |

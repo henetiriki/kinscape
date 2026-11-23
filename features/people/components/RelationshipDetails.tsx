@@ -100,23 +100,7 @@ const startValues = (
   subtype: existing?.type === 'parent' ? existing.subtype : 'biological',
 });
 
-/**
- * Step 2 of "Add", and the dialog of "Edit", on the Relationships page (PPL-02). It holds the
- * subtype of a parent or child, or the marriage and divorce dates of a spouse. With `existing` it
- * updates and names the version that the page read; without, it creates. The dialog makes its id
- * once, so "Try again" repeats the same create. A refusal or a store error shows in an alert, and
- * any other failure in the error toast. The dialog stays open on both. `onBack` is for "Add" only.
- */
-export const RelationshipDetails = ({
-  actions,
-  existing,
-  group,
-  onBack,
-  onClose,
-  open,
-  other,
-  self,
-}: {
+type RelationshipDetailsProps = {
   actions: RelationshipActions;
   /** The Relationship to change. Without it the dialog adds one. */
   existing?: Relationship;
@@ -127,8 +111,24 @@ export const RelationshipDetails = ({
   other: OtherPerson;
   /** The id of the Person whose page it is. */
   self: string;
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-}) => {
+};
+
+/** The save of the action, or undefined if it threw. */
+const save = async (
+  { actions, existing }: Pick<RelationshipDetailsProps, 'actions' | 'existing'>,
+  input: ReturnType<typeof inputOf>
+): Promise<RelationshipSaveResult | undefined> => {
+  try {
+    return existing
+      ? await actions.update({ relationship: input, version: existing.version })
+      : await actions.create(input);
+  } catch {
+    return undefined;
+  }
+};
+
+const useRelationshipForm = (props: RelationshipDetailsProps) => {
+  const { existing, group, onClose, other, self } = props;
   const router = useRouter();
   const [newId] = useState(() => uuidV7());
   const [values, setValues] = useState(() => startValues(existing));
@@ -172,18 +172,7 @@ export const RelationshipDetails = ({
 
     setSaving(true);
 
-    let result: RelationshipSaveResult | undefined;
-
-    try {
-      result = existing
-        ? await actions.update({
-            relationship: input,
-            version: existing.version,
-          })
-        : await actions.create(input);
-    } catch {
-      result = undefined;
-    }
+    const result = await save(props, input);
 
     setSaving(false);
 
@@ -194,6 +183,92 @@ export const RelationshipDetails = ({
     }
   };
 
+  return {
+    failed,
+    message,
+    reload: () => router.refresh(),
+    saving,
+    setFailed,
+    setValues,
+    submit,
+    values,
+  };
+};
+
+type Form = ReturnType<typeof useRelationshipForm>;
+
+const AlertBlock = ({ f }: { f: Form }) =>
+  f.message && (
+    <div className={styles.alert}>
+      <Alert title={f.message.title} tone='error'>
+        {f.message.line}
+      </Alert>
+      {f.message.action === 'Reload' && (
+        <Button onClick={f.reload}>Reload</Button>
+      )}
+      {f.message.action === 'Go to People' && (
+        <Button href='/people'>Go to People</Button>
+      )}
+    </div>
+  );
+
+const Fields = ({
+  f,
+  group,
+}: { f: Form } & Pick<RelationshipDetailsProps, 'group'>) =>
+  group === 'spouses' ? (
+    <>
+      <FuzzyDateField
+        defaultValue={f.values.marriage}
+        helper='For example 1850, ABT 1850 or BET 1850 AND 1855.'
+        label='Marriage'
+        onInput={event =>
+          f.setValues({ ...f.values, marriage: event.currentTarget.value })
+        }
+      />
+      <FuzzyDateField
+        defaultValue={f.values.divorce}
+        helper='Leave it empty if they did not divorce.'
+        label='Divorce'
+        onInput={event =>
+          f.setValues({ ...f.values, divorce: event.currentTarget.value })
+        }
+      />
+    </>
+  ) : (
+    <Segmented
+      label={TYPE_LABELS[group]}
+      name='subtype'
+      onChange={subtype => f.setValues({ ...f.values, subtype })}
+      options={SUBTYPES}
+      value={f.values.subtype}
+    />
+  );
+
+const FailedToast = ({ f }: { f: Form }) => (
+  <div className={styles.toast}>
+    <Toast
+      action='Try again'
+      onAction={() => void f.submit()}
+      onDismiss={() =>
+        f.setFailed(current => (current === f.failed ? 0 : current))
+      }
+      tone='error'>
+      {"Couldn't save the link. Your picks are still here."}
+    </Toast>
+  </div>
+);
+
+/**
+ * Step 2 of "Add", and the dialog of "Edit", on the Relationships page (PPL-02). It holds the
+ * subtype of a parent or child, or the marriage and divorce dates of a spouse. With `existing` it
+ * updates and names the version that the page read; without, it creates. The dialog makes its id
+ * once, so "Try again" repeats the same create. A refusal or a store error shows in an alert, and
+ * any other failure in the error toast. The dialog stays open on both. `onBack` is for "Add" only.
+ */
+export const RelationshipDetails = (props: RelationshipDetailsProps) => {
+  const { existing, group, onBack, onClose, open, other } = props;
+  const f = useRelationshipForm(props);
   const text = existing
     ? EDIT_TEXT[group]
     : {
@@ -212,57 +287,18 @@ export const RelationshipDetails = ({
         noValidate
         onSubmit={event => {
           event.preventDefault();
-          void submit();
+          void f.submit();
         }}>
-        {message && (
-          <div className={styles.alert}>
-            <Alert title={message.title} tone='error'>
-              {message.line}
-            </Alert>
-            {message.action === 'Reload' && (
-              <Button onClick={() => router.refresh()}>Reload</Button>
-            )}
-            {message.action === 'Go to People' && (
-              <Button href='/people'>Go to People</Button>
-            )}
-          </div>
-        )}
+        <AlertBlock f={f} />
         <div className={styles.other}>
           <Text variant='title'>
             {other.surname}, {other.givenNames}
           </Text>
           <DateText dates={other} />
         </div>
-        {group === 'spouses' ? (
-          <>
-            <FuzzyDateField
-              defaultValue={values.marriage}
-              helper='For example 1850, ABT 1850 or BET 1850 AND 1855.'
-              label='Marriage'
-              onInput={event =>
-                setValues({ ...values, marriage: event.currentTarget.value })
-              }
-            />
-            <FuzzyDateField
-              defaultValue={values.divorce}
-              helper='Leave it empty if they did not divorce.'
-              label='Divorce'
-              onInput={event =>
-                setValues({ ...values, divorce: event.currentTarget.value })
-              }
-            />
-          </>
-        ) : (
-          <Segmented
-            label={TYPE_LABELS[group]}
-            name='subtype'
-            onChange={subtype => setValues({ ...values, subtype })}
-            options={SUBTYPES}
-            value={values.subtype}
-          />
-        )}
+        <Fields f={f} group={group} />
         <div className={styles.actions}>
-          <Button disabled={saving} type='submit' variant='primary'>
+          <Button disabled={f.saving} type='submit' variant='primary'>
             Save
           </Button>
           {onBack ? (
@@ -272,19 +308,7 @@ export const RelationshipDetails = ({
           )}
         </div>
       </form>
-      {failed > 0 && (
-        <div className={styles.toast}>
-          <Toast
-            action='Try again'
-            onAction={() => void submit()}
-            onDismiss={() =>
-              setFailed(current => (current === failed ? 0 : current))
-            }
-            tone='error'>
-            {"Couldn't save the link. Your picks are still here."}
-          </Toast>
-        </div>
-      )}
+      {f.failed > 0 && <FailedToast f={f} />}
     </Dialog>
   );
 };

@@ -611,15 +611,7 @@ export declare const CheckboxField: ({ description, label, plain, size, state, .
 } & Omit<ComponentProps<"input">, "aria-describedby" | "className" | "id" | "size" | "type">) => import("react").JSX.Element;
 export type CheckboxFieldProps = Parameters<typeof CheckboxField>[0];
 
-type Notice = {
-    text: string;
-    tone: Extract<Tone, 'info' | 'warning'>;
-};
-/**
- * The typed Map date. It checks on Enter or when focus leaves, never while typing.
- * A bad date stays in the field with its problem until the next check; Esc puts the last good date back.
- */
-export declare const DateField: ({ after, before, day, defaultText, fill, keepPrecision, max, min, notice, onChange, placement, precision, state, }: {
+type DateFieldArgs = {
     /** Beside the field on the right: the step forward button. */
     after?: ReactNode;
     /** Beside the field on the left: the step back button. */
@@ -640,18 +632,22 @@ export declare const DateField: ({ after, before, day, defaultText, fill, keepPr
     notice?: Notice;
     onChange: (day: Day, precision: Precision) => void;
     /** `above` opens the message over the field, for the dock at the bottom of the screen. */
-    placement?: "above" | "below";
+    placement?: 'above' | 'below';
     precision: Precision;
     state?: ControlState;
-}) => import("react").JSX.Element;
+};
+type Notice = {
+    text: string;
+    tone: Extract<Tone, 'info' | 'warning'>;
+};
+/**
+ * The typed Map date. It checks on Enter or when focus leaves, never while typing.
+ * A bad date stays in the field with its problem until the next check; Esc puts the last good date back.
+ */
+export declare const DateField: (props: DateFieldArgs) => import("react").JSX.Element;
 export type DateFieldProps = Parameters<typeof DateField>[0];
 
-/**
- * A GEDCOM date typed as text. Under the input, one slot shows the helper, the reading of a
- * date that parses, or the error. It checks on Enter or when focus leaves, never while the user types.
- * An error stays with the text until the next check.
- */
-export declare const FuzzyDateField: ({ defaultValue, error: given, helper, label, state, ...rest }: {
+type FuzzyDateFieldArgs = {
     /** Text to start with. The field checks it on the first render, unless `state` is `focus`. */
     defaultValue?: string;
     /** A problem that the caller found, such as an empty date. The slot shows it after the field's own error, until a check reads the date. */
@@ -660,14 +656,16 @@ export declare const FuzzyDateField: ({ defaultValue, error: given, helper, labe
     helper?: ReactNode;
     label: string;
     state?: ControlState;
-} & Omit<ComponentProps<"input">, "className" | "defaultValue" | "id" | "onBlur" | "onChange" | "onKeyDown" | "type" | "value">) => import("react").JSX.Element;
+} & Omit<ComponentProps<'input'>, 'className' | 'defaultValue' | 'id' | 'onBlur' | 'onChange' | 'onKeyDown' | 'type' | 'value'>;
+/**
+ * A GEDCOM date typed as text. Under the input, one slot shows the helper, the reading of a
+ * date that parses, or the error. It checks on Enter or when focus leaves, never while the user types.
+ * An error stays with the text until the next check.
+ */
+export declare const FuzzyDateField: (props: FuzzyDateFieldArgs) => import("react").JSX.Element;
 export type FuzzyDateFieldProps = Parameters<typeof FuzzyDateField>[0];
 
-/**
- * The list of a `PersonField`: a row for each match, or the no-match notice. It shows three rows
- * and scrolls past them. With `place` it is fixed at that point; without it, it sits in the flow.
- */
-export declare const PersonFieldList: ({ activeId, id, onPick, place, query, rows, }: {
+type ListProps = {
     /** The id of the row with the focus look: `id`, a hyphen and the Person's id. */
     activeId?: string;
     id: string;
@@ -680,18 +678,18 @@ export declare const PersonFieldList: ({ activeId, id, onPick, place, query, row
     /** The text that the user typed. The no-match notice quotes it. */
     query: string;
     /** Each match, with the spelling variant that matched. */
-    rows: {
-        person: PersonSummary;
-        variant?: string;
-    }[];
-}) => import("react").JSX.Element;
+    rows: Rows;
+};
+type Rows = {
+    person: PersonSummary;
+    variant?: string;
+}[];
 /**
- * A text field that picks one Person (PIN-01). When the user types, the field filters the Persons
- * as the People list does, and a list of at most three rows opens under the field. The focus stays
- * in the text box: Down and Up move the active row, Enter picks it and Esc closes the list. When
- * the user types after a pick, the pick clears.
+ * The list of a `PersonField`: a row for each match, or the no-match notice. It shows three rows
+ * and scrolls past them. With `place` it is fixed at that point; without it, it sits in the flow.
  */
-export declare const PersonField: ({ defaultPerson, error, onChange, people, state, }: {
+export declare const PersonFieldList: ({ activeId, id, onPick, place, query, rows, }: ListProps) => import("react").JSX.Element;
+type PersonFieldArgs = {
     /** A Person to start with, picked. */
     defaultPerson?: PersonSummary;
     /** The problem, shown under the field. The field is also required. */
@@ -701,7 +699,14 @@ export declare const PersonField: ({ defaultPerson, error, onChange, people, sta
     /** Every Person of the Tree. The caller gives no empty list. */
     people: PersonSummary[];
     state?: ControlState;
-}) => import("react").JSX.Element;
+};
+/**
+ * A text field that picks one Person (PIN-01). When the user types, the field filters the Persons
+ * as the People list does, and a list of at most three rows opens under the field. The focus stays
+ * in the text box: Down and Up move the active row, Enter picks it and Esc closes the list. When
+ * the user types after a pick, the pick clears.
+ */
+export declare const PersonField: ({ defaultPerson, error, onChange, people, state, }: PersonFieldArgs) => import("react").JSX.Element;
 export type PersonFieldProps = Parameters<typeof PersonField>[0];
 export type PersonFieldListProps = Parameters<typeof PersonFieldList>[0];
 
@@ -776,12 +781,7 @@ export declare const AddPinButton: ({ state, ...rest }: {
 } & Omit<ComponentProps<"button">, "aria-label" | "children" | "className" | "type">) => import("react").JSX.Element;
 export type AddPinButtonProps = Parameters<typeof AddPinButton>[0];
 
-/**
- * The Map date control. On desktop a dock: steps, the typed date, precision, then the optional contested note, Play and speed, the slider, Jump to and key hints.
- * With `sheet` it is the phone's bottom sheet: the stepper and round Play, and the slider once expanded.
- * The Play, Jump to and contested parts show only when their props are passed.
- */
-export declare const DateDock: ({ contestedCount, contestedYears, day, defaultText, details, epochs, hasBorders, lastDay, onChange, onPlay, sheet, }: {
+type DockProps = {
     /** Contested claims on the Map date. */
     contestedCount?: number;
     /** Year spans drawn hatched on the slider. */
@@ -804,7 +804,13 @@ export declare const DateDock: ({ contestedCount, contestedYears, day, defaultTe
         expanded: boolean;
         onExpandedChange: (expanded: boolean) => void;
     };
-}) => import("react").JSX.Element;
+};
+/**
+ * The Map date control. On desktop a dock: steps, the typed date, precision, then the optional contested note, Play and speed, the slider, Jump to and key hints.
+ * With `sheet` it is the phone's bottom sheet: the stepper and round Play, and the slider once expanded.
+ * The Play, Jump to and contested parts show only when their props are passed.
+ */
+export declare const DateDock: (props: DockProps) => import("react").JSX.Element;
 export type DateDockProps = Parameters<typeof DateDock>[0];
 
 /** "Reading the map": how borders, contested claims, uncertain dates and Event types are drawn. The swatches are decoration. */

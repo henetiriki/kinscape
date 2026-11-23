@@ -6,7 +6,7 @@ import { tracked } from '@ks/scripts/__tests__/tracked';
 // The test builds the rule name from parts, so this file does not match itself.
 const RULE = ['max-lines', 'per-function'].join('-');
 const REASON = 'over 60 lines before the rule (C1174)';
-const CAP = 47;
+const CAP = 22;
 
 // Each ESLint form that can name the rule: block, same line, next line, and a list of rules.
 const DIRECTIVE = new RegExp(
@@ -68,10 +68,12 @@ describe('lengthDisables', () => {
   });
 
   it('flags a count over the cap', () => {
-    const text = Array(48).fill(disable(REASON)).join('\n');
+    const text = Array(CAP + 1)
+      .fill(disable(REASON))
+      .join('\n');
 
     expect(lengthDisables({ 'a.ts': text }, CAP)).toEqual([
-      '48 disables, not the cap of 47',
+      `${CAP + 1} disables, not the cap of ${CAP}`,
     ]);
     expect(
       lengthDisables({ 'a.ts': text.split('\n').slice(1).join('\n') }, CAP)

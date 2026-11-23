@@ -1,4 +1,4 @@
-import type { ComponentProps } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 
 import type { PersonDates } from '@ks/app/components/actions/types';
 import type { ControlState } from '@ks/app/components/foundation/types';
@@ -11,6 +11,42 @@ import { KitLink } from '@ks/app/components/foundation/link';
 import { Text } from '@ks/app/components/foundation/Text';
 
 import styles from '@ks/app/components/actions/PersonRow.module.css';
+
+const PhoneRow = ({
+  dates,
+  name,
+  note,
+}: {
+  dates: ReactNode;
+  name: ReactNode;
+  note: ReactNode;
+}) => (
+  <div className={styles.phone}>
+    {name}
+    <span className={styles.line}>
+      {dates}
+      {note}
+    </span>
+  </div>
+);
+
+const WithLink = ({
+  children,
+  href,
+  owner,
+}: {
+  children: ReactNode;
+  href: string;
+  owner: string;
+}) => (
+  <div className={styles.withLink}>
+    {children}
+    <TextLink href={href}>
+      Relationships
+      <span className={styles.hidden}>, {owner}</span>
+    </TextLink>
+  </div>
+);
 
 /**
  * One row of the people list, and one link to edit the Person. The page gives each date as short
@@ -46,7 +82,6 @@ export const PersonRow = ({
   state?: ControlState;
   surname: string;
 } & Omit<ComponentProps<'a'>, 'children' | 'className' | 'href'> &
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
   PersonDates) => {
   const note = personNote(maidenName, matchedVariant);
   const dates = (
@@ -57,24 +92,17 @@ export const PersonRow = ({
       {surname}, {givenNames}
     </Text>
   );
+  const noteLine = note && <Text variant='small'>{note}</Text>;
 
   if (form === 'phone') {
-    return (
-      <div className={styles.phone}>
-        {name}
-        <span className={styles.line}>
-          {dates}
-          {note && <Text variant='small'>{note}</Text>}
-        </span>
-      </div>
-    );
+    return <PhoneRow dates={dates} name={name} note={noteLine} />;
   }
 
   const row = (
     <KitLink className={styles.row} data-state={state} href={href} {...rest}>
       <span className={styles.name}>
         {name}
-        {note && <Text variant='small'>{note}</Text>}
+        {noteLine}
       </span>
       {dates}
       <ArrowLink>Edit</ArrowLink>
@@ -84,14 +112,8 @@ export const PersonRow = ({
   if (!relationshipsHref) return row;
 
   return (
-    <div className={styles.withLink}>
+    <WithLink href={relationshipsHref} owner={`${surname}, ${givenNames}`}>
       {row}
-      <TextLink href={relationshipsHref}>
-        Relationships
-        <span className={styles.hidden}>
-          , {surname}, {givenNames}
-        </span>
-      </TextLink>
-    </div>
+    </WithLink>
   );
 };

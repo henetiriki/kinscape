@@ -6,5 +6,5 @@ The frame of a page with one centred column: a header, a main area that scrolls 
 | --- | --- | --- | --- |
 | `actions` | `ReactNode` | no |  |
 | `children` | `ReactNode` | yes |  |
-| `column` | `"form" \| "list" \| "notice" \| "detail" \| "phone-notice"` | yes |  |
+| `column` | `"form" \| "list" \| "detail" \| "notice" \| "phone-notice"` | yes |  |
 | `header` | `ReactNode` | yes |  |

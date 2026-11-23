@@ -21,6 +21,70 @@ const TITLES: Record<RelationshipGroup, string> = {
   spouses: 'Add a spouse',
 };
 
+type RelationshipPickerProps = {
+  group: RelationshipGroup;
+  onClose: () => void;
+  /** The picker calls it with the Person of the row that the user chose. */
+  onPick: (person: PersonSummary) => void;
+  /** The page keeps the picker mounted after it closes: the browser returns focus on close only. */
+  open: boolean;
+  /** Every Person of the Tree except the one whose page it is. */
+  people: PersonSummary[];
+};
+
+const useSearch = (people: PersonSummary[]) => {
+  const [query, setQuery] = useState('');
+
+  return { query, setQuery, shown: findPeople(people, query) };
+};
+
+type Shown = ReturnType<typeof useSearch>['shown'];
+
+const Rows = ({
+  onPick,
+  shown,
+}: { shown: Shown } & Pick<RelationshipPickerProps, 'onPick'>) => (
+  <ul className={styles.rows}>
+    {shown.map(({ match, person }) => (
+      <li className={styles.item} key={person.id}>
+        <PickerRow
+          {...datesOf(person)}
+          givenNames={person.givenNames}
+          maidenName={person.maidenName}
+          matchedVariant={match.variant}
+          onClick={() => onPick(person)}
+          surname={person.surname}
+        />
+      </li>
+    ))}
+  </ul>
+);
+
+const NoMatch = ({
+  query,
+  setQuery,
+}: Pick<ReturnType<typeof useSearch>, 'query' | 'setQuery'>) => (
+  <div className={styles.notice}>
+    <NoticeCard
+      actions={[{ label: 'Clear the filter', onClick: () => setQuery('') }]}
+      icon='search'
+      title={`No one matches “${query.trim()}”`}>
+      Check the spelling, or add them first with Add a person.
+    </NoticeCard>
+  </div>
+);
+
+const NoOthers = () => (
+  <div className={styles.notice}>
+    <NoticeCard
+      actions={[{ href: '/people/new', label: 'Add a person' }]}
+      icon='people'
+      title='No other people in your Tree'>
+      Add another person first, then link them here.
+    </NoticeCard>
+  </div>
+);
+
 /**
  * Step 1 of "Add" on the Relationships page (PPL-02): a dialog that lists the other Persons, with
  * the filter of the People list. A row calls `onPick`, and step 2 follows. The page gives the
@@ -32,19 +96,8 @@ export const RelationshipPicker = ({
   onPick,
   open,
   people,
-}: {
-  group: RelationshipGroup;
-  onClose: () => void;
-  /** The picker calls it with the Person of the row that the user chose. */
-  onPick: (person: PersonSummary) => void;
-  /** The page keeps the picker mounted after it closes: the browser returns focus on close only. */
-  open: boolean;
-  /** Every Person of the Tree except the one whose page it is. */
-  people: PersonSummary[];
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-}) => {
-  const [query, setQuery] = useState('');
-  const shown = findPeople(people, query);
+}: RelationshipPickerProps) => {
+  const { query, setQuery, shown } = useSearch(people);
 
   return (
     <Dialog
@@ -59,44 +112,11 @@ export const RelationshipPicker = ({
         type='search'
         value={query}
       />
-      {shown.length > 0 && (
-        <ul className={styles.rows}>
-          {shown.map(({ match, person }) => (
-            <li className={styles.item} key={person.id}>
-              <PickerRow
-                {...datesOf(person)}
-                givenNames={person.givenNames}
-                maidenName={person.maidenName}
-                matchedVariant={match.variant}
-                onClick={() => onPick(person)}
-                surname={person.surname}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
+      {shown.length > 0 && <Rows onPick={onPick} shown={shown} />}
       {shown.length === 0 && people.length > 0 && (
-        <div className={styles.notice}>
-          <NoticeCard
-            actions={[
-              { label: 'Clear the filter', onClick: () => setQuery('') },
-            ]}
-            icon='search'
-            title={`No one matches “${query.trim()}”`}>
-            Check the spelling, or add them first with Add a person.
-          </NoticeCard>
-        </div>
+        <NoMatch query={query} setQuery={setQuery} />
       )}
-      {people.length === 0 && (
-        <div className={styles.notice}>
-          <NoticeCard
-            actions={[{ href: '/people/new', label: 'Add a person' }]}
-            icon='people'
-            title='No other people in your Tree'>
-            Add another person first, then link them here.
-          </NoticeCard>
-        </div>
-      )}
+      {people.length === 0 && <NoOthers />}
       <div className={styles.actions}>
         <Button onClick={onClose} variant='secondary'>
           Cancel

@@ -13,6 +13,29 @@ import styles from '@ks/app/components/feedback/NoticeCard.module.css';
 /** With an `href` the action is a link. */
 type Action = { href?: string; label: string; onClick?: () => void };
 
+const Actions = ({ actions }: { actions: Action[] }) => (
+  <div className={styles.actions}>
+    {actions.map(({ href, label, onClick }, i) => {
+      const variant = i === 0 ? 'primary' : 'secondary';
+
+      return href === undefined ? (
+        <Button key={label} onClick={onClick} size='s' variant={variant}>
+          {label}
+        </Button>
+      ) : (
+        <Button
+          href={href}
+          key={label}
+          onClick={onClick}
+          size='s'
+          variant={variant}>
+          {label}
+        </Button>
+      );
+    })}
+  </div>
+);
+
 /**
  * Says what is going on in one line and offers at most two ways out. It never takes focus.
  * With `progress` (0 to 100) it is the loading form and announces politely.
@@ -37,7 +60,6 @@ export const NoticeCard = ({
   /** `large`: the icon on top, an H3 title, 380 wide. */
   size?: 'large';
   title: string;
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const titleId = useId();
   const loading = progress !== undefined;
@@ -65,28 +87,7 @@ export const NoticeCard = ({
           <span className={styles.line}>{children}</span>
         </div>
       </div>
-      {actions && (
-        <div className={styles.actions}>
-          {actions.map(({ href, label, onClick }, i) => {
-            const variant = i === 0 ? 'primary' : 'secondary';
-
-            return href === undefined ? (
-              <Button key={label} onClick={onClick} size='s' variant={variant}>
-                {label}
-              </Button>
-            ) : (
-              <Button
-                href={href}
-                key={label}
-                onClick={onClick}
-                size='s'
-                variant={variant}>
-                {label}
-              </Button>
-            );
-          })}
-        </div>
-      )}
+      {actions && <Actions actions={actions} />}
     </div>
   );
 };

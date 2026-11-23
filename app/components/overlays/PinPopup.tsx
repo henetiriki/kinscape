@@ -1,5 +1,7 @@
 'use client';
 
+import type { ReactNode } from 'react';
+
 import type { PinPopupState } from '@ks/app/components/overlays/types';
 import type { EventType } from '@ks/lib/ui/types';
 
@@ -36,6 +38,159 @@ type PinPopupArgs = {
   state: PinPopupState;
 };
 
+const Top = ({
+  event,
+  loaded,
+  loading,
+  name,
+  onClose,
+}: {
+  loaded: boolean;
+  loading: boolean;
+} & Pick<PinPopupArgs, 'event' | 'name' | 'onClose'>) => (
+  <div className={styles.top}>
+    <div className={styles.header}>
+      <span className={styles.event}>
+        <EventGlyph event={event} />
+        <Text variant='overline'>{eventLabel(event)}</Text>
+      </span>
+      {loaded && (
+        <Text as='h3' variant='h3'>
+          {name}
+        </Text>
+      )}
+      {loading && <LoadingBar width={168} />}
+    </div>
+    <span className={styles.close}>
+      <IconButton label='Close' onClick={onClose}>
+        <Icon name='close' size={20} />
+      </IconButton>
+    </span>
+  </div>
+);
+
+const Dates = ({
+  reading,
+  recorded,
+}: Pick<PinPopupArgs, 'reading' | 'recorded'>) => (
+  <div className={styles.dates}>
+    <Text variant='title'>{reading}</Text>
+    <Text variant='mono'>{recorded}</Text>
+  </div>
+);
+
+const Body = ({ address, state }: Pick<PinPopupArgs, 'address' | 'state'>) =>
+  state === 'failed' ? (
+    <Alert title="Couldn't load this Pin" tone='error'>
+      The details didn&apos;t load.
+    </Alert>
+  ) : (
+    <div className={styles.address}>
+      <Text variant='overline'>Address as recorded</Text>
+      {state === 'loading' ? (
+        <LoadingBar width={220} />
+      ) : (
+        <Text variant='body'>{address || 'No address recorded'}</Text>
+      )}
+    </div>
+  );
+
+const Actions = ({
+  floating,
+  loaded,
+  onRetry,
+  state,
+}: {
+  floating: boolean;
+  loaded: boolean;
+} & Pick<PinPopupArgs, 'onRetry' | 'state'>) => {
+  if (state === 'failed') {
+    return (
+      <div className={styles.actions}>
+        <Button onClick={onRetry} variant='secondary'>
+          Try again
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    floating && (
+      <div className={styles.actions}>
+        <Button disabled={!loaded} variant='primary'>
+          Add a pin here
+        </Button>
+        <Button disabled={!loaded} variant='secondary'>
+          Edit
+        </Button>
+      </div>
+    )
+  );
+};
+
+const Floating = ({
+  children,
+  loading,
+  onClose,
+}: { children: ReactNode; loading: boolean } & Pick<
+  PinPopupArgs,
+  'onClose'
+>) => (
+  // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Esc inside the popup closes it; the popup itself is not a tab stop
+  <div
+    aria-busy={loading || undefined}
+    aria-label='Pin details'
+    className={styles.popup}
+    onKeyDown={press => {
+      if (press.key === 'Escape') {
+        onClose?.();
+      }
+    }}
+    role='dialog'>
+    <PopupPointer className={styles.pointer} />
+    {children}
+  </div>
+);
+
+const Note = ({ className, loaded }: { className: string; loaded: boolean }) =>
+  loaded && (
+    <p className={className}>
+      Look-up only on a phone. Add people and pins on a tablet or computer.
+    </p>
+  );
+
+// Inside the date sheet the sheet's own handle and surface are there already, and the note sits at the foot of the sheet.
+const Docked = ({
+  children,
+  form,
+  loaded,
+  state,
+}: {
+  children: ReactNode;
+  loaded: boolean;
+} & Pick<PinPopupArgs, 'form' | 'state'>) =>
+  form === 'inline' ? (
+    <>
+      <div
+        aria-busy={state === 'loading' || undefined}
+        aria-label='Pin details'
+        className={styles.inline}
+        role='group'>
+        {children}
+      </div>
+      <Note className={`${styles.note} ${styles.foot}`} loaded={loaded} />
+    </>
+  ) : (
+    <section
+      aria-busy={state === 'loading' || undefined}
+      aria-label={`Pin details, ${state}`}
+      className={styles.sheet}>
+      <span aria-hidden='true' className={styles.handle} data-testid='handle' />
+      {children}
+      <Note className={styles.note} loaded={loaded} />
+    </section>
+  );
+
 /** The popup of a Pin (PIN-02): the Person, the event type, both date lines and the address. */
 export const PinPopup = ({
   address,
@@ -47,136 +202,51 @@ export const PinPopup = ({
   reading,
   recorded,
   state,
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }: PinPopupArgs) => {
-  const floating = form === 'floating';
   const loaded = state === 'loaded';
   const loading = state === 'loading';
 
   const top = (
-    <div className={styles.top}>
-      <div className={styles.header}>
-        <span className={styles.event}>
-          <EventGlyph event={event} />
-          <Text variant='overline'>{eventLabel(event)}</Text>
-        </span>
-        {loaded && (
-          <Text as='h3' variant='h3'>
-            {name}
-          </Text>
-        )}
-        {loading && <LoadingBar width={168} />}
-      </div>
-      <span className={styles.close}>
-        <IconButton label='Close' onClick={onClose}>
-          <Icon name='close' size={20} />
-        </IconButton>
-      </span>
-    </div>
+    <Top
+      event={event}
+      loaded={loaded}
+      loading={loading}
+      name={name}
+      onClose={onClose}
+    />
   );
-  const dates = (
-    <div className={styles.dates}>
-      <Text variant='title'>{reading}</Text>
-      <Text variant='mono'>{recorded}</Text>
-    </div>
-  );
-  const body = (
+  const details = (
     <>
-      {state === 'failed' ? (
-        <Alert title="Couldn't load this Pin" tone='error'>
-          The details didn&apos;t load.
-        </Alert>
-      ) : (
-        <div className={styles.address}>
-          <Text variant='overline'>Address as recorded</Text>
-          {loading ? (
-            <LoadingBar width={220} />
-          ) : (
-            <Text variant='body'>{address || 'No address recorded'}</Text>
-          )}
-        </div>
-      )}
+      <Dates reading={reading} recorded={recorded} />
+      <Body address={address} state={state} />
     </>
   );
-  const retry = state === 'failed' && (
-    <div className={styles.actions}>
-      <Button onClick={onRetry} variant='secondary'>
-        Try again
-      </Button>
-    </div>
+  const floating = form === 'floating';
+  const actions = (
+    <Actions
+      floating={floating}
+      loaded={loaded}
+      onRetry={onRetry}
+      state={state}
+    />
   );
 
   if (!floating) {
-    const content = (
-      <>
+    return (
+      <Docked form={form} loaded={loaded} state={state}>
         {top}
-        {dates}
-        {body}
-        {retry}
-      </>
-    );
-    const note = (className: string) =>
-      loaded && (
-        <p className={className}>
-          Look-up only on a phone. Add people and pins on a tablet or computer.
-        </p>
-      );
-
-    // Inside the date sheet the sheet's own handle and surface are there already, and the note sits at the foot of the sheet.
-    return form === 'inline' ? (
-      <>
-        <div
-          aria-busy={loading || undefined}
-          aria-label='Pin details'
-          className={styles.inline}
-          role='group'>
-          {content}
-        </div>
-        {note(`${styles.note} ${styles.foot}`)}
-      </>
-    ) : (
-      <section
-        aria-busy={loading || undefined}
-        aria-label={`Pin details, ${state}`}
-        className={styles.sheet}>
-        <span
-          aria-hidden='true'
-          className={styles.handle}
-          data-testid='handle'
-        />
-        {content}
-        {note(styles.note)}
-      </section>
+        {details}
+        {actions}
+      </Docked>
     );
   }
 
   return (
-    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Esc inside the popup closes it; the popup itself is not a tab stop
-    <div
-      aria-busy={loading || undefined}
-      aria-label='Pin details'
-      className={styles.popup}
-      onKeyDown={press => {
-        if (press.key === 'Escape') {
-          onClose?.();
-        }
-      }}
-      role='dialog'>
-      <PopupPointer className={styles.pointer} />
+    <Floating loading={loading} onClose={onClose}>
       {top}
-      {dates}
-      {body}
-      {retry || (
-        <div className={styles.actions}>
-          <Button disabled={!loaded} variant='primary'>
-            Add a pin here
-          </Button>
-          <Button disabled={!loaded} variant='secondary'>
-            Edit
-          </Button>
-        </div>
-      )}
-    </div>
+      {details}
+      {actions}
+    </Floating>
   );
 };
 

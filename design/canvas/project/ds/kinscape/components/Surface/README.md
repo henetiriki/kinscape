@@ -6,4 +6,4 @@ A white surface above the map; the higher the level, the more it interrupts.
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | yes |  |
 | `className` | `string` | no |  |
-| `level` | `"raised" \| "sheet" \| "floating" \| "modal"` | yes |  |
+| `level` | `"raised" \| "floating" \| "modal" \| "sheet"` | yes |  |

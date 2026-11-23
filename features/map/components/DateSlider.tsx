@@ -40,6 +40,65 @@ const at = (year: number, precision: Precision, lastDay: Day): number => {
 
 const mark = (f: number) => ({ '--f': f }) as CSSProperties;
 
+type MarkArgs = { lastDay: Day; precision: Precision };
+
+const Hatches = ({
+  contested,
+  lastDay,
+  precision,
+}: { contested: ContestedYears[] } & MarkArgs) =>
+  contested.map(({ from, to }) => (
+    <span
+      className={styles.contested}
+      data-from={from}
+      data-testid='contested-span'
+      data-to={to}
+      key={`${from}-${to}`}
+      style={
+        {
+          '--f': at(from, precision, lastDay),
+          '--g': at(to + 1, precision, lastDay),
+        } as CSSProperties
+      }
+    />
+  ));
+
+const Ticks = ({ lastDay, precision, ticks }: { ticks: number[] } & MarkArgs) =>
+  ticks.map(year => (
+    <span
+      className={styles.tick}
+      data-testid='slider-tick'
+      data-year={year}
+      key={year}
+      style={mark(at(year, precision, lastDay))}
+    />
+  ));
+
+const Years = ({ lastDay, precision }: MarkArgs) => {
+  const lastYear = yearOf(lastDay);
+  const years: number[] = [];
+
+  for (
+    let year = Math.floor(FIRST_YEAR / LABEL_EVERY + 1) * LABEL_EVERY;
+    year <= lastYear;
+    year += LABEL_EVERY
+  )
+    if ((lastYear - year) / (lastYear - FIRST_YEAR) >= LABEL_GAP)
+      years.push(year);
+
+  return (
+    <span className={styles.years}>
+      <span className={styles.first}>{FIRST_YEAR}</span>
+      {years.map(year => (
+        <span key={year} style={mark(at(year, precision, lastDay))}>
+          {year}
+        </span>
+      ))}
+      <span className={styles.last}>Today</span>
+    </span>
+  );
+};
+
 /**
  * The 1652-to-today slider. The thumb moves in steps of `precision`; Shift and an arrow move ten.
  * `ticks` are epoch years, `contested` year spans drawn hatched; the labels are 1652, every 50th year and Today.
@@ -59,20 +118,9 @@ export const DateSlider = ({
   onChange: (day: Day) => void;
   precision: Precision;
   ticks?: number[];
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const max = sliderMax(precision, lastDay);
   const value = sliderValue(day, precision);
-  const lastYear = yearOf(lastDay);
-  const years: number[] = [];
-
-  for (
-    let year = Math.floor(FIRST_YEAR / LABEL_EVERY + 1) * LABEL_EVERY;
-    year <= lastYear;
-    year += LABEL_EVERY
-  )
-    if ((lastYear - year) / (lastYear - FIRST_YEAR) >= LABEL_GAP)
-      years.push(year);
 
   const move = (to: number) =>
     onChange(dayFromSlider(to, day, precision, lastDay));
@@ -81,39 +129,13 @@ export const DateSlider = ({
     <div className={styles.slider} style={hatchStyle}>
       <div aria-hidden='true' className={styles.marks}>
         <span className={styles.track} />
-        {contested.map(({ from, to }) => (
-          <span
-            className={styles.contested}
-            data-from={from}
-            data-testid='contested-span'
-            data-to={to}
-            key={`${from}-${to}`}
-            style={
-              {
-                '--f': at(from, precision, lastDay),
-                '--g': at(to + 1, precision, lastDay),
-              } as CSSProperties
-            }
-          />
-        ))}
-        {ticks.map(year => (
-          <span
-            className={styles.tick}
-            data-testid='slider-tick'
-            data-year={year}
-            key={year}
-            style={mark(at(year, precision, lastDay))}
-          />
-        ))}
-        <span className={styles.years}>
-          <span className={styles.first}>{FIRST_YEAR}</span>
-          {years.map(year => (
-            <span key={year} style={mark(at(year, precision, lastDay))}>
-              {year}
-            </span>
-          ))}
-          <span className={styles.last}>Today</span>
-        </span>
+        <Hatches
+          contested={contested}
+          lastDay={lastDay}
+          precision={precision}
+        />
+        <Ticks lastDay={lastDay} precision={precision} ticks={ticks} />
+        <Years lastDay={lastDay} precision={precision} />
       </div>
       <input
         aria-keyshortcuts='Shift+ArrowLeft Shift+ArrowRight'

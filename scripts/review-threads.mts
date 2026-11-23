@@ -143,6 +143,36 @@ const comment = ({ author, body, createdAt }: Comment) => ({
 const USAGE =
   'Usage: review-threads list|resolve|reply <PR number> [<thread id>], with GH_REPO or GITHUB_REPOSITORY=<owner>/<repo> set; reply reads its text from stdin';
 
+// The PR's comments and its unresolved threads, as JSON text.
+const listOpen = (gh: Gh, pr: Record<string, number | string>): string =>
+  JSON.stringify(
+    {
+      comments: commentsOf(gh, pr).map(comment),
+      threads: threadsOf(gh, pr)
+        .filter(({ isResolved }) => !isResolved)
+        .map(({ comments, id: threadId, line, path }) => ({
+          comments: comments.nodes.map(comment),
+          id: threadId,
+          line,
+          path,
+        })),
+    },
+    null,
+    2
+  );
+
+const replyOn = (gh: Gh, id: string, raw: string, body: string): string => {
+  graphql(gh, REPLY, { body, id });
+
+  return `Replied on ${id} of #${raw}.`;
+};
+
+const resolveOn = (gh: Gh, id: string, raw: string): string => {
+  graphql(gh, RESOLVE, { id });
+
+  return `Resolved ${id} on #${raw}.`;
+};
+
 // `readBody` reads the text of a reply from stdin. It runs only for a reply whose arguments are
 // valid, and a failed read is logged like a failed `gh` call.
 export const run = (
@@ -151,7 +181,6 @@ export const run = (
   gh: Gh,
   out: (text: string) => void,
   readBody: () => string = () => ''
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): number => {
   const [command, raw, id] = args;
   const repo = env.GH_REPO || env.GITHUB_REPOSITORY || '';
@@ -182,23 +211,7 @@ export const run = (
     }
 
     if (command === 'list') {
-      out(
-        JSON.stringify(
-          {
-            comments: commentsOf(gh, pr).map(comment),
-            threads: threadsOf(gh, pr)
-              .filter(({ isResolved }) => !isResolved)
-              .map(({ comments, id: threadId, line, path }) => ({
-                comments: comments.nodes.map(comment),
-                id: threadId,
-                line,
-                path,
-              })),
-          },
-          null,
-          2
-        )
-      );
+      out(listOpen(gh, pr));
 
       return 0;
     }
@@ -211,13 +224,11 @@ export const run = (
       return 1;
     }
 
-    if (command === 'reply') {
-      graphql(gh, REPLY, { body: text, id: id as string });
-      out(`Replied on ${id} of #${raw}.`);
-    } else {
-      graphql(gh, RESOLVE, { id: id as string });
-      out(`Resolved ${id} on #${raw}.`);
-    }
+    out(
+      command === 'reply'
+        ? replyOn(gh, id as string, raw, text)
+        : resolveOn(gh, id as string, raw)
+    );
 
     return 0;
   } catch (error) {

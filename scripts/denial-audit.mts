@@ -330,33 +330,30 @@ const recentRunIds = (gh: Gh, workflow: string, since: Date): number[] =>
     )
     .map((run: { databaseId: number }) => run.databaseId);
 
-export const summarise = (
-  transcripts: { id: number; transcript: Transcript; workflow: string }[],
-  settings: (file: string) => Settings
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-): Report => {
-  // Each group keeps the first denial it saw under each settings file, to judge against that file,
-  // and the sessions (one per transcript) it hit: a refresh run with several has the same run id
-  // in each, so the run is linked once but each session counts toward a repeat (plan C482, D2).
-  const groups = new Map<
-    string,
-    {
-      firstBy: Map<string, Denial>;
-      // The denials in each run, to sort the group's runs by.
-      perRun: Map<number, number>;
-    } & Omit<Group, 'runs'>
-  >();
+type Collected = {
+  groups: Map<string, Tally>;
+  sessionsOf: Map<string, Set<number>>;
+  stripped: Record<string, number>;
+};
+
+type Tally = {
+  firstBy: Map<string, Denial>;
+  // The denials in each run, to sort the group's runs by.
+  perRun: Map<number, number>;
+} & Omit<Group, 'runs'>;
+
+type Transcripts = { id: number; transcript: Transcript; workflow: string }[];
+
+// Each group keeps the first denial it saw under each settings file, to judge against that file,
+// and the sessions (one per transcript) it hit: a refresh run with several has the same run id
+// in each, so the run is linked once but each session counts toward a repeat (plan C482, D2).
+const collect = (
+  transcripts: Transcripts,
+  settingsOf: (file: string) => Settings
+): Collected => {
+  const groups = new Map<string, Tally>();
   const sessionsOf = new Map<string, Set<number>>();
   const stripped: Record<string, number> = {};
-  // The audit reads each settings file once, because it runs the hook for each denial.
-  const known = new Map<string, Settings>();
-  const settingsOf = (file: string): Settings => {
-    const read = known.get(file) ?? settings(file);
-
-    known.set(file, read);
-
-    return read;
-  };
 
   for (const [session, { id, transcript, workflow }] of transcripts.entries()) {
     const file = settingsFileOf(workflow);
@@ -405,11 +402,61 @@ export const summarise = (
     }
   }
 
+  return { groups, sessionsOf, stripped };
+};
+
+// The groups that repeat, each with its runs, the settings that judge it and the fix to suggest.
+const reported = (
+  { groups, sessionsOf }: Collected,
+  settingsOf: (file: string) => Settings
+): Group[] => {
   const repeating = new Set(
     [...sessionsOf]
       .filter(([, sessions]) => sessions.size >= REPEAT_RUNS)
       .map(([pattern]) => pattern)
   );
+
+  return [...groups.values()]
+    .filter(
+      ({ count, pattern }) => repeating.has(pattern) || count >= REPEAT_COUNT
+    )
+    .sort((a, b) => b.count - a.count)
+    .map(({ firstBy, perRun, ...group }) => {
+      const rows = [...firstBy].map(([file, denial]) => ({
+        file,
+        status: statusOf(settingsOf(file), denial),
+      }));
+
+      return {
+        ...group,
+        // The busiest run first; of two as busy, the newer (a higher id).
+        runs: [...perRun]
+          .sort(([idA, a], [idB, b]) => b - a || idB - idA)
+          .map(([id]) => id),
+        settings: rows
+          .map(({ file, status }) => `${file}: ${status}`)
+          .join('; '),
+        suggestion: [
+          ...new Set(rows.map(({ status }) => suggestionOf(status))),
+        ].join(' '),
+      };
+    });
+};
+
+export const summarise = (
+  transcripts: Transcripts,
+  settings: (file: string) => Settings
+): Report => {
+  // The audit reads each settings file once, because it runs the hook for each denial.
+  const known = new Map<string, Settings>();
+  const settingsOf = (file: string): Settings => {
+    const read = known.get(file) ?? settings(file);
+
+    known.set(file, read);
+
+    return read;
+  };
+  const collected = collect(transcripts, settingsOf);
 
   return {
     costUsd: transcripts.reduce(
@@ -431,33 +478,9 @@ export const summarise = (
     deniedRunsCostUsd: transcripts
       .filter(({ transcript }) => transcript.denials.length > 0)
       .reduce((sum, { transcript }) => sum + (transcript.costUsd ?? 0), 0),
-    groups: [...groups.values()]
-      .filter(
-        ({ count, pattern }) => repeating.has(pattern) || count >= REPEAT_COUNT
-      )
-      .sort((a, b) => b.count - a.count)
-      .map(({ firstBy, perRun, ...group }) => {
-        const rows = [...firstBy].map(([file, denial]) => ({
-          file,
-          status: statusOf(settingsOf(file), denial),
-        }));
-
-        return {
-          ...group,
-          // The busiest run first; of two as busy, the newer (a higher id).
-          runs: [...perRun]
-            .sort(([idA, a], [idB, b]) => b - a || idB - idA)
-            .map(([id]) => id),
-          settings: rows
-            .map(({ file, status }) => `${file}: ${status}`)
-            .join('; '),
-          suggestion: [
-            ...new Set(rows.map(({ status }) => suggestionOf(status))),
-          ].join(' '),
-        };
-      }),
+    groups: reported(collected, settingsOf),
     runs: transcripts.length,
-    stripped,
+    stripped: collected.stripped,
     turns: transcripts.reduce(
       (sum, { transcript }) => sum + (transcript.turns ?? 0),
       0

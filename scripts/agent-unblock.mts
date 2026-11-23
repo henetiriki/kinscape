@@ -182,12 +182,94 @@ const swapLabel = (
   ]);
 };
 
+/** What the work on each blocked issue shares. */
+type Work = {
+  bot: string;
+  closed: number;
+  comment: (thread: number, lines: string[]) => void;
+  gh: Gh;
+  mergedPrs: () => Pr[];
+  openPrs: Pr[];
+  owner: string;
+  repo: string;
+  unblocked: { blockers: number[]; number: number }[];
+};
+
+// Frees one issue that the closed issue blocked, if nothing else blocks it, and tells the PRs
+// that close it.
+const unblockIssue = (work: Work, issue: Linked): void => {
+  const { bot, closed, comment, gh, mergedPrs, openPrs, owner, repo } = work;
+  const blockedBy = api(
+    gh,
+    `repos/${repo}/issues/${issue.number}/dependencies/blocked_by`
+  );
+  const remaining = open(blockedBy);
+
+  if (remaining.length > 0) {
+    console.log(
+      `#${issue.number} is still blocked by #${remaining[0].number}.`
+    );
+
+    return;
+  }
+
+  if (hasLabel(issue, 'status: blocked')) {
+    const blockers = [
+      ...new Set([closed, ...blockedBy.map(({ number }) => number)]),
+    ];
+    const design =
+      issue.type?.name === 'Spec'
+        ? designBlockers(gh, repo, mergedPrs(), blockers)
+        : [];
+    const refresh = trusted(issue, bot);
+
+    swapLabel(gh, comment, { closed, design, issue, owner, refresh });
+    console.log(`#${issue.number} is unblocked.`);
+
+    if (refresh) {
+      work.unblocked.push({ blockers, number: issue.number });
+    }
+  }
+
+  for (const pr of openPrs.filter(({ closingIssuesReferences }) =>
+    closingIssuesReferences.some(({ number }) => number === issue.number)
+  )) {
+    comment(pr.number, [
+      `#${closed} is closed, so the Spec this PR closes (#${issue.number}) is no longer blocked.`,
+      '',
+      `@${owner}: approve the plan again if its build was stopped.`,
+    ]);
+    console.log(`Told PR #${pr.number}.`);
+  }
+};
+
+// Comments on an issue or PR, with a link to the run at the end when `runUrl` looks like one.
+const commenter =
+  (gh: Gh, runUrl: string): Work['comment'] =>
+  (thread, lines) => {
+    const footer = RUN_URL.test(runUrl) ? ['', `[Run](${runUrl})`] : [];
+
+    gh(
+      ['issue', 'comment', String(thread), '--body-file', '-'],
+      [...lines, ...footer].join('\n')
+    );
+  };
+
+const writeOutput = (
+  append: (file: string, text: string) => void,
+  env: Record<string, string | undefined>,
+  unblocked: Work['unblocked']
+): void => {
+  if (env.GITHUB_OUTPUT) {
+    append(env.GITHUB_OUTPUT, `unblocked=${JSON.stringify(unblocked)}\n`);
+  }
+};
+
 export const run = (
   args: string[],
   env: Record<string, string | undefined>,
   gh: Gh,
   append: (file: string, text: string) => void
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): number => {
   const [raw] = args;
   const repo = env.GH_REPO ?? '';
@@ -208,21 +290,10 @@ export const run = (
   }
 
   const closed = Number(raw);
-  const runUrl = env.RUN_URL ?? '';
-  const footer = RUN_URL.test(runUrl) ? ['', `[Run](${runUrl})`] : [];
-  const comment = (thread: number, lines: string[]): void => {
-    gh(
-      ['issue', 'comment', String(thread), '--body-file', '-'],
-      [...lines, ...footer].join('\n')
-    );
-  };
-  const unblocked: { blockers: number[]; number: number }[] = [];
+  const comment = commenter(gh, env.RUN_URL ?? '');
+  const unblocked: Work['unblocked'] = [];
   let failed = false;
-  const output = (): void => {
-    if (env.GITHUB_OUTPUT) {
-      append(env.GITHUB_OUTPUT, `unblocked=${JSON.stringify(unblocked)}\n`);
-    }
-  };
+  const output = (): void => writeOutput(append, env, unblocked);
   const blocking = open(
     api(gh, `repos/${repo}/issues/${closed}/dependencies/blocking`)
   );
@@ -239,51 +310,21 @@ export const run = (
   let merged: Pr[] | undefined;
   const mergedPrs = (): Pr[] => (merged ??= prs(gh, 'merged', 1000));
 
+  const work: Work = {
+    bot,
+    closed,
+    comment,
+    gh,
+    mergedPrs,
+    openPrs,
+    owner,
+    repo,
+    unblocked,
+  };
+
   for (const issue of blocking) {
     try {
-      const blockedBy = api(
-        gh,
-        `repos/${repo}/issues/${issue.number}/dependencies/blocked_by`
-      );
-      const remaining = open(blockedBy);
-
-      if (remaining.length > 0) {
-        console.log(
-          `#${issue.number} is still blocked by #${remaining[0].number}.`
-        );
-        continue;
-      }
-
-      if (hasLabel(issue, 'status: blocked')) {
-        const blockers = [
-          ...new Set([closed, ...blockedBy.map(({ number }) => number)]),
-        ];
-
-        const design =
-          issue.type?.name === 'Spec'
-            ? designBlockers(gh, repo, mergedPrs(), blockers)
-            : [];
-
-        const refresh = trusted(issue, bot);
-
-        swapLabel(gh, comment, { closed, design, issue, owner, refresh });
-        console.log(`#${issue.number} is unblocked.`);
-
-        if (refresh) {
-          unblocked.push({ blockers, number: issue.number });
-        }
-      }
-
-      for (const pr of openPrs.filter(({ closingIssuesReferences }) =>
-        closingIssuesReferences.some(({ number }) => number === issue.number)
-      )) {
-        comment(pr.number, [
-          `#${closed} is closed, so the Spec this PR closes (#${issue.number}) is no longer blocked.`,
-          '',
-          `@${owner}: approve the plan again if its build was stopped.`,
-        ]);
-        console.log(`Told PR #${pr.number}.`);
-      }
+      unblockIssue(work, issue);
     } catch (error) {
       failed = true;
       console.error(`#${issue.number}: ${(error as Error).message}`);

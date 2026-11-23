@@ -69,60 +69,73 @@ export const parseCaFile = (source: Record<string, string | undefined>) => {
  * Test-only `KINSCAPE_DEV_PAGES` shows the screens (`dev-pages.mts`).
  * `KINSCAPE_DATABASE_CA_FILE` (`parseCaFile`) follows the same Vercel rule.
  */
-// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const parseEnv = (source: Record<string, string | undefined>) => {
-  const onVercel = isOnVercel(source);
-
-  if (onVercel && source.KINSCAPE_DEV_PAGES !== undefined) {
-    throw new Error('KINSCAPE_DEV_PAGES must never be set on Vercel');
-  }
-
-  if (onVercel && source.KINSCAPE_MEMORY_ADAPTERS === '1') {
-    throw new Error('KINSCAPE_MEMORY_ADAPTERS must never be set on Vercel');
-  }
-
-  if (onVercel && source.KINSCAPE_MEMORY_SIGN_IN === '1') {
-    throw new Error('KINSCAPE_MEMORY_SIGN_IN must never be set on Vercel');
-  }
-
+  refuseOnVercel(source);
   parseCaFile(source);
 
   if (source.KINSCAPE_MEMORY_ADAPTERS === '1') {
-    return {
-      databaseDirectUrl: undefined,
-      databaseUrl: undefined,
-      memoryAdapters: true as const,
-      memorySignIn: false as const,
-      supabasePublishableKey: undefined,
-      supabaseUrl: undefined,
-    };
+    return memoryEnv();
+  }
+
+  return source.KINSCAPE_MEMORY_SIGN_IN === '1'
+    ? signInEnv(source)
+    : fullEnv(source);
+};
+
+// A test-only variable that must never reach Vercel.
+const refuseOnVercel = (source: Record<string, string | undefined>): void => {
+  if (!isOnVercel(source)) {
+    return;
+  }
+
+  if (source.KINSCAPE_DEV_PAGES !== undefined) {
+    throw new Error('KINSCAPE_DEV_PAGES must never be set on Vercel');
+  }
+
+  if (source.KINSCAPE_MEMORY_ADAPTERS === '1') {
+    throw new Error('KINSCAPE_MEMORY_ADAPTERS must never be set on Vercel');
   }
 
   if (source.KINSCAPE_MEMORY_SIGN_IN === '1') {
-    const database = serverEnv
-      .pick({
-        KINSCAPE_DATABASE_DIRECT_URL: true,
-        KINSCAPE_DATABASE_URL: true,
-      })
-      .safeParse({
-        KINSCAPE_DATABASE_DIRECT_URL: source.KINSCAPE_DATABASE_DIRECT_URL,
-        KINSCAPE_DATABASE_URL: source.KINSCAPE_DATABASE_URL,
-      });
+    throw new Error('KINSCAPE_MEMORY_SIGN_IN must never be set on Vercel');
+  }
+};
 
-    if (!database.success) {
-      return fail(database.error.issues);
-    }
+const memoryEnv = () => ({
+  databaseDirectUrl: undefined,
+  databaseUrl: undefined,
+  memoryAdapters: true as const,
+  memorySignIn: false as const,
+  supabasePublishableKey: undefined,
+  supabaseUrl: undefined,
+});
 
-    return {
-      databaseDirectUrl: database.data.KINSCAPE_DATABASE_DIRECT_URL,
-      databaseUrl: database.data.KINSCAPE_DATABASE_URL,
-      memoryAdapters: false as const,
-      memorySignIn: true as const,
-      supabasePublishableKey: undefined,
-      supabaseUrl: undefined,
-    };
+const signInEnv = (source: Record<string, string | undefined>) => {
+  const database = serverEnv
+    .pick({
+      KINSCAPE_DATABASE_DIRECT_URL: true,
+      KINSCAPE_DATABASE_URL: true,
+    })
+    .safeParse({
+      KINSCAPE_DATABASE_DIRECT_URL: source.KINSCAPE_DATABASE_DIRECT_URL,
+      KINSCAPE_DATABASE_URL: source.KINSCAPE_DATABASE_URL,
+    });
+
+  if (!database.success) {
+    return fail(database.error.issues);
   }
 
+  return {
+    databaseDirectUrl: database.data.KINSCAPE_DATABASE_DIRECT_URL,
+    databaseUrl: database.data.KINSCAPE_DATABASE_URL,
+    memoryAdapters: false as const,
+    memorySignIn: true as const,
+    supabasePublishableKey: undefined,
+    supabaseUrl: undefined,
+  };
+};
+
+const fullEnv = (source: Record<string, string | undefined>) => {
   const parsed = serverEnv.safeParse({
     KINSCAPE_DATABASE_DIRECT_URL: source.KINSCAPE_DATABASE_DIRECT_URL,
     KINSCAPE_DATABASE_URL: source.KINSCAPE_DATABASE_URL,

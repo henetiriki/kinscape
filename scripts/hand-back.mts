@@ -81,6 +81,63 @@ export const tableRows = (plan: string): string[][] => {
     .map(line => line.split('|').slice(1));
 };
 
+// The first changed path, or the path a rename left, that is a hand-back path.
+const inDiffPath = (files: Changed[]): string | undefined =>
+  files
+    .flatMap(({ filename, previous_filename }) =>
+      previous_filename === undefined
+        ? [filename]
+        : [filename, previous_filename]
+    )
+    .find(isHandBack);
+
+const fetchPlan = (
+  gh: Gh,
+  repo: string,
+  filename: string,
+  ref: string
+): string =>
+  gh([
+    'api',
+    '-H',
+    'Accept: application/vnd.github.raw+json',
+    `repos/${repo}/contents/${filename.split('/').map(encodeURIComponent).join('/')}?ref=${ref}`,
+  ]);
+
+// The changed plans that the PR keeps.
+const livePlans = (files: Changed[]): string[] =>
+  files
+    .filter(
+      ({ filename, status }) => PLAN.test(filename) && status !== 'removed'
+    )
+    .map(({ filename }) => filename);
+
+const addLabel = (gh: Gh, repo: string, pr: string): string =>
+  gh([
+    'api',
+    '-X',
+    'POST',
+    `repos/${repo}/issues/${pr}/labels`,
+    '-f',
+    `labels[]=${LABEL}`,
+  ]);
+
+const readView = (gh: Gh, pr: string): View =>
+  JSON.parse(
+    gh(['pr', 'view', pr, '--json', 'headRefOid,isCrossRepository,labels'])
+  );
+
+// Why the PR needs no label check, or undefined when it does.
+const skipReason = (view: View): string | undefined => {
+  if (view.isCrossRepository) {
+    return 'the PR is from a fork';
+  }
+
+  return view.labels.some(({ name }) => name === LABEL)
+    ? 'the PR already has the label'
+    : undefined;
+};
+
 // The backticked paths in the first column of a plan's Files that change table.
 export const tablePaths = (plan: string): string[] =>
   tableRows(plan).flatMap(([first]) =>
@@ -91,7 +148,6 @@ export const run = (
   args: string[],
   env: Record<string, string | undefined>,
   gh: Gh
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): number => {
   const [pr] = args;
   const repo = env.GH_REPO ?? '';
@@ -117,37 +173,20 @@ export const run = (
   };
   const label = (found: string): number => {
     console.log(`Hand back: ${found}.`);
-    attempt('adding the label', () =>
-      gh([
-        'api',
-        '-X',
-        'POST',
-        `repos/${repo}/issues/${pr}/labels`,
-        '-f',
-        `labels[]=${LABEL}`,
-      ])
-    );
+    attempt('adding the label', () => addLabel(gh, repo, pr));
 
     return failed ? 1 : 0;
   };
-  const view = attempt('reading the PR', (): View =>
-    JSON.parse(
-      gh(['pr', 'view', pr, '--json', 'headRefOid,isCrossRepository,labels'])
-    )
-  );
+  const view = attempt('reading the PR', () => readView(gh, pr));
 
   if (view === undefined) {
     return 1;
   }
 
-  if (view.isCrossRepository) {
-    console.log('Hand back: the PR is from a fork.');
+  const skip = skipReason(view);
 
-    return 0;
-  }
-
-  if (view.labels.some(({ name }) => name === LABEL)) {
-    console.log('Hand back: the PR already has the label.');
+  if (skip !== undefined) {
+    console.log(`Hand back: ${skip}.`);
 
     return 0;
   }
@@ -160,28 +199,15 @@ export const run = (
     return 1;
   }
 
-  const inDiff = files
-    .flatMap(({ filename, previous_filename }) =>
-      previous_filename === undefined
-        ? [filename]
-        : [filename, previous_filename]
-    )
-    .find(isHandBack);
+  const inDiff = inDiffPath(files);
 
   if (inDiff !== undefined) {
     return label(`${inDiff} is in the diff`);
   }
 
-  for (const { filename } of files.filter(
-    ({ filename, status }) => PLAN.test(filename) && status !== 'removed'
-  )) {
+  for (const filename of livePlans(files)) {
     const plan = attempt(`fetching ${filename}`, () =>
-      gh([
-        'api',
-        '-H',
-        'Accept: application/vnd.github.raw+json',
-        `repos/${repo}/contents/${filename.split('/').map(encodeURIComponent).join('/')}?ref=${view.headRefOid}`,
-      ])
+      fetchPlan(gh, repo, filename, view.headRefOid)
     );
     const named = tablePaths(plan ?? '').find(isHandBack);
 

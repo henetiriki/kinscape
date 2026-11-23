@@ -6,7 +6,7 @@ import { tracked } from '@ks/scripts/__tests__/tracked';
 // The test builds the rule name from parts, so this file does not match itself.
 const RULE = ['max-lines', 'per-function'].join('-');
 const REASON = 'over 60 lines before the rule (C1174)';
-const CAP = 22;
+const CAP = 0;
 
 // Each ESLint form that can name the rule: block, same line, next line, and a list of rules.
 const DIRECTIVE = new RegExp(

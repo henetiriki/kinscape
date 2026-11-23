@@ -84,38 +84,20 @@ const without = (
 const fixing = (count: number) =>
   count === 1 ? '1 field needs fixing' : `${count} fields need fixing`;
 
-/**
- * The Person form (PPL-01) for `/people/new` and `/people/{id}`. With no `person` it creates; with
- * one it updates and names the version it read. `create` and `update` are server actions. A new
- * form makes its id once, so Try again repeats the same create.
- */
-export const PersonForm = ({
-  create,
-  email,
-  initial,
-  onSignOut,
-  person,
-  update,
-}: {
+type PersonFormProps = {
   create: (input: unknown) => Promise<SaveResult>;
   email: string;
   initial: string;
   onSignOut: () => Promise<unknown>;
   person?: PersonView;
   update: (input: { person: unknown; version: number }) => Promise<SaveResult>;
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-}) => {
-  const router = useRouter();
-  const showSaved = useSavedToast();
-  const [newId] = useState(() => uuidV7());
+};
+
+const useFieldValues = (person?: PersonView) => {
   const [values, setValues] = useState(() => startValues(person));
   const [errors, setErrors] = useState<PersonFieldErrors['fields']>({});
-  const [conflict, setConflict] = useState(false);
-  const [failed, setFailed] = useState(false);
-  const [saving, setSaving] = useState(false);
   // Every field change goes through `set`, so the flag means "the user edited a field".
   const [changed, setChanged] = useState(false);
-  const [leaving, setLeaving] = useState(false);
   // A date field checks its text when it mounts, so a new count shows the error of a date that never lost focus.
   const [checks, setChecks] = useState(0);
   // A name field shows "required" on blur only after the user typed in it.
@@ -154,6 +136,51 @@ export const PersonForm = ({
     value: values[field],
   });
 
+  return {
+    changed,
+    checks,
+    count,
+    dead,
+    errors,
+    messages,
+    name,
+    set,
+    setChecks,
+    setErrors,
+    values,
+  };
+};
+
+type Fields = ReturnType<typeof useFieldValues>;
+
+/** The save of the action, or undefined if it threw. */
+const send = async (
+  {
+    create,
+    person,
+    update,
+  }: Pick<PersonFormProps, 'create' | 'person' | 'update'>,
+  input: { id: string }
+): Promise<SaveResult | undefined> => {
+  try {
+    return person
+      ? await update({ person: input, version: person.version })
+      : await create(input);
+  } catch {
+    return undefined;
+  }
+};
+
+const useSave = (props: PersonFormProps, fields: Fields) => {
+  const { person } = props;
+  const { dead, setChecks, setErrors, values } = fields;
+  const router = useRouter();
+  const showSaved = useSavedToast();
+  const [newId] = useState(() => uuidV7());
+  const [conflict, setConflict] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [saving, setSaving] = useState(false);
+
   const submit = async () => {
     const input = {
       ...values,
@@ -178,15 +205,7 @@ export const PersonForm = ({
     setFailed(false);
     setSaving(true);
 
-    let result: SaveResult | undefined;
-
-    try {
-      result = person
-        ? await update({ person: input, version: person.version })
-        : await create(input);
-    } catch {
-      result = undefined;
-    }
+    const result = await send(props, input);
 
     setSaving(false);
 
@@ -202,20 +221,240 @@ export const PersonForm = ({
     }
   };
 
+  return {
+    conflict,
+    failed,
+    reload: () => router.refresh(),
+    saving,
+    setFailed,
+    submit,
+  };
+};
+
+const usePersonForm = (props: PersonFormProps) => {
+  const fields = useFieldValues(props.person);
+  const [leaving, setLeaving] = useState(false);
+
+  return { ...fields, ...useSave(props, fields), leaving, setLeaving };
+};
+
+type Form = ReturnType<typeof usePersonForm>;
+
+type PartArgs = { f: Form; person?: PersonView };
+
+const Heading = ({ f, person }: PartArgs) => (
+  <div className={styles.top}>
+    <div className={styles.heading}>
+      <Text as='h1' variant='h1'>
+        {person
+          ? `Edit ${person.givenNames} ${person.surname}`
+          : 'Add a person'}
+      </Text>
+      <Text variant='small'>
+        Given names and surname are required. Everything else can wait.
+      </Text>
+    </div>
+    {person && (
+      // The capture handler runs before the link's own click handler. `next/link` skips a
+      // prevented click, and the kit's TextLink cannot cancel one.
+      <span
+        className={styles.linkHolder}
+        onClickCapture={event => {
+          if (f.changed) {
+            event.preventDefault();
+            f.setLeaving(true);
+          }
+        }}>
+        <TextLink href={`/people/${person.id}/relationships`}>
+          Relationships
+        </TextLink>
+      </span>
+    )}
+  </div>
+);
+
+const SaveActions = ({ saving }: { saving: boolean }) => (
+  <>
+    <Button
+      disabled={saving}
+      form='person-form'
+      type='submit'
+      variant='primary'>
+      Save
+    </Button>
+    <Button href='/people'>Cancel</Button>
+  </>
+);
+
+const Alerts = ({ f }: { f: Form }) => (
+  <>
+    {f.count > 0 && (
+      <div className={styles.alert}>
+        <Alert title={fixing(f.count)} tone='error'>
+          Nothing was saved. Each problem is marked at its field.
+        </Alert>
+      </div>
+    )}
+    {f.conflict && (
+      <div className={styles.alert}>
+        <Alert title='This person changed while you were editing' tone='error'>
+          Nothing was saved. Reload to see the latest version, then make your
+          changes again.
+        </Alert>
+        <Button onClick={f.reload}>Reload</Button>
+      </div>
+    )}
+  </>
+);
+
+const NameGroup = ({ f }: { f: Form }) => (
+  <div
+    aria-labelledby='person-group-name'
+    className={styles.group}
+    data-column='1'
+    role='group'>
+    <Text id='person-group-name' variant='title'>
+      Name
+    </Text>
+    <TextField
+      autoComplete='off'
+      label='Given names'
+      {...f.name('givenNames')}
+    />
+    <TextField autoComplete='off' label='Surname' {...f.name('surname')} />
+    <TextField
+      autoComplete='off'
+      helper='Surname at birth, if it changed.'
+      label='Maiden name'
+      maxLength={MAX_NAME}
+      onChange={event => f.set({ maidenName: event.target.value })}
+      value={f.values.maidenName}
+    />
+    <TokenField
+      error={f.messages.variants}
+      helper='Other spellings in the records, up to 20. Press Enter after each.'
+      label='Spelling variants'
+      onChange={variants => {
+        f.set({ variants });
+        f.setErrors(without(f.errors, 'variants'));
+      }}
+      placeholder='Add a spelling'
+      values={f.values.variants}
+    />
+  </div>
+);
+
+const LifeGroup = ({ f }: { f: Form }) => (
+  <div
+    aria-labelledby='person-group-life'
+    className={styles.group}
+    data-column='2'
+    role='group'>
+    <Text id='person-group-life' variant='title'>
+      Life
+    </Text>
+    <SelectField
+      label='Sex'
+      onChange={event => f.set({ sex: event.target.value })}
+      options={SEX}
+      value={f.values.sex}
+    />
+    <FuzzyDateField
+      defaultValue={f.values.birth}
+      helper='For example 1850, ABT 1850 or BET 1850 AND 1855.'
+      key={f.errors.birth ? `birth-${f.checks}` : 'birth'}
+      label='Birth'
+      onInput={event => f.set({ birth: event.currentTarget.value })}
+    />
+    <FuzzyDateField
+      defaultValue={f.values.death}
+      helper="Leave it empty if you don't know."
+      key={f.errors.death ? `death-${f.checks}` : 'death'}
+      label='Death'
+      onInput={event => f.set({ death: event.currentTarget.value })}
+    />
+    <CheckboxField
+      checked={f.values.deceased || f.dead}
+      description={
+        f.dead
+          ? 'Ticked because a death date is entered.'
+          : "Tick if this person has died but the date isn't known."
+      }
+      disabled={f.dead}
+      label='Deceased'
+      onChange={event => f.set({ deceased: event.target.checked })}
+    />
+  </div>
+);
+
+const Notes = ({ f }: { f: Form }) => (
+  <div className={styles.notes}>
+    <TextAreaField
+      helper="Sources, stories, anything the fields can't hold."
+      label='Notes'
+      maxLength={MAX_NOTES}
+      onChange={event => f.set({ notes: event.target.value })}
+      value={f.values.notes}
+    />
+  </div>
+);
+
+const LeaveDialog = ({ f, person }: { f: Form; person: PersonView }) => (
+  <Dialog
+    onClose={() => f.setLeaving(false)}
+    open={f.leaving}
+    title='Leave without saving?'>
+    <Text as='p' variant='body'>
+      You changed this person. If you leave now, the changes are lost.
+    </Text>
+    <div className={styles.dialogActions}>
+      <Button onClick={() => f.setLeaving(false)} variant='primary'>
+        Keep editing
+      </Button>
+      <Button href={`/people/${person.id}/relationships`}>
+        Leave without saving
+      </Button>
+    </div>
+  </Dialog>
+);
+
+const FailedToast = ({ f }: { f: Form }) => (
+  <div className={styles.toast}>
+    <Toast
+      action='Try again'
+      onAction={() => void f.submit()}
+      onDismiss={() => f.setFailed(false)}
+      tone='error'>
+      {"Couldn't save. Your changes are still here."}
+    </Toast>
+  </div>
+);
+
+/**
+ * The Person form (PPL-01) for `/people/new` and `/people/{id}`. With no `person` it creates; with
+ * one it updates and names the version it read. `create` and `update` are server actions. A new
+ * form makes its id once, so Try again repeats the same create.
+ */
+export const PersonForm = ({
+  create,
+  email,
+  initial,
+  onSignOut,
+  person,
+  update,
+}: PersonFormProps) => {
+  const f = usePersonForm({
+    create,
+    email,
+    initial,
+    onSignOut,
+    person,
+    update,
+  });
+
   return (
     <ColumnLayout
-      actions={
-        <>
-          <Button
-            disabled={saving}
-            form='person-form'
-            type='submit'
-            variant='primary'>
-            Save
-          </Button>
-          <Button href='/people'>Cancel</Button>
-        </>
-      }
+      actions={<SaveActions saving={f.saving} />}
       column='form'
       header={
         <PageHeader
@@ -230,173 +469,22 @@ export const PersonForm = ({
           backLabel='People'
         />
       }>
-      <div className={styles.top}>
-        <div className={styles.heading}>
-          <Text as='h1' variant='h1'>
-            {person
-              ? `Edit ${person.givenNames} ${person.surname}`
-              : 'Add a person'}
-          </Text>
-          <Text variant='small'>
-            Given names and surname are required. Everything else can wait.
-          </Text>
-        </div>
-        {person && (
-          // The capture handler runs before the link's own click handler. `next/link` skips a
-          // prevented click, and the kit's TextLink cannot cancel one.
-          <span
-            className={styles.linkHolder}
-            onClickCapture={event => {
-              if (changed) {
-                event.preventDefault();
-                setLeaving(true);
-              }
-            }}>
-            <TextLink href={`/people/${person.id}/relationships`}>
-              Relationships
-            </TextLink>
-          </span>
-        )}
-      </div>
-      {count > 0 && (
-        <div className={styles.alert}>
-          <Alert title={fixing(count)} tone='error'>
-            Nothing was saved. Each problem is marked at its field.
-          </Alert>
-        </div>
-      )}
-      {conflict && (
-        <div className={styles.alert}>
-          <Alert
-            title='This person changed while you were editing'
-            tone='error'>
-            Nothing was saved. Reload to see the latest version, then make your
-            changes again.
-          </Alert>
-          <Button onClick={() => router.refresh()}>Reload</Button>
-        </div>
-      )}
+      <Heading f={f} person={person} />
+      <Alerts f={f} />
       <form
         className={styles.card}
         id='person-form'
         noValidate
         onSubmit={event => {
           event.preventDefault();
-          void submit();
+          void f.submit();
         }}>
-        <div
-          aria-labelledby='person-group-name'
-          className={styles.group}
-          data-column='1'
-          role='group'>
-          <Text id='person-group-name' variant='title'>
-            Name
-          </Text>
-          <TextField
-            autoComplete='off'
-            label='Given names'
-            {...name('givenNames')}
-          />
-          <TextField autoComplete='off' label='Surname' {...name('surname')} />
-          <TextField
-            autoComplete='off'
-            helper='Surname at birth, if it changed.'
-            label='Maiden name'
-            maxLength={MAX_NAME}
-            onChange={event => set({ maidenName: event.target.value })}
-            value={values.maidenName}
-          />
-          <TokenField
-            error={messages.variants}
-            helper='Other spellings in the records, up to 20. Press Enter after each.'
-            label='Spelling variants'
-            onChange={variants => {
-              set({ variants });
-              setErrors(without(errors, 'variants'));
-            }}
-            placeholder='Add a spelling'
-            values={values.variants}
-          />
-        </div>
-        <div
-          aria-labelledby='person-group-life'
-          className={styles.group}
-          data-column='2'
-          role='group'>
-          <Text id='person-group-life' variant='title'>
-            Life
-          </Text>
-          <SelectField
-            label='Sex'
-            onChange={event => set({ sex: event.target.value })}
-            options={SEX}
-            value={values.sex}
-          />
-          <FuzzyDateField
-            defaultValue={values.birth}
-            helper='For example 1850, ABT 1850 or BET 1850 AND 1855.'
-            key={errors.birth ? `birth-${checks}` : 'birth'}
-            label='Birth'
-            onInput={event => set({ birth: event.currentTarget.value })}
-          />
-          <FuzzyDateField
-            defaultValue={values.death}
-            helper="Leave it empty if you don't know."
-            key={errors.death ? `death-${checks}` : 'death'}
-            label='Death'
-            onInput={event => set({ death: event.currentTarget.value })}
-          />
-          <CheckboxField
-            checked={values.deceased || dead}
-            description={
-              dead
-                ? 'Ticked because a death date is entered.'
-                : "Tick if this person has died but the date isn't known."
-            }
-            disabled={dead}
-            label='Deceased'
-            onChange={event => set({ deceased: event.target.checked })}
-          />
-        </div>
-        <div className={styles.notes}>
-          <TextAreaField
-            helper="Sources, stories, anything the fields can't hold."
-            label='Notes'
-            maxLength={MAX_NOTES}
-            onChange={event => set({ notes: event.target.value })}
-            value={values.notes}
-          />
-        </div>
+        <NameGroup f={f} />
+        <LifeGroup f={f} />
+        <Notes f={f} />
       </form>
-      {person && (
-        <Dialog
-          onClose={() => setLeaving(false)}
-          open={leaving}
-          title='Leave without saving?'>
-          <Text as='p' variant='body'>
-            You changed this person. If you leave now, the changes are lost.
-          </Text>
-          <div className={styles.dialogActions}>
-            <Button onClick={() => setLeaving(false)} variant='primary'>
-              Keep editing
-            </Button>
-            <Button href={`/people/${person.id}/relationships`}>
-              Leave without saving
-            </Button>
-          </div>
-        </Dialog>
-      )}
-      {failed && (
-        <div className={styles.toast}>
-          <Toast
-            action='Try again'
-            onAction={() => void submit()}
-            onDismiss={() => setFailed(false)}
-            tone='error'>
-            {"Couldn't save. Your changes are still here."}
-          </Toast>
-        </div>
-      )}
+      {person && <LeaveDialog f={f} person={person} />}
+      {f.failed && <FailedToast f={f} />}
     </ColumnLayout>
   );
 };

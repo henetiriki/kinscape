@@ -1,6 +1,6 @@
 'use client';
 
-import type { KeyboardEvent, ReactNode } from 'react';
+import type { KeyboardEvent, ReactNode, RefObject } from 'react';
 
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -25,6 +25,92 @@ const nameOf = ({ givenNames, surname }: PersonSummary) =>
 /** The id of the row of a Person, as `PersonField` names it in `aria-activedescendant`. */
 const rowId = (list: string, person: PersonSummary) => `${list}-${person.id}`;
 
+type ListProps = {
+  /** The id of the row with the focus look: `id`, a hyphen and the Person's id. */
+  activeId?: string;
+  id: string;
+  onPick: (person: PersonSummary) => void;
+  /** The viewport point of the list's top left corner. */
+  place?: { left: number; top: number };
+  /** The text that the user typed. The no-match notice quotes it. */
+  query: string;
+  /** Each match, with the spelling variant that matched. */
+  rows: Rows;
+};
+
+type Rows = { person: PersonSummary; variant?: string }[];
+
+const useListLayout = (
+  listRef: RefObject<HTMLDivElement | null>,
+  rows: Rows,
+  activeId?: string
+) => {
+  // A row with a note is taller than one without, so the list measures its first three rows.
+  useLayoutEffect(() => {
+    const list = listRef.current!;
+    const height = [...list.children]
+      .slice(0, rows.length === 0 ? 0 : VISIBLE_ROWS)
+      .reduce((sum, row) => sum + (row as HTMLElement).offsetHeight, 0);
+
+    list.style.maxHeight =
+      height > 0 ? `calc(${height}px + 2 * var(--space-4))` : '';
+  }, [listRef, rows]);
+
+  // Keep the active row inside the list's view.
+  useLayoutEffect(() => {
+    const list = listRef.current!;
+    const row = list.querySelector<HTMLElement>('[aria-selected="true"]');
+
+    if (!row) return;
+
+    const { offsetHeight, offsetTop } = row;
+
+    list.scrollTop = Math.min(
+      Math.max(list.scrollTop, offsetTop + offsetHeight - list.clientHeight),
+      offsetTop
+    );
+  }, [activeId, listRef]);
+};
+
+const Options = ({
+  activeId,
+  id,
+  onPick,
+  rows,
+}: Pick<ListProps, 'activeId' | 'id' | 'onPick' | 'rows'>) =>
+  rows.map(({ person, variant }) => {
+    const optionId = rowId(id, person);
+
+    return (
+      <div
+        aria-selected={optionId === activeId}
+        className={styles.item}
+        id={optionId}
+        key={person.id}
+        role='option'>
+        <PickerRow
+          {...datesOf(person)}
+          givenNames={person.givenNames}
+          maidenName={person.maidenName}
+          matchedVariant={variant}
+          onClick={() => onPick(person)}
+          state={optionId === activeId ? 'focus' : undefined}
+          surname={person.surname}
+          tabIndex={-1}
+        />
+      </div>
+    );
+  });
+
+const NoMatch = ({ query }: { query: string }) => (
+  <>
+    <Text variant='title'>No one matches “{query.trim()}”</Text>
+    <Text variant='small'>
+      Check the spelling, or add the person to the Tree first.
+    </Text>
+  </>
+);
+
 /**
  * The list of a `PersonField`: a row for each match, or the no-match notice. It shows three rows
  * and scrolls past them. With `place` it is fixed at that point; without it, it sits in the flow.
@@ -36,49 +122,10 @@ export const PersonFieldList = ({
   place,
   query,
   rows,
-}: {
-  /** The id of the row with the focus look: `id`, a hyphen and the Person's id. */
-  activeId?: string;
-  id: string;
-  onPick: (person: PersonSummary) => void;
-  /** The viewport point of the list's top left corner. */
-  place?: { left: number; top: number };
-  /** The text that the user typed. The no-match notice quotes it. */
-  query: string;
-  /** Each match, with the spelling variant that matched. */
-  rows: { person: PersonSummary; variant?: string }[];
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-}) => {
+}: ListProps) => {
   const list = useRef<HTMLDivElement>(null);
 
-  // A row with a note is taller than one without, so the list measures its first three rows.
-  useLayoutEffect(() => {
-    const height = [...list.current!.children]
-      .slice(0, rows.length === 0 ? 0 : VISIBLE_ROWS)
-      .reduce((sum, row) => sum + (row as HTMLElement).offsetHeight, 0);
-
-    list.current!.style.maxHeight =
-      height > 0 ? `calc(${height}px + 2 * var(--space-4))` : '';
-  }, [rows]);
-
-  // Keep the active row inside the list's view.
-  useLayoutEffect(() => {
-    const row = list.current!.querySelector<HTMLElement>(
-      '[aria-selected="true"]'
-    );
-
-    if (!row) return;
-
-    const { offsetHeight, offsetTop } = row;
-
-    list.current!.scrollTop = Math.min(
-      Math.max(
-        list.current!.scrollTop,
-        offsetTop + offsetHeight - list.current!.clientHeight
-      ),
-      offsetTop
-    );
-  }, [activeId]);
+  useListLayout(list, rows, activeId);
 
   return (
     <div
@@ -94,54 +141,15 @@ export const PersonFieldList = ({
       style={place}
       tabIndex={-1}>
       {rows.length === 0 ? (
-        <>
-          <Text variant='title'>No one matches “{query.trim()}”</Text>
-          <Text variant='small'>
-            Check the spelling, or add the person to the Tree first.
-          </Text>
-        </>
+        <NoMatch query={query} />
       ) : (
-        rows.map(({ person, variant }) => {
-          const optionId = rowId(id, person);
-
-          return (
-            <div
-              aria-selected={optionId === activeId}
-              className={styles.item}
-              id={optionId}
-              key={person.id}
-              role='option'>
-              <PickerRow
-                {...datesOf(person)}
-                givenNames={person.givenNames}
-                maidenName={person.maidenName}
-                matchedVariant={variant}
-                onClick={() => onPick(person)}
-                state={optionId === activeId ? 'focus' : undefined}
-                surname={person.surname}
-                tabIndex={-1}
-              />
-            </div>
-          );
-        })
+        <Options activeId={activeId} id={id} onPick={onPick} rows={rows} />
       )}
     </div>
   );
 };
 
-/**
- * A text field that picks one Person (PIN-01). When the user types, the field filters the Persons
- * as the People list does, and a list of at most three rows opens under the field. The focus stays
- * in the text box: Down and Up move the active row, Enter picks it and Esc closes the list. When
- * the user types after a pick, the pick clears.
- */
-export const PersonField = ({
-  defaultPerson,
-  error,
-  onChange,
-  people,
-  state,
-}: {
+type PersonFieldArgs = {
   /** A Person to start with, picked. */
   defaultPerson?: PersonSummary;
   /** The problem, shown under the field. The field is also required. */
@@ -151,25 +159,21 @@ export const PersonField = ({
   /** Every Person of the Tree. The caller gives no empty list. */
   people: PersonSummary[];
   state?: ControlState;
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-}) => {
-  const id = useId();
-  const listId = `${id}-list`;
-  const wrap = useRef<HTMLDivElement>(null);
-  const [text, setText] = useState(defaultPerson ? nameOf(defaultPerson) : '');
-  const [picked, setPicked] = useState(defaultPerson);
-  const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(-1);
-  const [place, setPlace] = useState<{ left: number; top: number }>();
-  const rows = findPeople(people, text).map(({ match, person }) => ({
-    person,
-    variant: match.variant,
-  }));
-  const activeRow = open ? rows[active] : undefined;
+};
 
-  // The list sits 4px under the field box, on its left edge, and follows the box on resize. A scroll
-  // outside the list closes it, so it never floats away from a field that scrolled out of its panel.
-  // It is placed before the first paint, so it never shows in the flow.
+type Place = { left: number; top: number };
+
+// The list sits 4px under the field box, on its left edge, and follows the box on resize. A scroll
+// outside the list closes it, so it never floats away from a field that scrolled out of its panel.
+// It is placed before the first paint, so it never shows in the flow.
+const usePlace = (
+  wrap: RefObject<HTMLDivElement | null>,
+  listId: string,
+  open: boolean,
+  setOpen: (open: boolean) => void
+) => {
+  const [place, setPlace] = useState<Place>();
+
   useLayoutEffect(() => {
     if (!open) return;
 
@@ -193,9 +197,18 @@ export const PersonField = ({
       window.removeEventListener('resize', follow);
       window.removeEventListener('scroll', closeOnScroll, true);
     };
-  }, [listId, open]);
+  }, [listId, open, setOpen, wrap]);
 
-  // A press outside the field and the list closes the list.
+  return place;
+};
+
+// A press outside the field and the list closes the list.
+const useCloseOutside = (
+  wrap: RefObject<HTMLDivElement | null>,
+  listId: string,
+  open: boolean,
+  setOpen: (open: boolean) => void
+) => {
   useEffect(() => {
     if (!open) return;
 
@@ -211,7 +224,61 @@ export const PersonField = ({
     document.addEventListener('mousedown', close);
 
     return () => document.removeEventListener('mousedown', close);
-  }, [listId, open]);
+  }, [listId, open, setOpen, wrap]);
+};
+
+type KeyContext = {
+  activeRow?: Rows[number];
+  move: (step: -1 | 1) => void;
+  open: boolean;
+  pick: (person: PersonSummary) => void;
+  rows: Rows;
+  setOpen: (open: boolean) => void;
+};
+
+const handleKey = (
+  event: KeyboardEvent<HTMLInputElement>,
+  { activeRow, move, open, pick, rows, setOpen }: KeyContext
+) => {
+  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    event.preventDefault();
+    if (rows.length > 0) move(event.key === 'ArrowDown' ? 1 : -1);
+    else setOpen(true);
+  } else if (event.key === 'Enter' && activeRow) {
+    // In a form, Enter would also submit.
+    event.preventDefault();
+    pick(activeRow.person);
+  } else if (event.key === 'Escape' && open) {
+    // The panel that holds the field stays open: a native listener on `document` reads
+    // `defaultPrevented`, and `stopPropagation` does not stop a listener on the same node.
+    event.preventDefault();
+    event.stopPropagation();
+    setOpen(false);
+  }
+};
+
+const usePersonPick = (
+  {
+    defaultPerson,
+    onChange,
+    people,
+  }: Pick<PersonFieldArgs, 'defaultPerson' | 'onChange' | 'people'>,
+  wrap: RefObject<HTMLDivElement | null>
+) => {
+  const id = useId();
+  const listId = `${id}-list`;
+  const [text, setText] = useState(defaultPerson ? nameOf(defaultPerson) : '');
+  const [picked, setPicked] = useState(defaultPerson);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1);
+  const rows = findPeople(people, text).map(({ match, person }) => ({
+    person,
+    variant: match.variant,
+  }));
+  const activeRow = open ? rows[active] : undefined;
+  const place = usePlace(wrap, listId, open, setOpen);
+
+  useCloseOutside(wrap, listId, open, setOpen);
 
   const pick = (person: PersonSummary) => {
     setText(nameOf(person));
@@ -226,63 +293,80 @@ export const PersonField = ({
 
     setActive((from + step + rows.length) % rows.length);
   };
-  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault();
-      if (rows.length > 0) move(event.key === 'ArrowDown' ? 1 : -1);
-      else setOpen(true);
-    } else if (event.key === 'Enter' && activeRow) {
-      // In a form, Enter would also submit.
-      event.preventDefault();
-      pick(activeRow.person);
-    } else if (event.key === 'Escape' && open) {
-      // The panel that holds the field stays open: a native listener on `document` reads
-      // `defaultPrevented`, and `stopPropagation` does not stop a listener on the same node.
-      event.preventDefault();
-      event.stopPropagation();
-      setOpen(false);
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) =>
+    handleKey(event, { activeRow, move, open, pick, rows, setOpen });
+  const onType = (value: string) => {
+    setText(value);
+    setActive(-1);
+    setOpen(true);
+    if (picked) {
+      setPicked(undefined);
+      onChange(undefined);
     }
   };
+
+  return {
+    activeRow,
+    listId,
+    onKeyDown,
+    onType,
+    open,
+    pick,
+    place,
+    rows,
+    setOpen,
+    text,
+  };
+};
+
+/**
+ * A text field that picks one Person (PIN-01). When the user types, the field filters the Persons
+ * as the People list does, and a list of at most three rows opens under the field. The focus stays
+ * in the text box: Down and Up move the active row, Enter picks it and Esc closes the list. When
+ * the user types after a pick, the pick clears.
+ */
+export const PersonField = ({
+  defaultPerson,
+  error,
+  onChange,
+  people,
+  state,
+}: PersonFieldArgs) => {
+  const wrap = useRef<HTMLDivElement>(null);
+  const f = usePersonPick({ defaultPerson, onChange, people }, wrap);
+  const activeId = f.activeRow
+    ? rowId(f.listId, f.activeRow.person)
+    : undefined;
 
   return (
     <div ref={wrap}>
       <TextField
-        aria-activedescendant={
-          activeRow ? rowId(listId, activeRow.person) : undefined
-        }
+        aria-activedescendant={activeId}
         aria-autocomplete='list'
-        aria-controls={open ? listId : undefined}
-        aria-expanded={open}
+        aria-controls={f.open ? f.listId : undefined}
+        aria-expanded={f.open}
         aria-haspopup='listbox'
         aria-required='true'
         autoComplete='off'
         error={error}
         label='Person'
-        onBlur={() => setOpen(false)}
-        onChange={event => {
-          setText(event.target.value);
-          setActive(-1);
-          setOpen(true);
-          if (picked) {
-            setPicked(undefined);
-            onChange(undefined);
-          }
-        }}
-        onKeyDown={onKeyDown}
+        onBlur={() => f.setOpen(false)}
+        onChange={event => f.onType(event.target.value)}
+        onKeyDown={f.onKeyDown}
         role='combobox'
         spellCheck={false}
         state={state}
-        value={text}
+        value={f.text}
       />
-      {open &&
+      {f.open &&
         createPortal(
           <PersonFieldList
-            activeId={activeRow ? rowId(listId, activeRow.person) : undefined}
-            id={listId}
-            onPick={pick}
-            place={place}
-            query={text}
-            rows={rows}
+            activeId={activeId}
+            id={f.listId}
+            onPick={f.pick}
+            place={f.place}
+            query={f.text}
+            rows={f.rows}
           />,
           document.body
         )}

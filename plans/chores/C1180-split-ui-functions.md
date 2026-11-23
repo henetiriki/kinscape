@@ -104,4 +104,6 @@ Each removed disable is part of the row of its file. The parts in each row are a
 
 ## Deviations
 
-<!-- Add these during the build. One line each: what changed, why, the commit. -->
+- Big: step 6 stops. `components/index.d.ts` differs from step 1. `DateField`, `FuzzyDateField`, `PersonField` and `DateDock` now take `props: <Name>Args` or a `ListProps`, where they took an inline type. The props types are the same. The tech lead decides whether to accept the new declaration text or to keep each inline type with a thin wrapper.
+- Small: a component with a long destructured prop list takes one `props` argument, and a hook or a part reads it. The line count of `max-lines-per-function` includes the parameters.
+- Small: a ref that a hook uses is made in the component and passed to the hook (the `react-hooks/refs` rule). A named props type is `<Name>Args` where `<Name>Props` is a bundle type name.

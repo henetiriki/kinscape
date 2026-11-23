@@ -24,19 +24,7 @@ const problemOf = (text: string): null | string => {
   return result.ok ? null : fuzzyDateMessage(result.error, text);
 };
 
-/**
- * A GEDCOM date typed as text. Under the input, one slot shows the helper, the reading of a
- * date that parses, or the error. It checks on Enter or when focus leaves, never while the user types.
- * An error stays with the text until the next check.
- */
-export const FuzzyDateField = ({
-  defaultValue = '',
-  error: given,
-  helper,
-  label,
-  state,
-  ...rest
-}: {
+type FuzzyDateFieldArgs = {
   /** Text to start with. The field checks it on the first render, unless `state` is `focus`. */
   defaultValue?: string;
   /** A problem that the caller found, such as an empty date. The slot shows it after the field's own error, until a check reads the date. */
@@ -55,10 +43,13 @@ export const FuzzyDateField = ({
   | 'onKeyDown'
   | 'type'
   | 'value'
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
->) => {
-  const id = useId();
-  const slotId = `${id}-slot`;
+>;
+
+const useFuzzyText = (
+  defaultValue: string,
+  given: ReactNode,
+  state: ControlState | undefined
+) => {
   const [text, setText] = useState(defaultValue);
   const [own, setOwn] = useState<null | string>(() =>
     state === 'focus' ? null : problemOf(defaultValue)
@@ -68,7 +59,6 @@ export const FuzzyDateField = ({
   const error = own ?? (read ? undefined : given);
   // A new count at each check gives the error a new element, so a screen reader reads a repeat.
   const [checks, setChecks] = useState(0);
-  const parsed = parseFuzzyDate(text);
   const check = () => {
     const problem = problemOf(text);
 
@@ -76,6 +66,70 @@ export const FuzzyDateField = ({
     setRead(problem === null && text.trim() !== '');
     setChecks(count => count + 1);
   };
+
+  return { check, checks, error, setText, text };
+};
+
+const Slot = ({
+  checks,
+  error,
+  helper,
+  id,
+  text,
+}: {
+  checks: number;
+  error: ReactNode;
+  helper: ReactNode;
+  id: string;
+  text: string;
+}) => {
+  const parsed = parseFuzzyDate(text);
+
+  return (
+    <div aria-live='polite' data-testid='message-slot' id={id}>
+      {error ? (
+        <Text as='p' key={checks} role='alert' tone='error' variant='small'>
+          {error}
+        </Text>
+      ) : parsed.ok ? (
+        <Text as='p' variant='small'>
+          Reads as{' '}
+          <strong className={styles.reading}>
+            {readFuzzyDate(parsed.value)}
+          </strong>
+        </Text>
+      ) : (
+        helper && (
+          <Text as='p' variant='small'>
+            {helper}
+          </Text>
+        )
+      )}
+    </div>
+  );
+};
+
+/**
+ * A GEDCOM date typed as text. Under the input, one slot shows the helper, the reading of a
+ * date that parses, or the error. It checks on Enter or when focus leaves, never while the user types.
+ * An error stays with the text until the next check.
+ */
+export const FuzzyDateField = (props: FuzzyDateFieldArgs) => {
+  const {
+    defaultValue = '',
+    error: given,
+    helper,
+    label,
+    state,
+    ...rest
+  } = props;
+  const id = useId();
+  const slotId = `${id}-slot`;
+  const { check, checks, error, setText, text } = useFuzzyText(
+    defaultValue,
+    given,
+    state
+  );
 
   return (
     <div className={styles.field}>
@@ -109,26 +163,13 @@ export const FuzzyDateField = ({
         />
         {error && <Icon name='error' />}
       </span>
-      <div aria-live='polite' data-testid='message-slot' id={slotId}>
-        {error ? (
-          <Text as='p' key={checks} role='alert' tone='error' variant='small'>
-            {error}
-          </Text>
-        ) : parsed.ok ? (
-          <Text as='p' variant='small'>
-            Reads as{' '}
-            <strong className={styles.reading}>
-              {readFuzzyDate(parsed.value)}
-            </strong>
-          </Text>
-        ) : (
-          helper && (
-            <Text as='p' variant='small'>
-              {helper}
-            </Text>
-          )
-        )}
-      </div>
+      <Slot
+        checks={checks}
+        error={error}
+        helper={helper}
+        id={slotId}
+        text={text}
+      />
     </div>
   );
 };

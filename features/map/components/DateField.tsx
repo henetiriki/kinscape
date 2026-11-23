@@ -18,7 +18,7 @@ import { finerPrecision, shownDate } from '@ks/lib/domain/map/map-date.mts';
 
 import styles from '@ks/features/map/components/DateField.module.css';
 
-type DateFieldProps = {
+type DateFieldArgs = {
   /** Beside the field on the right: the step forward button. */
   after?: ReactNode;
   /** Beside the field on the left: the step back button. */
@@ -47,7 +47,7 @@ type DateFieldProps = {
 type DateText = ReturnType<typeof useDateText>;
 
 type DateTextArgs = Pick<
-  DateFieldProps,
+  DateFieldArgs,
   | 'day'
   | 'defaultText'
   | 'keepPrecision'
@@ -71,7 +71,7 @@ const DateInput = ({
 }: {
   above: boolean;
   text: DateText;
-} & Pick<DateFieldProps, 'fill' | 'notice' | 'state'>) => (
+} & Pick<DateFieldArgs, 'fill' | 'notice' | 'state'>) => (
   <span
     className={styles.anchor}
     data-fill={fill || undefined}
@@ -98,7 +98,7 @@ const DateInput = ({
  * The typed Map date. It checks on Enter or when focus leaves, never while typing.
  * A bad date stays in the field with its problem until the next check; Esc puts the last good date back.
  */
-export const DateField = (props: DateFieldProps) => {
+export const DateField = (props: DateFieldArgs) => {
   const { after, before, fill, notice, placement = 'below', state } = props;
   const text = useDateText(props);
   const { goTo, messageId, problem, shown } = text;

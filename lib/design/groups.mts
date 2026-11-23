@@ -19,7 +19,7 @@ const whole = (group: string) => (tokens: Tree) => [tokens[group]];
 
 const RULES: [RegExp, Rule][] = [
   [/^border(-[a-z]+)*-radius$/, { kind: 'number', pick: whole('radius') }],
-  [/^box-shadow$/, { kind: 'shadow', pick: whole('shadow') }],
+  [/^(box|text)-shadow$/, { kind: 'shadow', pick: whole('shadow') }],
   [/^z-index$/, { kind: 'number', pick: whole('z') }],
   [/^(transition|animation)/, { kind: 'duration', pick: whole('motion') }],
   [/^font-size$/, { kind: 'number', pick: field('type', 'size') }],
@@ -64,6 +64,13 @@ export const numbers = (text: string, durations: boolean) =>
 
 export const blank = (text: string) => text.replaceAll(/[^\n]/g, ' ');
 
+/** An `own:` comment with its reason in group 1. */
+export const OWN = /\/\*\s*own:(.*?)\*\//;
+
+/** The text of `css` with each comment blanked. */
+export const uncommented = (css: string) =>
+  css.replaceAll(/\/\*[\s\S]*?\*\//g, blank);
+
 /** Blanks each `var()` and each `calc()` that holds a `var()`. */
 export const withoutVars = (value: string): string => {
   let out = value;
@@ -93,10 +100,15 @@ export const withoutVars = (value: string): string => {
   return out;
 };
 
-/** Each declaration of `css` as its property, value and first line. It blanks each comment. */
+/** Each declaration of `css` as its property, value, first line and the offset of its value. It blanks each comment. */
 export const declarations = (css: string) => {
-  const clean = css.replaceAll(/\/\*[\s\S]*?\*\//g, blank);
-  const found: { first: number; property: string; value: string }[] = [];
+  const clean = uncommented(css);
+  const found: {
+    base: number;
+    first: number;
+    property: string;
+    value: string;
+  }[] = [];
 
   for (const match of clean.matchAll(
     /(?<=^|[{;}\n])[ \t]*(?<property>-{0,2}[a-z][a-z-]*)[ \t]*:(?<value>[^;{}]*)(?=[;}]|$)/g
@@ -104,6 +116,7 @@ export const declarations = (css: string) => {
     const start = match.index + match[0].length - match.groups!.value.length;
 
     found.push({
+      base: start,
       first: clean.slice(0, start).split('\n').length,
       property: match.groups!.property,
       value: match.groups!.value,

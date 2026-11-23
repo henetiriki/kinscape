@@ -8,12 +8,11 @@ import {
   declarations,
   leaves,
   numbers,
+  OWN,
   rulesFor,
   withoutVars,
 } from '#ks/lib/design/groups.mts';
 import { sizesIn } from '#ks/lib/design/sizes.mts';
-
-const OWN = /\/\*\s*own:(.*?)\*\//;
 
 const literalsIn = (
   property: string,

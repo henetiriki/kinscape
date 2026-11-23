@@ -10,7 +10,7 @@ A new dev-only module, `lib/design/sizes.mts`, reads each size in CSS and in inl
 
 `npm run sizes` (`scripts/sizes.mts`) writes the list from the code. A new test fails on a size with no entry and on an entry with no size. The literals test uses the same reader, so an `own:` comment passes on a line with any size.
 
-The reader parses CSS with the declaration scan that `literals.mts` uses today. It parses TSX with the TypeScript compiler API (`ts.createSourceFile`), and reads only the `style` attribute. Thus, SVG attributes such as `width`, `r` and `strokeWidth` are never read. A React number on a length property is a px value. On `opacity`, `zIndex`, `fontWeight` and `lineHeight`, React reads the number with no unit.
+The reader parses CSS with the declaration scan that `literals.mts` uses today. It parses TSX with the TypeScript compiler API (`ts.createSourceFile`), and reads only the `style` attribute. Thus, the reader skips SVG attributes such as `width`, `r` and `strokeWidth`. A React number on a length property is a px value. On `opacity`, `zIndex`, `fontWeight` and `lineHeight`, React reads the number with no unit.
 
 What the reader takes from each kind of property:
 
@@ -110,7 +110,7 @@ Four custom properties hold a literal size on `main`, for example `--gap: 5px` i
 
 ## Out of scope
 
-- Comparing rem with px: SC.7 (#1199).
+- Compare rem with px: SC.7 (#1199).
 - Local values with a listed reason in place of `own:`: SC.9.1 (#1202).
 - The check with no list: SC.16 (#1210).
 

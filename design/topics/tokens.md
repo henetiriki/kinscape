@@ -58,6 +58,7 @@ Each module outside tests that imports or reads `design/tokens.json`. `lib/desig
   - `scripts/tokens.mts`
   - `scripts/design-system.mts`
   - `scripts/design-export.mts`
+  - `scripts/sizes.mts`
 - **The workflow diagram.** `scripts/workflows-diagram.mts` colours the diagram from the colour tokens.
 
 ## The design system and the canvas
@@ -75,7 +76,7 @@ The rule is the "Tokens are the one source" row in [`docs/architecture.md`](../.
 
 ## The size check
 
-`lib/design/sizes.mts` reads each size in each `.module.css` file, in `app/globals.css` and in each inline `style` prop of a `.tsx` file outside tests. A size is a length, a duration, a z-index, an opacity or a font weight. It is also a length in `@media` or in a custom property. SVG attributes are not read.
+`lib/design/sizes.mts` reads each size in each `.module.css` file, in `app/globals.css` and in each inline `style` prop of a `.tsx` file outside tests. A size is a length, a duration, a z-index, an opacity or a font weight. It is also a length in `@media` or in a custom property. The check does not read SVG attributes.
 
 A size passes in these cases:
 

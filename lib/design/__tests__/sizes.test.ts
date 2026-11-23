@@ -135,7 +135,7 @@ describe('a size that passes', () => {
     ['zero', 'margin: 0;'],
     ['zero with a unit', 'margin: 0px;'],
     ['a percent', 'width: 33%;'],
-    ['an fr', 'grid-template-columns: 1fr;'],
+    ['an fr', '--col: 1fr;'],
     ['a keyword', 'width: auto;'],
     ['100vw', 'width: 100vw;'],
     ['100vh', 'height: 100vh;'],

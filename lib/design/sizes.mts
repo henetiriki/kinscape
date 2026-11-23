@@ -7,18 +7,22 @@ import type { Size, SizeEntry } from '#ks/lib/design/types.ts';
 
 import {
   blank,
+  declarations,
   keyOf,
   leaves,
   numbers,
+  OWN,
   rulesFor,
+  uncommented,
   withoutVars,
 } from '#ks/lib/design/groups.mts';
 
 type Found = { at: number; key: string; text: string };
 
-const OWN = /\/[*/]\s*own:(.*?)(?:\*\/|$)/;
+/** The `//` form of an `own:` comment, which only a `style` prop accepts. */
+const OWN_LINE = /\/\/\s*own:(.*)$/;
 
-/** A number with its sign, digits and unit. The unit can be any word, so `100dvh` and `60ch` are read. */
+/** A number with its sign, digits and unit. The unit can be any word, so the regex reads `100dvh` and `60ch`. */
 const LENGTH =
   /(?<![\w.#])(?<!\w-)(?<sign>-?)(?<digits>\d*\.\d+|\d+)(?<unit>[a-z]+|%)?(?![\w%.])/g;
 
@@ -128,14 +132,16 @@ const partsOf = (property: string, value: string, tokens: Tree): Part[] => {
   }));
 };
 
-const ownOf = (row: string) => (OWN.exec(row)?.[1] ?? '').trim() !== '';
+const ownOf = (row: string, line = false) =>
+  ((OWN.exec(row) ?? (line ? OWN_LINE.exec(row) : null))?.[1] ?? '').trim() !==
+  '';
 
 const lineAt = (text: string, offset: number) =>
   text.slice(0, offset).split('\n').length;
 
 const cssSizes = (file: string, text: string, tokens: Tree): Size[] => {
   const rows = text.split('\n');
-  const clean = text.replaceAll(/\/\*[\s\S]*?\*\//g, blank);
+  const clean = uncommented(text);
   const make = (part: Part, line: number): Size => ({
     file,
     line,
@@ -144,15 +150,7 @@ const cssSizes = (file: string, text: string, tokens: Tree): Size[] => {
     token: part.token,
     value: part.value,
   });
-  const values = [
-    ...clean.matchAll(
-      /(?<=^|[{;}\n])[ \t]*(?<property>-{0,2}[a-z][a-z-]*)[ \t]*:(?<value>[^;{}]*)(?=[;}]|$)/g
-    ),
-  ].map(match => ({
-    base: match.index + match[0].length - match.groups!.value.length,
-    property: match.groups!.property,
-    value: match.groups!.value,
-  }));
+  const values = declarations(text);
   const media = [...clean.matchAll(/@media(?<value>[^{]*)\{/g)].map(match => ({
     base: match.index + '@media'.length,
     property: '@media',
@@ -268,7 +266,7 @@ const tsxSizes = (file: string, text: string, tokens: Tree): Size[] => {
       return partsOf(property, value, tokens).map(part => ({
         file,
         line: first + value.slice(0, part.at).split('\n').length - 1,
-        own: ownOf(rows[first - 1]),
+        own: ownOf(rows[first - 1], true),
         property: part.property,
         token: part.token,
         value: part.value,

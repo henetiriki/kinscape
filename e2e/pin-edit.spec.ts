@@ -80,7 +80,9 @@ test('edits the date, the Person and the point of a saved Pin', async ({
   await goTo(page, '1950');
   await page.waitForFunction(() => 'kinscapeMap' in window);
 
-  const first = await emptyPoint(page, { x: 0, y: 0 }, 800);
+  // `map-click.spec.ts` and `pins.spec.ts` start at 800 px from the corner, and their Pins show at
+  // 1950. A nearer start gives this test another point, so a Pin of a parallel test is not on it.
+  const first = await emptyPoint(page, { x: 0, y: 0 }, 300);
 
   // Save a Pin of the first Person at the first point, from 1940 to 1960.
   await page.mouse.click(first.x, first.y);

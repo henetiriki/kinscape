@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import type { ClickPoint } from '@ks/app/components/overlays/types';
 import type {
+  ClickProp,
   Layer,
   LayerId,
   MapHandle,
@@ -70,7 +71,7 @@ const useShellState = (layers: Layer[]) => {
     atMin: false,
   });
 
-  // The pixel point of the open Pin in the map, which the popup follows.
+  // The pixel point of the open Pin, or of the clicked point when no Pin is open; the popup follows it.
   const [point, setPoint] = useState<{ x: number; y: number } | null>(null);
 
   return {
@@ -211,11 +212,8 @@ type PartArgs = {
 type ShellProps = {
   /** The part in the `action` slot, such as "Add a pin". The caller gives none on a phone. */
   action?: ReactNode;
-  /** The click popup of a click on empty map: floating at the `place` of `position` (longitude, latitude). A Pin popup wins over it. The caller gives none on a phone. */
-  click?: {
-    popup: (place: { x: number; y: number }) => ReactNode;
-    position: [number, number];
-  };
+  /** The click popup. A Pin popup wins over it. The caller gives none on a phone. */
+  click?: ClickProp;
   /** The days with a Boundary version; the first one is where the notice card jumps to. */
   coverage: Validity[];
   /** Shown in the account menu. */

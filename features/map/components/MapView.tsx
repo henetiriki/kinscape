@@ -437,8 +437,8 @@ const useFiltersAndMarkers = (
   return placed;
 };
 
-// The popup follows its Pin, or the clicked position when no Pin is open: the point is read again
-// after each move, pan, zoom and resize.
+// The popup follows its Pin, or the clicked position when no Pin is open: the hook reads the point
+// again after each move, pan, zoom and resize.
 const useOpenPoint = (
   map: MapRef,
   latest: LatestRef,
@@ -500,7 +500,7 @@ export const MapView = ({
   onEmptyClick?: (point: ClickPoint) => void;
   /** A click on a feature of a layer's `select` ids, with the feature's `id` property. */
   onOpenPin?: (id: string) => void;
-  /** The pixel point of the open Pin in the map, now and after each move; `null` once no Pin is open. */
+  /** The pixel point of the open Pin, or of `clicked` when no Pin is open, now and after each move; `null` when neither is set. */
   onOpenPoint?: (point: { x: number; y: number } | null) => void;
   /** `MapView` calls it on load and after each zoom and resize, with whether the zoom is at a limit. */
   onZoomLimits?: (limits: ZoomLimits) => void;

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 const form = vi.hoisted(() => vi.fn());
@@ -268,6 +268,39 @@ it('opens nothing on a click on a phone', () => {
 
   expect(slot('click').textContent).toBe('');
   expect(slot('panel').textContent).toBe('');
+});
+
+// NFR-05
+it('starts closed when the screen goes back to a desktop width after a phone width', () => {
+  const listeners = new Set<() => void>();
+  const query = {
+    addEventListener: (_: string, listener: () => void) =>
+      listeners.add(listener),
+    matches: false,
+    removeEventListener: (_: string, listener: () => void) =>
+      listeners.delete(listener),
+  };
+
+  window.matchMedia = (() => query) as unknown as typeof window.matchMedia;
+
+  const resize = (next: boolean) => {
+    query.matches = next;
+    act(() => listeners.forEach(listener => listener()));
+  };
+
+  render(<Probe />);
+  emptyClick();
+  resize(true);
+  resize(false);
+  expect(slot('click').textContent).toBe('');
+
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin' }));
+  resize(true);
+  resize(false);
+  expect(slot('panel').textContent).toBe('');
+  expect(screen.getByRole('button', { name: 'Add a pin' })).toBeInstanceOf(
+    HTMLElement
+  );
 });
 
 it('gives neither the button nor the panel on a phone', () => {

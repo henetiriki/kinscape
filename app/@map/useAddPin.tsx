@@ -5,6 +5,7 @@ import type { ComponentProps, ReactNode } from 'react';
 import { useCallback, useState } from 'react';
 
 import type { ClickPoint } from '@ks/app/components/overlays/types';
+import type { ClickProp } from '@ks/features/map';
 
 import { createPinAction } from '@ks/app/@map/actions';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
@@ -24,10 +25,7 @@ const CLOSED: Flow = { kind: 'closed' };
 type Result = {
   action?: ReactNode;
   /** The click popup, for the `click` prop of `MapShell`. */
-  click?: {
-    popup: (place: { x: number; y: number }) => ReactNode;
-    position: [number, number];
-  };
+  click?: ClickProp;
   /** Closes the click popup, and leaves an open panel alone. */
   closeClick?: () => void;
   /** A click on empty map: opens the click popup, or sets the point of an open panel. */
@@ -50,7 +48,7 @@ const useSave = (onSaved: () => void) =>
 const clickPopup = (
   point: ClickPoint,
   set: (flow: Flow) => void
-): NonNullable<Result['click']> => ({
+): ClickProp => ({
   popup: ({ x, y }) => (
     <ClickPopup
       onAdd={added => set({ kind: 'panel', point: added })}
@@ -94,6 +92,9 @@ export const useAddPin = ({ onSaved }: { onSaved: () => void }): Result => {
   useDismiss(flow.kind === 'click', close, { escape: true });
 
   if (phone) {
+    // A phone shows none of the flow, so it drops the state. A later desktop width starts closed.
+    if (flow.kind !== 'closed') setFlow(CLOSED);
+
     return {};
   }
 

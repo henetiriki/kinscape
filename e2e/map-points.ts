@@ -4,6 +4,22 @@ import { expect } from '@playwright/test';
 
 import type { TestWindow } from '@ks/e2e/types';
 
+/** The click popup of a click on empty map. */
+export const clickPopup = (page: Page) =>
+  page.getByRole('dialog', { name: 'Add a pin here' });
+
+/** The coordinates field of the "Add a pin" panel. */
+export const coordinates = (page: Page) => page.getByLabel('Coordinates');
+
+/** Resolves after two frames, so React has drawn what a click or a tap set off. */
+export const afterPaint = (page: Page) =>
+  page.evaluate(
+    () =>
+      new Promise<void>(resolve => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      })
+  );
+
 /** The event type of each Pin symbol that the map draws now. */
 export const shownTypes = async (page: Page) => {
   await page.waitForFunction(() => 'kinscapeMap' in window);

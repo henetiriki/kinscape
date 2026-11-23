@@ -4,19 +4,21 @@ import { expect, test } from '@playwright/test';
 
 import type { TestWindow } from '@ks/e2e/types';
 
-import { emptyPoint, goTo } from '@ks/e2e/map-points';
+import {
+  afterPaint,
+  clickPopup,
+  coordinates,
+  emptyPoint,
+  goTo,
+} from '@ks/e2e/map-points';
 
 // PIN-01, NFR-05: a click on empty map opens the click popup; "Add a pin here" opens the panel with
-// the point. The tests use 1950: borders are mapped then, so no notice card covers the map.
+// the point. The tests use 1950, as `pins.spec.ts` does.
 
-const popup = (page: Page) =>
-  page.getByRole('dialog', { name: 'Add a pin here' });
 const addHere = (page: Page) =>
-  popup(page).getByRole('button', { exact: true, name: 'Add a pin here' });
+  clickPopup(page).getByRole('button', { exact: true, name: 'Add a pin here' });
 const addButton = (page: Page) =>
   page.getByRole('button', { exact: true, name: 'Add a pin' });
-const coordinates = (page: Page) => page.getByLabel('Coordinates');
-
 /** The text that the popup and the field show for the map point under a page point. */
 const textAt = (page: Page, at: { x: number; y: number }) =>
   page.evaluate(({ x, y }) => {
@@ -58,7 +60,7 @@ const start = async (page: Page) => {
   await goTo(page, '1950');
   await page.waitForFunction(() => 'kinscapeMap' in window);
 
-  // The popup sits left of its point, so a point near the left edge would put it off the page.
+  // The popup sits left of its point, so a point near the left edge puts it off the page.
   return emptyPoint(page, { x: 0, y: 0 }, 800);
 };
 
@@ -68,14 +70,14 @@ test('a click on empty map opens the popup with the point, and a second click mo
   const first = await start(page);
 
   await page.mouse.click(first.x, first.y);
-  await expect(popup(page)).toBeVisible();
-  await expect(popup(page)).toContainText(await textAt(page, first));
+  await expect(clickPopup(page)).toBeVisible();
+  await expect(clickPopup(page)).toContainText(await textAt(page, first));
 
   const second = await emptyPoint(page, first, 120);
 
   await page.mouse.click(second.x, second.y);
-  await expect(popup(page)).toHaveCount(1);
-  await expect(popup(page)).toContainText(await textAt(page, second));
+  await expect(clickPopup(page)).toHaveCount(1);
+  await expect(clickPopup(page)).toContainText(await textAt(page, second));
 });
 
 test('the popup stays at its point after a pan and after a zoom', async ({
@@ -84,7 +86,7 @@ test('the popup stays at its point after a pan and after a zoom', async ({
   const first = await start(page);
 
   await page.mouse.click(first.x, first.y);
-  await expect(popup(page)).toBeVisible();
+  await expect(clickPopup(page)).toBeVisible();
 
   const before = await dotOffset(page, first);
 
@@ -111,12 +113,12 @@ test('Close and Esc close the popup', async ({ page }) => {
   const first = await start(page);
 
   await page.mouse.click(first.x, first.y);
-  await popup(page).getByRole('button', { name: 'Close' }).click();
-  await expect(popup(page)).toBeHidden();
+  await clickPopup(page).getByRole('button', { name: 'Close' }).click();
+  await expect(clickPopup(page)).toBeHidden();
   await page.mouse.click(first.x, first.y);
-  await expect(popup(page)).toBeVisible();
+  await expect(clickPopup(page)).toBeVisible();
   await page.keyboard.press('Escape');
-  await expect(popup(page)).toBeHidden();
+  await expect(clickPopup(page)).toBeHidden();
 });
 
 test('"Add a pin here" opens the panel with the point, and a click with the panel open changes the point and opens no popup', async ({
@@ -126,14 +128,14 @@ test('"Add a pin here" opens the panel with the point, and a click with the pane
 
   await page.mouse.click(first.x, first.y);
   await addHere(page).click();
-  await expect(popup(page)).toHaveCount(0);
+  await expect(clickPopup(page)).toHaveCount(0);
   await expect(coordinates(page)).toHaveValue(await textAt(page, first));
 
   const second = await emptyPoint(page, first, 120);
 
   await page.mouse.click(second.x, second.y);
   await expect(coordinates(page)).toHaveValue(await textAt(page, second));
-  await expect(popup(page)).toHaveCount(0);
+  await expect(clickPopup(page)).toHaveCount(0);
 });
 
 test('"Add a pin" with the popup open closes it and opens the panel empty', async ({
@@ -142,9 +144,9 @@ test('"Add a pin" with the popup open closes it and opens the panel empty', asyn
   const first = await start(page);
 
   await page.mouse.click(first.x, first.y);
-  await expect(popup(page)).toBeVisible();
+  await expect(clickPopup(page)).toBeVisible();
   await addButton(page).click();
-  await expect(popup(page)).toHaveCount(0);
+  await expect(clickPopup(page)).toHaveCount(0);
   await expect(coordinates(page)).toHaveValue('');
 });
 
@@ -203,7 +205,9 @@ test.describe('on a phone', () => {
     const away = await emptyPoint(page, { x: 0, y: 0 });
 
     await page.touchscreen.tap(away.x, away.y);
-    await expect(popup(page)).toHaveCount(0);
+    // The check runs after the app has drawn what the tap set off, so it can fail.
+    await afterPaint(page);
+    await expect(clickPopup(page)).toHaveCount(0);
     await expect(coordinates(page)).toHaveCount(0);
   });
 });

@@ -5,6 +5,8 @@ import { expect, test } from '@playwright/test';
 import type { TestWindow } from '@ks/e2e/types';
 
 import {
+  clickPopup,
+  coordinates,
   emptyPoint,
   goTo,
   pickPin,
@@ -187,11 +189,6 @@ test('Close, Esc and a click on empty map close the popup', async ({
   await expect(popup(page)).toBeHidden();
 });
 
-const clickPopup = (page: Page) =>
-  page.getByRole('dialog', { name: 'Add a pin here' });
-
-const coordinates = (page: Page) => page.getByLabel('Coordinates');
-
 // PIN-01: an empty click closes the Pin popup and opens the click popup.
 test('a click on empty map after a Pin popup closes it and opens the click popup', async ({
   page,
@@ -225,6 +222,9 @@ test('a click on a Pin opens its popup and not the click popup', async ({
   await expect(clickPopup(page)).toBeVisible();
   await page.mouse.click(pin.x, pin.y);
   await expect(popup(page)).toBeVisible();
+  // The Pin popup hides the click popup. After Close, a click popup that stayed open would show.
+  await popup(page).getByRole('button', { name: 'Close' }).click();
+  await expect(popup(page)).toBeHidden();
   await expect(clickPopup(page)).toHaveCount(0);
 });
 
@@ -235,7 +235,8 @@ test('with the panel open, a click on a Pin keeps the coordinates', async ({
   await page.goto('/');
   await goTo(page, '1950');
 
-  const empty = await emptyPoint(page, { x: 0, y: 0 });
+  // The popup sits left of its point, so a point near the left edge puts it off the page.
+  const empty = await emptyPoint(page, { x: 0, y: 0 }, 800);
 
   await page.mouse.click(empty.x, empty.y);
   await clickPopup(page)

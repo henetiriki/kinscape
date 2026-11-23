@@ -134,7 +134,7 @@ const checkFields = (
 };
 
 // The text of the coordinates field. The state sits here, not in the field, so it outlives the
-// loading look. A new `point` sets the text while rendering, which keeps the other fields.
+// loading look. A new `point` sets the text during the render, which keeps the other fields.
 const useCoordinates = (point?: ClickPoint) => {
   const [text, setText] = useState(point ? pointText(point) : '');
   const [seen, setSeen] = useState(point);

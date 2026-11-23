@@ -5,8 +5,12 @@ import type { FormEvent, RefObject } from 'react';
 import { useEffect, useId, useRef, useState } from 'react';
 
 import type { ClickPoint } from '@ks/app/components/overlays/types';
-import type { PinMessages } from '@ks/features/people/components/types.ts';
+import type {
+  FixedPlace,
+  PinMessages,
+} from '@ks/features/people/components/types.ts';
 import type { PersonSummary } from '@ks/lib/domain/persons/types.ts';
+import type { Place } from '@ks/lib/domain/places/types.ts';
 
 import { Button } from '@ks/app/components/actions/Button';
 import { Alert } from '@ks/app/components/feedback/Alert';
@@ -66,6 +70,11 @@ type PinFormProps = {
   onCancel: () => void;
   onSave: (input: unknown) => Promise<{ ok: boolean }>;
   onSaved: () => void;
+  /**
+   * An existing Place. Its point and precision are fixed, and a save sends `kind: 'existing'`. The
+   * caller gives the form a new `key` for another Place.
+   */
+  place?: FixedPlace;
   /** A point for the coordinates field. A new point replaces the text of that field only. */
   point?: ClickPoint;
 };
@@ -101,10 +110,12 @@ const useEscClose = (
 const checkFields = (
   form: HTMLFormElement,
   ids: { pin: string; place: string },
-  person?: PersonSummary
+  person?: PersonSummary,
+  existing?: Pick<Place, 'id'>
 ) => {
   const values = readFields(form);
-  const point = parseCoordinates(values.coordinates);
+  // A disabled field sends no form value, so an existing Place reads no coordinates.
+  const point = existing ? undefined : parseCoordinates(values.coordinates);
   // A point that does not read still lets `checkPin` check the other fields.
   const raw = {
     address: values.address,
@@ -113,12 +124,14 @@ const checkFields = (
     id: ids.pin,
     notes: values.notes,
     personId: person?.id ?? '',
-    place: {
-      id: ids.place,
-      kind: 'new',
-      precision: values.precision,
-      ...(point.ok ? point.value : { latitude: 0, longitude: 0 }),
-    },
+    place: existing
+      ? { id: existing.id, kind: 'existing' }
+      : {
+          id: ids.place,
+          kind: 'new',
+          precision: values.precision,
+          ...(point?.ok ? point.value : { latitude: 0, longitude: 0 }),
+        },
     sources: values.sources,
   };
   const checked = checkPin(raw);
@@ -126,7 +139,7 @@ const checkFields = (
     !checked.ok && checked.error !== 'invalid' ? checked.error.fields : {};
   const next = pinMessages(
     fields,
-    point.ok ? undefined : point.error,
+    point && !point.ok ? point.error : undefined,
     values.date
   );
 
@@ -149,10 +162,10 @@ const useCoordinates = (point?: ClickPoint) => {
 };
 
 const usePinForm = (
-  { onCancel, onSave, onSaved, point }: PinFormProps,
+  { onCancel, onSave, onSaved, place, point }: PinFormProps,
   form: RefObject<HTMLFormElement | null>
 ) => {
-  const coordinates = useCoordinates(point);
+  const coordinates = useCoordinates(place ?? point);
   const titleId = useId();
   const people = usePeople();
   const [ids] = useState(() => ({ pin: uuidV7(), place: uuidV7() }));
@@ -173,7 +186,8 @@ const usePinForm = (
     const { checked, next, raw } = checkFields(
       event.currentTarget,
       ids,
-      person
+      person,
+      place
     );
 
     setMessages(next);
@@ -285,13 +299,19 @@ const EventFields = ({ messages }: Pick<Form, 'messages'>) => (
 const PlaceFields = ({
   coordinates,
   messages,
-}: Pick<Form, 'coordinates' | 'messages'>) => (
+  place,
+}: Pick<Form, 'coordinates' | 'messages'> & Pick<PinFormProps, 'place'>) => (
   <>
     <TextField
       aria-required='true'
       autoComplete='off'
+      disabled={place !== undefined}
       error={messages.coordinates}
-      helper='In decimal degrees, such as -33.93, 18.42.'
+      helper={
+        place
+          ? 'This Place is fixed. You cannot change its point.'
+          : 'In decimal degrees, such as -33.93, 18.42.'
+      }
       label='Coordinates'
       name='coordinates'
       onChange={event => coordinates.setText(event.target.value)}
@@ -304,12 +324,14 @@ const PlaceFields = ({
       name='address'
     />
     <SelectField
-      defaultValue='approximate'
+      defaultValue={place?.precision ?? 'approximate'}
+      disabled={place !== undefined}
       error={messages.precision}
       label='Precision'
       name='precision'
       options={PRECISION_OPTIONS}
     />
+    {place && <Text variant='small'>This is the precision of the Place.</Text>}
   </>
 );
 
@@ -325,7 +347,7 @@ const NoteFields = ({ messages }: Pick<Form, 'messages'>) => (
   </>
 );
 
-const Fields = ({ f }: { f: Form }) => (
+const Fields = ({ f, place }: { f: Form } & Pick<PinFormProps, 'place'>) => (
   <>
     {f.failed && (
       <Alert title="Couldn't save the pin" tone='error'>
@@ -338,7 +360,11 @@ const Fields = ({ f }: { f: Form }) => (
       setPerson={f.setPerson}
     />
     <EventFields messages={f.messages} />
-    <PlaceFields coordinates={f.coordinates} messages={f.messages} />
+    <PlaceFields
+      coordinates={f.coordinates}
+      messages={f.messages}
+      place={place}
+    />
     <NoteFields messages={f.messages} />
   </>
 );
@@ -373,7 +399,7 @@ export const PinForm = (props: PinFormProps) => {
           ) : f.loadFailed ? (
             <LoadFailed people={f.people} />
           ) : (
-            <Fields f={f} />
+            <Fields f={f} place={props.place} />
           )}
         </div>
         <div className={styles.actions}>

@@ -7,6 +7,7 @@ export { PersonRelationships } from '@ks/features/people/components/PersonRelati
 export { PinForm } from '@ks/features/people/components/PinForm';
 export { SavedToast } from '@ks/features/people/components/SavedToast';
 export type {
+  FixedPlace,
   RelationshipEntry,
   RelationshipsPerson,
 } from '@ks/features/people/components/types';

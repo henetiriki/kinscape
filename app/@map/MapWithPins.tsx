@@ -4,6 +4,7 @@ import type { ComponentProps } from 'react';
 
 import { useCallback, useMemo, useState } from 'react';
 
+import type { FixedPlace } from '@ks/features/people';
 import type { MapPin } from '@ks/lib/domain/pins/types.ts';
 
 import { useAddPin } from '@ks/app/@map/useAddPin';
@@ -21,10 +22,13 @@ import { formatFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date.mts';
  * from the Pin of the map.
  */
 const OpenPinPopup = ({
+  onAddHere,
   onClose,
   pin,
   place,
 }: {
+  /** Opens the panel at the Place of the Pin, with the precision from its details. */
+  onAddHere?: (place: FixedPlace) => void;
   onClose: () => void;
   pin: MapPin;
   /** The point of the Pin on a desktop; none on a phone, where the popup sits in the date sheet. */
@@ -35,6 +39,18 @@ const OpenPinPopup = ({
     address: data?.address,
     event: pin.eventType,
     name: data && `${data.givenNames} ${data.surname}`.trim(),
+    onAddHere:
+      data && onAddHere
+        ? () => {
+            onAddHere({
+              id: pin.placeId,
+              latitude: pin.latitude,
+              longitude: pin.longitude,
+              precision: data.precision,
+            });
+            onClose();
+          }
+        : undefined,
     onClose,
     onRetry: () => void refetch(),
     reading: readFuzzyDate(pin),
@@ -56,12 +72,14 @@ const OpenPinPopup = ({
 /** The `pin` prop of the shell for the open Pin. */
 const pinProp = (
   open: MapPin,
-  close: () => void
+  close: () => void,
+  addHere?: (place: FixedPlace) => void
 ): NonNullable<ComponentProps<typeof MapShell>['pin']> => ({
   open: { id: open.id, position: [open.longitude, open.latitude] },
   popup: (form, place) => (
     <OpenPinPopup
       key={open.id}
+      onAddHere={addHere}
       onClose={close}
       pin={open}
       place={form === 'floating' ? place : undefined}
@@ -112,7 +130,7 @@ export const MapWithPins = (
         add.closeClick?.();
       }}
       panel={add.panel}
-      pin={open && pinProp(open, close)}
+      pin={open && pinProp(open, close, add.addHere)}
       toast={
         isError && errorUpdatedAt !== dismissedAt ? (
           <Toast

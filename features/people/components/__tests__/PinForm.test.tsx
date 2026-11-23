@@ -7,6 +7,7 @@ import {
   PRECISION_OPTIONS,
 } from '@ks/features/people/components/pin-messages.ts';
 import { PinForm } from '@ks/features/people/components/PinForm';
+import { parsePlaceId } from '@ks/lib/domain/ids/ids.mts';
 import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
 import { PLACE_PRECISIONS } from '@ks/lib/domain/places/schemas.mts';
 
@@ -145,6 +146,45 @@ it('keeps typed coordinates when the point goes away, and lets the user type ove
   expect(coordinates()).toBe('-30, 20');
   change(undefined);
   expect(coordinates()).toBe('-30, 20');
+});
+
+const PLACE = {
+  id: parsePlaceId('01900000-0000-7000-a000-0000000000c1')!,
+  latitude: -29.12,
+  longitude: 26.21,
+  precision: 'farm',
+} as const;
+
+// PIN-01, PIN-06
+it('fixes the point and the precision of an existing Place', async () => {
+  setup({ place: PLACE });
+  await ready();
+
+  const field = screen.getByLabelText('Coordinates') as HTMLInputElement;
+  const precision = screen.getByLabelText('Precision') as HTMLSelectElement;
+
+  expect(field.value).toBe('-29.120000, 26.210000');
+  expect(field.disabled).toBe(true);
+  screen.getByText('This Place is fixed. You cannot change its point.');
+  expect(precision.value).toBe('farm');
+  expect(precision.disabled).toBe(true);
+  screen.getByText('This is the precision of the Place.');
+});
+
+// PIN-01, PIN-06
+it('saves a Pin with the existing Place and sends no coordinates', async () => {
+  const onSave = vi.fn<(input: unknown) => Promise<{ ok: boolean }>>(
+    async () => ({ ok: true })
+  );
+  const { onSaved } = setup({ onSave, place: PLACE });
+
+  await fill({ coordinates: '' });
+  save();
+  await waitFor(() => expect(onSaved).toHaveBeenCalled());
+
+  const sent = onSave.mock.calls[0]![0] as { place: Record<string, unknown> };
+
+  expect(sent.place).toEqual({ id: PLACE.id, kind: 'existing' });
 });
 
 it('lists the Event types of the schema, after the empty choice', () => {

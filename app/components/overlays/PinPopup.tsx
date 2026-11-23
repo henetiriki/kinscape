@@ -26,6 +26,8 @@ type PinPopupArgs = {
   form?: 'floating' | 'inline' | 'sheet';
   /** The Person's name; the loaded state shows it. */
   name?: string;
+  /** "Add a pin here" in the floating popup calls it. */
+  onAddHere?: () => void;
   /** Called by Close and by Esc inside the floating popup. */
   onClose?: () => void;
   /** Called by "Try again" in the failed state. */
@@ -106,12 +108,13 @@ const Body = ({ address, state }: Pick<PinPopupArgs, 'address' | 'state'>) =>
 const Actions = ({
   floating,
   loaded,
+  onAddHere,
   onRetry,
   state,
 }: {
   floating: boolean;
   loaded: boolean;
-} & Pick<PinPopupArgs, 'onRetry' | 'state'>) => {
+} & Pick<PinPopupArgs, 'onAddHere' | 'onRetry' | 'state'>) => {
   if (state === 'failed') {
     return (
       <div className={styles.actions}>
@@ -125,7 +128,7 @@ const Actions = ({
   return (
     floating && (
       <div className={styles.actions}>
-        <Button disabled={!loaded} variant='primary'>
+        <Button disabled={!loaded} onClick={onAddHere} variant='primary'>
           Add a pin here
         </Button>
         <Button disabled={!loaded} variant='secondary'>
@@ -209,6 +212,7 @@ export const PinPopup = ({
   event,
   form = 'floating',
   name,
+  onAddHere,
   onClose,
   onRetry,
   reading,
@@ -238,6 +242,7 @@ export const PinPopup = ({
     <Actions
       floating={floating}
       loaded={loaded}
+      onAddHere={onAddHere}
       onRetry={onRetry}
       state={state}
     />

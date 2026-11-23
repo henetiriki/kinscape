@@ -99,7 +99,6 @@ const NO_ENTRY = [
   'pin-edit-load-failed',
   'pin-edit-loading',
   'pin-edit-moved',
-  'pin-form-existing-place',
   'relationship-messages',
   'sign-in-desktop-proposed',
   'sign-in-phone-error-proposed',

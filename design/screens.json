@@ -54,6 +54,15 @@
       "mode": "blocking"
     },
     {
+      "name": "pin-form-existing-place",
+      "account": "r.family@example.com",
+      "route": "/screens/pin-form/existing-place",
+      "state": "pin-form-existing-place",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
       "name": "pin-form-no-people",
       "account": "researcher@example.com",
       "route": "/screens/pin-form",

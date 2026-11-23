@@ -1267,7 +1267,7 @@ type PinPopupArgs = {
     form?: 'floating' | 'inline' | 'sheet';
     /** The Person's name; the loaded state shows it. */
     name?: string;
-    /** Called by "Add a pin here" in the floating popup. */
+    /** "Add a pin here" in the floating popup calls it. */
     onAddHere?: () => void;
     /** Called by Close and by Esc inside the floating popup. */
     onClose?: () => void;

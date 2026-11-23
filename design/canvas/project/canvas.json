@@ -710,14 +710,6 @@
       "h": 900,
       "title": "Edit a pin — did not load",
       "page": "map"
-    },
-    "Draft-pin-click-popup.dc.html": {
-      "x": 0,
-      "y": 0,
-      "w": 760,
-      "h": 400,
-      "title": "Draft — click popup",
-      "page": "drafts"
     }
   },
   "order": [

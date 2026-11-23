@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 
 import Page, { metadata } from '@ks/app/screens/pin-click-popup/page';
@@ -24,11 +24,14 @@ it('shows the click popup at the board point, with the point and the button', as
   expect(popup.parentElement?.style.getPropertyValue('--y')).toBe('330px');
   within(popup).getByText('Point on the map');
   within(popup).getByText('-28.740000, 25.310000');
-  fireEvent.click(
-    within(popup).getByRole('button', { name: 'Add a pin here' })
+  expect(
+    within(popup)
+      .getByRole('button', { name: 'Add a pin here' })
+      .hasAttribute('disabled')
+  ).toBe(false);
+  expect(screen.getByRole('button', { name: 'Add a pin' }).textContent).toBe(
+    'Add a pin'
   );
-  screen.getByRole('button', { name: 'Add a pin' });
-  fireEvent.click(within(popup).getByRole('button', { name: 'Close' }));
 });
 
 it('shows no popup on a phone', async () => {

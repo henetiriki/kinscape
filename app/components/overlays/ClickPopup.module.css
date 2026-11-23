@@ -19,26 +19,6 @@
   min-height: 102px;
 }
 
-.top {
-  align-items: flex-start;
-  display: flex;
-  gap: var(--space-8);
-  justify-content: space-between;
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  min-width: 0;
-}
-
-/* The negative margin pulls Close 8px up and right, so the popup keeps its padding. */
-.close {
-  flex: none;
-  margin: calc(-1 * var(--space-8)) calc(-1 * var(--space-8)) 0 0;
-}
-
 .actions {
   display: flex;
 }

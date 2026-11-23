@@ -38,6 +38,21 @@ type PinPopupArgs = {
   state: PinPopupState;
 };
 
+/** The top row of a popup: its header column and Close, 8px up and right. `ClickPopup` shares it. */
+export const PopupTop = ({
+  children,
+  onClose,
+}: { children: ReactNode } & Pick<PinPopupArgs, 'onClose'>) => (
+  <div className={styles.top}>
+    <div className={styles.header}>{children}</div>
+    <span className={styles.close}>
+      <IconButton label='Close' onClick={onClose}>
+        <Icon name='close' size={20} />
+      </IconButton>
+    </span>
+  </div>
+);
+
 const Top = ({
   event,
   loaded,
@@ -48,25 +63,18 @@ const Top = ({
   loaded: boolean;
   loading: boolean;
 } & Pick<PinPopupArgs, 'event' | 'name' | 'onClose'>) => (
-  <div className={styles.top}>
-    <div className={styles.header}>
-      <span className={styles.event}>
-        <EventGlyph event={event} />
-        <Text variant='overline'>{eventLabel(event)}</Text>
-      </span>
-      {loaded && (
-        <Text as='h3' variant='h3'>
-          {name}
-        </Text>
-      )}
-      {loading && <LoadingBar width={168} />}
-    </div>
-    <span className={styles.close}>
-      <IconButton label='Close' onClick={onClose}>
-        <Icon name='close' size={20} />
-      </IconButton>
+  <PopupTop onClose={onClose}>
+    <span className={styles.event}>
+      <EventGlyph event={event} />
+      <Text variant='overline'>{eventLabel(event)}</Text>
     </span>
-  </div>
+    {loaded && (
+      <Text as='h3' variant='h3'>
+        {name}
+      </Text>
+    )}
+    {loading && <LoadingBar width={168} />}
+  </PopupTop>
 );
 
 const Dates = ({

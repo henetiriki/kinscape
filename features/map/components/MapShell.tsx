@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 
 import { useEffect, useRef, useState } from 'react';
 
+import type { ClickPoint } from '@ks/app/components/overlays/types';
 import type {
   Layer,
   LayerId,
@@ -210,6 +211,11 @@ type PartArgs = {
 type ShellProps = {
   /** The part in the `action` slot, such as "Add a pin". The caller gives none on a phone. */
   action?: ReactNode;
+  /** The click popup of a click on empty map: floating at the `place` of `position` (longitude, latitude). A Pin popup wins over it. The caller gives none on a phone. */
+  click?: {
+    popup: (place: { x: number; y: number }) => ReactNode;
+    position: [number, number];
+  };
   /** The days with a Boundary version; the first one is where the notice card jumps to. */
   coverage: Validity[];
   /** Shown in the account menu. */
@@ -220,6 +226,8 @@ type ShellProps = {
   layers: Layer[];
   /** A click on empty map, Esc, a Map date that hides the open Pin, or the Pins row switched off. Keep its identity stable. */
   onClosePin?: () => void;
+  /** A click on empty map, with its point. `onClosePin` runs first. */
+  onEmptyClick?: (point: ClickPoint) => void;
   /** A click on a Pin, with its id. */
   onOpenPin?: (id: string) => void;
   onSignOut: () => Promise<unknown>;
@@ -233,15 +241,19 @@ type ShellProps = {
 };
 
 const MapPane = ({ phone, props, state }: PartArgs) => {
-  const { onClosePin, onOpenPin, pin, toast } = props;
+  const { click, onClosePin, onEmptyClick, onOpenPin, pin, toast } = props;
 
   return (
     <>
       <MapView
+        clicked={click?.position}
         handle={state.map}
         layers={props.layers}
         mapDay={state.mapDay}
-        onEmptyClick={onClosePin}
+        onEmptyClick={point => {
+          onClosePin?.();
+          onEmptyClick?.(point);
+        }}
         onOpenPin={id => {
           // A tap on a Pin opens the date sheet on a phone, so a close leaves it open under the finger.
           if (phone) state.setSheetExpanded(true);
@@ -253,7 +265,9 @@ const MapPane = ({ phone, props, state }: PartArgs) => {
         padding={freeArea(phone)}
         visible={state.visible}
       />
-      {!phone && pin && state.point && pin.popup('floating', state.point)}
+      {!phone &&
+        state.point &&
+        (pin?.popup('floating', state.point) ?? click?.popup(state.point))}
       {toast && <div className={styles.toast}>{toast}</div>}
     </>
   );

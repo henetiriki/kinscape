@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { useQuery } from '@tanstack/react-query';
 import {
   act,
   fireEvent,
@@ -461,6 +462,41 @@ describe('the Pin popup', () => {
       expect(fetchStub).toHaveBeenCalledTimes(2);
     });
     expect(fetchStub).toHaveBeenLastCalledWith('/data/pins');
+  });
+
+  // NFR-10
+  it('does not ask again for the fields of the open edit panel after a saved edit', async () => {
+    const editFields = vi.fn(() => Promise.resolve({ version: 1 }));
+    const Probe = () => {
+      useQuery({
+        queryFn: editFields,
+        queryKey: ['pins', FIRST.id, 'edit'],
+        staleTime: Infinity,
+      });
+
+      return null;
+    };
+
+    fetchStub.mockImplementation(answer);
+    addPin.mockReturnValue({});
+    render(
+      <QueryProvider>
+        <Probe />
+        <MapWithPins {...props} />
+      </QueryProvider>
+    );
+    await waitFor(() => {
+      expect(captions()).toBe(LOADED);
+    });
+
+    await act(async () => {
+      addPin.mock.calls.at(-1)![0].onEdited();
+    });
+    await waitFor(() => {
+      expect(fetchStub).toHaveBeenCalledTimes(2);
+    });
+
+    expect(editFields).toHaveBeenCalledOnce();
   });
 
   // NFR-05

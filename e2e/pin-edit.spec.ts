@@ -49,8 +49,8 @@ const pinsAt = (page: Page, at: Point) =>
 
 const editForm = (page: Page) => page.getByRole('form', { name: 'Edit a pin' });
 
-/** Clicks the Pin at a page point, and chooses "Edit" in its popup. */
-const startEdit = async (page: Page, at: Point) => {
+/** Clicks the Pin at a page point, and waits for its popup. */
+const openPopup = async (page: Page, at: Point) => {
   const popup = page.getByRole('dialog', { name: 'Pin details' });
 
   // A click right after a Map date change can land before the layer has the Pin as a target.
@@ -58,9 +58,32 @@ const startEdit = async (page: Page, at: Point) => {
     await page.mouse.click(at.x, at.y);
     await expect(popup.getByRole('heading')).toBeVisible({ timeout: 1500 });
   }).toPass();
+
+  return popup;
+};
+
+/** Opens the popup of the Pin at a page point, and chooses "Edit". */
+const startEdit = async (page: Page, at: Point) => {
+  const popup = await openPopup(page, at);
+
   await popup.getByRole('button', { name: 'Edit' }).click();
   await expect(popup).toHaveCount(0);
   await page.getByRole('combobox', { name: 'Person' }).waitFor();
+};
+
+/** Saves a Pin of a Person at a page point on the empty map, from 1940 to 1960. */
+const addPin = async (page: Page, family: string, at: Point) => {
+  await page.mouse.click(at.x, at.y);
+  await clickPopup(page)
+    .getByRole('button', { exact: true, name: 'Add a pin here' })
+    .click();
+  await page.getByRole('combobox', { name: 'Person' }).fill(family);
+  await page.getByRole('option').filter({ hasText: family }).click();
+  await page.getByLabel('Event type').selectOption('residence');
+  await page.getByLabel('Date', { exact: true }).fill('FROM 1940 TO 1960');
+  await page.getByRole('button', { name: 'Save' }).click();
+  await expect(page.getByRole('form', { name: 'Add a pin' })).toHaveCount(0);
+  await expect.poll(() => pinsAt(page, at)).toBeGreaterThan(0);
 };
 
 const saveEdit = async (page: Page) => {
@@ -84,18 +107,7 @@ test('edits the date, the Person and the point of a saved Pin', async ({
   // 1950. A nearer start gives this test another point, so a Pin of a parallel test is not on it.
   const first = await emptyPoint(page, { x: 0, y: 0 }, 300);
 
-  // Save a Pin of the first Person at the first point, from 1940 to 1960.
-  await page.mouse.click(first.x, first.y);
-  await clickPopup(page)
-    .getByRole('button', { exact: true, name: 'Add a pin here' })
-    .click();
-  await page.getByRole('combobox', { name: 'Person' }).fill(family);
-  await page.getByRole('option').filter({ hasText: family }).click();
-  await page.getByLabel('Event type').selectOption('residence');
-  await page.getByLabel('Date', { exact: true }).fill('FROM 1940 TO 1960');
-  await page.getByRole('button', { name: 'Save' }).click();
-  await expect(page.getByRole('form', { name: 'Add a pin' })).toHaveCount(0);
-  await expect.poll(() => pinsAt(page, first)).toBeGreaterThan(0);
+  await addPin(page, family, first);
 
   // The form shows the values of the Pin, the point with six decimals and the precision fixed.
   await startEdit(page, first);
@@ -144,19 +156,32 @@ test('edits the date, the Person and the point of a saved Pin', async ({
   await expect.poll(() => pinsAt(page, first)).toBe(0);
 });
 
-test('sends no request for the fields of a Pin before "Edit"', async ({
+test('sends no request for the fields of a Pin or the Persons before "Edit"', async ({
   page,
 }) => {
-  const asked: string[] = [];
+  const family = surname();
 
-  page.on('request', request => {
-    if (new URL(request.url()).pathname.endsWith('/edit')) {
-      asked.push(request.url());
-    }
-  });
+  await createPerson(page, family);
   await page.goto('/');
   await goTo(page, '1950');
   await page.waitForFunction(() => 'kinscapeMap' in window);
-  await expect(page.getByRole('button', { name: 'Add a pin' })).toBeVisible();
+
+  // A start that differs from the other tests of this file, so each one gets its own point.
+  const at = await emptyPoint(page, { x: 0, y: 0 }, 500);
+
+  await addPin(page, family, at);
+
+  // The add form has loaded the Persons. From here on, only "Edit" may ask for them.
+  const asked: string[] = [];
+
+  page.on('request', request => {
+    const { pathname } = new URL(request.url());
+
+    if (pathname.endsWith('/edit') || pathname === '/data/people') {
+      asked.push(pathname);
+    }
+  });
+  await openPopup(page, at);
+  await expect(page.getByRole('button', { name: 'Edit' })).toBeVisible();
   expect(asked).toEqual([]);
 });

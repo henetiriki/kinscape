@@ -122,8 +122,13 @@ export const MapWithPins = (
   const phone = usePhone();
   const queryClient = useQueryClient();
   // A save of an edit marks each held query of the Pins as stale, the details of the popup too.
+  // The query of the edit fields stays out: it is still mounted, and a reload would ask again.
   const add = useAddPin({
-    onEdited: () => void queryClient.invalidateQueries({ queryKey: ['pins'] }),
+    onEdited: () =>
+      void queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => queryKey[2] !== 'edit',
+        queryKey: ['pins'],
+      }),
     onSaved: () => void refetch(),
   });
   // The toast of one failure stays hidden once dismissed; a new failure has a new time.

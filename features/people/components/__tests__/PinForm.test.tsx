@@ -696,10 +696,11 @@ it('fixes the precision with its note while the point is unchanged, and frees bo
   setupEdit();
   await ready();
 
-  const precision = screen.getByLabelText('Precision') as HTMLSelectElement;
+  const precision = () =>
+    screen.getByLabelText('Precision') as HTMLSelectElement;
 
-  expect(precision.value).toBe('town');
-  expect(precision.disabled).toBe(true);
+  expect(precision().value).toBe('town');
+  expect(precision().disabled).toBe(true);
   expect(
     screen.getByText('This is the precision of the Place.')
   ).toBeInstanceOf(HTMLElement);
@@ -710,24 +711,45 @@ it('fixes the precision with its note while the point is unchanged, and frees bo
   fireEvent.change(screen.getByLabelText('Coordinates'), {
     target: { value: '-30, 20' },
   });
-  expect(precision.disabled).toBe(false);
+  expect(precision().disabled).toBe(false);
   expect(screen.queryByText('This is the precision of the Place.')).toBeNull();
+});
+
+it('shows the precision of the Place again when the typed point returns to the point of the Place', async () => {
+  setupEdit();
+  await ready();
+
+  const precision = () =>
+    screen.getByLabelText('Precision') as HTMLSelectElement;
+
+  fireEvent.change(screen.getByLabelText('Coordinates'), {
+    target: { value: '-30, 20' },
+  });
+  fireEvent.change(precision(), { target: { value: 'farm' } });
+  expect(precision().value).toBe('farm');
+  fireEvent.change(screen.getByLabelText('Coordinates'), {
+    target: { value: '-29.12, 26.21' },
+  });
+
+  expect(precision().disabled).toBe(true);
+  expect(precision().value).toBe('town');
 });
 
 it('counts a typed point that equals the point of the Place as unchanged, and a point with only the longitude changed as moved', async () => {
   setupEdit();
   await ready();
 
-  const precision = screen.getByLabelText('Precision') as HTMLSelectElement;
+  const precision = () =>
+    screen.getByLabelText('Precision') as HTMLSelectElement;
 
   fireEvent.change(screen.getByLabelText('Coordinates'), {
     target: { value: '-29.12, 26.21' },
   });
-  expect(precision.disabled).toBe(true);
+  expect(precision().disabled).toBe(true);
   fireEvent.change(screen.getByLabelText('Coordinates'), {
     target: { value: '-29.12, 26.5' },
   });
-  expect(precision.disabled).toBe(false);
+  expect(precision().disabled).toBe(false);
 });
 
 it('shows the loading look while the fields are pending, with Save off', async () => {

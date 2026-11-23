@@ -105,8 +105,7 @@ const EditPanel = ({
   );
 };
 
-// The setters of the flow. `again` counts the "Add a pin here" and "Edit" choices, so each one gives
-// the panel a new key.
+// The setters of the flow. Each one that opens a panel counts in `again` (see `Flow`).
 const useFlowActions = (setFlow: Dispatch<SetStateAction<Flow>>) => {
   const again = useRef(0);
 
@@ -174,12 +173,12 @@ const panelOf = (
 
 /**
  * The state of the add and edit flows (PIN-01, PIN-02, NFR-05). On a desktop it gives the button
- * while no panel is open, the panel while one is open, and the click popup after a click on empty
- * map. One panel slot holds one form: a new `addHere` or `edit` replaces the open form and drops its
+ * while no panel is open. It gives the panel while one is open, and the click popup after a click
+ * on empty map. One panel slot holds one form: a new `addHere` or `edit` replaces the open form and drops its
  * typed values. A click on empty map with the add panel open sets its point and opens no popup. A
  * click with the edit panel open changes nothing. A phone gets none of these. A saved Pin closes the
  * panel and calls `onSaved` (add) or `onEdited` (edit), so the caller loads the Pins again. A save
- * that ends after Cancel or Esc closed the panel also calls them, because the server has saved the Pin.
+ * that ends after Cancel or Esc closed the panel also calls them, because the server saved the Pin.
  */
 export const useAddPin = ({
   onEdited,

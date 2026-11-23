@@ -188,7 +188,7 @@ const useCoordinates = (point?: ClickPoint) => {
   return { setText, text };
 };
 
-/** Whether a query is waiting for its first answer, or asking again after an error. */
+/** Whether a query has no answer yet, or loads again after an error. */
 const isLoading = (
   query: { isPending: boolean } & Pick<
     PinEdit['query'],
@@ -196,13 +196,13 @@ const isLoading = (
   >
 ) => query.isPending || (query.isError && query.isFetching);
 
-/** Whether a query failed and is not asking again. */
+/** Whether a query failed and does not load again. */
 const hasFailed = (query: Pick<PinEdit['query'], 'isError' | 'isFetching'>) =>
   query.isError && !query.isFetching;
 
 // The state of an edit: the fields of the Pin, and whether the text of the coordinates is still
-// the point of its Place. The text counts as unchanged if it equals what `pointText` writes, so a
-// stored point with more than six decimals stays at its Place until the user edits the text.
+// the point of its Place. The text counts as unchanged if it equals what `pointText` writes.
+// A stored point with more than six decimals then stays at its Place until the user edits the text.
 const useEditState = (
   { edit, place, point }: Pick<PinFormProps, 'edit' | 'place' | 'point'>,
   people: { isPending: boolean } & Pick<
@@ -457,6 +457,7 @@ const PlaceFields = ({
       defaultValue={place?.precision ?? editFields?.precision ?? 'approximate'}
       disabled={place !== undefined || stays}
       error={messages.precision}
+      key={stays ? 'fixed' : 'free'}
       label='Precision'
       name='precision'
       options={PRECISION_OPTIONS}

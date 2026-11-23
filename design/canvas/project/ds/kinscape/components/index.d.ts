@@ -1265,6 +1265,13 @@ type PinPopupArgs = {
     /** Loading and failed show the event type and both date lines only. */
     state: PinPopupState;
 };
+/** The frame of a floating popup: the surface, the pointer and Esc. `ClickPopup` shares it. */
+declare const Floating: ({ children, label, loading, onClose, }: {
+    children: ReactNode;
+    /** The dialog name. */
+    label: string;
+    loading?: boolean;
+} & Pick<PinPopupArgs, "onClose">) => import("react").JSX.Element;
 /** The popup of a Pin (PIN-02): the Person, the event type, both date lines and the address. */
 export declare const PinPopup: ({ address, event, form, name, onClose, onRetry, reading, recorded, state, }: PinPopupArgs) => import("react").JSX.Element;
 /** The floating popup at a map point, in pixels from the corner of the overlay area. */
@@ -1274,6 +1281,25 @@ export declare const PlacedPinPopup: ({ x, y, ...rest }: {
 } & Omit<PinPopupArgs, "form">) => import("react").JSX.Element;
 export type PinPopupProps = Parameters<typeof PinPopup>[0];
 export type PlacedPinPopupProps = Parameters<typeof PlacedPinPopup>[0];
+
+type ClickPoint = {
+    latitude: number;
+    longitude: number;
+};
+/**
+ * The popup of a click on empty map (PIN-01), at a map point in pixels from the corner of the
+ * overlay area, with the point drawn as a dot. "Add a pin here" calls `onAdd` with the point.
+ */
+export declare const ClickPopup: ({ onAdd, onClose, point, x, y, }: {
+    /** Called by "Add a pin here" with the point. */
+    onAdd: (point: ClickPoint) => void;
+    /** Called by Close and by Esc inside the popup. */
+    onClose?: () => void;
+    point: ClickPoint;
+    x: number;
+    y: number;
+}) => import("react").JSX.Element;
+export type ClickPopupProps = Parameters<typeof ClickPopup>[0];
 
 /** The phone's non-modal date sheet: the map stays usable behind it. Collapsed or expanded; the grabber toggles it. */
 export declare const BottomSheet: ({ children, expanded, onExpandedChange, }: {

@@ -8,19 +8,26 @@ const RULE = ['max-lines', 'per-function'].join('-');
 const REASON = 'over 60 lines before the rule (C1174)';
 const CAP = 47;
 
+// A one-line disable, or a block disable where Prettier moves a one-line disable off its line.
+const DISABLE = new RegExp(String.raw`eslint-disable(?:-next-line)? ${RULE}\b`);
+const ENDS = [`-- ${REASON}`, `-- ${REASON} */`];
+
 /** Each `path:line` of a disable with another reason, and a line when there are more than `cap`. */
 const lengthDisables = (
   files: Record<string, string>,
   cap: number
 ): string[] => {
   const found = Object.entries(files).flatMap(([path, text]) =>
-    text.split('\n').flatMap((line, index) => {
-      const at = line.indexOf(`eslint-disable-next-line ${RULE}`);
-
-      return at === -1
-        ? []
-        : [{ at: `${path}:${index + 1}`, ok: line.endsWith(`-- ${REASON}`) }];
-    })
+    text.split('\n').flatMap((line, index) =>
+      DISABLE.test(line)
+        ? [
+            {
+              at: `${path}:${index + 1}`,
+              ok: ENDS.some(end => line.endsWith(end)),
+            },
+          ]
+        : []
+    )
   );
   const bad = found.filter(({ ok }) => !ok).map(({ at }) => at);
 
@@ -47,6 +54,17 @@ describe('lengthDisables', () => {
 
   it('accepts the fixed reason', () => {
     expect(lengthDisables({ 'a.ts': disable(REASON) }, 1)).toEqual([]);
+  });
+
+  it('counts a block disable and checks its reason', () => {
+    const block = (reason: string) =>
+      `/* eslint-disable ${RULE} -- ${reason} */\nx\n/* eslint-enable ${RULE} */`;
+
+    expect(lengthDisables({ 'a.ts': block(REASON) }, 1)).toEqual([]);
+    expect(lengthDisables({ 'a.ts': block('later') }, 1)).toEqual(['a.ts:1']);
+    expect(
+      lengthDisables({ 'a.ts': `${block(REASON)}\n${disable(REASON)}` }, 1)
+    ).toEqual(['2 disables, over the cap of 1']);
   });
 
   it('flags a count over the cap', () => {

@@ -64,6 +64,7 @@ const otherOf = (from: Omit<OtherPerson, 'id'>, id: string): OtherPerson => ({
   surname: from.surname,
 });
 
+/* eslint-disable max-lines-per-function -- over 60 lines before the rule (C1174) */
 /**
  * The Relationships page of a Person (PPL-02): three groups of Relationships, or the notice of a
  * load that failed. The subtitle is the name and a save note, with the dates on a line below. A
@@ -266,3 +267,4 @@ export const PersonRelationships = ({
     </EditOnComputer>
   );
 };
+/* eslint-enable max-lines-per-function */

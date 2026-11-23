@@ -776,7 +776,7 @@ describe('the Pin popup', () => {
     it('draws the Pin popup, not the click popup, when both are given', () => {
       renderPin({ click });
       act(() => lastProps().onOpenPoint({ x: 50, y: 60 }));
-      expect(screen.getByTestId('popup-floating')).toBeDefined();
+      expect(screen.getByTestId('popup-floating').textContent).toBe('50,60');
       expect(screen.queryByTestId('popup-click')).toBeNull();
     });
 

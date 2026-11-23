@@ -24,7 +24,8 @@ const SCREEN_ONLY: { blocker: string; folder: string }[] = [
     folder: 'map-pin-popup',
   },
   {
-    blocker: 'The map opens no click popup until M2.14.5.2 (#868).',
+    blocker:
+      'The board draws the map at 1901 with its search bar and the tabbed panel, which `/` does not.',
     folder: 'pin-click-popup',
   },
   {

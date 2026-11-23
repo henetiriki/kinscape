@@ -68,7 +68,8 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   await page.getByRole('button', { name: 'Save' }).click();
   await expect(page.getByRole('form', { name: 'Add a pin' })).toHaveCount(0);
 
-  // The Pins list holds 10,000 Pins at most, and the seed leaves room for this Pin.
+  // The Pins list holds 10,000 Pins at most. The seed leaves room for five more Pins: this test and
+  // map-click.spec.ts each add one.
   await expect
     .poll(async () => counts(page))
     .toEqual({ all: beforeLater.all + 1, shown: beforeLater.shown });

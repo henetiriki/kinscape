@@ -2,7 +2,7 @@
 
 - **Spec:** #1176
 - **Requirement IDs:** none: a process Chore.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -25,7 +25,7 @@ Check 1 needs a rule for what text closes an issue.
 - **B.** Use `closingIssuesReferences`. It also counts `Fixes`, `Resolves` and a link set in the sidebar. The summary then cannot point to the text to fix.
 - **Other:** your own.
 
-Recommended: A, because the Chore names the `Closes #n` text in the body, and the template (`.github/pull_request_template.md`) writes that form.
+**Answer: A** (@henetiriki)
 
 **D2 · A PR that changes more than one plan** · Decides: Tech lead
 
@@ -35,7 +35,7 @@ Checks 2 and 3 read "the `plans/` file that the PR changes". A PR can change two
 - **B.** Fail checks 2 and 3 with the line "The PR changes `<n>` plans; checks 2 and 3 need one." About 5 lines.
 - **Other:** your own.
 
-Recommended: A, because a second plan in the diff is not a fault, and B would block a PR for it.
+**Answer: A** (@henetiriki)
 
 With no changed plan, each edited test and each new dependency fails, as the Chore says.
 

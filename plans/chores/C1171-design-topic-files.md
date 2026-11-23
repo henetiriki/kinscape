@@ -1,7 +1,7 @@
 # Plan: C1171: Split design/DESIGN.md into topic files that plan:new lists
 
 - **Spec:** #1171
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -23,7 +23,7 @@ Step 8 says each line outside `plans/` that sends a reader to `DESIGN.md` for a 
 - **B.** Change only the listed lines. The three lines stay wrong.
 - **Other:** your own.
 
-Recommended: A, because the code comment rule says that a comment tells why the code is as it is now.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

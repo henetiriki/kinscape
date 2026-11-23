@@ -27,7 +27,7 @@
   background: var(--line-strong);
   border-radius: var(--radius-full);
   height: 4px;
-  width: 40px;
+  width: var(--size-handle);
 }
 
 .top {
@@ -52,7 +52,7 @@
   align-items: center;
   color: var(--pin);
   display: flex;
-  font-size: 16px;
+  font-size: 16px; /* own: event glyph size */
   gap: var(--space-8);
 }
 
@@ -84,7 +84,7 @@
 
 .note {
   color: var(--ink-3);
-  font-size: 12.5px;
+  font-size: var(--type-caption-size);
   margin: 0;
 }
 

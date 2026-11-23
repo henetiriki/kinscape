@@ -69,11 +69,11 @@
   box-sizing: border-box;
   color: var(--pin);
   display: flex;
-  font-size: 22px;
-  height: 36px;
+  font-size: 22px; /* own: glyph size in the disc */
+  height: 36px; /* own: disc */
   justify-content: center;
   position: relative;
-  width: 36px;
+  width: 36px; /* own: disc */
 }
 
 /* The halo of hover and pressed: the halo of a Pin on the map. */
@@ -88,26 +88,26 @@
 
 @media (hover: hover) {
   .pin:hover .disc {
-    height: 40px;
-    width: 40px;
+    height: 40px; /* own: hovered disc */
+    width: 40px; /* own: hovered disc */
   }
 
   .pin:hover::before {
     display: block;
-    height: 52px;
-    width: 52px;
+    height: var(--size-halo-hover);
+    width: var(--size-halo-hover);
   }
 }
 
 .pin[data-state='hover'] .disc {
-  height: 40px;
-  width: 40px;
+  height: 40px; /* own: hovered disc */
+  width: 40px; /* own: hovered disc */
 }
 
 .pin[data-state='hover']::before {
   display: block;
-  height: 52px;
-  width: 52px;
+  height: var(--size-halo-hover);
+  width: var(--size-halo-hover);
 }
 
 .pin:is(:active, [data-state='active']) .disc {
@@ -117,8 +117,8 @@
 
 .pin:is(:active, [data-state='active'])::before {
   display: block;
-  height: 44px;
-  width: 44px;
+  height: 44px; /* own: pressed halo */
+  width: 44px; /* own: pressed halo */
 }
 
 .pin:is(:focus-visible, [data-state='focus']) .disc {

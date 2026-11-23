@@ -6,7 +6,7 @@
   font-family: var(--font-body);
   font-size: var(--type-body-size);
   gap: var(--space-12);
-  height: 48px;
+  height: 48px; /* own: Toast and Banner shape */
   line-height: var(--type-body-line);
   padding: 0 var(--space-4) 0 var(--space-16);
 }
@@ -30,7 +30,7 @@
   font-family: var(--font-body);
   font-size: var(--type-button-s-size);
   font-weight: var(--type-button-s-weight);
-  height: 36px;
+  height: var(--size-control-xs);
   line-height: var(--type-button-s-line);
   padding: 0 var(--space-12);
 }
@@ -38,7 +38,7 @@
 .toast {
   composes: floating from '@ks/app/components/foundation/Surface.module.css';
   border: 1px solid var(--line);
-  height: 50px;
+  height: 50px; /* own: Toast with its border */
 }
 
 /* A success toast has no button, so it keeps the left padding on both sides. */
@@ -65,7 +65,7 @@
   border-radius: var(--radius-panel);
   box-shadow: var(--shadow-floating);
   color: var(--white);
-  height: 52px;
+  height: 52px; /* own: Banner on a desktop */
   padding-right: var(--space-8);
 }
 

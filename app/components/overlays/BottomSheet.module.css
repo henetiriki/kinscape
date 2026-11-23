@@ -22,9 +22,9 @@
   border: 0;
   cursor: pointer;
   display: flex;
-  height: 20px;
+  height: 20px; /* own: grabber box */
   justify-content: center;
-  margin-bottom: -4px;
+  margin-bottom: calc(-1 * var(--space-4));
   padding: 0;
   position: relative;
   width: 64px;
@@ -46,7 +46,7 @@
 
 .handle {
   background: var(--line-strong);
-  border-radius: 2px;
+  border-radius: var(--radius-bar);
   height: 4px;
-  width: 40px;
+  width: var(--size-handle);
 }

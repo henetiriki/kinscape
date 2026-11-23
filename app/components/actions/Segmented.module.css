@@ -23,7 +23,7 @@
   justify-content: center;
   line-height: var(--type-chip-line);
   /* The Map snapshot draws each speed segment at least 40px wide. With the 4px gap, each 44px hit area then meets the next. */
-  min-width: 40px;
+  min-width: 40px; /* own: narrowest speed segment: the 44px hit areas meet */
   padding: 0 var(--space-12);
   position: relative;
 }

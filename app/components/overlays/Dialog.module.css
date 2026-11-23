@@ -68,7 +68,7 @@
   display: none;
   flex: none;
   height: 4px;
-  width: 40px;
+  width: var(--size-handle);
 }
 
 .panel[data-form='sheet'] .handle {

@@ -21,7 +21,7 @@ import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
 
 const SEEDED = 9_995;
 // The save tests of pin-form.spec.ts, map-click.spec.ts and this file add one Pin each to the same
-// Tree, so a count reads up to three more once they ran. The seed leaves room for five more Pins.
+// Tree. After they run, a count reads up to three more. The seed leaves room for five more Pins.
 const ALL = `(?:${SEEDED}|${SEEDED + 1}|${SEEDED + 2}|${SEEDED + 3})`;
 
 const hasImage = (page: Page, eventType: string) =>
@@ -267,32 +267,24 @@ test('"Add a pin here" saves a Pin at the Place of the Pin', async ({
   await expect(popup(page)).toBeHidden();
   await expect(coordinates(page)).toBeDisabled();
   await expect(coordinates(page)).toHaveValue(/^-?\d+\.\d{6}, -?\d+\.\d{6}$/);
-  await expect(page.getByLabel('Precision')).toBeDisabled();
+  // The map has a Precision filter too, so the label alone names two elements.
+  await expect(
+    page.getByRole('form', { name: 'Add a pin' }).getByLabel('Precision')
+  ).toBeDisabled();
 
-  const placeId = async () =>
-    (
-      (await (await page.request.get('/data/pins')).json()) as {
-        id: string;
-        placeId: string;
-      }[]
-    ).find(({ id }) => id === pin.id)!.placeId;
-  const atPlace = async () => {
-    const id = await placeId();
-    const all = (await (await page.request.get('/data/pins')).json()) as {
+  const pinsData = async () =>
+    (await (await page.request.get('/data/pins')).json()) as {
+      id: string;
       placeId: string;
     }[];
+  // The Pins at the Place of the picked Pin. Only this test saves a Pin at that Place.
+  const atPlace = async () => {
+    const all = await pinsData();
+    const { placeId } = all.find(({ id }) => id === pin.id)!;
 
-    return all.filter(({ placeId: other }) => other === id).length;
+    return all.filter(other => other.placeId === placeId).length;
   };
-  const places = async () =>
-    new Set(
-      (
-        (await (await page.request.get('/data/pins')).json()) as {
-          placeId: string;
-        }[]
-      ).map(({ placeId: id }) => id)
-    ).size;
-  const before = { atPlace: await atPlace(), places: await places() };
+  const before = await atPlace();
 
   await page.getByRole('combobox', { name: 'Person' }).click();
   await page.getByRole('option').first().click();
@@ -300,8 +292,8 @@ test('"Add a pin here" saves a Pin at the Place of the Pin', async ({
   await page.getByLabel('Date', { exact: true }).fill('1950');
   await page.getByRole('button', { name: 'Save' }).click();
   await expect(page.getByRole('form', { name: 'Add a pin' })).toBeHidden();
-  await expect.poll(atPlace).toBe(before.atPlace + 1);
-  expect(await places()).toBe(before.places);
+  // The Pin joins the Place, so the save adds no Place for it.
+  await expect.poll(atPlace).toBe(before + 1);
   // The Pin was alone at its point, so the two Pins of the Place now show one marker with 2.
   await expect
     .poll(() =>

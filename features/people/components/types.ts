@@ -6,6 +6,7 @@ import type {
   PersonFieldErrors,
   PersonView,
 } from '@ks/lib/domain/persons/types.ts';
+import type { Place } from '@ks/lib/domain/places/types.ts';
 import type {
   Relationship,
   RelationshipSaveError,
@@ -14,6 +15,12 @@ import type { Result } from '@ks/lib/domain/result/types.ts';
 
 /** A result code that shows an alert. `invalid` shows the error toast instead. */
 export type AlertCode = Exclude<RelationshipSaveError, 'invalid'>;
+
+/** The Place that "Add a pin here" fixes in the Pin form: its id, its point and its precision. */
+export type FixedPlace = Pick<
+  Place,
+  'id' | 'latitude' | 'longitude' | 'precision'
+>;
 
 /** The text of an alert. `action` is a button under it. */
 export type Message = {

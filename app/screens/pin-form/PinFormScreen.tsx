@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import type { Place } from '@ks/lib/domain/places/types.ts';
+import type { FixedPlace } from '@ks/features/people';
 
 import { useAddPin } from '@ks/app/@map/useAddPin';
 import { MapFrame } from '@ks/app/screens/map-frame';
@@ -15,11 +15,7 @@ const noop = () => {};
  * A `state` in `e2e/design-states.ts` opens and fills the panel. With a `place`, the panel opens at
  * that Place on mount, as "Add a pin here" does. All data is synthetic.
  */
-export const PinFormScreen = ({
-  place,
-}: {
-  place?: Pick<Place, 'id' | 'latitude' | 'longitude' | 'precision'>;
-}) => {
+export const PinFormScreen = ({ place }: { place?: FixedPlace }) => {
   const { action, addHere, panel } = useAddPin({ onSaved: noop });
 
   useEffect(() => {

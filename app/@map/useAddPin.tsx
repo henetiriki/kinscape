@@ -1,11 +1,12 @@
 'use client';
 
-import type { ComponentProps, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { useCallback, useRef, useState } from 'react';
 
 import type { ClickPoint } from '@ks/app/components/overlays/types';
 import type { ClickProp } from '@ks/features/map';
+import type { FixedPlace } from '@ks/features/people';
 
 import { createPinAction } from '@ks/app/@map/actions';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
@@ -13,8 +14,6 @@ import { ClickPopup } from '@ks/app/components/overlays/ClickPopup';
 import { useDismiss } from '@ks/app/components/overlays/useDismiss';
 import { AddPinButton } from '@ks/features/map';
 import { PinForm } from '@ks/features/people';
-
-type FixedPlace = NonNullable<ComponentProps<typeof PinForm>['place']>;
 
 /**
  * The add flow: closed, the click popup at a point, or the panel with an optional point or an

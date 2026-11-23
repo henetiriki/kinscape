@@ -4,8 +4,8 @@ import type { ComponentProps } from 'react';
 
 import { useCallback, useMemo, useState } from 'react';
 
+import type { FixedPlace } from '@ks/features/people';
 import type { MapPin } from '@ks/lib/domain/pins/types.ts';
-import type { Place } from '@ks/lib/domain/places/types.ts';
 
 import { useAddPin } from '@ks/app/@map/useAddPin';
 import { Toast } from '@ks/app/components/feedback/Toast';
@@ -15,8 +15,6 @@ import { MapShell, pinsLayer, polityLayer } from '@ks/features/map';
 import { usePinDetails, usePins } from '@ks/features/pins';
 import { readFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date-text.mts';
 import { formatFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date.mts';
-
-type AddHerePlace = Pick<Place, 'id' | 'latitude' | 'longitude' | 'precision'>;
 
 /**
  * The popup of the open Pin. It asks for the details when it mounts, so the popup sends no
@@ -30,7 +28,7 @@ const OpenPinPopup = ({
   place,
 }: {
   /** Opens the panel at the Place of the Pin, with the precision from its details. */
-  onAddHere?: (place: AddHerePlace) => void;
+  onAddHere?: (place: FixedPlace) => void;
   onClose: () => void;
   pin: MapPin;
   /** The point of the Pin on a desktop; none on a phone, where the popup sits in the date sheet. */
@@ -75,7 +73,7 @@ const OpenPinPopup = ({
 const pinProp = (
   open: MapPin,
   close: () => void,
-  addHere?: (place: AddHerePlace) => void
+  addHere?: (place: FixedPlace) => void
 ): NonNullable<ComponentProps<typeof MapShell>['pin']> => ({
   open: { id: open.id, position: [open.longitude, open.latitude] },
   popup: (form, place) => (

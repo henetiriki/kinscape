@@ -5,7 +5,10 @@ import type { FormEvent, RefObject } from 'react';
 import { useEffect, useId, useRef, useState } from 'react';
 
 import type { ClickPoint } from '@ks/app/components/overlays/types';
-import type { PinMessages } from '@ks/features/people/components/types.ts';
+import type {
+  FixedPlace,
+  PinMessages,
+} from '@ks/features/people/components/types.ts';
 import type { PersonSummary } from '@ks/lib/domain/persons/types.ts';
 import type { Place } from '@ks/lib/domain/places/types.ts';
 
@@ -71,7 +74,7 @@ type PinFormProps = {
    * An existing Place. Its point and precision are fixed, and a save sends `kind: 'existing'`. The
    * caller gives the form a new `key` for another Place.
    */
-  place?: Pick<Place, 'id' | 'latitude' | 'longitude' | 'precision'>;
+  place?: FixedPlace;
   /** A point for the coordinates field. A new point replaces the text of that field only. */
   point?: ClickPoint;
 };

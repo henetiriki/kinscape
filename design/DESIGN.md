@@ -4,7 +4,7 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 
 ## Design files
 
-Each file in `design/topics/` has `paths:` frontmatter. `npm run plan:new` lists the files whose paths match an issue.
+Each file in `design/topics/` has `paths:` frontmatter. `npm run plan:new` lists the files whose paths match an issue. These are not `.claude/rules/` files. CI edits them, and CI never edits a rule file: it is a [hand-back path](../plans/README.md#hand-back).
 
 - [foundations.md](topics/foundations.md): Brand, Fonts, Colours, Shape and depth, Motion.
 - [layout.md](topics/layout.md): Layout.

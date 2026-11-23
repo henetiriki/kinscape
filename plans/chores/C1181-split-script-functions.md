@@ -79,3 +79,9 @@ Each removed disable is part of the row of its file. The parts in each row are a
 - The lint ban and the removal of the length-disables test: #1182.
 
 ## Deviations
+
+- `fillTemplate` got three page steps, not two: `defineTemplateHelpers`, `defineTemplateFillers` and `defineTemplateWalk`. One step with the fillers held 74 lines.
+- `database-store.mts` has nine builders, not five: `personUpdate`, `placeUpdate`, `relationshipUpdate`, `pinLists` and `pinUpdate` split the entity builders that held more than 60 lines.
+- `agent-unblock.mts`, `hand-back.mts` and `issue-status.mts`: more helpers than the table lists, so that `run` fits.
+- D2 A: `pageHtml` merges loops and uses selectors. `fonts.css` links go in through `insertAdjacentHTML`. The `<link>` removal stays after the `var()` step, because `tokens.css` gives `:root` its values.
+- The reword step (D2 A) changed no text: #1181 Constraint 2 and done check 3 already allow it.

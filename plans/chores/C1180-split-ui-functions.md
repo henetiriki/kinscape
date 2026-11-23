@@ -104,6 +104,7 @@ Each removed disable is part of the row of its file. The parts in each row are a
 
 ## Deviations
 
-- Big: step 6 stops. `components/index.d.ts` differs from step 1. `DateField`, `FuzzyDateField`, `PersonField` and `DateDock` now take `props: <Name>Args` or a `ListProps`, where they took an inline type. The props types are the same. The tech lead decides whether to accept the new declaration text or to keep each inline type with a thin wrapper.
+- Big: step 6 stops. `components/index.d.ts` differs from step 1. `DateField`, `FuzzyDateField`, `PersonField`, `PersonFieldList` and `DateDock` now take `props: <Name>Args` or a named type, where they took an inline type. The props types are the same. The tech lead accepted the new declaration text. No wrapper is added.
+- Small: five component READMEs differ from step 1 (`ColumnLayout`, `PersonFieldList`, `PinPopup`, `Popup`, `Surface`). TypeScript lists the members of four unions in a new order. `PersonFieldList` shows the alias `Rows`. The props types are the same. Step 3 sends these files with the new declaration text.
 - Small: a component with a long destructured prop list takes one `props` argument, and a hook or a part reads it. The line count of `max-lines-per-function` includes the parameters.
 - Small: a ref that a hook uses is made in the component and passed to the hook (the `react-hooks/refs` rule). A named props type is `<Name>Args` where `<Name>Props` is a bundle type name.

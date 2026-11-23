@@ -30,6 +30,8 @@ type PinPopupArgs = {
   onAddHere?: () => void;
   /** Called by Close and by Esc inside the floating popup. */
   onClose?: () => void;
+  /** "Edit" in the floating popup calls it. */
+  onEdit?: () => void;
   /** Called by "Try again" in the failed state. */
   onRetry?: () => void;
   /** The reading of the date, such as "From 1890 to 1905". */
@@ -109,12 +111,13 @@ const Actions = ({
   floating,
   loaded,
   onAddHere,
+  onEdit,
   onRetry,
   state,
 }: {
   floating: boolean;
   loaded: boolean;
-} & Pick<PinPopupArgs, 'onAddHere' | 'onRetry' | 'state'>) => {
+} & Pick<PinPopupArgs, 'onAddHere' | 'onEdit' | 'onRetry' | 'state'>) => {
   if (state === 'failed') {
     return (
       <div className={styles.actions}>
@@ -131,7 +134,7 @@ const Actions = ({
         <Button disabled={!loaded} onClick={onAddHere} variant='primary'>
           Add a pin here
         </Button>
-        <Button disabled={!loaded} variant='secondary'>
+        <Button disabled={!loaded} onClick={onEdit} variant='secondary'>
           Edit
         </Button>
       </div>
@@ -214,6 +217,7 @@ export const PinPopup = ({
   name,
   onAddHere,
   onClose,
+  onEdit,
   onRetry,
   reading,
   recorded,
@@ -243,6 +247,7 @@ export const PinPopup = ({
       floating={floating}
       loaded={loaded}
       onAddHere={onAddHere}
+      onEdit={onEdit}
       onRetry={onRetry}
       state={state}
     />

@@ -155,6 +155,15 @@ it('calls onAddHere from "Add a pin here"', () => {
   expect(onAddHere).toHaveBeenCalledOnce();
 });
 
+// PIN-02
+it('calls onEdit from "Edit"', () => {
+  const onEdit = vi.fn();
+
+  show({ onEdit });
+  fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
+  expect(onEdit).toHaveBeenCalledOnce();
+});
+
 // NFR-05
 it('has "Add a pin here" and "Edit" on a desktop, and neither on a phone', () => {
   const { unmount } = show();

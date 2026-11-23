@@ -2,7 +2,11 @@
 
 import { useQuery } from '@tanstack/react-query';
 
-import type { MapPin, PinDetails } from '@ks/lib/domain/pins/types.ts';
+import type {
+  MapPin,
+  PinDetails,
+  PinEditFields,
+} from '@ks/lib/domain/pins/types.ts';
 
 import { requestError } from '@ks/lib/domain/requests/request-error.mts';
 
@@ -23,6 +27,31 @@ export const fetchPins = async (): Promise<MapPin[]> => {
  */
 export const usePins = () =>
   useQuery({ queryFn: fetchPins, queryKey: ['pins'], staleTime: Infinity });
+
+/** The fields of one Pin for the edit form from `/data/pins/{id}/edit`. A response that is not OK throws. */
+export const fetchPinEdit = async (
+  id: MapPin['id']
+): Promise<PinEditFields> => {
+  const response = await fetch(`/data/pins/${id}/edit`);
+
+  if (!response.ok) {
+    throw requestError('Pins', response.status);
+  }
+
+  return (await response.json()) as PinEditFields;
+};
+
+/**
+ * The fields of one Pin for the edit form. `gcTime: 0` drops the answer when the form closes, so
+ * each "Edit" asks again and reads the current `version`. The key starts with `['pins']`.
+ */
+export const usePinEdit = (id: MapPin['id']) =>
+  useQuery({
+    gcTime: 0,
+    queryFn: () => fetchPinEdit(id),
+    queryKey: ['pins', id, 'edit'],
+    staleTime: Infinity,
+  });
 
 /** The details of one Pin from `/data/pins/{id}`. A response that is not OK throws. */
 export const fetchPinDetails = async (

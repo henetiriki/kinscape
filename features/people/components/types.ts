@@ -1,3 +1,4 @@
+import type { UseQueryResult } from '@tanstack/react-query';
 import type { ComponentProps } from 'react';
 
 import type { RelationshipRow } from '@ks/app/components/actions/RelationshipRow';
@@ -6,6 +7,7 @@ import type {
   PersonFieldErrors,
   PersonView,
 } from '@ks/lib/domain/persons/types.ts';
+import type { PinEditFields } from '@ks/lib/domain/pins/types.ts';
 import type { Place } from '@ks/lib/domain/places/types.ts';
 import type {
   Relationship,
@@ -35,6 +37,18 @@ export type OtherPerson = {
   id: string;
   surname: string;
 } & PersonDates;
+
+/**
+ * What the Pin form needs to edit a Pin: its id and the state of the query for its fields. The
+ * caller asks, because a feature may not import another.
+ */
+export type PinEdit = {
+  id: string;
+  query: Pick<
+    UseQueryResult<PinEditFields>,
+    'data' | 'isError' | 'isFetching' | 'isPending' | 'refetch'
+  >;
+};
 
 /** The error text under each field of the Pin form that has one. */
 export type PinMessages = {

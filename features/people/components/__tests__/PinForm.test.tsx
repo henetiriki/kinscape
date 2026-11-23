@@ -632,3 +632,330 @@ it('leaves an Esc that closes the Person list to the list', async () => {
 
   expect(onCancel).not.toHaveBeenCalled();
 });
+
+// PIN-02. The edit form.
+const FIELDS = {
+  address: '1 Church Street',
+  date: '1850',
+  eventType: 'baptism',
+  latitude: -29.12,
+  longitude: 26.21,
+  notes: 'A note',
+  personId: PERSON.id,
+  precision: 'town',
+  sources: 'A register',
+  version: 2,
+};
+
+type EditQuery = NonNullable<Parameters<typeof PinForm>[0]['edit']>['query'];
+
+const PIN_ID = '01900000-0000-7000-b000-0000000000d1';
+
+const query = (over: Partial<EditQuery> = {}): EditQuery =>
+  ({
+    data: FIELDS as EditQuery['data'],
+    isError: false,
+    isFetching: false,
+    isPending: false,
+    refetch: vi.fn(),
+    ...over,
+  }) as EditQuery;
+
+const setupEdit = (over: Partial<EditQuery> = {}, people: unknown = [PERSON]) =>
+  setup({ edit: { id: PIN_ID, query: query(over) } }, people);
+
+it('shows the title "Edit a pin" and the values of the Pin', async () => {
+  setupEdit();
+  await ready();
+
+  expect(screen.getByRole('heading', { name: 'Edit a pin' })).toBeInstanceOf(
+    HTMLElement
+  );
+  expect((screen.getByLabelText('Person') as HTMLInputElement).value).toBe(
+    'Maria Magdalena du Toit'
+  );
+  expect((screen.getByLabelText('Event type') as HTMLSelectElement).value).toBe(
+    'baptism'
+  );
+  expect((screen.getByLabelText('Date') as HTMLInputElement).value).toBe(
+    '1850'
+  );
+  expect(coordinates()).toBe('-29.120000, 26.210000');
+  expect(
+    (screen.getByLabelText('Address as recorded') as HTMLInputElement).value
+  ).toBe('1 Church Street');
+  expect((screen.getByLabelText('Sources') as HTMLTextAreaElement).value).toBe(
+    'A register'
+  );
+  expect((screen.getByLabelText('Notes') as HTMLTextAreaElement).value).toBe(
+    'A note'
+  );
+});
+
+it('fixes the precision with its note while the point is unchanged, and frees both when it changes', async () => {
+  setupEdit();
+  await ready();
+
+  const precision = screen.getByLabelText('Precision') as HTMLSelectElement;
+
+  expect(precision.value).toBe('town');
+  expect(precision.disabled).toBe(true);
+  expect(
+    screen.getByText('This is the precision of the Place.')
+  ).toBeInstanceOf(HTMLElement);
+  expect(
+    (screen.getByLabelText('Coordinates') as HTMLInputElement).disabled
+  ).toBe(false);
+
+  fireEvent.change(screen.getByLabelText('Coordinates'), {
+    target: { value: '-30, 20' },
+  });
+  expect(precision.disabled).toBe(false);
+  expect(screen.queryByText('This is the precision of the Place.')).toBeNull();
+});
+
+it('counts a typed point that equals the point of the Place as unchanged, and a point with only the longitude changed as moved', async () => {
+  setupEdit();
+  await ready();
+
+  const precision = screen.getByLabelText('Precision') as HTMLSelectElement;
+
+  fireEvent.change(screen.getByLabelText('Coordinates'), {
+    target: { value: '-29.12, 26.21' },
+  });
+  expect(precision.disabled).toBe(true);
+  fireEvent.change(screen.getByLabelText('Coordinates'), {
+    target: { value: '-29.12, 26.5' },
+  });
+  expect(precision.disabled).toBe(false);
+});
+
+it('shows the loading look while the fields are pending, with Save off', async () => {
+  setupEdit({ data: undefined, isPending: true });
+
+  expect(screen.getByRole('heading', { name: 'Edit a pin' })).toBeInstanceOf(
+    HTMLElement
+  );
+  expect(screen.getAllByTestId('loading-bar')).toHaveLength(10);
+  expect(
+    (screen.getByRole('button', { name: 'Save' }) as HTMLButtonElement).disabled
+  ).toBe(true);
+  expect(screen.queryByRole('combobox')).toBeNull();
+});
+
+it('shows the loading look until the Persons arrive, when the fields are there', () => {
+  fetchStub.mockImplementation(() => new Promise(() => {}));
+  render(
+    <QueryProvider>
+      <PinForm
+        edit={{ id: PIN_ID, query: query() }}
+        onCancel={vi.fn()}
+        onSave={vi.fn()}
+        onSaved={vi.fn()}
+      />
+    </QueryProvider>
+  );
+
+  expect(screen.getAllByTestId('loading-bar')).toHaveLength(10);
+});
+
+it('shows the Pin alert and asks again for the fields when they do not load', async () => {
+  const refetch = vi.fn();
+
+  setupEdit({ data: undefined, isError: true, refetch });
+
+  expect((await screen.findByRole('alert')).textContent).toContain(
+    "Couldn't load this Pin"
+  );
+  expect(screen.queryByRole('button', { name: 'Save' })).toBeNull();
+
+  fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+  expect(refetch).toHaveBeenCalledTimes(1);
+  // The Persons loaded, so only the fields ask again.
+  expect(fetchStub).toHaveBeenCalledTimes(1);
+});
+
+it('keeps the loading look while a failed query asks again', async () => {
+  setupEdit({ data: undefined, isError: true, isFetching: true });
+
+  expect(screen.getAllByTestId('loading-bar')).toHaveLength(10);
+});
+
+it('shows the Pin title when the fields and the Persons both fail, and asks again for both', async () => {
+  const refetch = vi.fn();
+
+  fetchStub.mockResolvedValueOnce(new Response(null, { status: 401 }));
+  fetchStub.mockResolvedValue(Response.json([PERSON]));
+  render(
+    <QueryProvider>
+      <PinForm
+        edit={{
+          id: PIN_ID,
+          query: query({ data: undefined, isError: true, refetch }),
+        }}
+        onCancel={vi.fn()}
+        onSave={vi.fn()}
+        onSaved={vi.fn()}
+      />
+    </QueryProvider>
+  );
+
+  expect((await screen.findByRole('alert')).textContent).toContain(
+    "Couldn't load this Pin"
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+  expect(refetch).toHaveBeenCalledTimes(1);
+  // The fake query stays failed, so the alert stays; the Persons asked again.
+  await waitFor(() => expect(fetchStub).toHaveBeenCalledTimes(2));
+});
+
+it('shows the Persons title when only the Persons fail, and asks again only for them', async () => {
+  const refetch = vi.fn();
+
+  fetchStub.mockResolvedValueOnce(new Response(null, { status: 401 }));
+  fetchStub.mockResolvedValue(Response.json([PERSON]));
+  render(
+    <QueryProvider>
+      <PinForm
+        edit={{ id: PIN_ID, query: query({ refetch }) }}
+        onCancel={vi.fn()}
+        onSave={vi.fn()}
+        onSaved={vi.fn()}
+      />
+    </QueryProvider>
+  );
+
+  expect((await screen.findByRole('alert')).textContent).toContain(
+    "Couldn't load your people"
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+  expect(await ready()).toBeInstanceOf(HTMLElement);
+  expect(refetch).not.toHaveBeenCalled();
+});
+
+it('saves an unchanged point as "stays" with the id and the version, and no precision', async () => {
+  const { onSave, onSaved } = setupEdit();
+
+  await ready();
+  fireEvent.change(screen.getByLabelText('Date'), {
+    target: { value: 'FROM 1840 TO 1845' },
+  });
+  save();
+
+  await waitFor(() => expect(onSaved).toHaveBeenCalledTimes(1));
+  expect(onSave).toHaveBeenCalledWith({
+    address: '1 Church Street',
+    date: 'FROM 1840 TO 1845',
+    eventType: 'baptism',
+    id: PIN_ID,
+    notes: 'A note',
+    personId: PERSON.id,
+    place: { kind: 'stays' },
+    sources: 'A register',
+    version: 2,
+  });
+});
+
+it('saves a changed point as a new point with the precision', async () => {
+  const { onSave, onSaved } = setupEdit();
+
+  await ready();
+  fireEvent.change(screen.getByLabelText('Coordinates'), {
+    target: { value: '-33.93, 18.42' },
+  });
+  fireEvent.change(screen.getByLabelText('Precision'), {
+    target: { value: 'farm' },
+  });
+  save();
+
+  await waitFor(() => expect(onSaved).toHaveBeenCalledTimes(1));
+
+  const [[input]] = vi.mocked(onSave).mock.calls as unknown as [
+    [{ id: string; place: Record<string, unknown>; version: number }],
+  ];
+
+  expect(input.id).toBe(PIN_ID);
+  expect(input.version).toBe(2);
+  expect(input.place).toMatchObject({
+    kind: 'new',
+    latitude: -33.93,
+    longitude: 18.42,
+    precision: 'farm',
+  });
+  expect(input.place.id).toMatch(/^[0-9a-f-]{36}$/);
+});
+
+it('keeps a point with more than six decimals at its Place until the text changes', async () => {
+  const { onSave } = setupEdit({
+    data: { ...FIELDS, latitude: -29.1234567 } as EditQuery['data'],
+  });
+
+  await ready();
+  expect(coordinates()).toBe('-29.123457, 26.210000');
+  expect(
+    (screen.getByLabelText('Precision') as HTMLSelectElement).disabled
+  ).toBe(true);
+  save();
+
+  await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+  expect(
+    (vi.mocked(onSave).mock.calls[0] as unknown as [{ place: unknown }])[0]
+      .place
+  ).toEqual({ kind: 'stays' });
+});
+
+it('saves the Person that the user picks', async () => {
+  const other = {
+    ...PERSON,
+    givenNames: 'Anna',
+    id: '01900000-0000-7000-8000-0000000000a2',
+    surname: 'Example',
+  };
+  const { onSave } = setupEdit({}, [PERSON, other]);
+  const person = await ready();
+
+  fireEvent.change(person, { target: { value: 'Anna' } });
+  fireEvent.keyDown(person, { key: 'ArrowDown' });
+  fireEvent.keyDown(person, { key: 'Enter' });
+  save();
+
+  await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+  expect(
+    (vi.mocked(onSave).mock.calls[0] as unknown as [{ personId: string }])[0]
+      .personId
+  ).toBe(other.id);
+});
+
+it('shows the error of an invalid date and saves nothing', async () => {
+  const { onSave } = setupEdit();
+
+  await ready();
+  fireEvent.change(screen.getByLabelText('Date'), {
+    target: { value: '31 FEB 1850' },
+  });
+  save();
+
+  expect(
+    await screen.findAllByText('February 1850 has 28 days.')
+  ).not.toHaveLength(0);
+  expect(onSave).not.toHaveBeenCalled();
+});
+
+it('shows an alert and keeps the values when the edit save fails', async () => {
+  const { onSave, onSaved } = setupEdit({}, [PERSON]);
+
+  vi.mocked(onSave).mockResolvedValue({ ok: false });
+  await ready();
+  fireEvent.change(screen.getByLabelText('Date'), {
+    target: { value: '1851' },
+  });
+  save();
+
+  expect(await screen.findByText("Couldn't save the pin")).toBeInstanceOf(
+    HTMLElement
+  );
+  expect((screen.getByLabelText('Date') as HTMLInputElement).value).toBe(
+    '1851'
+  );
+  expect(onSaved).not.toHaveBeenCalled();
+});

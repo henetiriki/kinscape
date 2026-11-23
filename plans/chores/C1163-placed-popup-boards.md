@@ -65,3 +65,4 @@ The design system rule of [`plans/README.md`](../README.md#design-system) applie
 ## Deviations
 
 - The build also deleted the `BUTTON` helper of `Map-pin-count.dc.html`. Only `popup()` used it.
+- The JPGs of the three snapshots did not change: the render matched them byte for byte.

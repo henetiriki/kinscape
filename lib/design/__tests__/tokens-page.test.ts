@@ -81,6 +81,10 @@ describe('the token page', () => {
     expect(readers.length).toBeGreaterThan(0);
   });
 
+  it('has the part "The size check"', () => {
+    expect(readFileSync(PAGE, 'utf8')).toMatch(/^## The size check$/m);
+  });
+
   it('names each module outside tests that reads design/tokens.json', () => {
     expect(unnamed(readers, readFileSync(PAGE, 'utf8'))).toEqual([]);
   });

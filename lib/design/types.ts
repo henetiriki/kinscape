@@ -1,3 +1,5 @@
+import type { Tree } from '@ks/design/types.ts';
+
 /** What a control's design system card shows (Spec #450). */
 export type Card = {
   /** The CSS width of each state's box, for a control that fills its parent. A state has no box of its own. */
@@ -73,11 +75,35 @@ export type Role =
   | 'overlay'
   | 'text';
 
+/** How a property reads its tokens: `pick` takes the tokens of the property's group from the token tree. */
+export type Rule = {
+  kind: 'colour' | 'duration' | 'number' | 'shadow';
+  pick: (tokens: Tree) => unknown[];
+};
+
 export type Shot = {
   fullPage: boolean;
   height: number;
   scale: number;
   width: number;
+};
+
+/** A size that the size check reads. `token`: it equals a token of its group. `own`: its line has an `own:` reason. */
+export type Size = {
+  file: string;
+  line: number;
+  own: boolean;
+  property: string;
+  token: boolean;
+  value: string;
+};
+
+/** A line of `off-token-sizes.json`: the size appears `count` times in the file. */
+export type SizeEntry = {
+  count: number;
+  file: string;
+  property: string;
+  value: string;
 };
 
 /** A control inside a state: its name on `window.KinScape`, its props and its text. */

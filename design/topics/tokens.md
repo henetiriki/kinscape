@@ -66,8 +66,8 @@ See [Changing the design system](../CANVAS.md#changing-the-design-system). This 
 
 ## The checks
 
-- `lib/design/__tests__/literals.test.ts`
-- The `own:` comment
+- `lib/design/__tests__/literals.test.ts` fails on a `.module.css` literal that equals a token of its group.
+- Write `/* own: <reason> */` on a literal that is a part's own dimension.
 
 The rule is the "Tokens are the one source" row in [`docs/architecture.md`](../../docs/architecture.md).
 

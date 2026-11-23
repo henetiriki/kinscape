@@ -139,5 +139,5 @@ The description of `.claude/skills/publish-design-system/SKILL.md` says to publi
 
 - The "A colour, size or font value" row links to the page as "path" in its second cell, with `docs/architecture.md` unchanged elsewhere.
 - `SKILL.md` lost words to stay at its budget of 650. The description now says "a design system input". A new **When to run** list holds the inputs. (#1212 review, tech lead answer)
-- `design/topics/tokens.md` names the checks and links to the row in `docs/architecture.md`. It does not restate what they check. The line "`lib/design/system.mts` does not read it" stays in `design/DESIGN.md` only. This differs from the wording of Spec parts 2 and 5. (#1212 review, tech lead answer)
+- `design/topics/tokens.md` names the checks, gives one clause for the effect of each, and links to the row in `docs/architecture.md`. It does not restate the rule of the row. The line "`lib/design/system.mts` does not read it" stays in `design/DESIGN.md` only. This differs from the wording of Spec parts 2 and 5. (#1212 review, tech lead answer)
 - `project/design-system.json` differs from the output of `main` in its commit stamp (`at`, `note` and `via` of `lastChange`). The other 238 files have the same sha256.

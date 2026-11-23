@@ -2,7 +2,7 @@
 
 - **Spec:** #1163
 - **Requirement IDs:** [PIN-01](../../docs/requirements.md#pin-01), [PIN-02](../../docs/requirements.md#pin-02)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -23,7 +23,7 @@ The board `Map-add-pin`, variant `click-popup` (snapshot `pin-click-popup`), dra
 - **C.** Block the row on #1187, and swap the click popup here. Cost: #1187 already does this swap, so this Chore waits for nothing new.
 - **Other:** your own.
 
-Recommended: A, because the click popup is a different part, and #1187 owns it.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

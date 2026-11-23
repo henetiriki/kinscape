@@ -31,11 +31,25 @@ const counts = async (page: Page) => {
   return { all, shown };
 };
 
-/** The shown count, and whether the total passes `all`: this test's Pin adds one at least. */
-const grown = async (page: Page, all: number) => {
-  const now = await counts(page);
+type ListedPin = {
+  date1: string;
+  date2?: string;
+  id: string;
+  qualifier: string;
+};
 
-  return { grew: now.all > all, shown: now.shown };
+/** The Pins that this test saved: the ids that the first load did not list, with its dates. */
+const savedPins = async (page: Page, known: Set<string>) => {
+  const response = await page.request.get('/data/pins');
+  const pins = (await response.json()) as ListedPin[];
+
+  return pins.filter(
+    pin =>
+      !known.has(pin.id) &&
+      pin.qualifier === 'FROM' &&
+      pin.date1 === '1840' &&
+      pin.date2 === '1855'
+  ).length;
 };
 
 // PIN-01, PIN-02: a new Person shows in the Person field, and a residence FROM 1840 TO 1855 shows at
@@ -54,7 +68,9 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
 
   await page.goto('/');
 
-  const loaded = ((await (await pinsLoaded).json()) as unknown[]).length;
+  const listed = (await (await pinsLoaded).json()) as ListedPin[];
+  const loaded = listed.length;
+  const known = new Set(listed.map(({ id }) => id));
 
   await page.waitForFunction(() => 'kinscapeMap' in window);
   await expect.poll(async () => (await counts(page)).all).toBe(loaded);
@@ -75,20 +91,22 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   await page.getByRole('button', { name: 'Save' }).click();
   await expect(page.getByRole('form', { name: 'Add a pin' })).toHaveCount(0);
 
-  // The Pins list holds 10,000 Pins at most. The seed leaves room for five more Pins: the save tests
-  // of other specs add them to the same Tree while this test runs, so the total rises by one or more.
-  // Their Pins do not show at 1850 or 1860, so the shown count is exact.
+  // The Pins list holds 10,000 Pins at most. The seed leaves room for five more Pins. The save tests
+  // of other specs add Pins to the same Tree while this test runs, so the total is not exact. The
+  // saved Pins of this test are exact, and the Pins of the other specs do not show at 1850 or 1860.
+  await expect.poll(async () => savedPins(page, known)).toBe(1);
   await expect
-    .poll(async () => grown(page, beforeLater.all))
-    .toEqual({ grew: true, shown: beforeLater.shown });
+    .poll(async () => (await counts(page)).shown)
+    .toBe(beforeLater.shown);
   await goTo(page, '1850');
   await expect
-    .poll(async () => grown(page, before.all))
-    .toEqual({ grew: true, shown: before.shown + 1 });
+    .poll(async () => (await counts(page)).shown)
+    .toBe(before.shown + 1);
 
   await page.reload();
   await goTo(page, '1850');
   await expect
-    .poll(async () => grown(page, before.all))
-    .toEqual({ grew: true, shown: before.shown + 1 });
+    .poll(async () => (await counts(page)).shown)
+    .toBe(before.shown + 1);
+  expect(await savedPins(page, known)).toBe(1);
 });

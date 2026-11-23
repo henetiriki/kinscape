@@ -1,7 +1,8 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import { trackedFiles } from '@ks/scripts/__tests__/tracked';
+import { patternFiles, patternsFor } from '@ks/scripts/pattern-files.mts';
 
 type Source = { path: string; text: string };
 
@@ -88,4 +89,16 @@ describe('the token page', () => {
   it('names each module outside tests that reads design/tokens.json', () => {
     expect(unnamed(readers, readFileSync(PAGE, 'utf8'))).toEqual([]);
   });
+});
+
+// `npm run plan:new` lists this page for an issue that cites the DTCG token file (#1193 D3).
+it('is a design file for an issue that names design/kinscape.tokens.json', () => {
+  const designFiles = patternFiles(
+    { list: readdirSync, read: path => readFileSync(path, 'utf8') },
+    'design/topics'
+  );
+
+  expect(
+    patternsFor('Edit `design/kinscape.tokens.json`.', designFiles)
+  ).toContain(PAGE);
 });

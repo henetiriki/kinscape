@@ -45,6 +45,40 @@ export type Docs = {
   summary: string;
 };
 
+/** A DTCG 2025.10 `color` value. The CSS writer reads `hex` and `alpha` (#1193 plan D4). */
+export type DtcgColour = {
+  alpha?: number;
+  colorSpace: 'srgb';
+  components: number[];
+  hex?: string;
+};
+
+/** A DTCG `dimension` value. */
+export type DtcgDimension = { unit: 'px' | 'rem'; value: number };
+
+/** A DTCG `duration` value. */
+export type DtcgDuration = { unit: 'ms' | 's'; value: number };
+
+/** One layer of a DTCG `shadow` value. */
+export type DtcgShadowLayer = {
+  blur: DtcgDimension;
+  color: DtcgColour;
+  inset?: boolean;
+  offsetX: DtcgDimension;
+  offsetY: DtcgDimension;
+  spread: DtcgDimension;
+};
+
+/** A token as the CSS writer sees it: its path, its `$type` and its resolved `$value`. */
+export type DtcgToken = { $type?: string; $value: unknown; path: string[] };
+
+/** A DTCG `transition` value. */
+export type DtcgTransition = {
+  delay: DtcgDuration;
+  duration: DtcgDuration;
+  timingFunction: number[];
+};
+
 /** A problem that `tokenLiterals` finds in a `.module.css` file: its 1-based line and what is wrong. */
 export type LiteralProblem = { line: number; text: string };
 

@@ -3,9 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   coloursIn,
   cssName,
-  cssVariables,
   fontVariable,
-  renderCss,
   strayColours,
 } from '@ks/lib/design/css.mts';
 
@@ -20,59 +18,6 @@ describe('cssName', () => {
 describe('fontVariable', () => {
   it('names the variable after the family', () => {
     expect(fontVariable('Public Sans')).toBe('--next-font-public-sans');
-  });
-});
-
-describe('cssVariables', () => {
-  const tokens = {
-    colour: { brand: '#264f29', focus: '{colour.brand}' },
-    font: { body: "'Public Sans', system-ui, sans-serif" },
-    map: { land: '#e9ebe2' },
-    notes: { colour: { brand: 'Primary buttons.' } },
-    scalar: 'ignored',
-    type: { body: { font: '{font.body}', size: '15px' } },
-  };
-
-  it('writes references as var() and starts a font stack with the next/font variable', () => {
-    expect(cssVariables(tokens)).toEqual([
-      ['--brand', '#264f29'],
-      ['--focus', 'var(--brand)'],
-      ['--font-body', 'var(--next-font-public-sans), system-ui, sans-serif'],
-      ['--type-body-font', 'var(--font-body)'],
-      ['--type-body-size', '15px'],
-    ]);
-  });
-
-  // PIN-06: the count marker and the fan share the halo and the ring of the map layers.
-  it('writes the map halo and ring that HTML markers share, and no other map token', () => {
-    expect(
-      cssVariables({
-        colour: { pin: '#9a3b12' },
-        map: {
-          land: '#e9ebe2',
-          'pin-halo': { blur: 0.8, colour: '{colour.pin}', opacity: 0.24 },
-          selected: { halo: { opacity: 0.8 }, width: 2.5 },
-        },
-      })
-    ).toEqual([
-      ['--pin', '#9a3b12'],
-      ['--map-pin-halo-colour', 'var(--pin)'],
-      ['--map-pin-halo-opacity', '0.24'],
-      ['--map-selected-halo-opacity', '0.8'],
-      ['--map-selected-width', '2.5'],
-    ]);
-  });
-
-  it('renders a header and one declaration per token', () => {
-    expect(renderCss({ colour: { brand: '#264f29' } })).toBe(
-      [
-        '/* Generated from design/tokens.json by `npm run tokens`. Do not edit. */',
-        ':root {',
-        '  --brand: #264f29;',
-        '}',
-        '',
-      ].join('\n')
-    );
   });
 });
 

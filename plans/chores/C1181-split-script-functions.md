@@ -2,7 +2,7 @@
 
 - **Spec:** #1181
 - **Requirement IDs:** None. This Chore changes no behaviour.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ These three page functions in `scripts/design-export.mts` have about 65, 71 and 
 - **B.** Split `pageHtml` into page steps by phase, such as a new `resolveStyles` for `var()` and `calc()`. The other two take A. Cost: one or two new exported names, and 5 calls in the `pageHtml` tests and `e2e/design-export.spec.mts:88` change. The tech lead edits Constraint 2 and done check 3 of #1181 first.
 - **Other:** your own.
 
-Recommended: A, because each page step works on one `document` in a fixed order. B moves part of that order into each caller: the export code, the unit test and the e2e spec.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

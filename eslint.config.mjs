@@ -222,10 +222,14 @@ export default defineConfig([
     },
   },
   {
-    // A function does one phase. Each disable gives its reason, and scripts/__tests__/length-disables.test.ts caps their count.
+    // A function does one phase. no-restricted-disable bans a disable of the rule.
     files: ['**/*.{js,jsx,mjs,mts,ts,tsx}'],
     ignores: ['**/__tests__/**', 'e2e/**'],
     rules: {
+      '@eslint-community/eslint-comments/no-restricted-disable': [
+        'error',
+        'max-lines-per-function',
+      ],
       'max-lines-per-function': [
         'error',
         { max: 60, skipBlankLines: true, skipComments: true },

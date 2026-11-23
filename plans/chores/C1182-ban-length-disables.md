@@ -36,9 +36,9 @@ The issue proves the rule with a scratch disable in the PR Evidence only. Three 
 
 ## Order of work
 
-1. If D1 is A, write `function-length-config.test.ts` first. See it fail on the missing message, and paste the failing line in the Evidence.
+1. If D1 is A, write `function-length-config.test.ts` first. See it fail on the missing message. Paste the failing line in the Evidence.
 2. Add the rule and change the comment in `eslint.config.mjs`.
-3. Add a scratch `// eslint-disable-next-line max-lines-per-function -- x` above a function of more than 60 lines in `lib/`. Run `npm run lint`, and paste the `no-restricted-disable` error in the Evidence. Revert the scratch line.
+3. Add a scratch `// eslint-disable-next-line max-lines-per-function -- x` above a function of more than 60 lines in `lib/`. Run `npm run lint`. Paste the `no-restricted-disable` error in the Evidence. Revert the scratch line.
 4. `git rm -f scripts/__tests__/length-disables.test.ts`.
 5. Edit line 50 of `docs/architecture.md`.
 6. Run the checks in `AGENTS.md` › Commands.

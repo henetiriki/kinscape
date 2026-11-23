@@ -1,9 +1,17 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { ClickPopup } from '@ks/app/components/overlays/ClickPopup';
+import { ClickPopup, pointText } from '@ks/app/components/overlays/ClickPopup';
 
 const POINT = { latitude: -28.74, longitude: 25.31 };
+
+// PIN-01
+it('writes a negative and a positive point with 6 decimals, latitude first', () => {
+  expect(pointText(POINT)).toBe('-28.740000, 25.310000');
+  expect(pointText({ latitude: 3.5, longitude: -1.25 })).toBe(
+    '3.500000, -1.250000'
+  );
+});
 
 // PIN-01. Data is synthetic.
 it('shows the point with 6 decimals, latitude first, and the hint', () => {

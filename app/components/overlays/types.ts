@@ -4,6 +4,9 @@ import type { EventType } from '@ks/lib/ui/types';
 /** One level of the Jurisdiction chain; `detail` says what the name was before. */
 export type ChainLevel = { detail?: string; level: string; name: string };
 
+/** A point on the map in decimal degrees. */
+export type ClickPoint = { latitude: number; longitude: number };
+
 export type MenuEntry = {
   detail?: string;
   /** Stays in the arrow-key order but does nothing. */

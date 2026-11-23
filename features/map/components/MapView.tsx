@@ -14,6 +14,7 @@ import { createPortal } from 'react-dom';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
+import type { ClickPoint } from '@ks/app/components/overlays/types';
 import type {
   Layer,
   LayerId,
@@ -57,7 +58,7 @@ const ZOOM_TOLERANCE = 0.001;
 
 /** The callbacks and the pick list from the latest render, which the map events read. */
 type Latest = {
-  onEmptyClick?: () => void;
+  onEmptyClick?: (point: ClickPoint) => void;
   onOpenPin?: (id: string) => void;
   onOpenPoint?: (point: Point) => void;
   onZoomLimits?: (limits: ZoomLimits) => void;
@@ -158,7 +159,7 @@ const reportLimits = (
 
 // A click on a pickable feature opens it; a click that picks none is a click on empty map.
 const onMapClick = (created: MapLibreMap, latest: LatestRef) =>
-  created.on('click', ({ point }) => {
+  created.on('click', ({ lngLat, point }) => {
     const pickable = latest.current.select;
     const hit =
       pickable.length === 0
@@ -168,7 +169,10 @@ const onMapClick = (created: MapLibreMap, latest: LatestRef) =>
     if (hit) {
       latest.current.onOpenPin?.(String(hit.properties.id));
     } else {
-      latest.current.onEmptyClick?.();
+      latest.current.onEmptyClick?.({
+        latitude: lngLat.lat,
+        longitude: lngLat.lng,
+      });
     }
   });
 
@@ -433,10 +437,17 @@ const useFiltersAndMarkers = (
   return placed;
 };
 
-// The popup follows its Pin: the point is read again after each move, pan, zoom and resize.
-const useOpenPoint = (map: MapRef, latest: LatestRef, open?: OpenPin) => {
-  const openId = open?.id;
-  const [openLongitude, openLatitude] = open?.position ?? [0, 0];
+// The popup follows its Pin, or the clicked position when no Pin is open: the hook reads the point
+// again after each move, pan, zoom and resize.
+const useOpenPoint = (
+  map: MapRef,
+  latest: LatestRef,
+  open?: OpenPin,
+  clicked?: [number, number]
+) => {
+  const followed = open?.position ?? clicked;
+  const following = followed !== undefined;
+  const [openLongitude, openLatitude] = followed ?? [0, 0];
 
   useEffect(() => {
     const current = map.current;
@@ -444,7 +455,7 @@ const useOpenPoint = (map: MapRef, latest: LatestRef, open?: OpenPin) => {
     /* v8 ignore next -- the effect above has created the map by now; the guard only narrows the type */
     if (!current) return;
 
-    if (openId === undefined) {
+    if (!following) {
       latest.current.onOpenPoint?.(null);
 
       return;
@@ -462,10 +473,11 @@ const useOpenPoint = (map: MapRef, latest: LatestRef, open?: OpenPin) => {
     return () => {
       current.off('move', report);
     };
-  }, [latest, map, openId, openLatitude, openLongitude]);
+  }, [following, latest, map, openLatitude, openLongitude]);
 };
 
 export const MapView = ({
+  clicked,
   handle,
   layers,
   mapDay,
@@ -477,16 +489,18 @@ export const MapView = ({
   padding,
   visible,
 }: {
+  /** The longitude and latitude of the click popup. `onOpenPoint` follows it when no Pin is open. */
+  clicked?: [number, number];
   /** `MapView` fills it with the zoom calls once the map exists. */
   handle?: Ref<MapHandle>;
   /** The layers the map draws; the Map date filters each and `visible` shows or hides them. */
   layers: Layer[];
   mapDay: Day;
-  /** A click that picks no feature. */
-  onEmptyClick?: () => void;
+  /** A click that picks no feature, with its point. */
+  onEmptyClick?: (point: ClickPoint) => void;
   /** A click on a feature of a layer's `select` ids, with the feature's `id` property. */
   onOpenPin?: (id: string) => void;
-  /** The pixel point of the open Pin in the map, now and after each move; `null` once no Pin is open. */
+  /** The pixel point of the open Pin, or of `clicked` when no Pin is open, now and after each move; `null` when neither is set. */
   onOpenPoint?: (point: { x: number; y: number } | null) => void;
   /** `MapView` calls it on load and after each zoom and resize, with whether the zoom is at a limit. */
   onZoomLimits?: (limits: ZoomLimits) => void;
@@ -521,7 +535,7 @@ export const MapView = ({
     visible,
   });
 
-  useOpenPoint(map, latest, open);
+  useOpenPoint(map, latest, open, clicked);
 
   return (
     <>

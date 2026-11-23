@@ -8,6 +8,12 @@ import type { ReactNode } from 'react';
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { EventType } from '@ks/lib/ui/types';
 
+/** The click popup of a click on empty map: floating at the `place` of `position` (longitude, latitude). */
+export type ClickProp = {
+  popup: (place: { x: number; y: number }) => ReactNode;
+  position: [number, number];
+};
+
 /** A Pin of a fan: its id, its Event type and the reading of its date, such as "From 1890 to 1905". */
 export type FanPin = { event: EventType; id: string; reading: string };
 

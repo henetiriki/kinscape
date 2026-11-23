@@ -639,8 +639,29 @@ describe('the Pin popup', () => {
     expect(lastProps().open).toEqual(open);
     lastProps().onOpenPin('p2');
     expect(onOpenPin).toHaveBeenCalledWith('p2');
-    lastProps().onEmptyClick();
+    lastProps().onEmptyClick({ latitude: 1, longitude: 2 });
     expect(onClosePin).toHaveBeenCalledOnce();
+  });
+
+  // PIN-01
+  it('closes the Pin popup and then reports the point of a click on empty map', () => {
+    const calls: string[] = [];
+    const onClosePin = vi.fn(() => calls.push('close'));
+    const onEmptyClick = vi.fn(() => calls.push('empty'));
+    const point = { latitude: -33.9, longitude: 18.4 };
+
+    renderPin({ onClosePin, onEmptyClick });
+    lastProps().onEmptyClick(point);
+    expect(onEmptyClick).toHaveBeenCalledWith(point);
+    expect(calls).toEqual(['close', 'empty']);
+  });
+
+  // PIN-01
+  it('takes a click on empty map when the page gives no handler', () => {
+    renderPin({ onClosePin: undefined });
+    expect(() =>
+      lastProps().onEmptyClick({ latitude: 1, longitude: 2 })
+    ).not.toThrow();
   });
 
   it('takes a click on a Pin when the page gives no handler', () => {
@@ -735,6 +756,36 @@ describe('the Pin popup', () => {
     expect(onClosePin).toHaveBeenCalledOnce();
   });
 
+  // PIN-01
+  describe('the click popup', () => {
+    const click = {
+      popup: vi.fn((place: { x: number; y: number }) => (
+        <div data-testid='popup-click'>{`${place.x},${place.y}`}</div>
+      )),
+      position: [18.4, -33.9] as [number, number],
+    };
+
+    it('gives the map the clicked position and draws the popup at its point', () => {
+      renderPin({ click, pin: undefined });
+      expect(lastProps().clicked).toEqual([18.4, -33.9]);
+      expect(screen.queryByTestId('popup-click')).toBeNull();
+      act(() => lastProps().onOpenPoint({ x: 50, y: 60 }));
+      expect(screen.getByTestId('popup-click').textContent).toBe('50,60');
+    });
+
+    it('draws the Pin popup, not the click popup, when both are given', () => {
+      renderPin({ click });
+      act(() => lastProps().onOpenPoint({ x: 50, y: 60 }));
+      expect(screen.getByTestId('popup-floating').textContent).toBe('50,60');
+      expect(screen.queryByTestId('popup-click')).toBeNull();
+    });
+
+    it('gives the map no clicked position without a click', () => {
+      renderPin({ pin: undefined });
+      expect(lastProps().clicked).toBeUndefined();
+    });
+  });
+
   // NFR-05
   describe('on a phone', () => {
     const desktop = window.matchMedia;
@@ -749,6 +800,18 @@ describe('the Pin popup', () => {
 
     afterEach(() => {
       window.matchMedia = desktop;
+    });
+
+    it('floats no click popup', () => {
+      renderPin({
+        click: {
+          popup: () => <div data-testid='popup-click' />,
+          position: [1, 2],
+        },
+        pin: undefined,
+      });
+      act(() => lastProps().onOpenPoint({ x: 50, y: 60 }));
+      expect(screen.queryByTestId('popup-click')).toBeNull();
     });
 
     it('puts the details in the date sheet, and floats none', () => {

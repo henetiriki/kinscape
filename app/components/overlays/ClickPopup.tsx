@@ -1,5 +1,7 @@
 'use client';
 
+import type { ClickPoint } from '@ks/app/components/overlays/types';
+
 import { Button } from '@ks/app/components/actions/Button';
 import { Text } from '@ks/app/components/foundation/Text';
 import { Floating, PopupTop } from '@ks/app/components/overlays/PinPopup';
@@ -7,10 +9,8 @@ import { PlacedAt } from '@ks/app/components/overlays/PlacedAt';
 
 import styles from '@ks/app/components/overlays/ClickPopup.module.css';
 
-type ClickPoint = { latitude: number; longitude: number };
-
 /** "latitude, longitude" in decimal degrees with 6 decimals, latitude first. */
-const pointText = ({ latitude, longitude }: ClickPoint) =>
+export const pointText = ({ latitude, longitude }: ClickPoint) =>
   `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
 
 /**

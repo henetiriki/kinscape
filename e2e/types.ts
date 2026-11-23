@@ -32,5 +32,6 @@ export type TestWindow = {
       properties: Record<string, string>;
     }[];
     querySourceFeatures: (source: string) => unknown[];
+    unproject: (point: [number, number]) => { lat: number; lng: number };
   };
 };

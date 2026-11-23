@@ -302,6 +302,27 @@ test('"Add a pin here" saves a Pin at the Place of the Pin', async ({
   await expect(page.getByRole('form', { name: 'Add a pin' })).toBeHidden();
   await expect.poll(atPlace).toBe(before.atPlace + 1);
   expect(await places()).toBe(before.places);
+  // The Pin was alone at its point, so the two Pins of the Place now show one marker with 2.
+  await expect
+    .poll(() =>
+      page.evaluate(
+        ({ x, y }) =>
+          [...document.querySelectorAll('.maplibregl-marker')]
+            .filter(marker => {
+              const box = marker.getBoundingClientRect();
+
+              return (
+                Math.hypot(
+                  box.left + box.width / 2 - x,
+                  box.top + box.height / 2 - y
+                ) < 24
+              );
+            })
+            .map(marker => marker.textContent),
+        { x: pin.x, y: pin.y }
+      )
+    )
+    .toEqual(['2']);
 });
 
 // PIN-02, MAP-02: the Pins row hides the Pin, so the popup closes.

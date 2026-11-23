@@ -99,3 +99,4 @@ Step 3 says: "Move it into the tests that use it." Two tests import it: `relatio
 - `knip.ts` also sets `project` (no `__tests__/`, `e2e/` or `knip.ts` in production) and `tags: ['-later']`. Production knip reports test helpers, and the tag hides `updatePinAction`.
 - `knip.ts` imports `@ks/lib/design/bundle.mts`, as ESLint bans `#ks/` in `.ts`. `eslint.config.mjs` allows a default export in `knip.ts`.
 - `docs/architecture.md` has no word budget left, so the build trims three other lines to fit its 570 words.
+- The job comment in `ci.yml` also lists "finds unused code", so the list matches "the four".

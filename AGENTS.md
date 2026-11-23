@@ -62,6 +62,7 @@ Node 24 (`.nvmrc`). Tests go in `__tests__`. A `v8 ignore` needs a reason.
 - Fix: `npm run format` fixes formatting.
 - Checks:
   - `npm run lint`
+  - `npm run lint:knip`
   - `npm run typecheck`
   - `npm run format:check`
   - `npm run words`

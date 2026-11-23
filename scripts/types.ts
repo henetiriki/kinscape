@@ -97,6 +97,12 @@ export type PlanNewDeps = {
   git: (args: string[]) => string;
 };
 
+/** The summary and `gh` calls of `pr-checks.mts`; a test passes fakes. */
+export type PrChecksDeps = {
+  append: (file: string, text: string) => void;
+  gh: Gh;
+};
+
 export type PrepareMapDataDeps = {
   applyCommands: (
     commands: string,

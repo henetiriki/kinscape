@@ -1,0 +1,46 @@
+name: 'CI: PR checks'
+
+# Runs scripts/pr-checks.mts: the PR body holds one `Closes #n`, a plan row names each edited test and
+# new dependency, and the diff stays under the line cap. An edit to the body or a label change can
+# fix a failure, so the types include `edited`, `labeled` and `unlabeled`. The script comes from the
+# base commit, so the PR can't change the rules that judge it. Never `pull_request_target`.
+#
+# The title shown for each run in the Actions tab: "PR checks: <PR title>". The job has no `if:`, so
+# there is no "Skipped" form.
+run-name: 'PR checks: ${{ github.event.pull_request.title }}'
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+# One group per PR, so a new event cancels the PR's older run. Each run reads the PR from the API.
+concurrency:
+  group: pr-checks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fetch the base commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - name: Install Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      # Fails on the PR that adds the script: the base commit has no scripts/pr-checks.mts.
+      - name: Check the PR
+        run: node scripts/pr-checks.mts "$PR"
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}

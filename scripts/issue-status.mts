@@ -57,7 +57,7 @@ const MAY_MOVE_A_READY_PR = ['OWNER', 'MEMBER', 'COLLABORATOR'];
 
 // Removes HTML comments until none is left (one pass can join the pieces of a new one, as in
 // `<!<!-- x -->-->`), then an unterminated one with all that follows, as GitHub renders it.
-const withoutComments = (text: string): string => {
+export const withoutComments = (text: string): string => {
   let previous: string;
   let current = text;
 

@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  alertCodes,
-  messageOf,
-} from '@ks/features/people/components/relationship-messages';
+import { messageOf } from '@ks/features/people/components/relationship-messages';
 
 // PPL-02
 describe('messageOf', () => {
@@ -62,18 +59,5 @@ describe('messageOf', () => {
       line,
       title,
     });
-  });
-
-  it('lists every code that shows an alert', () => {
-    expect(alertCodes).toEqual([
-      'conflict',
-      'cycle',
-      'divorce-before-marriage',
-      'duplicate',
-      'not-found',
-      'self',
-      'third-biological-parent',
-      'tree-full',
-    ]);
   });
 });

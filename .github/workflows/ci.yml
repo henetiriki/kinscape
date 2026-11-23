@@ -27,7 +27,7 @@ concurrency:
 # The automated checks that every change must pass.
 # Drafts are mostly plan PRs: only words runs on them. Every job runs on a push to main.
 jobs:
-  # Lints the code, checks the types and checks the format, with one `npm ci` for the three. A type
+  # Lints the code, finds unused code, checks the types and checks the format, with one `npm ci` for the four. A type
   # error fails here and not late in e2e's build. Each check runs after an earlier one fails, so one
   # run shows every failure.
   quality:
@@ -45,6 +45,9 @@ jobs:
         run: npm ci
       - name: Lint the code
         run: npm run lint
+      - name: Find unused code
+        if: ${{ !cancelled() }}
+        run: npm run lint:knip
       - name: Check the types
         if: ${{ !cancelled() }}
         run: npm run typecheck

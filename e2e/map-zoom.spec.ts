@@ -4,7 +4,8 @@ import { expect, test } from '@playwright/test';
 
 import type { TestWindow } from '@ks/e2e/types';
 
-import { centreOf, FIRST_VIEW } from '@ks/lib/domain/map/view.mts';
+import { centreOf } from '@ks/e2e/view';
+import { FIRST_VIEW } from '@ks/lib/domain/map/view.mts';
 
 // MAP-01: the zoom card in the map's `zoom` slot.
 

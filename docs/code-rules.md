@@ -9,7 +9,6 @@ Write code that follows these rules. The reviewer flags a change that breaks one
 - Build no stand-in for a missing component: see the [missing-components rule](../plans/README.md#missing-components).
 - Define a type or constant once. Search for its name first.
 - Use a domain type where one exists (`Day`, branded ids, `lib/domain/validity/`), not a list of primitives.
-- An export or file that only a test uses is not wired. Skip this only if the plan names the slice that wires it.
 
 ## Placement
 

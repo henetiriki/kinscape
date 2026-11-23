@@ -2,7 +2,7 @@ import { act, render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { QueryProvider } from '@ks/app/QueryProvider';
-import { usePeople } from '@ks/features/people';
+import { usePeople } from '@ks/features/people/query';
 import { fetchPeople } from '@ks/features/people/query';
 
 // PIN-01, NFR-03. Data is synthetic.

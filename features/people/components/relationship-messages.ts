@@ -40,9 +40,6 @@ const MESSAGES: Record<AlertCode, (name: string) => Message> = {
   }),
 };
 
-/** Every code that shows an alert, in alphabetical order. */
-export const alertCodes = Object.keys(MESSAGES).sort() as AlertCode[];
-
 /** The title, line and action of `code`. `name` is the Person that a `cycle` line names. */
 export const messageOf = (code: AlertCode, name: string): Message => ({
   action: undefined,

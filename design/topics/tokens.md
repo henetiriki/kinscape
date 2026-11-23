@@ -1,5 +1,6 @@
 ---
 paths:
+  - 'design/kinscape.tokens.json'
   - 'design/tokens.json'
   - 'design/tokens.mts'
   - 'app/tokens.css'
@@ -13,7 +14,7 @@ How a token value travels today. A Spec that changes the path updates this page.
 
 ## The source
 
-`design/tokens.json` holds the values in these groups:
+`design/kinscape.tokens.json` holds the values (DTCG 2025.10) in these groups:
 
 - `colour`
 - `shadow`
@@ -29,11 +30,11 @@ How a token value travels today. A Spec that changes the path updates this page.
 - `z`
 - `map`
 
-A value can refer to another with `{group.name}`. The `notes` group holds the usage note of each token that needs one.
+A value can refer to another with `{group.name}`. A `$description` holds the usage note.
 
 ## The CSS
 
-`npm run tokens` runs `scripts/tokens.mts`. It writes `app/tokens.css` as custom properties. `lib/design/__tests__/design.test.ts` checks that file.
+`npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css` and, for the direct readers, `design/tokens.json`. Do not edit either. `lib/design/__tests__/design.test.ts` fails if either is stale or the source breaks DTCG.
 
 ## Direct readers
 
@@ -93,7 +94,7 @@ In a `style` prop, the check reads only literals. It skips an identifier, a call
 
 ## Change a value
 
-1. Edit the value in `design/tokens.json`. Edit its note in `notes`.
+1. Edit the value in `design/kinscape.tokens.json`. Edit its `$description`.
 2. Run `npm run tokens`.
 3. Run the tests.
 

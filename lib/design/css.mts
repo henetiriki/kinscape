@@ -1,11 +1,6 @@
-/** Design tokens as CSS: `design/tokens.json` written as custom properties, plus the stray-colour check. */
+/** Token names in CSS, the font stack, the map tokens that CSS shares, and the stray-colour check. */
 
 import type { Tree } from '#ks/design/types.ts';
-
-import { isTree, REFERENCE } from '#ks/design/tokens.mts';
-
-const GENERATED_HEADER =
-  '/* Generated from design/tokens.json by `npm run tokens`. Do not edit. */';
 
 /** The custom property for a token: colours are unprefixed, other groups keep their group. */
 export const cssName = (path: string[]): string =>
@@ -22,7 +17,8 @@ export const fontVariable = (family: string): string =>
 export const familyName = (stack: string): string =>
   stack.split(',')[0].replaceAll("'", '').trim();
 
-const fontStack = (stack: string): string => {
+/** A font stack that starts with the `next/font` variable of its first family. */
+export const fontStack = (stack: string): string => {
   const rest = stack
     .split(',')
     .slice(1)
@@ -31,68 +27,12 @@ const fontStack = (stack: string): string => {
   return [`var(${fontVariable(familyName(stack))})`, ...rest].join(', ');
 };
 
-const cssValue = (path: string[], value: string): string => {
-  const reference = REFERENCE.exec(value)?.[1];
-
-  if (reference !== undefined) {
-    return `var(${cssName(reference.split('.'))})`;
-  }
-
-  return path[0] === 'font' ? fontStack(value) : value;
-};
-
-const walk = (node: Tree, path: string[]): [string, string][] =>
-  Object.entries(node).flatMap(([key, child]) =>
-    isTree(child)
-      ? walk(child, [...path, key])
-      : [[cssName([...path, key]), cssValue([...path, key], String(child))]]
-  );
-
 /**
  * The `map` tokens that HTML markers on the map draw with too: the halo of a Pin and the ring of
- * the open Pin. The map layers read them from `tokens.json`, and the count marker and the fan of
- * Pins from these variables, so each value lives in one place.
+ * the open Pin. The map layers read them as values, and the count marker and the fan of Pins as
+ * CSS variables, so each value lives in one place.
  */
-const MAP_SHARED = ['pin-halo.colour', 'pin-halo.opacity', 'selected'];
-
-/** Every token outside `map` and `notes`, and the shared `map` tokens, as `[--name, value]` pairs. */
-export const cssVariables = (tokens: Tree): [string, string][] =>
-  Object.entries(tokens).flatMap(([group, child]): [string, string][] => {
-    if (!isTree(child) || group === 'notes') return [];
-
-    if (group === 'map') {
-      return MAP_SHARED.flatMap((shared): [string, string][] => {
-        const path = shared.split('.');
-        const node = path.reduce<number | string | Tree | undefined>(
-          (at, key) => (isTree(at) ? at[key] : undefined),
-          child
-        );
-
-        if (isTree(node)) return walk(node, [group, ...path]);
-
-        return node === undefined
-          ? []
-          : [
-              [
-                cssName([group, ...path]),
-                cssValue([group, ...path], String(node)),
-              ],
-            ];
-      });
-    }
-
-    return walk(child, [group]);
-  });
-
-/** The text of `app/tokens.css`. */
-export const renderCss = (tokens: Tree): string =>
-  [
-    GENERATED_HEADER,
-    ':root {',
-    ...cssVariables(tokens).map(([name, value]) => `  ${name}: ${value};`),
-    '}',
-    '',
-  ].join('\n');
+export const MAP_SHARED = ['pin-halo.colour', 'pin-halo.opacity', 'selected'];
 
 const HEX =
   /(?<![\w&])#([0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{4}|[0-9a-f]{3})(?![\w-])/gi;

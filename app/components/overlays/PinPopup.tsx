@@ -128,18 +128,22 @@ const Actions = ({
   );
 };
 
-const Floating = ({
+/** The frame of a floating popup: the surface, the pointer and Esc. `ClickPopup` shares it. */
+export const Floating = ({
   children,
-  loading,
+  label,
+  loading = false,
   onClose,
-}: { children: ReactNode; loading: boolean } & Pick<
-  PinPopupArgs,
-  'onClose'
->) => (
+}: {
+  children: ReactNode;
+  /** The dialog name. */
+  label: string;
+  loading?: boolean;
+} & Pick<PinPopupArgs, 'onClose'>) => (
   // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Esc inside the popup closes it; the popup itself is not a tab stop
   <div
     aria-busy={loading || undefined}
-    aria-label='Pin details'
+    aria-label={label}
     className={styles.popup}
     onKeyDown={press => {
       if (press.key === 'Escape') {
@@ -242,7 +246,7 @@ export const PinPopup = ({
   }
 
   return (
-    <Floating loading={loading} onClose={onClose}>
+    <Floating label='Pin details' loading={loading} onClose={onClose}>
       {top}
       {details}
       {actions}

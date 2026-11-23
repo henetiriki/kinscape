@@ -98,15 +98,15 @@ const setup = (
       list: dir =>
         dir === 'docs/patterns'
           ? Object.keys(options.patterns ?? {})
-          : dir === 'design'
-            ? readdirSync('design')
+          : dir === 'design/topics'
+            ? readdirSync('design/topics')
             : dir === FOLDERS[type]
               ? (options.files ?? [])
               : [],
       read: path =>
         path.startsWith('docs/patterns/')
           ? (options.patterns?.[path.slice('docs/patterns/'.length)] ?? '')
-          : path.startsWith('design/')
+          : path.startsWith('design/topics/')
             ? readFileSync(path, 'utf8')
             : '# Plan: x\n\n- **Spec:** #\n- **Status:** draft\n',
       write: (path, text) => {
@@ -415,7 +415,7 @@ describe('plan-new', () => {
         }).deps
       );
 
-      expect(out).toContain('Design files:\n- design/map.md');
+      expect(out).toContain('Design files:\n- design/topics/map.md');
     });
 
     it('lists none when the issue cites no design path', () => {

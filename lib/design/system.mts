@@ -17,11 +17,11 @@ import { roleSentences } from '#ks/lib/design/roles.mts';
 /** The design files that hold the README sections and the component bullets, relative to the repo root. */
 export const DESIGN_FILES = [
   'design/DESIGN.md',
-  'design/foundations.md',
-  'design/layout.md',
-  'design/components.md',
-  'design/feedback.md',
-  'design/map.md',
+  'design/topics/foundations.md',
+  'design/topics/layout.md',
+  'design/topics/components.md',
+  'design/topics/feedback.md',
+  'design/topics/map.md',
 ];
 
 /** The design file sections the README holds, in this order. */

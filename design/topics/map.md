@@ -29,7 +29,7 @@ On the map these are SDF icons in `--pin`, with a 2px white halo.
 
 ## Map style
 
-Every map visual is something MapLibre GL can draw: flat fills, solid or dashed lines, one `fill-pattern` hatch, a hillshade layer, circles and SDF symbols. [map-style.jpg](map-style.jpg) shows the full layer stack. The map colours:
+Every map visual is something MapLibre GL can draw: flat fills, solid or dashed lines, one `fill-pattern` hatch, a hillshade layer, circles and SDF symbols. [map-style.jpg](../map-style.jpg) shows the full layer stack. The map colours:
 
 | Use                     | Value                                                                                               |
 | ----------------------- | --------------------------------------------------------------------------------------------------- |

@@ -2,7 +2,7 @@ import type { EventType } from '@ks/lib/ui/types';
 
 import styles from '@ks/lib/ui/EventGlyph.module.css';
 
-/** Each Event type's path, copied from design/source/kse-*.svg (design/map.md › Event glyphs). A test keeps them in step. */
+/** Each Event type's path, copied from design/source/kse-*.svg (design/topics/map.md › Event glyphs). A test keeps them in step. */
 export const EVENT_PATHS = {
   baptism:
     'M2.5 16.18V12.8Q2.5 10.49 3.77 9.15Q5.04 7.81 7.26 7.81Q8.84 7.81 9.91 8.47Q10.97 9.12 11.78 10.07Q12.59 11.02 13.31 11.99Q14.03 12.96 14.89 13.61Q15.75 14.26 16.96 14.26Q18.13 14.26 18.79 13.45Q19.44 12.64 19.44 11.2V7.82H21.5V11.2Q21.5 13.56 20.3 14.87Q19.09 16.19 16.96 16.19Q15.33 16.19 14.23 15.53Q13.12 14.88 12.31 13.91Q11.5 12.94 10.78 11.99Q10.05 11.04 9.24 10.39Q8.43 9.74 7.26 9.74Q6 9.74 5.28 10.55Q4.56 11.36 4.56 12.8V16.18Z',

@@ -4,13 +4,13 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 
 ## Design files
 
-Each file has `paths:` frontmatter. `npm run plan:new` lists the files whose paths match an issue.
+Each file in `design/topics/` has `paths:` frontmatter. `npm run plan:new` lists the files whose paths match an issue.
 
-- [foundations.md](foundations.md): Brand, Fonts, Colours, Shape and depth, Motion.
-- [layout.md](layout.md): Layout.
-- [components.md](components.md): In the repo, Components.
-- [feedback.md](feedback.md): States, Feedback and validation.
-- [map.md](map.md): Event glyphs, Map style, Attributions.
+- [foundations.md](topics/foundations.md): Brand, Fonts, Colours, Shape and depth, Motion.
+- [layout.md](topics/layout.md): Layout.
+- [components.md](topics/components.md): In the repo, Components.
+- [feedback.md](topics/feedback.md): States, Feedback and validation.
+- [map.md](topics/map.md): Event glyphs, Map style, Attributions.
 
 ## Screens
 
@@ -107,7 +107,7 @@ People, pins and boundary shapes in the JPGs are illustrative, not data.
 
 ### Proposed screens
 
-Not built. The sign-in rows show Google sign-in: see [Components](components.md#components). The account menu rows show "Export all data" and the last backup time (M3).
+Not built. The sign-in rows show Google sign-in: see [Components](topics/components.md#components). The account menu rows show "Export all data" and the last backup time (M3).
 
 | Screen                                   | File                                                                       |
 | ---------------------------------------- | -------------------------------------------------------------------------- |

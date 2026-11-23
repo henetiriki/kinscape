@@ -285,7 +285,10 @@ export const run = (args: string[], deps: PlanNewDeps): number => {
         : `Pattern files:\n${patterns.map(path => `- ${path}`).join('\n')}`
     );
 
-    const designs = patternsFor(issue.body, patternFiles(deps.files, 'design'));
+    const designs = patternsFor(
+      issue.body,
+      patternFiles(deps.files, 'design/topics')
+    );
 
     console.log(
       designs.length === 0

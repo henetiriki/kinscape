@@ -27,7 +27,7 @@ const raw = JSON.parse(readFileSync('design/tokens.json', 'utf8')) as Tree;
 const design = designSections(
   DESIGN_FILES.map(file => readFileSync(file, 'utf8'))
 );
-const foundations = readFileSync('design/foundations.md', 'utf8');
+const foundations = readFileSync('design/topics/foundations.md', 'utf8');
 const files = fontFiles(readFileSync('app/layout.tsx', 'utf8'));
 const fonts = systemFonts(files, raw);
 const system = systemTokens(raw, fonts);

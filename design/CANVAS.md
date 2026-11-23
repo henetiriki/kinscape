@@ -29,7 +29,7 @@ The tech lead, or a local session that the tech lead starts, deletes these gener
 
 ## Changing the design system
 
-- **When.** A change to `design/tokens.json`, `design/DESIGN.md`, a topic file in `design/` (`foundations.md`, `layout.md`, `components.md`, `feedback.md` or `map.md`), a font, an icon, `CONTROLS` in `lib/design/bundle.mts`, `lib/design/cards.mts`, `lib/design/samples.mts`, `lib/design/states.mts` or a component in `CONTROLS`.
+- **When.** A change to `design/tokens.json`, `design/DESIGN.md`, a file in `design/topics/`, a font, an icon, `CONTROLS` in `lib/design/bundle.mts`, `lib/design/cards.mts`, `lib/design/samples.mts`, `lib/design/states.mts` or a component in `CONTROLS`.
 - **Where.** Run the steps on the branch of the Spec or Chore that makes the change, before its pull request merges. Never run them from `main`. The refresh in step 5, the session in step 7 and the workflow each commit. If the branch merges a `main` that holds another design system change, run steps 3 to 5 again.
 - **Order.**
   1. Change the code.
@@ -113,7 +113,7 @@ Also follow these rules:
 - Mount `KinScape.MapLayout` in a map board.
 - Read the README of a component in `design/canvas/project/ds/kinscape/components/` before you use it.
 - Use only design-system components and tokens, and synthetic data.
-- Follow `design/foundations.md` and `design/feedback.md` for spacing, 44px targets, error placement and sentence case.
+- Follow `design/topics/foundations.md` and `design/topics/feedback.md` for spacing, 44px targets, error placement and sentence case.
 - Draw a part with no component on the Drafts page ([`COMPONENTS.md`](COMPONENTS.md#a-component-that-is-not-built)).
 - Put each screen board on the canvas page of the other boards of its screen, or on Drafts.
 

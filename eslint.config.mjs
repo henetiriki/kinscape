@@ -121,11 +121,11 @@ const envReads = (allowed = []) => {
   ];
 };
 
-// design/components.md#in-the-repo: a page composes components. A Page under app/screens/ is exempt.
+// design/topics/components.md#in-the-repo: a page composes components. A Page under app/screens/ is exempt.
 const PAGE_LOOK = [
   {
     message:
-      'A page composes components and has no look of its own (design/components.md#in-the-repo). Move the part into a component.',
+      'A page composes components and has no look of its own (design/topics/components.md#in-the-repo). Move the part into a component.',
     selector:
       'JSXAttribute[name.name=/^(className|style)$/], ImportDeclaration[source.value=/\\.css$/]',
   },
@@ -222,7 +222,7 @@ export default defineConfig([
     },
   },
   {
-    // The page rule of design/components.md#in-the-repo.
+    // The page rule of design/topics/components.md#in-the-repo.
     files: ['app/**/page.tsx'],
     ignores: ['app/screens/**'],
     rules: {

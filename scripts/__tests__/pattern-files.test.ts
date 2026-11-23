@@ -201,9 +201,7 @@ describe('the code rule files of the repo', () => {
 });
 
 describe('the design files of the repo', () => {
-  const files = patternFiles(FILES, 'design').filter(
-    ({ globs }) => globs.length > 0
-  );
+  const files = patternFiles(FILES, 'design/topics');
 
   it('are the five topic files', () => {
     expect(files.map(({ path }) => posix.basename(path)).sort()).toEqual([

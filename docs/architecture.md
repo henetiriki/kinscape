@@ -4,24 +4,24 @@ Built: Next.js App Router, React, TypeScript, MapLibre.
 
 ## Where does X go
 
-| Change                          | Put it in                                                                                               |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| A screen or route               | `app/<route>/page.tsx` ([page rule](../design/components.md#in-the-repo); lint: `no-restricted-syntax`) |
-| Shared UI                       | `app/components/<role>/`                                                                                |
-| UI only the map or sign-in uses | `features/map/components/`, `app/components/auth/`                                                      |
-| UI the kit and features share   | `lib/ui/`                                                                                               |
-| A feature's UI and engine       | `features/<name>/`                                                                                      |
-| A map layer                     | `features/<name>/layers/<layer>.ts`, exported by `index.ts`; routes pass layers to `MapShell`           |
-| Pure logic, no I/O              | `lib/domain/`, tests in `__tests__/`                                                                    |
-| Reading data files              | `server/boundaries/load.mts` and `app-data.ts`                                                          |
-| A server variable or table      | `server/env.mts` (lint: `no-restricted-syntax`); a new `server/db/migrations/NNNN.sql` (never edit)     |
-| Tree data                       | `server/trees/`, behind `openTree`: its `TreeStore` methods, group and mapper                           |
-| Design checks and token tooling | `lib/design/` (dev-only); the runtime `resolveTokens` is in `design/tokens.mts`                         |
-| A colour, size or font value    | `design/tokens.json` + notes, then `npm run tokens`                                                     |
-| Boundary and name data          | `data/`; basemap files in `public/map/` (`npm run map:prepare`)                                         |
-| A tool, check or CI helper      | `scripts/`, its test beside it                                                                          |
-| A browser test                  | `e2e/`                                                                                                  |
-| A type shared by two modules    | `types.ts` beside them (`import type`, also in `.mts`)                                                  |
+| Change                          | Put it in                                                                                                      |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| A screen or route               | `app/<route>/page.tsx` ([page rule](../design/topics/components.md#in-the-repo); lint: `no-restricted-syntax`) |
+| Shared UI                       | `app/components/<role>/`                                                                                       |
+| UI only the map or sign-in uses | `features/map/components/`, `app/components/auth/`                                                             |
+| UI the kit and features share   | `lib/ui/`                                                                                                      |
+| A feature's UI and engine       | `features/<name>/`                                                                                             |
+| A map layer                     | `features/<name>/layers/<layer>.ts`, exported by `index.ts`; routes pass layers to `MapShell`                  |
+| Pure logic, no I/O              | `lib/domain/`, tests in `__tests__/`                                                                           |
+| Reading data files              | `server/boundaries/load.mts` and `app-data.ts`                                                                 |
+| A server variable or table      | `server/env.mts` (lint: `no-restricted-syntax`); a new `server/db/migrations/NNNN.sql` (never edit)            |
+| Tree data                       | `server/trees/`, behind `openTree`: its `TreeStore` methods, group and mapper                                  |
+| Design checks and token tooling | `lib/design/` (dev-only); the runtime `resolveTokens` is in `design/tokens.mts`                                |
+| A colour, size or font value    | `design/tokens.json` + notes, then `npm run tokens`                                                            |
+| Boundary and name data          | `data/`; basemap files in `public/map/` (`npm run map:prepare`)                                                |
+| A tool, check or CI helper      | `scripts/`, its test beside it                                                                                 |
+| A browser test                  | `e2e/`                                                                                                         |
+| A type shared by two modules    | `types.ts` beside them (`import type`, also in `.mts`)                                                         |
 
 Import repo paths by alias: `#ks/` in `.mts` and `.mjs` files, `@ks/` elsewhere. ESLint rejects the other alias, relative paths and `.ts`/`.tsx` imports (`.mts`: values only).
 

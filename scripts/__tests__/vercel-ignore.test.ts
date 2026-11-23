@@ -46,7 +46,7 @@ describe('invisible', () => {
     'design/DESIGN.md',
     'design/CANVAS.md',
     'design/COMPONENTS.md',
-    'design/components.md',
+    'design/topics/components.md',
     'design/map.jpg',
     'design/source/map.html',
     '.github/CODEOWNERS',

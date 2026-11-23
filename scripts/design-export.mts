@@ -302,8 +302,8 @@ type TemplateReaders = {
 };
 
 /**
- * Runs in the page, before `defineTemplateWalk`: puts `kinscapeTemplate` on `window`, the
- * helpers that read `{{…}}` bindings and fill the text and attributes of one element. Playwright
+ * Runs in the page, before `defineTemplateFillers`: puts `kinscapeTemplate` on `window`, the
+ * helpers that read `{{…}}` bindings and fill the text of one element. Playwright
  * sends one function, so the later steps read the helpers from `window`. Uses nothing from the
  * module.
  */

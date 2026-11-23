@@ -475,6 +475,7 @@ export const run = async (root: string, out: string): Promise<string[]> => {
   );
   const written: string[] = [];
   const writer = projectWriter(root, out, written);
+  const ranges = fontRanges(root, files, fonts);
   const controls = await buildControls(root);
   const script = `${bundleHeader(CONTROLS.map(({ name }) => name))}\n${logoInline(controls.js, readFileSync(join(root, 'app/icon0.svg')))}`;
   const styles = `${readFileSync(join(root, 'app/tokens.css'), 'utf8')}\n${fontNames(raw)}\n${controls.css}`;
@@ -487,7 +488,7 @@ export const run = async (root: string, out: string): Promise<string[]> => {
     at,
     controls,
     design,
-    ranges: fontRanges(root, files, fonts),
+    ranges,
     script,
     sha,
     styles,

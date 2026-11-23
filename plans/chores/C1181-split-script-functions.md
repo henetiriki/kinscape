@@ -15,8 +15,10 @@ Each of the 22 functions gets Extract Function and Split Phase until each functi
 These three page functions in `scripts/design-export.mts` have about 65, 71 and 66 lines. D1 covers only `fillTemplate`. Constraint 2 and done check 3 allow new page steps and test lines only for `fillTemplate`. #1182 has no value for this.
 
 - **A.** Keep one page step each. Move the inline casts and parameter types to local types at module level: the page source then holds no reference to them. Merge loops where the output stays the same, such as the `<link>` of `fonts.css` in one `Object.assign`. Cost: denser code. If a function cannot fit, the build stops and asks in the PR.
-- **B.** Split `pageHtml` into page steps by phase, such as a new `resolveStyles` for `var()` and `calc()`. The other two take A. Cost: one or two new exported names, and 5 calls in the `pageHtml` tests and `e2e/design-export.spec.mts:88` change. The tech lead edits Constraint 2 and done check 3 of #1181 first.
-- **Other:** your own.
+- ~~**B.** Split `pageHtml` into page steps by phase, such as a new `resolveStyles` for `var()` and `calc()`. The other two take A. Cost: one or two new exported names, and 5 calls in the `pageHtml` tests and `e2e/design-export.spec.mts:88` change. The tech lead edits Constraint 2 and done check 3 of #1181 first.~~
+- ~~**Other:** your own.~~
+
+Recommended: A, because it keeps the exported names and the test lines as #1181 allows. B needs a change to the issue first.
 
 **Answer: A** (@henetiriki)
 
@@ -47,7 +49,7 @@ These three page functions in `scripts/design-export.mts` have about 65, 71 and 
 | `scripts/__tests__/design-export.test.ts`                         | Changed       | Import the two new steps. Call them in a `beforeEach` of `describe('fillTemplate')` and `describe('mountImports')` (D1).                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `e2e/design-export.spec.mts`                                      | Changed       | Import the two new steps. Call them before `fillTemplate` on line 81 (D1).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 
-Each removed disable is part of the row of its file. The parts in each row are a guide: a small departure if a different cut fits better.
+Each removed disable is part of the row of its file. The parts in each row are a guide: if a different cut fits better, use it as a small departure.
 
 ## Order of work
 
@@ -81,7 +83,6 @@ Each removed disable is part of the row of its file. The parts in each row are a
 ## Deviations
 
 - `fillTemplate` got three page steps, not two: `defineTemplateHelpers`, `defineTemplateFillers` and `defineTemplateWalk`. One step with the fillers held 74 lines.
-- `database-store.mts` has nine builders, not five: `personUpdate`, `placeUpdate`, `relationshipUpdate`, `pinLists` and `pinUpdate` split the entity builders that held more than 60 lines.
+- `database-store.mts` has ten builders, not five: `personUpdate`, `placeUpdate`, `relationshipUpdate`, `pinLists` and `pinUpdate` split the entity builders that held more than 60 lines.
 - `agent-unblock.mts`, `hand-back.mts` and `issue-status.mts`: more helpers than the table lists, so that `run` fits.
-- D2 A: `pageHtml` merges loops and uses selectors. `fonts.css` links go in through `insertAdjacentHTML`. The `<link>` removal stays after the `var()` step, because `tokens.css` gives `:root` its values.
-- The reword step (D2 A) changed no text: #1181 Constraint 2 and done check 3 already allow it.
+- D2 A: `pageHtml` merges loops and uses selectors. `pageHtml` adds the `fonts.css` links with `insertAdjacentHTML`. The `<link>` removal stays after the `var()` step, because `tokens.css` gives `:root` its values.

@@ -13,4 +13,4 @@ The list of a `PersonField`: a row for each match, or the no-match notice.
 | `onPick` | `(person: PersonSummary) => void` | yes |  |
 | `place` | `{ left: number; top: number; }` | no | The viewport point of the list's top left corner. |
 | `query` | `string` | yes | The text that the user typed. The no-match notice quotes it. |
-| `rows` | `{ person: PersonSummary; variant?: string; }[]` | yes | Each match, with the spelling variant that matched. |
+| `rows` | `Rows` | yes | Each match, with the spelling variant that matched. |

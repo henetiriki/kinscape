@@ -43,6 +43,9 @@ export type Docs = {
   summary: string;
 };
 
+/** A problem that `tokenLiterals` finds in a `.module.css` file: its 1-based line and what is wrong. */
+export type LiteralProblem = { line: number; text: string };
+
 export type Outcome = 'blocked' | 'matches';
 
 /** A prop in a control's README table. */

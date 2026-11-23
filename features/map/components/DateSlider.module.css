@@ -13,12 +13,12 @@
 
 .track {
   background: var(--track);
-  border-radius: 2px;
+  border-radius: var(--radius-bar);
   height: 4px;
   left: 0;
   position: absolute;
   right: 0;
-  top: 12px;
+  top: 12px; /* own: track centre on the thumb centre */
 }
 
 .contested {
@@ -27,11 +27,11 @@
     var(--hatch-line) 0 2px,
     transparent 2px 4px
   );
-  border-radius: 2px;
+  border-radius: 2px; /* own: soft corners of the contested band */
   height: 12px;
   left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--f));
   position: absolute;
-  top: 8px;
+  top: 8px; /* own: band centred on the track */
   width: calc((100% - var(--thumb)) * (var(--g) - var(--f)));
 }
 
@@ -40,7 +40,7 @@
   height: 12px;
   left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--f));
   position: absolute;
-  top: 8px;
+  top: 8px; /* own: ticks centred on the track */
   translate: -1px 0;
   width: 2px;
 }
@@ -50,7 +50,7 @@
   font-family: var(--type-mono-font);
   font-size: var(--type-mono-size);
   font-variant-ligatures: none;
-  inset: 24px 0 auto;
+  inset: 24px 0 auto; /* own: years under the track */
   line-height: var(--type-mono-line);
   position: absolute;
 }
@@ -81,10 +81,10 @@
   box-sizing: border-box;
   display: block;
   height: var(--size-touch);
-  margin: -8px 0;
+  margin: calc(-1 * var(--space-8)) 0;
   /* The ring hugs the 28px track, not the 44px hit area. */
   outline-offset: -6px;
-  padding: 8px 0;
+  padding: 8px 0; /* own: centres the 28px track in the 44px hit area */
   position: relative;
   width: 100%;
 }

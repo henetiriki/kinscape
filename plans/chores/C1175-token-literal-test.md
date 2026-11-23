@@ -147,3 +147,8 @@ If D1 is B, the build moves the seven values of D1 B to new tokens. If D3 is B, 
 - The `layout` group.
 
 ## Deviations
+
+- D2 B: the build also fixes `BottomSheet`: 27 (`calc(-1 * var(--space-4))`) and `DateSlider`: 84 (`calc(-1 * var(--space-8))`). The total is 61 literals.
+- Big: `app/components/overlays/__tests__/BottomSheet.test.tsx` line 21 expects `margin-bottom: -4px`, which D2 B changes. The plan does not list the test, so it is unchanged and fails. The fix is `calc(-1 * var(--space-4))` in that line.
+- Big: `lib/design/__tests__/system.test.ts` line 104 expects 174 design system tokens. The three new tokens make it 177. The plan does not list the test, so it is unchanged and fails. The fix is 177.
+- `literals.mts` compares a `box-shadow` as a whole value, and a colour on each line of its value.

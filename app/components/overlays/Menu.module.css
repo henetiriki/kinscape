@@ -85,7 +85,7 @@
 }
 
 .item[data-detail] {
-  min-height: 52px;
+  min-height: var(--size-row-l);
 }
 
 @media (hover: hover) {

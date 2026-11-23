@@ -12,7 +12,7 @@
 }
 
 .callout strong {
-  font-weight: 600;
+  font-weight: 600; /* own: bold text in small text */
 }
 
 .pointer {

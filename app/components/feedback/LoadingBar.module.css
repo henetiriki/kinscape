@@ -3,6 +3,6 @@
   background: var(--line);
   border-radius: var(--radius-small);
   display: block;
-  height: 20px;
+  height: 20px; /* own: line height of the text it stands for */
   max-width: 100%;
 }

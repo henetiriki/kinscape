@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 const form = vi.hoisted(() => vi.fn());
@@ -9,11 +9,17 @@ vi.mock('@ks/features/people', () => ({
     onCancel: () => void;
     onSave: (input: unknown) => Promise<{ ok: boolean }>;
     onSaved: () => void;
+    point?: { latitude: number; longitude: number };
   }) => {
     form(props);
 
     return (
       <div>
+        <span data-testid='form-point'>
+          {props.point
+            ? `${props.point.latitude},${props.point.longitude}`
+            : ''}
+        </span>
         <button onClick={props.onCancel} type='button'>
           Cancel form
         </button>
@@ -32,15 +38,39 @@ import { useAddPin } from '@ks/app/@map/useAddPin';
 const onSaved = vi.fn();
 
 const Probe = () => {
-  const { action, panel } = useAddPin({ onSaved });
+  const { action, click, closeClick, onEmptyClick, panel } = useAddPin({
+    onSaved,
+  });
 
   return (
     <>
       <div data-testid='action'>{action}</div>
       <div data-testid='panel'>{panel}</div>
+      <div data-testid='click'>
+        {click && (
+          <span data-testid='position'>{click.position.join(',')}</span>
+        )}
+        {click?.popup({ x: 30, y: 40 })}
+      </div>
+      <button
+        onClick={() => onEmptyClick?.({ latitude: -28.5, longitude: 25.5 })}
+        type='button'>
+        Empty click
+      </button>
+      <button
+        onClick={() => onEmptyClick?.({ latitude: -30.25, longitude: 20.75 })}
+        type='button'>
+        Other empty click
+      </button>
+      <button onClick={closeClick} type='button'>
+        Pin click
+      </button>
     </>
   );
 };
+
+const emptyClick = () =>
+  fireEvent.click(screen.getByRole('button', { name: 'Empty click' }));
 
 const desktop = window.matchMedia;
 const slot = (name: string) => screen.getByTestId(name);
@@ -118,6 +148,159 @@ it('calls onSaved for a save that finishes after the panel closed, and not for a
 
   await form.mock.calls[0][0].onSave({});
   expect(onSaved).toHaveBeenCalledTimes(1);
+});
+
+// PIN-01
+it('opens the click popup at the point of a click on empty map, and keeps the button', () => {
+  render(<Probe />);
+  emptyClick();
+
+  expect(slot('position').textContent).toBe('25.5,-28.5');
+  expect(screen.getByRole('dialog', { name: 'Add a pin here' })).toBeInstanceOf(
+    HTMLElement
+  );
+  expect(screen.getByText('-28.500000, 25.500000')).toBeInstanceOf(HTMLElement);
+  expect(screen.getByRole('button', { name: 'Add a pin' })).toBeInstanceOf(
+    HTMLElement
+  );
+  expect(slot('panel').textContent).toBe('');
+});
+
+// PIN-01
+it('moves the popup to the next click', () => {
+  render(<Probe />);
+  emptyClick();
+  fireEvent.click(screen.getByRole('button', { name: 'Other empty click' }));
+
+  expect(slot('position').textContent).toBe('20.75,-30.25');
+  expect(screen.getAllByRole('dialog')).toHaveLength(1);
+});
+
+// PIN-01
+it('opens the panel with the clicked point from "Add a pin here", and closes the popup', () => {
+  render(<Probe />);
+  emptyClick();
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin here' }));
+
+  expect(slot('click').textContent).toBe('');
+  expect(slot('form-point').textContent).toBe('-28.5,25.5');
+  expect(slot('action').textContent).toBe('');
+});
+
+// PIN-01
+it('closes the popup from Close, and from a free Esc', () => {
+  render(<Probe />);
+  emptyClick();
+  fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+  expect(slot('click').textContent).toBe('');
+
+  emptyClick();
+  fireEvent.keyDown(document.body, { key: 'Escape' });
+  expect(slot('click').textContent).toBe('');
+
+  emptyClick();
+  fireEvent.keyDown(document.body, { key: 'a' });
+  expect(slot('position').textContent).toBe('25.5,-28.5');
+});
+
+// PIN-01
+it('closes the popup on a Pin click, and leaves a closed state alone', () => {
+  render(<Probe />);
+  emptyClick();
+  fireEvent.click(screen.getByRole('button', { name: 'Pin click' }));
+  expect(slot('click').textContent).toBe('');
+  fireEvent.click(screen.getByRole('button', { name: 'Pin click' }));
+  expect(slot('click').textContent).toBe('');
+});
+
+// PIN-01
+it('opens the panel empty from "Add a pin" and closes the popup', () => {
+  render(<Probe />);
+  emptyClick();
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin' }));
+
+  expect(slot('click').textContent).toBe('');
+  expect(slot('panel').textContent).toContain('Cancel form');
+  expect(slot('form-point').textContent).toBe('');
+});
+
+// PIN-01
+it('changes the point of the open panel on a click, and opens no popup', () => {
+  render(<Probe />);
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin' }));
+  emptyClick();
+  expect(slot('form-point').textContent).toBe('-28.5,25.5');
+  expect(slot('click').textContent).toBe('');
+  fireEvent.click(screen.getByRole('button', { name: 'Other empty click' }));
+  expect(slot('form-point').textContent).toBe('-30.25,20.75');
+});
+
+// PIN-01
+it('keeps the point of the open panel on a Pin click', () => {
+  render(<Probe />);
+  emptyClick();
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin here' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Pin click' }));
+  expect(slot('form-point').textContent).toBe('-28.5,25.5');
+});
+
+// PIN-01
+it('gives the button again after the panel of a click closes', () => {
+  render(<Probe />);
+  emptyClick();
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin here' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Cancel form' }));
+  expect(slot('panel').textContent).toBe('');
+  expect(screen.getByRole('button', { name: 'Add a pin' })).toBeInstanceOf(
+    HTMLElement
+  );
+});
+
+// NFR-05
+it('opens nothing on a click on a phone', () => {
+  window.matchMedia = (() => ({
+    addEventListener: () => {},
+    matches: true,
+    removeEventListener: () => {},
+  })) as unknown as typeof window.matchMedia;
+  render(<Probe />);
+  emptyClick();
+
+  expect(slot('click').textContent).toBe('');
+  expect(slot('panel').textContent).toBe('');
+});
+
+// NFR-05
+it('starts closed when the screen goes back to a desktop width after a phone width', () => {
+  const listeners = new Set<() => void>();
+  const query = {
+    addEventListener: (_: string, listener: () => void) =>
+      listeners.add(listener),
+    matches: false,
+    removeEventListener: (_: string, listener: () => void) =>
+      listeners.delete(listener),
+  };
+
+  window.matchMedia = (() => query) as unknown as typeof window.matchMedia;
+
+  const resize = (next: boolean) => {
+    query.matches = next;
+    act(() => listeners.forEach(listener => listener()));
+  };
+
+  render(<Probe />);
+  emptyClick();
+  resize(true);
+  resize(false);
+  expect(slot('click').textContent).toBe('');
+
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin' }));
+  resize(true);
+  resize(false);
+  expect(slot('panel').textContent).toBe('');
+  expect(screen.getByRole('button', { name: 'Add a pin' })).toBeInstanceOf(
+    HTMLElement
+  );
 });
 
 it('gives neither the button nor the panel on a phone', () => {

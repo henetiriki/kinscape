@@ -53,6 +53,23 @@ const OpenPinPopup = ({
   );
 };
 
+/** The `pin` prop of the shell for the open Pin. */
+const pinProp = (
+  open: MapPin,
+  close: () => void
+): NonNullable<ComponentProps<typeof MapShell>['pin']> => ({
+  open: { id: open.id, position: [open.longitude, open.latitude] },
+  popup: (form, place) => (
+    <OpenPinPopup
+      key={open.id}
+      onClose={close}
+      pin={open}
+      place={form === 'floating' ? place : undefined}
+    />
+  ),
+  span: open.span,
+});
+
 /**
  * The map with its Pins. The Pins load once; a failed load shows an error toast with "Try again".
  * Until the Pins load, the layer holds none, so the "Pins" row reads "0 of 0". A click on a Pin
@@ -61,7 +78,15 @@ const OpenPinPopup = ({
 export const MapWithPins = (
   props: Omit<
     ComponentProps<typeof MapShell>,
-    'action' | 'layers' | 'onClosePin' | 'onOpenPin' | 'panel' | 'pin' | 'toast'
+    | 'action'
+    | 'click'
+    | 'layers'
+    | 'onClosePin'
+    | 'onEmptyClick'
+    | 'onOpenPin'
+    | 'panel'
+    | 'pin'
+    | 'toast'
   >
 ) => {
   const { data, errorUpdatedAt, isError, refetch } = usePins();
@@ -78,24 +103,16 @@ export const MapWithPins = (
     <MapShell
       {...props}
       action={add.action}
+      click={add.click}
       layers={layers}
       onClosePin={close}
-      onOpenPin={setOpenId}
+      onEmptyClick={add.onEmptyClick}
+      onOpenPin={id => {
+        setOpenId(id);
+        add.closeClick?.();
+      }}
       panel={add.panel}
-      pin={
-        open && {
-          open: { id: open.id, position: [open.longitude, open.latitude] },
-          popup: (form, place) => (
-            <OpenPinPopup
-              key={open.id}
-              onClose={close}
-              pin={open}
-              place={form === 'floating' ? place : undefined}
-            />
-          ),
-          span: open.span,
-        }
-      }
+      pin={open && pinProp(open, close)}
       toast={
         isError && errorUpdatedAt !== dismissedAt ? (
           <Toast

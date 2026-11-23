@@ -596,10 +596,15 @@ describe('MapView', () => {
       const { rerender } = view({ onEmptyClick });
 
       handler('click')({
+        lngLat: { lat: -33.9, lng: 18.4 },
         originalEvent: { target: document.body },
         point: { x: 1, y: 1 },
       });
-      expect(onEmptyClick).toHaveBeenCalledOnce();
+      // PIN-01: the point of the click, latitude and longitude
+      expect(onEmptyClick).toHaveBeenCalledExactlyOnceWith({
+        latitude: -33.9,
+        longitude: 18.4,
+      });
 
       maplibre.map.queryRenderedFeatures.mockReturnValueOnce([
         { properties: { id: 'p1' } },
@@ -664,6 +669,49 @@ describe('MapView', () => {
       expect(maplibre.map.off).toHaveBeenCalledWith(
         'move',
         expect.any(Function)
+      );
+      expect(onOpenPoint).toHaveBeenLastCalledWith(null);
+      maplibre.map.project.mockReturnValue({ x: 0, y: 0 });
+    });
+
+    // PIN-01: the click popup stays at its point
+    it('reports the pixel point of the clicked position after each move, then none', () => {
+      const onOpenPoint = vi.fn();
+
+      maplibre.map.project.mockReturnValue({ x: 5, y: 6 });
+
+      const { rerender } = view({ clicked: [18.4, -33.9], onOpenPoint });
+
+      expect(maplibre.map.project).toHaveBeenCalledWith([18.4, -33.9]);
+      expect(onOpenPoint).toHaveBeenLastCalledWith({ x: 5, y: 6 });
+
+      maplibre.map.project.mockReturnValue({ x: 7, y: 8 });
+      handler('move')();
+      expect(onOpenPoint).toHaveBeenLastCalledWith({ x: 7, y: 8 });
+
+      // An open Pin wins over a clicked position.
+      maplibre.map.project.mockClear();
+      rerender(
+        <MapView
+          clicked={[18.4, -33.9]}
+          layers={[picking]}
+          mapDay={FIVE}
+          onOpenPoint={onOpenPoint}
+          open={{ id: 'p1', position: [1, 2] }}
+          padding={padding}
+          visible={on}
+        />
+      );
+      expect(maplibre.map.project).toHaveBeenCalledWith([1, 2]);
+
+      rerender(
+        <MapView
+          layers={[picking]}
+          mapDay={FIVE}
+          onOpenPoint={onOpenPoint}
+          padding={padding}
+          visible={on}
+        />
       );
       expect(onOpenPoint).toHaveBeenLastCalledWith(null);
       maplibre.map.project.mockReturnValue({ x: 0, y: 0 });

@@ -48,6 +48,12 @@ const setup = (
   return handlers;
 };
 
+const POINT = { latitude: -28.74, longitude: 25.31 };
+const NEXT_POINT = { latitude: -33.93, longitude: 18.42 };
+
+const coordinates = () =>
+  (screen.getByLabelText('Coordinates') as HTMLInputElement).value;
+
 const ready = () => screen.findByRole('combobox', { name: 'Person' });
 
 const fill = async (over: Record<string, string> = {}) => {
@@ -80,6 +86,65 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+});
+
+const renderWithPoint = (point?: typeof POINT) => {
+  fetchStub.mockImplementation(async () => Response.json([PERSON]));
+
+  const props = { onCancel: vi.fn(), onSave: vi.fn(), onSaved: vi.fn() };
+  const form = (at?: typeof POINT) => (
+    <QueryProvider>
+      <PinForm {...props} point={at} />
+    </QueryProvider>
+  );
+  const { rerender } = render(form(point));
+
+  return (at?: typeof POINT) => rerender(form(at));
+};
+
+// PIN-01
+it('shows the point in the coordinates field with 6 decimals, latitude first', async () => {
+  renderWithPoint(POINT);
+  await ready();
+  expect(coordinates()).toBe('-28.740000, 25.310000');
+});
+
+// PIN-01
+it('leaves the coordinates field empty when there is no point', async () => {
+  renderWithPoint();
+  await ready();
+  expect(coordinates()).toBe('');
+});
+
+// PIN-01
+it('changes only the coordinates when a new point arrives', async () => {
+  const change = renderWithPoint(POINT);
+
+  await fill({ address: 'Farm Example' });
+  change(NEXT_POINT);
+  expect(coordinates()).toBe('-33.930000, 18.420000');
+  expect((screen.getByLabelText('Event type') as HTMLSelectElement).value).toBe(
+    'residence'
+  );
+  expect((screen.getByLabelText('Date') as HTMLInputElement).value).toBe(
+    'FROM 1840 TO 1855'
+  );
+  expect(
+    (screen.getByLabelText('Address as recorded') as HTMLInputElement).value
+  ).toBe('Farm Example');
+});
+
+// PIN-01
+it('keeps typed coordinates when the point goes away, and lets the user type over a point', async () => {
+  const change = renderWithPoint(POINT);
+
+  await ready();
+  fireEvent.change(screen.getByLabelText('Coordinates'), {
+    target: { value: '-30, 20' },
+  });
+  expect(coordinates()).toBe('-30, 20');
+  change(undefined);
+  expect(coordinates()).toBe('-30, 20');
 });
 
 it('lists the Event types of the schema, after the empty choice', () => {

@@ -67,6 +67,11 @@ export type ChainLevel = {
     level: string;
     name: string;
 };
+/** A point on the map in decimal degrees. */
+export type ClickPoint = {
+    latitude: number;
+    longitude: number;
+};
 export type MenuEntry = {
     detail?: string;
     /** Stays in the arrow-key order but does nothing. */
@@ -1286,10 +1291,8 @@ export declare const PlacedPinPopup: ({ x, y, ...rest }: {
 export type PinPopupProps = Parameters<typeof PinPopup>[0];
 export type PlacedPinPopupProps = Parameters<typeof PlacedPinPopup>[0];
 
-type ClickPoint = {
-    latitude: number;
-    longitude: number;
-};
+/** "latitude, longitude" in decimal degrees with 6 decimals, latitude first. */
+declare const pointText: ({ latitude, longitude }: ClickPoint) => string;
 /**
  * The popup of a click on empty map (PIN-01), at a map point in pixels from the corner of the
  * overlay area, with the point drawn as a dot. "Add a pin here" calls `onAdd` with the point.

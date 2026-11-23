@@ -17,6 +17,7 @@ The popup of a Pin (PIN-02): the Person, the event type, both date lines and the
 | `name` | `string` | no | The Person's name; the loaded state shows it. |
 | `onAddHere` | `(() => void)` | no | "Add a pin here" in the floating popup calls it. |
 | `onClose` | `(() => void)` | no | Called by Close and by Esc inside the floating popup. |
+| `onEdit` | `(() => void)` | no | "Edit" in the floating popup calls it. |
 | `onRetry` | `(() => void)` | no | Called by "Try again" in the failed state. |
 | `reading` | `string` | yes | The reading of the date, such as "From 1890 to 1905". |
 | `recorded` | `string` | yes | The date as recorded, such as "FROM 1890 TO 1905". |

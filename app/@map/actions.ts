@@ -40,6 +40,8 @@ export const createPinAction = treeAction(
  * stays" keeps the saved Place and its precision. A new point saves its Place and the update
  * together, or neither. A Person or Pin in another Account's Tree gives `not-found`, as a missing
  * one does. A stale `version` gives `conflict`, so a repeat of a saved update saves no second Place.
+ *
+ * @later #884
  */
 export const updatePinAction = treeAction(
   z.unknown(),

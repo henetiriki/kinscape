@@ -10,4 +10,3 @@ export type {
   RelationshipEntry,
   RelationshipsPerson,
 } from '@ks/features/people/components/types';
-export { usePeople } from '@ks/features/people/query';

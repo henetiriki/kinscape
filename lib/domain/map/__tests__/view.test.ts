@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { centreOf, FIRST_VIEW } from '@ks/lib/domain/map/view.mts';
+import { centreOf } from '@ks/e2e/view';
+import { FIRST_VIEW } from '@ks/lib/domain/map/view.mts';
 import { mercatorY } from '@ks/lib/domain/map/zoom.mts';
 
 // MAP-01

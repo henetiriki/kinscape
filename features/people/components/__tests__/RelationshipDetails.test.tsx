@@ -4,10 +4,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RelationshipSaveResult } from '@ks/features/people/components/types';
 import type { RelationshipGroup } from '@ks/lib/domain/relationships/types';
 
-import {
-  alertCodes,
-  messageOf,
-} from '@ks/features/people/components/relationship-messages';
+import { ALERT_CODES } from '@ks/features/people/components/__tests__/alert-codes';
+import { messageOf } from '@ks/features/people/components/relationship-messages';
 import { RelationshipDetails } from '@ks/features/people/components/RelationshipDetails';
 import { fuzzyDateOf } from '@ks/lib/domain/dates/fuzzy-date.mts';
 import { parsePersonId, parseRelationshipId } from '@ks/lib/domain/ids/ids.mts';
@@ -355,7 +353,7 @@ describe('a refusal or an error', () => {
     create: async () => ({ error, ok: false }),
   });
 
-  it.each(alertCodes)(
+  it.each(ALERT_CODES)(
     'shows the alert of %s, keeps the dialog open and saves nothing more',
     async code => {
       const { onClose } = open(refused(code));

@@ -43,7 +43,7 @@ it('calls onClose from Close and from Esc', () => {
 it('places the popup and the dot at the point', () => {
   render(<ClickPopup onAdd={vi.fn()} point={POINT} x={380} y={240} />);
 
-  const placed = screen.getByRole('dialog').parentElement;
+  const placed = screen.getByTestId('placed-at');
 
   expect(placed?.style.getPropertyValue('--x')).toBe('380px');
   expect(placed?.style.getPropertyValue('--y')).toBe('240px');

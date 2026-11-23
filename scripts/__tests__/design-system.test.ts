@@ -265,7 +265,7 @@ describe('the control cards', () => {
         ]),
       ].toSorted()
     );
-    expect(names).toHaveLength(69);
+    expect(names).toHaveLength(70);
     expect(card('SignInLayout', 'preview.html').split('\n')[0]).toContain(
       'group="Layout"'
     );
@@ -370,7 +370,7 @@ describe('the gallery', () => {
         ...VENDOR.map(({ file }) => `gallery/vendor/${file}`),
       ].toSorted()
     );
-    expect(names).toHaveLength(69);
+    expect(names).toHaveLength(70);
   });
 
   it('holds each preview.html as galleryHtml makes it', () => {

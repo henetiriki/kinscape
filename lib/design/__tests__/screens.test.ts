@@ -24,6 +24,10 @@ const SCREEN_ONLY: { blocker: string; folder: string }[] = [
     folder: 'map-pin-popup',
   },
   {
+    blocker: 'The map opens no click popup until M2.14.5.2 (#868).',
+    folder: 'pin-click-popup',
+  },
+  {
     blocker:
       'The card of the count marker looks is part of the board, not a state of the map.',
     folder: 'map-pin-count',
@@ -91,7 +95,6 @@ const NO_ENTRY = [
   'map-sources-phone',
   'map-style',
   'map-style-phone',
-  'pin-click-popup',
   'pin-edit',
   'pin-edit-load-failed',
   'pin-edit-loading',

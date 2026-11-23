@@ -128,6 +128,13 @@
       "mode": "blocking"
     },
     {
+      "name": "pin-click-popup",
+      "route": "/screens/pin-click-popup",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
       "name": "people-list",
       "account": "r.family@example.com",
       "route": "/people",

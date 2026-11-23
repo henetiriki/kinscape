@@ -47,7 +47,7 @@ Each area has a file in `docs/patterns/`. A session loads it when it reads a mat
 
 - **Lint** (`eslint.config.mjs`): arrow functions only, exported types only in `types.ts`, alias imports by extension; the config lists the rest.
 - **knip** (`knip.ts`, in `npm run lint:knip`): unused files, exports, types and dependencies. `knip --production` also fails on an export that only a test uses. If a later slice wires an export, tag it `/** @later #<issue> */`.
-- **Fitness tests** (`scripts/__tests__/`): `vercel-imports` (undeployed imports), `later-tags` (`@later` tags with no issue), `length-disables` (the reason and cap of `max-lines-per-function` disables).
+- **Fitness tests** (`scripts/__tests__/`): `vercel-imports` (undeployed imports), `later-tags` (`@later` tags with no issue).
 - **Layers** (`scripts/layers.mts`, ESLint rule `layers/imports`, test `layers.test.ts`): a layer may import only the layers in its row. `lib/domain` may not import Node built-ins or `maplibre-gl`. `features/` holds only feature folders, imported from outside through `index.ts`. Layer code may not import tests, `app/screens`, `scripts`, `e2e` or `lib/design`.
   | Layer             | Holds                                  | May import                                                                                   |
   | ----------------- | -------------------------------------- | -------------------------------------------------------------------------------------------- |

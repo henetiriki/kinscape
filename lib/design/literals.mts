@@ -12,7 +12,7 @@ type Rule = { kind: Kind; pick: (tokens: Tree) => unknown[] };
 
 const OWN = /\/\*\s*own:(.*?)\*\//;
 
-/** A number with its unit. A sign is dropped, so `-8px` equals `8px`. */
+/** A number with its unit. The key drops its sign, so `-8px` equals `8px`. */
 const NUMBER =
   /(?<![\w.#])(?<!\w-)-?(?<digits>\d*\.\d+|\d+)(?<unit>px|em|rem|ms|s)?(?![\w%.])/g;
 
@@ -47,13 +47,19 @@ const RULES: [RegExp, Rule][] = [
   ],
 ];
 
+/** The key of a number: a duration in seconds becomes milliseconds, so `0.12s` equals `120ms`. */
+const keyOf = (digits: string, unit = '') =>
+  unit === 's'
+    ? `${Number((Number(digits) * 1000).toFixed(6))}ms`
+    : `${Number(digits)}${unit}`;
+
 const numbers = (text: string, durations: boolean) =>
   [...text.matchAll(NUMBER)]
     .filter(match => durations === /^m?s$/.test(match.groups?.unit ?? ''))
     .filter(match => Number(match.groups?.digits) !== 0)
     .map(match => ({
       at: match.index,
-      key: `${Number(match.groups?.digits)}${match.groups?.unit ?? ''}`,
+      key: keyOf(match.groups!.digits, match.groups?.unit),
       text: match[0],
     }));
 
@@ -88,25 +94,24 @@ const withoutVars = (value: string): string => {
   return out;
 };
 
-type Literal = { line: number; text: string };
-
 const literalsIn = (
   property: string,
   value: string,
   first: number,
   rule: Rule,
   tokens: Tree
-): Literal[] => {
+): LiteralProblem[] => {
   const known = rule.pick(tokens);
   const at = (offset: number) =>
     first + value.slice(0, offset).split('\n').length - 1;
-  const hit = (literal: string, line: number): Literal => ({
+  const hit = (literal: string, line: number): LiteralProblem => ({
     line,
     text: `${property}: ${literal} equals a token of its group: use var(--token) or add /* own: <reason> */`,
   });
 
   if (rule.kind === 'shadow') {
-    const flat = (text: string) => text.trim().replaceAll(/\s+/g, ' ');
+    const flat = (text: string) =>
+      text.trim().replaceAll(/\s+/g, ' ').toLowerCase();
     const shown = flat(withoutVars(value));
     const tokenValues = leaves(known).map(flat);
 
@@ -118,11 +123,13 @@ const literalsIn = (
       known.flatMap(group => coloursIn(JSON.stringify(group)))
     );
 
-    return value.split('\n').flatMap((row, index) =>
-      coloursIn(row)
-        .filter(colour => colours.has(colour))
-        .map(colour => hit(`#${colour}`, first + index))
-    );
+    return withoutVars(value)
+      .split('\n')
+      .flatMap((row, index) =>
+        coloursIn(row)
+          .filter(colour => colours.has(colour))
+          .map(colour => hit(`#${colour}`, first + index))
+      );
   }
 
   const durations = rule.kind === 'duration';
@@ -137,7 +144,7 @@ const literalsIn = (
     .map(number => hit(number.text, at(number.at)));
 };
 
-/** Each declaration of `css` as its property, value and first line. Comments are blanked. */
+/** Each declaration of `css` as its property, value and first line. It blanks each comment. */
 const declarations = (css: string) => {
   const clean = css.replaceAll(/\/\*[\s\S]*?\*\//g, blank);
   const found: { first: number; property: string; value: string }[] = [];

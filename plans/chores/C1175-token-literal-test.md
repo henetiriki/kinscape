@@ -6,7 +6,14 @@
 
 ## Approach
 
-A new module `lib/design/literals.mts` finds each token literal in the text of one `.module.css` file. A new test runs it on each tracked `.module.css` file and on fixtures. The module reads each declaration with its line, takes the group of its property (the table of issue step 1), and compares each value part with the token values of that group. It skips `0`, `var()`, each number in a `calc()` that holds a `var()`, and the `layout` group. A `motion` token gives its duration only, so `120ms` matches `120ms ease-out`. A colour compares by `coloursIn` of `css.mts`. A line passes if it carries `/* own: <reason> */`. The build then fixes the 59 literals of the list below and adds three tokens.
+A new module `lib/design/literals.mts` finds each token literal in the text of one `.module.css` file. A new test runs it on each tracked `.module.css` file and on fixtures. The build then fixes the 59 literals of the list below and adds three tokens.
+
+The module reads each declaration with its line. It takes the group of the property (the table of issue step 1). It compares each value part with the token values of that group.
+
+- It skips `0`, `var()`, each number in a `calc()` that holds a `var()`, and the `layout` group.
+- A `motion` token gives its duration only, so `120ms` matches `120ms ease-out`. A duration in seconds converts to `ms`.
+- A colour compares by `coloursIn` of `css.mts`, outside each `var()`. A shadow compares in lower case.
+- A line passes if it carries `/* own: <reason> */`.
 
 ## Decisions
 
@@ -154,3 +161,6 @@ If D1 is B, the build moves the seven values of D1 B to new tokens. If D3 is B, 
 - Big: `app/components/overlays/__tests__/BottomSheet.test.tsx` line 21 expected `margin-bottom: -4px`, which D2 B changes. The tech lead approved the edit: the line expects `calc(-1 * var(--space-4))`, and the Files table lists the test.
 - Big: `lib/design/__tests__/system.test.ts` line 104 expected 174 design system tokens. The three new tokens make it 177. The tech lead approved the edit: the line expects 177, and the Files table lists the test.
 - `literals.mts` compares a `box-shadow` as a whole value, and a colour on each line of its value.
+- Review of the PR: the tech lead chose to build three unlikely cases. A colour in a `var()` fallback passes. A duration in seconds equals its `ms` token. A shadow compares in lower case. Each has a fixture.
+- Design: Render snapshots changed the 63 `design/source/*.html` files of `b94b708`: the `map-*`, `people-*`, `person-*`, `pin-*` and `relationship-*` snapshots. Only CSS-module class hashes and the order of style declarations differ, so no rendered value changes and no JPG or card changed.
+- A local `npm run design:export` prints "Rewrote:" for 52 snapshots, not "No snapshot changed". The macOS render gives sub-pixel widths, such as `48.1094px` for `48px`. The session discarded those files. The CI `design` job compares the pinned render.

@@ -14,7 +14,10 @@ const tokens = {
   map: { sea: '#c9d5d2' },
   motion: { press: '120ms ease-out', toast: '4000ms' },
   radius: { full: '999px', link: '2px' },
-  shadow: { modal: '0 10px 40px rgb(24 33 27 / 0.3)' },
+  shadow: {
+    modal: '0 10px 40px rgb(24 33 27 / 0.3)',
+    thumb: '0 0 0 1px #264f29, 0 2px 6px rgb(24 33 27 / 0.3)',
+  },
   size: { chip: '36px' },
   space: { '12': '12px', '8': '8px' },
   type: {
@@ -51,11 +54,16 @@ describe('a literal that equals a token of its group', () => {
     ['font-weight', 'font-weight: 600;'],
     ['a transition duration', 'transition: opacity 120ms ease-out;'],
     ['an animation duration', 'animation: spin 4000ms linear;'],
+    ['a duration in seconds', 'transition: opacity 0.12s ease-out;'],
     ['a hex colour', 'color: #18211b;'],
     ['a short hex colour in a background', 'background: #264F29;'],
     ['a colour function', 'border: 1px solid rgb(24 33 27 / 0.2);'],
     ['a map colour', 'fill: #c9d5d2;'],
     ['a shadow', 'box-shadow: 0 10px 40px rgb(24  33 27 / 0.3);'],
+    [
+      'a shadow with an uppercase hex',
+      'box-shadow: 0 0 0 1px #264F29, 0 2px 6px rgb(24 33 27 / 0.3);',
+    ],
     ['a calc without var', 'width: calc(100% - 36px);'],
     ['a negative value', 'margin: -8px 0;'],
   ])('fails for %s', (_name, row) => {
@@ -117,6 +125,7 @@ describe('a form that the test skips', () => {
     ['a z-index of no token', 'z-index: 2;'],
     ['a colour of no token', 'color: #123456;'],
     ['a colour var', 'color: var(--ink);'],
+    ['a colour in a var fallback', 'color: var(--ink, #18211b);'],
     ['a border width', 'border-width: 2px;'],
     ['a property of no group', 'opacity: 1;'],
     ['a custom property', '--gap: 8px;'],

@@ -69,7 +69,26 @@ See [Changing the design system](../CANVAS.md#changing-the-design-system). This 
 - `lib/design/__tests__/literals.test.ts` fails on a `.module.css` literal that equals a token of its group.
 - Write `/* own: <reason> */` on a literal that is a part's own dimension.
 
+- `lib/design/__tests__/sizes.test.ts` fails on a size that is off the tokens ([The size check](#the-size-check)).
+
 The rule is the "Tokens are the one source" row in [`docs/architecture.md`](../../docs/architecture.md).
+
+## The size check
+
+`lib/design/sizes.mts` reads each size in each `.module.css` file, in `app/globals.css` and in each inline `style` prop of a `.tsx` file outside tests. A size is a length, a duration, a z-index, an opacity or a font weight. It is also a length in `@media` or in a custom property. SVG attributes are not read.
+
+A size passes in these cases:
+
+- It is `0`, a percentage, an `fr`, a keyword, `100vw`, `100vh`, `100dvh` or a `* 1px` multiplier.
+- It equals a token of its property's group.
+- Its line has `/* own: <reason> */`. In a `style` prop, `// own: <reason>` also works.
+- It is on `lib/design/off-token-sizes.json`.
+
+Other sizes fail the test, with the file, line, property and value. A property with no group (opacity, border width, transform offsets, custom properties) always needs a reason or an entry.
+
+An entry holds a file, a property, a value and a `count`. The test fails if the code has more copies than the count. It also fails if the code has fewer, so the list only gets shorter. After you fix a size, or add an `own:` reason, run `npm run sizes` to write the list again.
+
+In a `style` prop, the check reads only literals. It skips an identifier, a call and a template with an expression.
 
 ## Change a value
 

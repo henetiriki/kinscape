@@ -10,6 +10,7 @@ const real = JSON.parse(readFileSync(join(root, 'design/tokens.json'), 'utf8'));
 
 const tokens = {
   colour: { brand: '#264f29', ink: '#18211b' },
+  focus: { offset: '2px', width: '2px' },
   layout: { 'popup-width': '304px' },
   map: { sea: '#c9d5d2' },
   motion: { press: '120ms ease-out', toast: '4000ms' },
@@ -165,13 +166,38 @@ describe('an own comment', () => {
     expect(problems(lines('  gap: 8px; /* own:   */'))).toHaveLength(1);
   });
 
-  it('fails on a line with no such literal', () => {
-    expect(problems(lines('  gap: 7px; /* own: odd */'))).toEqual([
-      {
-        line: 2,
-        text: 'The own: comment is on a line with no token literal',
-      },
+  it('lets an off-token size pass', () => {
+    expect(problems(lines('  gap: 7px; /* own: odd */'))).toEqual([]);
+  });
+
+  it('lets a colour literal pass', () => {
+    expect(problems(lines('  color: #18211b; /* own: brand copy */'))).toEqual(
+      []
+    );
+  });
+
+  it('lets a custom property size pass', () => {
+    expect(problems(lines('  --thumb: 26px; /* own: odd */'))).toEqual([]);
+  });
+
+  it('fails on a line with no size', () => {
+    expect(problems(lines('  gap: 0; /* own: odd */'))).toEqual([
+      { line: 2, text: 'The own: comment is on a line with no size' },
     ]);
+  });
+
+  it('fails on a line with a keyword only', () => {
+    expect(problems(lines('  width: auto; /* own: odd */'))).toHaveLength(1);
+  });
+
+  it('fails on an outline offset that equals the focus token', () => {
+    expect(problems(lines('  outline-offset: 2px;'))).toEqual([
+      { line: 2, text: expect.stringContaining('outline-offset') },
+    ]);
+  });
+
+  it('fails on an outline width that is a focus literal beside a colour', () => {
+    expect(problems(lines('  outline: 2px solid #264f29;'))).toHaveLength(2);
   });
 
   it('fails on a line of a var', () => {

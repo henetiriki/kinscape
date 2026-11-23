@@ -1,0 +1,890 @@
+[
+  {
+    "count": 1,
+    "file": "app/components/actions/ActionBar.module.css",
+    "property": "border-top",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/Button.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/Button.module.css",
+    "property": "transform",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/Button.module.css",
+    "property": "width",
+    "value": "2px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/Chip.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/Chip.module.css",
+    "property": "width",
+    "value": "2px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/DateText.module.css",
+    "property": "height",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/DateText.module.css",
+    "property": "margin",
+    "value": "-1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/DateText.module.css",
+    "property": "width",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/IconButton.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/KeyHint.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/KeyHint.module.css",
+    "property": "padding",
+    "value": "2px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/PersonRow.module.css",
+    "property": "border-top",
+    "value": "1px"
+  },
+  {
+    "count": 2,
+    "file": "app/components/actions/PersonRow.module.css",
+    "property": "gap",
+    "value": "2px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/PersonRow.module.css",
+    "property": "min-height",
+    "value": "60px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/Tabs.module.css",
+    "property": "padding",
+    "value": "6px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/TextLink.module.css",
+    "property": "padding-block",
+    "value": "1em"
+  },
+  {
+    "count": 1,
+    "file": "app/components/actions/TextLink.module.css",
+    "property": "padding-block",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/auth/SignInForm.module.css",
+    "property": "border-top",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/auth/SignInHero.module.css",
+    "property": "border-top",
+    "value": "1.5px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/auth/SignInHero.module.css",
+    "property": "gap",
+    "value": "10px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/auth/SignInHero.module.css",
+    "property": "margin-left",
+    "value": "10px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/auth/SignInHero.module.css",
+    "property": "opacity",
+    "value": "0.28"
+  },
+  {
+    "count": 1,
+    "file": "app/components/auth/SignInHero.module.css",
+    "property": "width",
+    "value": "22px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/Alert.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/Alert.module.css",
+    "property": "gap",
+    "value": "2px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/Alert.module.css",
+    "property": "margin-top",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/Callout.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/Callout.module.css",
+    "property": "border-bottom",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/Callout.module.css",
+    "property": "border-right",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/Callout.module.css",
+    "property": "height",
+    "value": "12px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/Callout.module.css",
+    "property": "width",
+    "value": "12px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/LoadingField.module.css",
+    "property": "min-height",
+    "value": "68px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/NoticeCard.module.css",
+    "property": "margin-top",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/NoticeCard.module.css",
+    "property": "width",
+    "value": "358px"
+  },
+  {
+    "count": 2,
+    "file": "app/components/feedback/ProgressBar.module.css",
+    "property": "border-radius",
+    "value": "3px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/ProgressBar.module.css",
+    "property": "height",
+    "value": "6px"
+  },
+  {
+    "count": 2,
+    "file": "app/components/feedback/Toast.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/Toast.module.css",
+    "property": "min-height",
+    "value": "60px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/feedback/Toast.module.css",
+    "property": "transform",
+    "value": "4px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/forms/Checkbox.module.css",
+    "property": "border",
+    "value": "1.5px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/forms/Checkbox.module.css",
+    "property": "height",
+    "value": "14px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/forms/Checkbox.module.css",
+    "property": "width",
+    "value": "14px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/forms/TextAreaField.module.css",
+    "property": "padding",
+    "value": "10px"
+  },
+  {
+    "count": 2,
+    "file": "app/components/forms/TextAreaField.module.css",
+    "property": "padding",
+    "value": "11px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/forms/TextAreaField.module.css",
+    "property": "padding",
+    "value": "37px"
+  },
+  {
+    "count": 2,
+    "file": "app/components/forms/TextAreaField.module.css",
+    "property": "padding",
+    "value": "9px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/forms/TextAreaField.module.css",
+    "property": "right",
+    "value": "11px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/forms/TextField.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 3,
+    "file": "app/components/forms/TextField.module.css",
+    "property": "border",
+    "value": "2px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/forms/TextField.module.css",
+    "property": "margin",
+    "value": "-10px"
+  },
+  {
+    "count": 2,
+    "file": "app/components/forms/TextField.module.css",
+    "property": "margin-block",
+    "value": "-1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/forms/TextField.module.css",
+    "property": "margin-block",
+    "value": "-2px"
+  },
+  {
+    "count": 3,
+    "file": "app/components/forms/TextField.module.css",
+    "property": "padding",
+    "value": "11px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/forms/TextField.module.css",
+    "property": "right",
+    "value": "9px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/forms/TextField.module.css",
+    "property": "transition",
+    "value": "600000s"
+  },
+  {
+    "count": 2,
+    "file": "app/components/foundation/Divider.module.css",
+    "property": "height",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/foundation/PageHeader.module.css",
+    "property": "border-bottom",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/foundation/PageHeader.module.css",
+    "property": "width",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/BottomSheet.module.css",
+    "property": "height",
+    "value": "4px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/BottomSheet.module.css",
+    "property": "width",
+    "value": "64px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/ClickPopup.module.css",
+    "property": "border",
+    "value": "2.5px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/ClickPopup.module.css",
+    "property": "height",
+    "value": "12px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/ClickPopup.module.css",
+    "property": "min-height",
+    "value": "102px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/ClickPopup.module.css",
+    "property": "width",
+    "value": "12px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/Dialog.module.css",
+    "property": "border-top",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/Dialog.module.css",
+    "property": "height",
+    "value": "4px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/Dialog.module.css",
+    "property": "max-height",
+    "value": "80px"
+  },
+  {
+    "count": 2,
+    "file": "app/components/overlays/Dialog.module.css",
+    "property": "padding",
+    "value": "28px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/Menu.module.css",
+    "property": "height",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/PinPopup.module.css",
+    "property": "gap",
+    "value": "2px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/PinPopup.module.css",
+    "property": "height",
+    "value": "4px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/Popup.module.css",
+    "property": "border-top",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/Popup.module.css",
+    "property": "height",
+    "value": "4px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/Popup.module.css",
+    "property": "min-height",
+    "value": "32px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/Popup.module.css",
+    "property": "padding-top",
+    "value": "3px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/Sheet.module.css",
+    "property": "border-bottom",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/Sheet.module.css",
+    "property": "height",
+    "value": "4px"
+  },
+  {
+    "count": 1,
+    "file": "app/components/overlays/Sheet.module.css",
+    "property": "max-height",
+    "value": "90dvh"
+  },
+  {
+    "count": 2,
+    "file": "app/globals.css",
+    "property": "border-width",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "app/screens/map-pin-count/MapPinCountScreen.tsx",
+    "property": "height",
+    "value": "64px"
+  },
+  {
+    "count": 1,
+    "file": "app/screens/map-pin-count/MapPinCountScreen.tsx",
+    "property": "left",
+    "value": "400px"
+  },
+  {
+    "count": 1,
+    "file": "app/screens/map-pin-count/MapPinCountScreen.tsx",
+    "property": "top",
+    "value": "130px"
+  },
+  {
+    "count": 1,
+    "file": "app/screens/map-pin-count/MapPinCountScreen.tsx",
+    "property": "width",
+    "value": "400px"
+  },
+  {
+    "count": 1,
+    "file": "app/screens/map-pin-count/MapPinCountScreen.tsx",
+    "property": "width",
+    "value": "64px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/ContestedNote.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/ContestedNote.module.css",
+    "property": "height",
+    "value": "14px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/ContestedNote.module.css",
+    "property": "width",
+    "value": "18px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/CountMarker.module.css",
+    "property": "--gap",
+    "value": "5px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/CountMarker.module.css",
+    "property": "border",
+    "value": "2px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/CountMarker.module.css",
+    "property": "height",
+    "value": "28px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/CountMarker.module.css",
+    "property": "height",
+    "value": "32px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/CountMarker.module.css",
+    "property": "line-height",
+    "value": "1"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/CountMarker.module.css",
+    "property": "width",
+    "value": "28px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/CountMarker.module.css",
+    "property": "width",
+    "value": "32px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/Credits.module.css",
+    "property": "gap",
+    "value": "6px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/Credits.module.css",
+    "property": "padding",
+    "value": "10px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/Credits.module.css",
+    "property": "padding",
+    "value": "14px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/Credits.module.css",
+    "property": "width",
+    "value": "300px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/DateDock.module.css",
+    "property": "--callout-lift",
+    "value": "48px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/DateDock.module.css",
+    "property": "--callout-width",
+    "value": "340px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/DateDock.module.css",
+    "property": "height",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/DateSlider.module.css",
+    "property": "--thumb",
+    "value": "26px"
+  },
+  {
+    "count": 2,
+    "file": "features/map/components/DateSlider.module.css",
+    "property": "border",
+    "value": "4px"
+  },
+  {
+    "count": 2,
+    "file": "features/map/components/DateSlider.module.css",
+    "property": "height",
+    "value": "12px"
+  },
+  {
+    "count": 2,
+    "file": "features/map/components/DateSlider.module.css",
+    "property": "height",
+    "value": "28px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/DateSlider.module.css",
+    "property": "height",
+    "value": "4px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/DateSlider.module.css",
+    "property": "margin-top",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/DateSlider.module.css",
+    "property": "outline-offset",
+    "value": "-6px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/DateSlider.module.css",
+    "property": "translate",
+    "value": "-1px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/DateSlider.module.css",
+    "property": "width",
+    "value": "2px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/JumpTo.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/LayersPanel.module.css",
+    "property": "margin-top",
+    "value": "2px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/Legend.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/Legend.module.css",
+    "property": "border-top",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/Legend.module.css",
+    "property": "width",
+    "value": "32px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/Panel.module.css",
+    "property": "border-bottom",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/Panel.module.css",
+    "property": "gap",
+    "value": "14px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/PinFan.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/PinFan.module.css",
+    "property": "height",
+    "value": "32px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/PinFan.module.css",
+    "property": "width",
+    "value": "32px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/SearchBar.module.css",
+    "property": "height",
+    "value": "28px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/SearchBar.module.css",
+    "property": "width",
+    "value": "1px"
+  },
+  {
+    "count": 2,
+    "file": "features/map/components/SourcesDialog.module.css",
+    "property": "border-bottom",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/SourcesDialog.module.css",
+    "property": "padding-block",
+    "value": "10px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/SourcesDialog.module.css",
+    "property": "width",
+    "value": "120px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/SourcesDialog.module.css",
+    "property": "width",
+    "value": "150px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/SourcesDialog.module.css",
+    "property": "width",
+    "value": "170px"
+  },
+  {
+    "count": 1,
+    "file": "features/map/components/ZoomControls.module.css",
+    "property": "gap",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PeopleList.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PeopleList.module.css",
+    "property": "border-bottom",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PeopleList.module.css",
+    "property": "border-top",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PeopleList.module.css",
+    "property": "width",
+    "value": "420px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PeopleList.module.css",
+    "property": "width",
+    "value": "480px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PeopleList.module.css",
+    "property": "width",
+    "value": "560px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PersonField.module.css",
+    "property": "width",
+    "value": "280px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PersonField.module.css",
+    "property": "width",
+    "value": "480px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PersonForm.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PersonForm.module.css",
+    "property": "width",
+    "value": "640px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PersonRelationships.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PersonRelationships.module.css",
+    "property": "border-top",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PersonRelationships.module.css",
+    "property": "height",
+    "value": "60px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/PinForm.module.css",
+    "property": "border-top",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/RelationshipDetails.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/RelationshipPicker.module.css",
+    "property": "border",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "features/people/components/RelationshipPicker.module.css",
+    "property": "border-top",
+    "value": "1px"
+  },
+  {
+    "count": 1,
+    "file": "lib/ui/EventGlyph.module.css",
+    "property": "height",
+    "value": "1em"
+  },
+  {
+    "count": 1,
+    "file": "lib/ui/EventGlyph.module.css",
+    "property": "width",
+    "value": "1em"
+  }
+]

@@ -115,3 +115,6 @@ Four custom properties hold a literal size on `main`, for example `--gap: 5px` i
 - The check with no list: SC.16 (#1210).
 
 ## Deviations
+
+- `lib/design/groups.mts` is a new file. It holds the group table and the CSS scan, because `literals.mts` imports `sizes.mts` and a table in `literals.mts` would make a cycle.
+- `lib/design/types.ts` also gets the `Rule` type, which the lint rule requires there.

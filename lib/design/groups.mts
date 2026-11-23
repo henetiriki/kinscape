@@ -1,0 +1,114 @@
+/** What the literals check and the size check share: the property-to-group table and the CSS scan. */
+
+import type { Tree } from '#ks/design/types.ts';
+import type { Rule } from '#ks/lib/design/types.ts';
+
+import { isTree } from '#ks/design/tokens.mts';
+
+/** A number with its unit. The key drops its sign, so `-8px` equals `8px`. */
+const NUMBER =
+  /(?<![\w.#])(?<!\w-)-?(?<digits>\d*\.\d+|\d+)(?<unit>px|em|rem|ms|s)?(?![\w%.])/g;
+
+export const leaves = (node: unknown): string[] =>
+  isTree(node) ? Object.values(node).flatMap(leaves) : [String(node)];
+
+const field = (group: string, key: string) => (tokens: Tree) =>
+  Object.values(tokens[group] as Tree).map(token => (token as Tree)[key]);
+
+const whole = (group: string) => (tokens: Tree) => [tokens[group]];
+
+const RULES: [RegExp, Rule][] = [
+  [/^border(-[a-z]+)*-radius$/, { kind: 'number', pick: whole('radius') }],
+  [/^box-shadow$/, { kind: 'shadow', pick: whole('shadow') }],
+  [/^z-index$/, { kind: 'number', pick: whole('z') }],
+  [/^(transition|animation)/, { kind: 'duration', pick: whole('motion') }],
+  [/^font-size$/, { kind: 'number', pick: field('type', 'size') }],
+  [/^line-height$/, { kind: 'number', pick: field('type', 'line') }],
+  [/^letter-spacing$/, { kind: 'number', pick: field('type', 'tracking') }],
+  [/^font-weight$/, { kind: 'number', pick: field('type', 'weight') }],
+  [
+    /^(gap|row-gap|column-gap|padding|margin|inset|top|right|bottom|left)(-|$)/,
+    { kind: 'number', pick: whole('space') },
+  ],
+  [
+    /^(width|height|min-|max-|flex-basis|block-size|inline-size)/,
+    { kind: 'number', pick: whole('size') },
+  ],
+  [/^outline(-width|-offset)?$/, { kind: 'number', pick: whole('focus') }],
+  [/^@media$/, { kind: 'number', pick: whole('breakpoint') }],
+  [
+    /^(color|background|border|outline|fill|stroke)(-|$)/,
+    { kind: 'colour', pick: tokens => [tokens.colour, tokens.map] },
+  ],
+];
+
+/** Each rule of a property. A property can match more than one: `outline` takes a width and a colour. */
+export const rulesFor = (property: string): Rule[] =>
+  RULES.filter(([pattern]) => pattern.test(property)).map(([, rule]) => rule);
+
+/** The key of a number: a duration in seconds becomes milliseconds, so `0.12s` equals `120ms`. */
+export const keyOf = (digits: string, unit = '') =>
+  unit === 's'
+    ? `${Number((Number(digits) * 1000).toFixed(6))}ms`
+    : `${Number(digits)}${unit}`;
+
+export const numbers = (text: string, durations: boolean) =>
+  [...text.matchAll(NUMBER)]
+    .filter(match => durations === /^m?s$/.test(match.groups?.unit ?? ''))
+    .filter(match => Number(match.groups?.digits) !== 0)
+    .map(match => ({
+      at: match.index,
+      key: keyOf(match.groups!.digits, match.groups?.unit),
+      text: match[0],
+    }));
+
+export const blank = (text: string) => text.replaceAll(/[^\n]/g, ' ');
+
+/** Blanks each `var()` and each `calc()` that holds a `var()`. */
+export const withoutVars = (value: string): string => {
+  let out = value;
+
+  for (const name of ['calc(', 'var(']) {
+    let from = out.indexOf(name);
+
+    while (from !== -1) {
+      let depth = 0;
+      let end = from + name.length - 1;
+
+      for (; end < out.length; end++) {
+        depth += out[end] === '(' ? 1 : out[end] === ')' ? -1 : 0;
+        if (depth === 0) break;
+      }
+
+      const span = out.slice(from, end + 1);
+
+      if (name === 'var(' || span.includes('var(')) {
+        out = out.slice(0, from) + blank(span) + out.slice(end + 1);
+      }
+
+      from = out.indexOf(name, from + 1);
+    }
+  }
+
+  return out;
+};
+
+/** Each declaration of `css` as its property, value and first line. It blanks each comment. */
+export const declarations = (css: string) => {
+  const clean = css.replaceAll(/\/\*[\s\S]*?\*\//g, blank);
+  const found: { first: number; property: string; value: string }[] = [];
+
+  for (const match of clean.matchAll(
+    /(?<=^|[{;}\n])[ \t]*(?<property>-{0,2}[a-z][a-z-]*)[ \t]*:(?<value>[^;{}]*)(?=[;}]|$)/g
+  )) {
+    const start = match.index + match[0].length - match.groups!.value.length;
+
+    found.push({
+      first: clean.slice(0, start).split('\n').length,
+      property: match.groups!.property,
+      value: match.groups!.value,
+    });
+  }
+
+  return found;
+};

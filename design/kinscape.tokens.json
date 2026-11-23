@@ -1,0 +1,2609 @@
+{
+  "colour": {
+    "brand": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.149, 0.3098, 0.1608],
+        "hex": "#264f29"
+      },
+      "$description": "Primary buttons, links and selection. Workflow diagram node stroke (scripts/workflows-diagram.mts)."
+    },
+    "brand-hover": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.1137, 0.2431, 0.1255],
+        "hex": "#1d3e20"
+      },
+      "$description": "Hover fill of a primary button or link."
+    },
+    "brand-pressed": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.0863, 0.1882, 0.098],
+        "hex": "#163019"
+      },
+      "$description": "Pressed fill of a primary button or link."
+    },
+    "brand-tint": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.902, 0.9333, 0.8941],
+        "hex": "#e6eee4"
+      },
+      "$description": "Selected tab and chip on. Workflow diagram node fill (scripts/workflows-diagram.mts)."
+    },
+    "brand-tint-hover": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.851, 0.902, 0.8392],
+        "hex": "#d9e6d6"
+      },
+      "$description": "Hover fill of a selected tab or chip."
+    },
+    "brand-tint-pressed": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.8, 0.8667, 0.7843],
+        "hex": "#ccddc8"
+      },
+      "$description": "Pressed secondary buttons and pressed selected tabs."
+    },
+    "focus-ring": {
+      "$type": "color",
+      "$value": "{colour.brand}",
+      "$description": "Focus outline."
+    },
+    "focus-ring-on-dark": {
+      "$type": "color",
+      "$value": "{colour.white}",
+      "$description": "Focus outline inside dark banners."
+    },
+    "ink": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.0941, 0.1294, 0.1059],
+        "hex": "#18211b"
+      },
+      "$description": "Main text and dark banners."
+    },
+    "ink-2": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.1804, 0.2275, 0.2],
+        "hex": "#2e3a33"
+      },
+      "$description": "Secondary text."
+    },
+    "ink-3": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.2902, 0.3294, 0.298],
+        "hex": "#4a544c"
+      },
+      "$description": "Helper text and section headings."
+    },
+    "ink-disabled": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.4314, 0.4667, 0.4353],
+        "hex": "#6e776f"
+      },
+      "$description": "Disabled text and icons."
+    },
+    "icon-disabled": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.6392, 0.6667, 0.6314],
+        "hex": "#a3aaa1"
+      },
+      "$description": "Disabled icon buttons and menu icons."
+    },
+    "field-border": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.5569, 0.5922, 0.549],
+        "hex": "#8e978c"
+      },
+      "$description": "Fields and checkboxes."
+    },
+    "line-strong": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.7882, 0.8118, 0.7725],
+        "hex": "#c9cfc5"
+      },
+      "$description": "Secondary button borders. Workflow diagram node stroke (scripts/workflows-diagram.mts)."
+    },
+    "line": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.8863, 0.898, 0.8667],
+        "hex": "#e2e5dd"
+      },
+      "$description": "Dividers and disabled fills."
+    },
+    "track": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.8392, 0.8549, 0.8235],
+        "hex": "#d6dad2"
+      },
+      "$description": "Date slider track and its tick borders."
+    },
+    "segment": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9333, 0.9412, 0.9176],
+        "hex": "#eef0ea"
+      },
+      "$description": "Segmented control track and pressed fills."
+    },
+    "surface-2": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9569, 0.9608, 0.9412],
+        "hex": "#f4f5f0"
+      },
+      "$description": "Insets, hover fills and the sign-in page. Workflow diagram node fill (scripts/workflows-diagram.mts)."
+    },
+    "surface": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [1, 1, 1],
+        "hex": "#ffffff"
+      },
+      "$description": "Panels, dock, popups and dialogs."
+    },
+    "white": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [1, 1, 1],
+        "hex": "#ffffff"
+      },
+      "$description": "Primary button text, selected segments and halos."
+    },
+    "white-45": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [1, 1, 1],
+        "alpha": 0.45,
+        "hex": "#ffffff"
+      },
+      "$description": "Border of a Banner action. Not color-mix(), which the design export cannot read."
+    },
+    "white-60": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [1, 1, 1],
+        "alpha": 0.6,
+        "hex": "#ffffff"
+      },
+      "$description": "Hover fill of a Segmented item. Not color-mix(), which the design export cannot read."
+    },
+    "scrim": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.0941, 0.1294, 0.1059],
+        "alpha": 0.45,
+        "hex": "#18211b"
+      },
+      "$description": "Behind dialogs."
+    },
+    "credits": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.1412, 0.1882, 0.1686],
+        "hex": "#24302b"
+      },
+      "$description": "Credits line."
+    },
+    "pin": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.6039, 0.2314, 0.0706],
+        "hex": "#9a3b12"
+      },
+      "$description": "Pins, clusters and event glyphs."
+    },
+    "error": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.4941, 0.1373, 0.0863],
+        "hex": "#7e2316"
+      },
+      "$description": "System error text."
+    },
+    "error-border": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.7059, 0.2549, 0.1843],
+        "hex": "#b4412f"
+      },
+      "$description": "Border and icon of an error. Workflow diagram node stroke (scripts/workflows-diagram.mts)."
+    },
+    "error-border-soft": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9059, 0.7255, 0.6902],
+        "hex": "#e7b9b0"
+      },
+      "$description": "Quiet border of an error on its background."
+    },
+    "error-bg": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9843, 0.9294, 0.9176],
+        "hex": "#fbedea"
+      },
+      "$description": "Background of an error. Workflow diagram node fill (scripts/workflows-diagram.mts)."
+    },
+    "warning": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.4196, 0.2902, 0],
+        "hex": "#6b4a00"
+      },
+      "$description": "System warning text."
+    },
+    "warning-border": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.7176, 0.4745, 0.1216],
+        "hex": "#b7791f"
+      },
+      "$description": "Border and icon of a warning. Workflow diagram node stroke (scripts/workflows-diagram.mts)."
+    },
+    "warning-bg": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9922, 0.9529, 0.8667],
+        "hex": "#fdf3dd"
+      },
+      "$description": "Background of a warning. Workflow diagram node fill (scripts/workflows-diagram.mts)."
+    },
+    "success": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.1176, 0.3686, 0.1961],
+        "hex": "#1e5e32"
+      },
+      "$description": "System success text."
+    },
+    "success-border": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.1843, 0.4902, 0.2745],
+        "hex": "#2f7d46"
+      },
+      "$description": "Border and icon of a success."
+    },
+    "success-bg": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9176, 0.9569, 0.9255],
+        "hex": "#eaf4ec"
+      },
+      "$description": "Background of a success."
+    },
+    "info": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.1176, 0.3059, 0.4196],
+        "hex": "#1e4e6b"
+      },
+      "$description": "System information text."
+    },
+    "info-border": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.2431, 0.498, 0.651],
+        "hex": "#3e7fa6"
+      },
+      "$description": "Border and icon of an information message. Workflow diagram node stroke (scripts/workflows-diagram.mts)."
+    },
+    "info-bg": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9098, 0.9451, 0.9686],
+        "hex": "#e8f1f7"
+      },
+      "$description": "Background of an information message. Workflow diagram node fill (scripts/workflows-diagram.mts)."
+    },
+    "google-text": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.1216, 0.1216, 0.1216],
+        "hex": "#1f1f1f"
+      },
+      "$description": "Google sign-in button text."
+    },
+    "google-border": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.4549, 0.4667, 0.4588],
+        "hex": "#747775"
+      },
+      "$description": "Google sign-in button border."
+    },
+    "google-mark": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.3725, 0.3882, 0.4078],
+        "hex": "#5f6368"
+      },
+      "$description": "Google sign-in button mark."
+    }
+  },
+  "shadow": {
+    "raised": {
+      "$type": "shadow",
+      "$value": [
+        {
+          "color": {
+            "colorSpace": "srgb",
+            "components": [0.0941, 0.1294, 0.1059],
+            "alpha": 0.08,
+            "hex": "#18211b"
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 1,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 2,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        {
+          "color": {
+            "colorSpace": "srgb",
+            "components": [0.0941, 0.1294, 0.1059],
+            "alpha": 0.12,
+            "hex": "#18211b"
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 6,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 20,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      ],
+      "$description": "Panels, the dock, search and cards."
+    },
+    "floating": {
+      "$type": "shadow",
+      "$value": [
+        {
+          "color": {
+            "colorSpace": "srgb",
+            "components": [0.0941, 0.1294, 0.1059],
+            "alpha": 0.1,
+            "hex": "#18211b"
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 1,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 2,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        {
+          "color": {
+            "colorSpace": "srgb",
+            "components": [0.0941, 0.1294, 0.1059],
+            "alpha": 0.2,
+            "hex": "#18211b"
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 10,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 30,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      ],
+      "$description": "Popups and menus."
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": {
+        "color": {
+          "colorSpace": "srgb",
+          "components": [0.0941, 0.1294, 0.1059],
+          "alpha": 0.3,
+          "hex": "#18211b"
+        },
+        "offsetX": {
+          "value": 0,
+          "unit": "px"
+        },
+        "offsetY": {
+          "value": 10,
+          "unit": "px"
+        },
+        "blur": {
+          "value": 40,
+          "unit": "px"
+        },
+        "spread": {
+          "value": 0,
+          "unit": "px"
+        }
+      },
+      "$description": "Dialogs."
+    },
+    "sheet": {
+      "$type": "shadow",
+      "$value": {
+        "color": {
+          "colorSpace": "srgb",
+          "components": [0.0941, 0.1294, 0.1059],
+          "alpha": 0.16,
+          "hex": "#18211b"
+        },
+        "offsetX": {
+          "value": 0,
+          "unit": "px"
+        },
+        "offsetY": {
+          "value": -6,
+          "unit": "px"
+        },
+        "blur": {
+          "value": 24,
+          "unit": "px"
+        },
+        "spread": {
+          "value": 0,
+          "unit": "px"
+        }
+      },
+      "$description": "Phone bottom sheet."
+    },
+    "segment": {
+      "$type": "shadow",
+      "$value": {
+        "color": {
+          "colorSpace": "srgb",
+          "components": [0.0941, 0.1294, 0.1059],
+          "alpha": 0.18,
+          "hex": "#18211b"
+        },
+        "offsetX": {
+          "value": 0,
+          "unit": "px"
+        },
+        "offsetY": {
+          "value": 1,
+          "unit": "px"
+        },
+        "blur": {
+          "value": 2,
+          "unit": "px"
+        },
+        "spread": {
+          "value": 0,
+          "unit": "px"
+        }
+      },
+      "$description": "Selected segment of a segmented control."
+    },
+    "thumb": {
+      "$type": "shadow",
+      "$value": [
+        {
+          "color": {
+            "colorSpace": "srgb",
+            "components": [0.149, 0.3098, 0.1608],
+            "hex": "#264f29"
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 0,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 0,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 1,
+            "unit": "px"
+          }
+        },
+        {
+          "color": {
+            "colorSpace": "srgb",
+            "components": [0.0941, 0.1294, 0.1059],
+            "alpha": 0.3,
+            "hex": "#18211b"
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 2,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 6,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      ],
+      "$description": "Date slider thumb."
+    }
+  },
+  "font": {
+    "display": {
+      "$type": "fontFamily",
+      "$value": ["Bricolage Grotesque", "sans-serif"],
+      "$description": "Wordmark, page titles and the place name in a popup."
+    },
+    "body": {
+      "$type": "fontFamily",
+      "$value": ["Public Sans", "system-ui", "sans-serif"],
+      "$description": "All UI text and every map label."
+    },
+    "mono": {
+      "$type": "fontFamily",
+      "$value": ["JetBrains Mono", "monospace"],
+      "$description": "Dates, coordinates, keyboard hints and code."
+    }
+  },
+  "type": {
+    "display": {
+      "$description": "Sign-in headline.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.display}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 52,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 56,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 700
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": -0.02
+      }
+    },
+    "h1": {
+      "$description": "Page title.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.display}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 40,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 500
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": -0.015
+      }
+    },
+    "h1-phone": {
+      "$description": "Page title on a phone.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.display}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 28,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 500
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": -0.015
+      }
+    },
+    "h2": {
+      "$description": "Dialog and section titles.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.display}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 32,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 700
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "h3": {
+      "$description": "Place name in a popup, and cards.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.display}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 22,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 28,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 700
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "title": {
+      "$description": "Notice titles and row titles.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 15,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 22,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "body-l": {
+      "$description": "Sign-in text and fields.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "body": {
+      "$description": "Panels and popups.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 15,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 22,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "label": {
+      "$description": "Field labels and layer rows.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 14,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "small": {
+      "$description": "Helper text.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 13,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "caption": {
+      "$description": "Credits and footnotes.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12.5,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 18,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "credits": {
+      "$description": "Credits line on the map.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 11,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "overline": {
+      "$description": "Section headings.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 11,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0.1
+      }
+    },
+    "overline-tight": {
+      "$description": "Layer group headings in the map panel.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 11,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0.1
+      }
+    },
+    "button": {
+      "$description": "Large buttons on sign-in.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "control": {
+      "$description": "Medium buttons and controls.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 15,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 22,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "chip": {
+      "$description": "Chip that is on.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 13.5,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "chip-off": {
+      "$description": "Chip that is off.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 13.5,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "button-s": {
+      "$description": "Small and extra-small buttons.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 14,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "link": {
+      "$description": "Links in running text.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 15,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 22,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 500
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "link-s": {
+      "$description": "Links in helper text and footnotes.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 13,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 500
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "mono-l": {
+      "$description": "Map date field.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.mono}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 22,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 28,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 500
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "mono-m": {
+      "$description": "Fuzzy date field.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.mono}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 15,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 22,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "mono": {
+      "$description": "Dates and coordinates in lists.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.mono}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    }
+  },
+  "space": {
+    "4": {
+      "$type": "dimension",
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      },
+      "$description": "Gaps inside a control, icon to text, and between tight rows."
+    },
+    "8": {
+      "$type": "dimension",
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      },
+      "$description": "Small gaps between related items, inside controls and between chips."
+    },
+    "12": {
+      "$type": "dimension",
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      },
+      "$description": "Padding inside chips, rows and menu items, and icon gaps."
+    },
+    "16": {
+      "$type": "dimension",
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      },
+      "$description": "Padding inside panels and between sections."
+    },
+    "20": {
+      "$type": "dimension",
+      "$value": {
+        "value": 20,
+        "unit": "px"
+      },
+      "$description": "Roomy padding inside panels and the dock."
+    },
+    "24": {
+      "$type": "dimension",
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      },
+      "$description": "Between floating elements on desktop."
+    },
+    "32": {
+      "$type": "dimension",
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      },
+      "$description": "Between groups on a page."
+    },
+    "40": {
+      "$type": "dimension",
+      "$value": {
+        "value": 40,
+        "unit": "px"
+      },
+      "$description": "Large gaps on a page and the sign-in hero."
+    },
+    "48": {
+      "$type": "dimension",
+      "$value": {
+        "value": 48,
+        "unit": "px"
+      },
+      "$description": "Sign-in pane padding and page edges."
+    },
+    "64": {
+      "$type": "dimension",
+      "$value": {
+        "value": 64,
+        "unit": "px"
+      },
+      "$description": "Page padding of ColumnLayout, and the gap above the empty People list."
+    }
+  },
+  "radius": {
+    "link": {
+      "$type": "dimension",
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      },
+      "$description": "Focus outline of a link."
+    },
+    "bar": {
+      "$type": "dimension",
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      },
+      "$description": "Round ends of a 4px bar: a sheet handle and the date slider track."
+    },
+    "small": {
+      "$type": "dimension",
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      },
+      "$description": "Checkboxes, key hints and small tags."
+    },
+    "segment-item": {
+      "$type": "dimension",
+      "$value": {
+        "value": 7,
+        "unit": "px"
+      },
+      "$description": "Selected segment inside a segmented control."
+    },
+    "segment": {
+      "$type": "dimension",
+      "$value": {
+        "value": 9,
+        "unit": "px"
+      },
+      "$description": "Segmented control track."
+    },
+    "control": {
+      "$type": "dimension",
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      },
+      "$description": "Buttons, fields, alerts, toasts and menu rows."
+    },
+    "panel": {
+      "$type": "dimension",
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      },
+      "$description": "Panels, dock, popup and desktop dialogs."
+    },
+    "sheet": {
+      "$type": "dimension",
+      "$value": {
+        "value": 18,
+        "unit": "px"
+      },
+      "$description": "Top corners of a phone sheet and dialog."
+    },
+    "full": {
+      "$type": "dimension",
+      "$value": {
+        "value": 999,
+        "unit": "px"
+      },
+      "$description": "Pills, avatars, round buttons and pins."
+    }
+  },
+  "size": {
+    "touch": {
+      "$type": "dimension",
+      "$value": {
+        "value": 44,
+        "unit": "px"
+      },
+      "$description": "Smallest tap target."
+    },
+    "control": {
+      "$type": "dimension",
+      "$value": {
+        "value": 44,
+        "unit": "px"
+      },
+      "$description": "Medium buttons and controls."
+    },
+    "control-l": {
+      "$type": "dimension",
+      "$value": {
+        "value": 50,
+        "unit": "px"
+      },
+      "$description": "Large sign-in buttons."
+    },
+    "control-s": {
+      "$type": "dimension",
+      "$value": {
+        "value": 40,
+        "unit": "px"
+      },
+      "$description": "Small buttons."
+    },
+    "control-xs": {
+      "$type": "dimension",
+      "$value": {
+        "value": 36,
+        "unit": "px"
+      },
+      "$description": "Extra-small buttons and round icon buttons."
+    },
+    "field": {
+      "$type": "dimension",
+      "$value": {
+        "value": 44,
+        "unit": "px"
+      },
+      "$description": "Text field height."
+    },
+    "field-l": {
+      "$type": "dimension",
+      "$value": {
+        "value": 48,
+        "unit": "px"
+      },
+      "$description": "Sign-in field height and the layers button."
+    },
+    "search": {
+      "$type": "dimension",
+      "$value": {
+        "value": 52,
+        "unit": "px"
+      },
+      "$description": "Search bar height."
+    },
+    "chip": {
+      "$type": "dimension",
+      "$value": {
+        "value": 36,
+        "unit": "px"
+      },
+      "$description": "Chip height."
+    },
+    "chip-s": {
+      "$type": "dimension",
+      "$value": {
+        "value": 30,
+        "unit": "px"
+      },
+      "$description": "Small chip height."
+    },
+    "chip-remove": {
+      "$type": "dimension",
+      "$value": {
+        "value": 26,
+        "unit": "px"
+      },
+      "$description": "Remove button inside a chip."
+    },
+    "row-l": {
+      "$type": "dimension",
+      "$value": {
+        "value": 52,
+        "unit": "px"
+      },
+      "$description": "Tall rows in lists."
+    },
+    "checkbox": {
+      "$type": "dimension",
+      "$value": {
+        "value": 20,
+        "unit": "px"
+      },
+      "$description": "Checkbox box."
+    },
+    "handle": {
+      "$type": "dimension",
+      "$value": {
+        "value": 40,
+        "unit": "px"
+      },
+      "$description": "Width of the drag handle of a sheet, a Dialog and a popup on a phone."
+    },
+    "halo-hover": {
+      "$type": "dimension",
+      "$value": {
+        "value": 52,
+        "unit": "px"
+      },
+      "$description": "Halo of a hovered count marker or fan Pin."
+    },
+    "date-field": {
+      "$type": "dimension",
+      "$value": {
+        "value": 188,
+        "unit": "px"
+      },
+      "$description": "Width of the map date field."
+    },
+    "panel": {
+      "$type": "dimension",
+      "$value": {
+        "value": 320,
+        "unit": "px"
+      },
+      "$description": "Width of the Layers and Filters panel."
+    },
+    "gutter": {
+      "$type": "dimension",
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      },
+      "$description": "Edge gap around floating elements on desktop."
+    },
+    "gutter-phone": {
+      "$type": "dimension",
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      },
+      "$description": "Edge gap around floating elements on a phone."
+    }
+  },
+  "focus": {
+    "width": {
+      "$type": "dimension",
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      },
+      "$description": "Focus outline thickness."
+    },
+    "offset": {
+      "$type": "dimension",
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      },
+      "$description": "Gap between a control and its focus outline."
+    }
+  },
+  "motion": {
+    "press": {
+      "$type": "transition",
+      "$value": {
+        "duration": {
+          "value": 120,
+          "unit": "ms"
+        },
+        "delay": {
+          "value": 0,
+          "unit": "ms"
+        },
+        "timingFunction": [0, 0, 0.58, 1]
+      }
+    },
+    "popup": {
+      "$type": "transition",
+      "$value": {
+        "duration": {
+          "value": 160,
+          "unit": "ms"
+        },
+        "delay": {
+          "value": 0,
+          "unit": "ms"
+        },
+        "timingFunction": [0, 0, 0.58, 1]
+      }
+    },
+    "sheet": {
+      "$type": "transition",
+      "$value": {
+        "duration": {
+          "value": 240,
+          "unit": "ms"
+        },
+        "delay": {
+          "value": 0,
+          "unit": "ms"
+        },
+        "timingFunction": [0, 0, 0.58, 1]
+      }
+    },
+    "changed-border": {
+      "$type": "transition",
+      "$value": {
+        "duration": {
+          "value": 600,
+          "unit": "ms"
+        },
+        "delay": {
+          "value": 0,
+          "unit": "ms"
+        },
+        "timingFunction": [0, 0, 0.58, 1]
+      }
+    },
+    "toast": {
+      "$type": "duration",
+      "$value": {
+        "value": 4000,
+        "unit": "ms"
+      }
+    }
+  },
+  "layout": {
+    "popup-width": {
+      "$type": "dimension",
+      "$value": {
+        "value": 304,
+        "unit": "px"
+      },
+      "$description": "Width of the Popup."
+    },
+    "menu-width": {
+      "$type": "dimension",
+      "$value": {
+        "value": 296,
+        "unit": "px"
+      },
+      "$description": "Width of the Menu card."
+    },
+    "menu-offset": {
+      "$type": "dimension",
+      "$value": "{space.8}",
+      "$description": "Gap between the Menu card and the button that opens it."
+    },
+    "dialog-width": {
+      "$type": "dimension",
+      "$value": {
+        "value": 760,
+        "unit": "px"
+      },
+      "$description": "Width of a Dialog on desktop."
+    },
+    "notice-width": {
+      "$type": "dimension",
+      "$value": {
+        "value": 360,
+        "unit": "px"
+      },
+      "$description": "Width of a notice card."
+    },
+    "notice-width-l": {
+      "$type": "dimension",
+      "$value": {
+        "value": 380,
+        "unit": "px"
+      },
+      "$description": "Width of a notice card in the larger form."
+    },
+    "search-width": {
+      "$type": "dimension",
+      "$value": {
+        "value": 340,
+        "unit": "px"
+      },
+      "$description": "Width of the map search bar."
+    },
+    "dock-left": {
+      "$type": "dimension",
+      "$value": {
+        "value": 368,
+        "unit": "px"
+      },
+      "$description": "Left edge of the dock, the free map area and the credits: the right edge of the Layers and Filters panel plus a gap."
+    },
+    "search-top": {
+      "$type": "dimension",
+      "$value": {
+        "value": 20,
+        "unit": "px"
+      },
+      "$description": "Top edge of the map search bar."
+    },
+    "account-top": {
+      "$type": "dimension",
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      },
+      "$description": "Top edge of the Account button on the map."
+    },
+    "furniture-top": {
+      "$type": "dimension",
+      "$value": {
+        "value": 88,
+        "unit": "px"
+      },
+      "$description": "Top edge of the zoom controls, the panel and the free map area."
+    },
+    "furniture-bottom": {
+      "$type": "dimension",
+      "$value": {
+        "value": 28,
+        "unit": "px"
+      },
+      "$description": "Bottom edge of the panel and the dock."
+    },
+    "dock-height": {
+      "$type": "dimension",
+      "$value": {
+        "value": 176,
+        "unit": "px"
+      },
+      "$description": "Height of the dock, which the free map area leaves clear."
+    },
+    "credits-bottom": {
+      "$type": "dimension",
+      "$value": {
+        "value": 6,
+        "unit": "px"
+      },
+      "$description": "Bottom edge of the map credits and of the map scale bar."
+    },
+    "popup-gap": {
+      "$type": "dimension",
+      "$value": {
+        "value": 14,
+        "unit": "px"
+      },
+      "$description": "Gap between a Popup and the point it marks."
+    },
+    "popup-point-y": {
+      "$type": "dimension",
+      "$value": {
+        "value": 114,
+        "unit": "px"
+      },
+      "$description": "Distance from the top of a Popup to the point it marks."
+    },
+    "pin-popup-gap": {
+      "$type": "dimension",
+      "$value": {
+        "value": 30,
+        "unit": "px"
+      },
+      "$description": "Gap between a Pin popup and the Pin it marks."
+    },
+    "page-header": {
+      "$type": "dimension",
+      "$value": {
+        "value": 64,
+        "unit": "px"
+      },
+      "$description": "Height of the page header on desktop."
+    },
+    "page-header-phone": {
+      "$type": "dimension",
+      "$value": {
+        "value": 60,
+        "unit": "px"
+      },
+      "$description": "Height of the page header on a phone."
+    },
+    "page-header-divider": {
+      "$type": "dimension",
+      "$value": {
+        "value": 28,
+        "unit": "px"
+      },
+      "$description": "Height of the divider in the page header."
+    },
+    "action-bar": {
+      "$type": "dimension",
+      "$value": {
+        "value": 72,
+        "unit": "px"
+      },
+      "$description": "Height of the action bar, and the room that a saved notice leaves above it."
+    },
+    "content-width": {
+      "$type": "dimension",
+      "$value": {
+        "value": 1088,
+        "unit": "px"
+      },
+      "$description": "Width of the page content and of the action bar content."
+    },
+    "list-width": {
+      "$type": "dimension",
+      "$value": {
+        "value": 960,
+        "unit": "px"
+      },
+      "$description": "Width of the list and detail columns of ColumnLayout."
+    },
+    "sign-in": {
+      "hero": {
+        "$type": "dimension",
+        "$value": {
+          "value": 560,
+          "unit": "px"
+        },
+        "$description": "Height of the sign-in hero on desktop."
+      },
+      "hero-min": {
+        "$type": "dimension",
+        "$value": {
+          "value": 420,
+          "unit": "px"
+        },
+        "$description": "Smallest height of the sign-in hero."
+      },
+      "hero-phone": {
+        "$type": "dimension",
+        "$value": {
+          "value": 188,
+          "unit": "px"
+        },
+        "$description": "Height of the sign-in hero on a phone."
+      },
+      "pane": {
+        "$type": "dimension",
+        "$value": {
+          "value": 440,
+          "unit": "px"
+        },
+        "$description": "Width of the sign-in pane."
+      },
+      "form": {
+        "$type": "dimension",
+        "$value": {
+          "value": 360,
+          "unit": "px"
+        },
+        "$description": "Width of the sign-in form."
+      },
+      "pane-y": {
+        "$type": "dimension",
+        "$value": "{space.48}",
+        "$description": "Top and bottom padding of the sign-in pane."
+      },
+      "pane-x": {
+        "$type": "dimension",
+        "$value": "{space.32}",
+        "$description": "Side padding of the sign-in pane."
+      },
+      "copy": {
+        "$type": "dimension",
+        "$value": {
+          "value": 520,
+          "unit": "px"
+        },
+        "$description": "Widest line of text in the sign-in hero."
+      },
+      "tagline": {
+        "$type": "dimension",
+        "$value": {
+          "value": 380,
+          "unit": "px"
+        },
+        "$description": "Widest line of the sign-in tagline."
+      }
+    },
+    "phone": {
+      "sources-top": {
+        "$type": "dimension",
+        "$value": {
+          "value": 56,
+          "unit": "px"
+        },
+        "$description": "Gap above a Dialog on a phone."
+      },
+      "banner-top": {
+        "$type": "dimension",
+        "$value": {
+          "value": 80,
+          "unit": "px"
+        },
+        "$description": "Top edge of a banner Toast on a phone."
+      },
+      "date-message-bottom": {
+        "$type": "dimension",
+        "$value": {
+          "value": 164,
+          "unit": "px"
+        },
+        "$description": "Bottom edge of the map date message on a phone."
+      },
+      "pill-top": {
+        "$type": "dimension",
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        },
+        "$description": "Top edge of the search bar on a phone."
+      },
+      "layers-top": {
+        "$type": "dimension",
+        "$value": {
+          "value": 80,
+          "unit": "px"
+        },
+        "$description": "Top edge of the Layers button on a phone."
+      },
+      "sheet-top": {
+        "$type": "dimension",
+        "$value": {
+          "value": 76,
+          "unit": "px"
+        },
+        "$description": "Top edge of the panel bottom sheet when expanded on a phone."
+      },
+      "overlay-top": {
+        "$type": "dimension",
+        "$value": {
+          "value": 144,
+          "unit": "px"
+        },
+        "$description": "Top edge of the free map area on a phone."
+      },
+      "sheet-collapsed": {
+        "$type": "dimension",
+        "$value": {
+          "value": 152,
+          "unit": "px"
+        },
+        "$description": "Height of the collapsed bottom sheet; the free map area stops above it."
+      },
+      "sheet-expanded": {
+        "$type": "dimension",
+        "$value": {
+          "value": 432,
+          "unit": "px"
+        },
+        "$description": "Height of the expanded bottom sheet."
+      }
+    }
+  },
+  "breakpoint": {
+    "phone-width": {
+      "$type": "dimension",
+      "$value": {
+        "value": 639.98,
+        "unit": "px"
+      },
+      "$description": "The layout is a phone form at or below this width."
+    },
+    "phone-height": {
+      "$type": "dimension",
+      "$value": {
+        "value": 499.98,
+        "unit": "px"
+      },
+      "$description": "The layout is a phone form at or below this height, such as a phone on its side."
+    }
+  },
+  "z": {
+    "furniture": {
+      "$type": "number",
+      "$value": 1,
+      "$description": "Stack order of the map furniture (search, zoom, panel, dock and credits) and of the Callout pointer."
+    },
+    "action-bar": {
+      "$type": "number",
+      "$value": 5,
+      "$description": "The action bar and the saved notice, above the page content."
+    },
+    "popup": {
+      "$type": "number",
+      "$value": 6,
+      "$description": "A popup at a map point, above the map furniture and below a Menu."
+    },
+    "menu": {
+      "$type": "number",
+      "$value": 10,
+      "$description": "A Menu, and the map slots that hang it, above other map furniture."
+    }
+  },
+  "map": {
+    "sea": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.7882, 0.8353, 0.8235],
+        "hex": "#c9d5d2"
+      },
+      "$description": "Sea, the map background."
+    },
+    "land": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9137, 0.9216, 0.8863],
+        "hex": "#e9ebe2"
+      },
+      "$description": "Land and the label halo."
+    },
+    "coastline": {
+      "colour": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.4941, 0.6039, 0.5961],
+          "hex": "#7e9a98"
+        },
+        "$description": "Coastline."
+      },
+      "width": {
+        "$type": "number",
+        "$value": 0.9
+      }
+    },
+    "river": {
+      "colour": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.4314, 0.6, 0.6392],
+          "hex": "#6e99a3"
+        },
+        "$description": "Rivers."
+      },
+      "width-min": {
+        "$type": "number",
+        "$value": 1
+      },
+      "width-max": {
+        "$type": "number",
+        "$value": 3
+      },
+      "zoom-min": {
+        "$type": "number",
+        "$value": 3
+      },
+      "zoom-max": {
+        "$type": "number",
+        "$value": 8
+      }
+    },
+    "border": {
+      "colour": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.2314, 0.2275, 0.1843],
+          "hex": "#3b3a2f"
+        },
+        "$description": "Polity borders; dashed when confidence is low."
+      },
+      "width": {
+        "$type": "number",
+        "$value": 1.5
+      },
+      "dash-on": {
+        "$type": "number",
+        "$value": 4
+      },
+      "dash-off": {
+        "$type": "number",
+        "$value": 2.6
+      }
+    },
+    "district": {
+      "colour": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.4353, 0.4471, 0.3882],
+          "hex": "#6f7263"
+        },
+        "$description": "District borders."
+      },
+      "width": {
+        "$type": "number",
+        "$value": 0.8
+      }
+    },
+    "changed": {
+      "colour": {
+        "$type": "color",
+        "$value": "{colour.brand}",
+        "$description": "Border that changed on the Map date."
+      },
+      "width": {
+        "$type": "number",
+        "$value": 4
+      }
+    },
+    "hatch": {
+      "colour": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.5451, 0.2902, 0.1098],
+          "hex": "#8b4a1c"
+        },
+        "$description": "Hatch over contested claims."
+      },
+      "opacity": {
+        "$type": "number",
+        "$value": 0.34
+      }
+    },
+    "hillshade": {
+      "shadow": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.3569, 0.3882, 0.3333],
+          "hex": "#5b6355"
+        },
+        "$description": "Shaded side of the relief."
+      },
+      "highlight": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [1, 1, 1],
+          "hex": "#ffffff"
+        },
+        "$description": "Lit side of the relief."
+      },
+      "mid": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.7255, 0.7412, 0.6902],
+          "hex": "#b9bdb0"
+        },
+        "$description": "Midtone of the relief."
+      },
+      "exaggeration": {
+        "$type": "number",
+        "$value": 0.3
+      }
+    },
+    "polity": {
+      "default": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.8627, 0.8275, 0.7412],
+          "hex": "#dcd3bd"
+        },
+        "$description": "Fill for a Polity with no tint of its own."
+      },
+      "cape-of-good-hope": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.8471, 0.8196, 0.7216],
+          "hex": "#d8d1b8"
+        },
+        "$description": "Fill for the Cape of Good Hope Polity."
+      },
+      "eastern-cape": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.851, 0.8275, 0.7373],
+          "hex": "#d9d3bc"
+        },
+        "$description": "Fill for the Eastern Cape Polity."
+      },
+      "eswatini": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.7961, 0.8392, 0.8549],
+          "hex": "#cbd6da"
+        },
+        "$description": "Fill for the Eswatini Polity."
+      },
+      "free-state": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.8902, 0.8235, 0.698],
+          "hex": "#e3d2b2"
+        },
+        "$description": "Fill for the Free State Polity."
+      },
+      "gauteng": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.8392, 0.8, 0.7294],
+          "hex": "#d6ccba"
+        },
+        "$description": "Fill for the Gauteng Polity."
+      },
+      "kwazulu-natal": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.8627, 0.8275, 0.7412],
+          "hex": "#dcd3bd"
+        },
+        "$description": "Fill for the KwaZulu-Natal Polity."
+      },
+      "lesotho": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.851, 0.8118, 0.851],
+          "hex": "#d9cfd9"
+        },
+        "$description": "Fill for the Lesotho Polity."
+      },
+      "limpopo": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.8314, 0.851, 0.7529],
+          "hex": "#d4d9c0"
+        },
+        "$description": "Fill for the Limpopo Polity."
+      },
+      "mpumalanga": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.8549, 0.8157, 0.7137],
+          "hex": "#dad0b6"
+        },
+        "$description": "Fill for the Mpumalanga Polity."
+      },
+      "natal": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.8627, 0.8118, 0.7373],
+          "hex": "#dccfbc"
+        },
+        "$description": "Fill for the Natal Polity."
+      },
+      "north-west": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.851, 0.8118, 0.7294],
+          "hex": "#d9cfba"
+        },
+        "$description": "Fill for the North West Polity."
+      },
+      "northern-cape": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.8667, 0.8392, 0.7451],
+          "hex": "#ddd6be"
+        },
+        "$description": "Fill for the Northern Cape Polity."
+      },
+      "orange-free-state": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.8824, 0.8275, 0.7137],
+          "hex": "#e1d3b6"
+        },
+        "$description": "Fill for the Orange Free State Polity."
+      },
+      "transvaal": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.8353, 0.8392, 0.749],
+          "hex": "#d5d6bf"
+        },
+        "$description": "Fill for the Transvaal Polity."
+      },
+      "western-cape": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.8275, 0.8627, 0.7686],
+          "hex": "#d3dcc4"
+        },
+        "$description": "Fill for the Western Cape Polity."
+      }
+    },
+    "polity-label": {
+      "colour": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.1804, 0.1725, 0.1333],
+          "hex": "#2e2c22"
+        },
+        "$description": "Polity names."
+      },
+      "size": {
+        "$type": "number",
+        "$value": 12
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0.15
+      },
+      "max-width": {
+        "$type": "number",
+        "$value": 6
+      }
+    },
+    "contested-label": {
+      "colour": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.4196, 0.2039, 0.0706],
+          "hex": "#6b3412"
+        },
+        "$description": "Contested note under a Polity name."
+      },
+      "size": {
+        "$type": "number",
+        "$value": 11
+      }
+    },
+    "place-label": {
+      "colour": {
+        "$type": "color",
+        "$value": "{colour.ink}",
+        "$description": "Place names."
+      },
+      "size": {
+        "$type": "number",
+        "$value": 12
+      }
+    },
+    "place-dot": {
+      "colour": {
+        "$type": "color",
+        "$value": "{colour.ink}",
+        "$description": "Dot marking a Place."
+      },
+      "radius": {
+        "$type": "number",
+        "$value": 3.4
+      },
+      "stroke": {
+        "$type": "color",
+        "$value": "{colour.white}",
+        "$description": "Ring round a Place dot."
+      },
+      "stroke-width": {
+        "$type": "number",
+        "$value": 1.6
+      }
+    },
+    "water-label": {
+      "colour": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.2471, 0.3922, 0.4235],
+          "hex": "#3f646c"
+        },
+        "$description": "Sea and water names."
+      },
+      "size": {
+        "$type": "number",
+        "$value": 13
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0.2
+      }
+    },
+    "river-label": {
+      "colour": {
+        "$type": "color",
+        "$value": "{map.water-label.colour}",
+        "$description": "River names."
+      },
+      "size": {
+        "$type": "number",
+        "$value": 11
+      }
+    },
+    "context-label": {
+      "colour": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.3373, 0.3804, 0.3529],
+          "hex": "#56615a"
+        },
+        "$description": "Context labels."
+      },
+      "size": {
+        "$type": "number",
+        "$value": 11
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0.12
+      }
+    },
+    "muted-label": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.2471, 0.2902, 0.2588],
+        "hex": "#3f4a42"
+      },
+      "$description": "Quiet labels, such as the sign-in hero's."
+    },
+    "label-halo": {
+      "colour": {
+        "$type": "color",
+        "$value": "{map.land}",
+        "$description": "Outline that keeps a label readable."
+      },
+      "width": {
+        "$type": "number",
+        "$value": 1.5
+      }
+    },
+    "pin": {
+      "colour": {
+        "$type": "color",
+        "$value": "{colour.pin}",
+        "$description": "Pins."
+      },
+      "halo": {
+        "$type": "color",
+        "$value": "{colour.white}",
+        "$description": "Ring round a Pin."
+      },
+      "halo-width": {
+        "$type": "number",
+        "$value": 2
+      },
+      "fuzzy-opacity": {
+        "$type": "number",
+        "$value": 0.6
+      }
+    },
+    "pin-halo": {
+      "colour": {
+        "$type": "color",
+        "$value": "{colour.pin}",
+        "$description": "Uncertainty halo; its radius grows with the date range."
+      },
+      "opacity": {
+        "$type": "number",
+        "$value": 0.24
+      },
+      "blur": {
+        "$type": "number",
+        "$value": 0.8
+      }
+    },
+    "selected": {
+      "colour": {
+        "$type": "color",
+        "$value": "{colour.brand}",
+        "$description": "Selected point and the ring round the open Pin."
+      },
+      "width": {
+        "$type": "number",
+        "$value": 2.5
+      },
+      "radius": {
+        "$type": "number",
+        "$value": 16
+      },
+      "halo": {
+        "colour": {
+          "$type": "color",
+          "$value": "{colour.white}",
+          "$description": "Outer ring of the open Pin, so it reads on any land colour."
+        },
+        "opacity": {
+          "$type": "number",
+          "$value": 0.8
+        },
+        "width": {
+          "$type": "number",
+          "$value": 2
+        },
+        "radius": {
+          "$type": "number",
+          "$value": 20.5
+        }
+      }
+    }
+  }
+}

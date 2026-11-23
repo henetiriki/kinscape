@@ -12,6 +12,7 @@ design/canvas/project
 
 # Written by npm run tokens
 app/tokens.css
+design/tokens.json
 
 # Written by npm run workflows:diagram
 .github/workflows/README.md

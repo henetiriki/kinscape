@@ -3,19 +3,42 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { strayColours } from '@ks/lib/design/css.mts';
+import { dtcgProblems } from '@ks/lib/design/dtcg.mts';
 import { noteProblems } from '@ks/lib/design/notes.mts';
-import { generate } from '@ks/scripts/tokens.mts';
+import { generate, OUTPUTS } from '@ks/scripts/tokens.mts';
 
 const root = join(import.meta.dirname, '../../..');
 const read = (path: string) => readFileSync(join(root, path), 'utf8');
 const tokens = JSON.parse(read('design/tokens.json'));
 
-// The D4 check: fails locally and in CI's test job.
-it('has app/tokens.css up to date with design/tokens.json', () => {
+// Fails locally and in CI's test job when an output lags design/kinscape.tokens.json.
+it.each([OUTPUTS.css, OUTPUTS.json])(
+  'has %s up to date with design/kinscape.tokens.json',
+  async path => {
+    expect(read(path), `${path} is out of date: run \`npm run tokens\``).toBe(
+      (await generate(root))[path]
+    );
+  }
+);
+
+// The CSS leaves out most map tokens, so a reference to one would name no variable.
+it('defines each var() of app/tokens.css there, or as a next/font variable', () => {
+  const css = read(OUTPUTS.css);
+  const defined = new Set(
+    [...css.matchAll(/^\s+(--[\w-]+):/gm)].map(([, name]) => name)
+  );
+  const used = [...css.matchAll(/var\((--[\w-]+)\)/g)].map(([, name]) => name);
+
+  expect(used.length).toBeGreaterThan(0);
   expect(
-    read('app/tokens.css'),
-    'app/tokens.css is out of date: run `npm run tokens`'
-  ).toBe(generate(root));
+    used.filter(name => !defined.has(name) && !name.startsWith('--next-font-'))
+  ).toEqual([]);
+});
+
+it('has design/kinscape.tokens.json follow the DTCG 2025.10 rules', () => {
+  expect(dtcgProblems(JSON.parse(read('design/kinscape.tokens.json')))).toEqual(
+    []
+  );
 });
 
 // Snapshots are written values only; each colour in them must be a token (opacity aside).

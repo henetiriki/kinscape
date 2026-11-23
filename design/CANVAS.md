@@ -30,7 +30,7 @@ The tech lead, or a local session that the tech lead starts, deletes these gener
 ## Changing the design system
 
 - **When.** A change to one of these:
-  - `design/tokens.json`
+  - `design/kinscape.tokens.json`
   - `design/DESIGN.md`
   - a topic file that `DESIGN_FILES` in `lib/design/system.mts` lists
   - a font

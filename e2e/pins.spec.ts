@@ -286,7 +286,8 @@ test('"Add a pin here" saves a Pin at the Place of the Pin', async ({
   };
   const before = await atPlace();
 
-  await page.getByRole('combobox', { name: 'Person' }).click();
+  // The list opens when the user types, not on a click.
+  await page.getByRole('combobox', { name: 'Person' }).fill('a');
   // The Event type select has options too, so the pick names the Person list.
   await page
     .getByRole('listbox', { name: 'People' })

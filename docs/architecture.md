@@ -14,7 +14,7 @@ Built: Next.js App Router, React, TypeScript, MapLibre.
 | A map layer                     | `features/<name>/layers/<layer>.ts`, exported by `index.ts`; routes pass layers to `MapShell`       |
 | Pure logic, no I/O              | `lib/domain/`, tests in `__tests__/`                                                                |
 | Reading data files              | `server/boundaries/load.mts` and `app-data.ts`                                                      |
-| A server variable or table      | `server/env.mts` (lint: `no-restricted-syntax`); a new `server/db/migrations/NNNN.sql`              |
+| A server variable or table      | `server/env.mts` (lint: `no-restricted-syntax`); a new `server/db/migrations/NNNN.sql` (never edit) |
 | Tree data                       | `server/trees/`, behind `openTree`: its `TreeStore` methods, group and mapper                       |
 | Design checks and token tooling | `lib/design/` (dev-only); the runtime `resolveTokens` is in `design/tokens.mts`                     |
 | A colour, size or font value    | `design/tokens.json` + notes, then `npm run tokens`                                                 |
@@ -46,7 +46,7 @@ Each area has a file in `docs/patterns/`. A session loads it when it reads a mat
 ## Enforcement
 
 - **Lint** (`eslint.config.mjs`): arrow functions only, exported types only in `types.ts`, alias imports by extension; the config lists the rest.
-- **knip** (`knip.ts`, `npm run lint:knip`): unused files, types, dependencies and exports, also test-only ones.
+- **knip** (`knip.ts`, in `npm run lint:knip`): unused files, exports, types and dependencies. `knip --production` also fails on an export that only a test uses. If a later slice wires an export, tag it `/** @later #<issue> */`.
 - **Fitness tests** (`scripts/__tests__/`): `vercel-imports` (undeployed imports), `later-tags` (`@later` tags with no issue).
 - **Layers** (`scripts/layers.mts`, ESLint rule `layers/imports`, test `layers.test.ts`): a layer may import only the layers in its row. `lib/domain` may not import Node built-ins or `maplibre-gl`. `features/` holds only feature folders, imported from outside through `index.ts`. Layer code may not import tests, `app/screens`, `scripts`, `e2e` or `lib/design`.
   | Layer             | Holds                                  | May import                                                                                   |

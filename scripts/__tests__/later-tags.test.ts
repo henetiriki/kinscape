@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-// The tag is built from parts, so this file does not match itself.
+// The test builds the tag from parts, so this file does not match itself.
 const TAG = ['@', 'later'].join('');
 
 /** Each `path:line` where the tag has no ` #<number>` after it. */

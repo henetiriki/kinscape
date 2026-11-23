@@ -6,7 +6,7 @@ import { CONTROLS } from '@ks/lib/design/bundle.mts';
 const config: KnipConfig = {
   entry: [
     'scripts/*.mts!',
-    'lib/design/**/*.mts!',
+    'lib/design/*.mts!',
     'server/db/migrate.mts!',
     ...CONTROLS.map(({ path }) => `${path}!`),
   ],

@@ -54,6 +54,8 @@ Step 3 says: "Move it into the tests that use it." Two tests import it: `relatio
 | `e2e/map-zoom.spec.ts`                                               | Changed       | Import `centreOf` from `@ks/e2e/view`.                                        |
 | `scripts/__tests__/later-tags.test.ts`                               | New           | The test of step 4.                                                           |
 | `docs/architecture.md`                                               | Changed       | Line 49: the text of step 6. Line 50: `later-tags` (D3 A).                    |
+| `scripts/word-count.mts`                                             | Changed       | The budget of `docs/architecture.md`: 570 to 600 words.                       |
+| `scripts/__tests__/word-count.test.ts`                               | Changed       | The expected budget of `docs/architecture.md`: 600.                           |
 | `.github/workflows/ci.yml`                                           | Changed       | Tech lead: the step "Find unused code", and "the four" in the job comment.    |
 | `AGENTS.md`                                                          | Changed       | Tech lead: `npm run lint:knip` after `npm run lint`.                          |
 | `docs/code-rules.md`                                                 | Changed       | Tech lead: remove the bullet of step 5.                                       |
@@ -98,5 +100,5 @@ Step 3 says: "Move it into the tests that use it." Two tests import it: `relatio
 
 - `knip.ts` also sets `project` (no `__tests__/`, `e2e/` or `knip.ts` in production) and `tags: ['-later']`. Production knip reports test helpers, and the tag hides `updatePinAction`.
 - `knip.ts` imports `@ks/lib/design/bundle.mts`, as ESLint bans `#ks/` in `.ts`. `eslint.config.mjs` allows a default export in `knip.ts`.
-- `docs/architecture.md` has no word budget left, so the build trims three other lines to fit its 570 words.
+- `docs/architecture.md` has no word budget left. The tech lead raised its budget from 570 to 600 words in `scripts/word-count.mts`. The build also trims two other lines.
 - The job comment in `ci.yml` also lists "finds unused code", so the list matches "the four".

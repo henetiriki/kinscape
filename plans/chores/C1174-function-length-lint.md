@@ -2,7 +2,7 @@
 
 - **Spec:** #1174
 - **Requirement IDs:** None. This Chore changes tooling only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ A new block in `eslint.config.mjs` turns on `max-lines-per-function` for each Ja
 - **B.** Leave `docs/architecture.md` as it is. Cost: no doc names the test.
 - **Other:** your own.
 
-Recommended: A, because the pattern-table rule asks for the name.
+**Answer: A** (@henetiriki)
 
 **D5 · The list of tracked files** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ Recommended: A, because the pattern-table rule asks for the name.
 - **B.** Copy `tracked()` into the new test. Cost: two copies of one helper.
 - **Other:** your own.
 
-Recommended: A, because the code rule bans a copied helper.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

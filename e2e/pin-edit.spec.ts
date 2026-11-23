@@ -181,7 +181,8 @@ test('sends no request for the fields of a Pin or the Persons before "Edit"', as
       asked.push(pathname);
     }
   });
-  await openPopup(page, at);
-  await expect(page.getByRole('button', { name: 'Edit' })).toBeVisible();
+  const popup = await openPopup(page, at);
+
+  await expect(popup.getByRole('button', { name: 'Edit' })).toBeVisible();
   expect(asked).toEqual([]);
 });

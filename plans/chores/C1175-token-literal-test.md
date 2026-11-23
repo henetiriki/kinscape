@@ -42,16 +42,18 @@ The BottomSheet handle and the DateSlider track are 4px bars with a 2px radius. 
 
 ## Files that change
 
-| File                                                    | New / changed | What                                                                                                                                                  |
-| ------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lib/design/literals.mts`                               | New           | `tokenLiterals(css, tokens)`: the problems of one file, each with its line and text                                                                   |
-| `lib/design/types.ts`                                   | Changed       | The `LiteralProblem` type                                                                                                                             |
-| `lib/design/__tests__/literals.test.ts`                 | New           | Fixtures for each case of step 2 and each skipped form; each tracked `.module.css` file has no problem                                                |
-| `design/tokens.json`                                    | Changed       | `size.handle` (40px), `size.halo-hover` (52px), `radius.bar` (2px, if D3 is A), with notes                                                            |
-| `app/tokens.css`                                        | Changed       | `npm run tokens`                                                                                                                                      |
-| The 20 `.module.css` files of the list                  | Changed       | One edit for each literal                                                                                                                             |
-| `docs/architecture.md`                                  | Changed       | The row text and the _Enforced by_ cell of steps 5 and 6. The cell names `lib/design/__tests__/literals.test.ts` in place of "the test of this Chore" |
-| `design/canvas/project/ds/**`, `canvas.json`, `VERSION` | Changed       | Design system steps 3 to 5                                                                                                                            |
+| File                                                     | New / changed | What                                                                                                                                                  |
+| -------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lib/design/literals.mts`                                | New           | `tokenLiterals(css, tokens)`: the problems of one file, each with its line and text                                                                   |
+| `lib/design/types.ts`                                    | Changed       | The `LiteralProblem` type                                                                                                                             |
+| `lib/design/__tests__/literals.test.ts`                  | New           | Fixtures for each case of step 2 and each skipped form; each tracked `.module.css` file has no problem                                                |
+| `design/tokens.json`                                     | Changed       | `size.handle` (40px), `size.halo-hover` (52px), `radius.bar` (2px, if D3 is A), with notes                                                            |
+| `app/tokens.css`                                         | Changed       | `npm run tokens`                                                                                                                                      |
+| The 20 `.module.css` files of the list                   | Changed       | One edit for each literal                                                                                                                             |
+| `docs/architecture.md`                                   | Changed       | The row text and the _Enforced by_ cell of steps 5 and 6. The cell names `lib/design/__tests__/literals.test.ts` in place of "the test of this Chore" |
+| `app/components/overlays/__tests__/BottomSheet.test.tsx` | Changed       | Line 21 expects `calc(-1 * var(--space-4))` (D2 B)                                                                                                    |
+| `lib/design/__tests__/system.test.ts`                    | Changed       | Line 104 expects 177 design system tokens                                                                                                             |
+| `design/canvas/project/ds/**`, `canvas.json`, `VERSION`  | Changed       | Design system steps 3 to 5                                                                                                                            |
 
 New token notes: `handle` "Width of the drag handle of a sheet, a Dialog and a popup on a phone." `halo-hover` "Halo of a hovered count marker or fan Pin."
 
@@ -149,6 +151,6 @@ If D1 is B, the build moves the seven values of D1 B to new tokens. If D3 is B, 
 ## Deviations
 
 - D2 B: the build also fixes `BottomSheet`: 27 (`calc(-1 * var(--space-4))`) and `DateSlider`: 84 (`calc(-1 * var(--space-8))`). The total is 61 literals.
-- Big: `app/components/overlays/__tests__/BottomSheet.test.tsx` line 21 expects `margin-bottom: -4px`, which D2 B changes. The plan does not list the test, so it is unchanged and fails. The fix is `calc(-1 * var(--space-4))` in that line.
-- Big: `lib/design/__tests__/system.test.ts` line 104 expects 174 design system tokens. The three new tokens make it 177. The plan does not list the test, so it is unchanged and fails. The fix is 177.
+- Big: `app/components/overlays/__tests__/BottomSheet.test.tsx` line 21 expected `margin-bottom: -4px`, which D2 B changes. The tech lead approved the edit: the line expects `calc(-1 * var(--space-4))`, and the Files table lists the test.
+- Big: `lib/design/__tests__/system.test.ts` line 104 expected 174 design system tokens. The three new tokens make it 177. The tech lead approved the edit: the line expects 177, and the Files table lists the test.
 - `literals.mts` compares a `box-shadow` as a whole value, and a colour on each line of its value.

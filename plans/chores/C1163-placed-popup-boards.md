@@ -63,3 +63,5 @@ The design system rule of [`plans/README.md`](../README.md#design-system) applie
 - Each board that this table does not list.
 
 ## Deviations
+
+- The build also deleted the `BUTTON` helper of `Map-pin-count.dc.html`. Only `popup()` used it.

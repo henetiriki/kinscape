@@ -54,7 +54,7 @@ class Component extends DCLogic {
     // What each variant puts in the fields.
     const FILLED = { address: 'Farm Example, district Example', coordinates: '-28.742600, 25.311800', date: 'FROM 1890 TO 1905', event: 'residence', notes: 'Lived here with the Example family.', person: 'Maria Magdalena du Toit', precision: 'farm', sources: 'Example parish register, 1890.' };
     const EMPTY = { address: '', coordinates: '', date: '', event: '', notes: '', person: '', precision: 'approximate', sources: '' };
-    const SAVED = Object.assign({}, FILLED, { coordinates: '-29.12, 26.21' });
+    const SAVED = Object.assign({}, FILLED, { coordinates: '-29.120000, 26.210000' });
     const values = {
       edit: SAVED,
       'edit-load-failed': EMPTY,

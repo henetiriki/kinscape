@@ -37,6 +37,8 @@ In a [decision's](../docs/how-we-work.md#decisions) question, name each related 
 
 **Pattern files.** Read each pattern file that `npm run plan:new` lists. Read the file for each other area in _Files that change_ ([`docs/architecture.md`](../docs/architecture.md#patterns) names them).
 
+**Design files.** Read each design file that `npm run plan:new` lists.
+
 ## Plan PR
 
 <a id="plan-pr-flow"></a>**In GitHub Actions**, do these steps:

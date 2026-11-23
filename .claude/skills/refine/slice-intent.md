@@ -11,7 +11,7 @@ Slice an accepted Intent into **Specs**. Each Spec is small enough for one plan 
    - `Intent: M<n>.<k> <name>` is a child Intent. Its Specs get `M<n>.<k>.<j>`.
    - Any other Intent gets a short prefix (`DM.1`). Ask the user for it.
 4. Find an earlier slice list in the comments. Its first line is `Slice list: Specs`. Ignore each other comment, including an old list with no first line. If you find a Spec list, start from it. Ask only about what changed.
-5. Read `docs/requirements.md` (the named requirements, _Key concepts_, _Suggested tech approach_), `docs/how-we-work.md` and `design/DESIGN.md`.
+5. Read `docs/requirements.md` (the named requirements, _Key concepts_, _Suggested tech approach_), `docs/how-we-work.md`, `design/DESIGN.md` and its design files.
 6. Read the repository as needed.
 7. If the Intent isn't clear enough to design from, say so and stop: the PO answers on the Intent. For a milestone's Intent, a question only the PO can answer becomes a PO decision on the Spec it affects.
 
@@ -22,7 +22,7 @@ Ask as `SKILL.md` says. Typical branches:
 - **Behaviour:** what the user sees and does.
 - **Design:** for a UI slice, the branches in [design.md](design.md).
 - **Design system:** does a slice build or change a shared component, or change another [design system input](../../../design/CANVAS.md#changing-the-design-system)? If it does, add the done checks from that section's _Issue text_ to _Acceptance checks_. Use that section's Constraint sentence.
-- **Components:** name the component of each screen element ([page rule](../../../design/DESIGN.md#in-the-repo)). For a missing one, write a decision: build it here or in its own Spec.
+- **Components:** name the component of each screen element ([page rule](../../../design/topics/components.md#in-the-repo)). For a missing one, write a decision: build it here or in its own Spec.
 - **Outside formats:** map each output field to its source. Ask about each field with no source.
 - **Hard-to-reverse choices:** a library, a data model change, or a departure from _Suggested tech approach_. Each is a tech-lead decision.
 - **Data:** anything that stores people, owners or visibility, and boundary data licences (`AGENTS.md` › Data rules).

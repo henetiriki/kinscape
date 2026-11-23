@@ -42,6 +42,8 @@ import {
 } from '#ks/lib/design/cards.mts';
 import { CARDS } from '#ks/lib/design/states.mts';
 import {
+  DESIGN_FILES,
+  designSections,
   fontFiles,
   readme,
   systemCss,
@@ -329,7 +331,9 @@ export const run = async (root: string, out: string): Promise<string[]> => {
   const at = new Date(
     Number(git(root, ['log', '-1', '--format=%ct'])) * 1000
   ).toISOString();
-  const design = readFileSync(join(root, 'design/DESIGN.md'), 'utf8');
+  const design = designSections(
+    DESIGN_FILES.map(file => readFileSync(join(root, file), 'utf8'))
+  );
   const written: string[] = [];
   const put = (path: string, write: (target: string) => void) => {
     const target = join(out, 'project', path);

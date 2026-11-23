@@ -1,6 +1,6 @@
 import type { FanRing, FanSpot } from '#ks/lib/domain/map/types.ts';
 
-/** Ring 1 of a fan: its radius and the Pins it holds (the Fan of Pins in `design/DESIGN.md`). */
+/** Ring 1 of a fan: its radius and the Pins it holds (the Fan of Pins in `design/topics/components.md`). */
 const FIRST = { count: 7, radius: 56 };
 
 /** Each next ring is this much larger. */

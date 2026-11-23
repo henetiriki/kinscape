@@ -3,9 +3,10 @@ import { parse } from 'yaml';
 
 import type { PatternFile, PlanNewDeps } from '#ks/scripts/types.ts';
 
-// The pattern files of docs/patterns/ and the paths that load each as a rule
-// (see docs/patterns/). `npm run plan:new` lists the files that match what an issue
-// cites; scripts/__tests__/pattern-files.test.ts checks the files themselves.
+// The pattern files of docs/patterns/ and the paths that load each as a rule (see docs/patterns/).
+// The design files of design/topics/ have `paths:` too, but no session loads them as a rule: CI edits
+// them, and a rule file is a hand-back path. `npm run plan:new` lists the files that match what an
+// issue cites; scripts/__tests__/pattern-files.test.ts checks the files themselves.
 
 const FOLDER = 'docs/patterns';
 const FRONTMATTER = /^---\n([\s\S]*?)\n---\n/;
@@ -24,8 +25,8 @@ export const globsOf = (text: string): string[] => {
     : [];
 };
 
-// The rule files of a folder: docs/patterns/ by default, or docs/code-rules/ for the path-scoped
-// code rules.
+// The files of a folder that have `paths:` frontmatter: docs/patterns/ by default, docs/code-rules/
+// for the path-scoped code rules, or design/topics/ for the design files.
 export const patternFiles = (
   { list, read }: Pick<PlanNewDeps['files'], 'list' | 'read'>,
   folder = FOLDER

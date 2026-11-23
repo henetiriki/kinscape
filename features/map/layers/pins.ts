@@ -61,6 +61,91 @@ const fanPinOf = (pin: MapPin): FanPin => ({
   reading: readFuzzyDate(pin),
 });
 
+type Groups = ReturnType<typeof groupByPlace>;
+
+const pinData = (pins: MapPin[], groups: Groups): FeatureCollection<Point> => {
+  const byId = new Map(pins.map(pin => [pin.id, pin]));
+
+  return {
+    features: groups
+      .flatMap(aloneParts)
+      .map(({ id, ...part }) => featureOf(byId.get(id)!, part)),
+    type: 'FeatureCollection',
+  };
+};
+
+const pinFilters: Layer['filters'] = (day, open) => {
+  const ring: ExpressionSpecification = [
+    'all',
+    spanFilter(day),
+    ['==', ['get', 'id'], open ?? ''],
+  ];
+
+  return {
+    pins: spanFilter(day),
+    'pins-halo': ring,
+    'pins-selected': ring,
+  };
+};
+
+const STYLE_LAYERS: Layer['layers'] = [
+  {
+    id: 'pins-halo',
+    paint: {
+      'circle-color': 'transparent',
+      'circle-radius': ringRadius(map.selected.halo),
+      'circle-stroke-color': map.selected.halo.colour,
+      'circle-stroke-opacity': map.selected.halo.opacity,
+      'circle-stroke-width': map.selected.halo.width,
+    },
+    source: 'pins',
+    type: 'circle',
+  },
+  {
+    id: 'pins-selected',
+    paint: {
+      'circle-color': 'transparent',
+      'circle-radius': ringRadius(map.selected),
+      'circle-stroke-color': map.selected.colour,
+      'circle-stroke-width': map.selected.width,
+    },
+    source: 'pins',
+    type: 'circle',
+  },
+  {
+    id: 'pins',
+    layout: {
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+      'icon-image': ['concat', PREFIX, ['get', 'eventType']],
+      'icon-size': ICON_SIZE,
+    },
+    paint: {
+      'icon-color': map.pin.colour,
+      'icon-halo-color': map.pin.halo,
+      'icon-halo-width': map.pin['halo-width'],
+    },
+    source: 'pins',
+    type: 'symbol',
+  },
+];
+
+const pinMarkers = (
+  groups: Groups,
+  day: Day,
+  open: string | undefined,
+  onOpen: (id: string) => void
+) =>
+  sharedPlaces(groups, day).map(({ pins: shown, position }) => ({
+    key: position.join(','),
+    node: createElement(PlaceMarker, {
+      onOpen,
+      pins: shown.map(fanPinOf),
+      selected: shown.some(({ id }) => id === open),
+    }),
+    position,
+  }));
+
 /** The id of the "Pins" row, which the map shell reads to close the popup of a Pin that the row hides. */
 export const PINS_LAYER_ID = 'pins';
 
@@ -71,90 +156,21 @@ export const PINS_LAYER_ID = 'pins';
  * request is sent (NFR-01). Two circles under the symbols draw the selection ring; their filter
  * keeps only the open Pin (PIN-02), so no ring shows while none is open.
  */
-// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const pinsLayer = (pins: MapPin[]): Layer => {
   const groups = groupByPlace(pins);
-  const byId = new Map(pins.map(pin => [pin.id, pin]));
-  const data: FeatureCollection<Point> = {
-    features: groups
-      .flatMap(aloneParts)
-      .map(({ id, ...part }) => featureOf(byId.get(id)!, part)),
-    type: 'FeatureCollection',
-  };
 
   return {
     description: (day: Day) =>
       `${pins.filter(({ span }) => isCurrentOn(span, day)).length} of ${pins.length} true on this date`,
-    filters: (day, open) => {
-      const ring: ExpressionSpecification = [
-        'all',
-        spanFilter(day),
-        ['==', ['get', 'id'], open ?? ''],
-      ];
-
-      return {
-        pins: spanFilter(day),
-        'pins-halo': ring,
-        'pins-selected': ring,
-      };
-    },
+    filters: pinFilters,
     icons: Object.fromEntries(
       EVENT_ORDER.map(event => [`${PREFIX}${event}`, EVENT_PATHS[event]])
     ),
     id: PINS_LAYER_ID,
     label: 'Pins',
-    layers: [
-      {
-        id: 'pins-halo',
-        paint: {
-          'circle-color': 'transparent',
-          'circle-radius': ringRadius(map.selected.halo),
-          'circle-stroke-color': map.selected.halo.colour,
-          'circle-stroke-opacity': map.selected.halo.opacity,
-          'circle-stroke-width': map.selected.halo.width,
-        },
-        source: 'pins',
-        type: 'circle',
-      },
-      {
-        id: 'pins-selected',
-        paint: {
-          'circle-color': 'transparent',
-          'circle-radius': ringRadius(map.selected),
-          'circle-stroke-color': map.selected.colour,
-          'circle-stroke-width': map.selected.width,
-        },
-        source: 'pins',
-        type: 'circle',
-      },
-      {
-        id: 'pins',
-        layout: {
-          'icon-allow-overlap': true,
-          'icon-ignore-placement': true,
-          'icon-image': ['concat', PREFIX, ['get', 'eventType']],
-          'icon-size': ICON_SIZE,
-        },
-        paint: {
-          'icon-color': map.pin.colour,
-          'icon-halo-color': map.pin.halo,
-          'icon-halo-width': map.pin['halo-width'],
-        },
-        source: 'pins',
-        type: 'symbol',
-      },
-    ],
-    markers: (day, open, onOpen) =>
-      sharedPlaces(groups, day).map(({ pins: shown, position }) => ({
-        key: position.join(','),
-        node: createElement(PlaceMarker, {
-          onOpen,
-          pins: shown.map(fanPinOf),
-          selected: shown.some(({ id }) => id === open),
-        }),
-        position,
-      })),
+    layers: STYLE_LAYERS,
+    markers: (day, open, onOpen) => pinMarkers(groups, day, open, onOpen),
     select: ['pins'],
-    sources: { pins: { data, type: 'geojson' } },
+    sources: { pins: { data: pinData(pins, groups), type: 'geojson' } },
   };
 };

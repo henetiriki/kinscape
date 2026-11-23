@@ -53,24 +53,248 @@ const Chevron = ({ path }: { path: string }) => (
   </svg>
 );
 
-/**
- * The Map date control. On desktop a dock: steps, the typed date, precision, then the optional contested note, Play and speed, the slider, Jump to and key hints.
- * With `sheet` it is the phone's bottom sheet: the stepper and round Play, and the slider once expanded.
- * The Play, Jump to and contested parts show only when their props are passed.
- */
-export const DateDock = ({
-  contestedCount,
-  contestedYears,
+type Note = { forDay?: Day } & ComponentProps<typeof DateField>['notice'];
+
+const useNote = (day: Day) => {
+  // `forDay` ties the no-borders warning to the day it was set for.
+  const [note, setNote] = useState<Note>();
+  const notice =
+    note?.forDay === undefined || note.forDay === day ? note : undefined;
+
+  // Each switch shows its note for 4 seconds; a new switch restarts the timer.
+  useEffect(() => {
+    if (!note) return;
+
+    const timer = setTimeout(() => setNote(undefined), NOTICE_MS);
+
+    return () => clearTimeout(timer);
+  }, [note]);
+
+  return { notice, setNote };
+};
+
+type FieldArgs = Pick<
+  DockProps,
+  'day' | 'defaultText' | 'hasBorders' | 'lastDay' | 'onChange' | 'onPlay'
+> & {
+  notice?: Note;
+  precision: Precision;
+  setNote: (note: Note) => void;
+  setPrecision: (precision: Precision) => void;
+  sheet: boolean;
+  speed: string;
+};
+
+const noteFor = (
+  to: Day,
+  at: Precision,
+  precision: Precision,
+  hasBorders: ((day: Day) => boolean) | undefined
+): Note | undefined => {
+  // The warning wins when a typed date needs both notes.
+  if (hasBorders && !hasBorders(to)) {
+    return {
+      forDay: to,
+      text: `No borders are mapped for ${yearOf(to)} yet.`,
+      tone: 'warning',
+    };
+  }
+
+  if (finerPrecision(at, precision) !== precision) {
+    return { text: `Switched to ${at} precision.`, tone: 'info' };
+  }
+};
+
+const DockField = ({
   day,
   defaultText,
-  details,
-  epochs,
   hasBorders,
+  lastDay,
+  notice,
+  onChange,
+  onPlay,
+  precision,
+  setNote,
+  setPrecision,
+  sheet,
+  speed,
+}: FieldArgs) => (
+  <DateField
+    after={
+      <>
+        <IconButton
+          disabled={day >= lastDay}
+          label='Forward'
+          onClick={() => onChange(stepDay(day, precision, 1, lastDay))}>
+          <Chevron path='M9 5l7 7-7 7' />
+        </IconButton>
+        {sheet && onPlay && (
+          <span className={styles.sheetPlay}>
+            <PlayButton onClick={() => onPlay(Number(speed))} round />
+          </span>
+        )}
+      </>
+    }
+    before={
+      <IconButton
+        disabled={day <= MIN_DAY}
+        label='Back'
+        onClick={() => onChange(stepDay(day, precision, -1, lastDay))}>
+        <Chevron path='M15 5l-7 7 7 7' />
+      </IconButton>
+    }
+    day={day}
+    defaultText={defaultText}
+    fill={sheet}
+    keepPrecision={sheet}
+    max={lastDay}
+    min={MIN_DAY}
+    notice={notice}
+    onChange={(to, at) => {
+      const next = noteFor(to, at, precision, hasBorders);
+
+      if (next) setNote(next);
+
+      setPrecision(at);
+      onChange(to);
+    }}
+    placement='above'
+    precision={precision}
+  />
+);
+
+const PlaySpeed = ({
+  onPlay,
+  setSpeed,
+  speed,
+}: {
+  onPlay: (speed: number) => void;
+  setSpeed: (speed: string) => void;
+  speed: string;
+}) => (
+  <span className={styles.play}>
+    <PlayButton onClick={() => onPlay(Number(speed))} />
+    <Segmented
+      label='Playback speed in years per second'
+      name='speed'
+      onChange={setSpeed}
+      options={SPEEDS}
+      value={speed}
+    />
+    <span className={styles.caption}>yr/s</span>
+  </span>
+);
+
+const Footer = ({
+  day,
+  epochs,
+  lastDay,
+  onChange,
+  precision,
+}: {
+  epochs?: Epoch[];
+} & Pick<FieldArgs, 'day' | 'lastDay' | 'onChange' | 'precision'>) => (
+  <div className={styles.footer}>
+    {epochs && (
+      <JumpTo
+        current={yearOf(day)}
+        epochs={epochs}
+        onJump={year =>
+          onChange(asDay(Math.min(toDay(`${year}-01-01`), lastDay)))
+        }
+      />
+    )}
+    <span className={styles.hints}>
+      <DateKeyHints precision={precision} />
+    </span>
+  </div>
+);
+
+const useDockState = (day: Day) => {
+  const [precision, setPrecision] = useState<Precision>('year');
+  const [speed, setSpeed] = useState('5');
+  const { notice, setNote } = useNote(day);
+
+  return { notice, precision, setNote, setPrecision, setSpeed, speed };
+};
+
+type DockState = ReturnType<typeof useDockState>;
+
+const SheetDock = ({
+  children,
+  details,
+  field,
+  sheet,
+}: {
+  children: ReactNode;
+  details?: ReactNode;
+  field: ReactNode;
+  sheet: NonNullable<DockProps['sheet']>;
+}) => (
+  <BottomSheet
+    expanded={sheet.expanded}
+    onExpandedChange={sheet.onExpandedChange}>
+    <div className={styles.sheetField}>{field}</div>
+    {sheet.expanded && children}
+    {details !== undefined && (
+      <>
+        <hr className={styles.rule} />
+        {details}
+      </>
+    )}
+  </BottomSheet>
+);
+
+const DesktopDock = ({
+  contestedCount,
+  day,
+  epochs,
+  field,
   lastDay,
   onChange,
   onPlay,
-  sheet,
+  precision,
+  setPrecision,
+  setSpeed,
+  slider,
+  speed,
 }: {
+  contestedCount?: number;
+  epochs?: Epoch[];
+  field: ReactNode;
+  slider: ReactNode;
+} & Pick<DockState, 'precision' | 'setPrecision' | 'setSpeed' | 'speed'> &
+  Pick<FieldArgs, 'day' | 'lastDay' | 'onChange' | 'onPlay'>) => (
+  <section aria-label='Map date' className={styles.dock}>
+    <div className={styles.row}>
+      {field}
+      <Segmented
+        label='Precision'
+        name='precision'
+        // Filtering narrows the string to a Precision without a cast.
+        onChange={value =>
+          PRECISIONS.filter(option => option === value).forEach(setPrecision)
+        }
+        options={OPTIONS}
+        value={precision}
+      />
+      {contestedCount !== undefined && <ContestedNote count={contestedCount} />}
+      {onPlay && (
+        <PlaySpeed onPlay={onPlay} setSpeed={setSpeed} speed={speed} />
+      )}
+    </div>
+    {slider}
+    <Footer
+      day={day}
+      epochs={epochs}
+      lastDay={lastDay}
+      onChange={onChange}
+      precision={precision}
+    />
+  </section>
+);
+
+type DockProps = {
   /** Contested claims on the Map date. */
   contestedCount?: number;
   /** Year spans drawn hatched on the slider. */
@@ -90,151 +314,36 @@ export const DateDock = ({
   onPlay?: (speed: number) => void;
   /** The phone sheet instead of the dock. */
   sheet?: { expanded: boolean; onExpandedChange: (expanded: boolean) => void };
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-}) => {
-  const [precision, setPrecision] = useState<Precision>('year');
-  const [speed, setSpeed] = useState('5');
-  // `forDay` ties the no-borders warning to the day it was set for.
-  const [note, setNote] = useState<
-    { forDay?: Day } & ComponentProps<typeof DateField>['notice']
-  >();
-  const notice =
-    note?.forDay === undefined || note.forDay === day ? note : undefined;
+};
 
-  // Each switch shows its note for 4 seconds; a new switch restarts the timer.
-  useEffect(() => {
-    if (!note) return;
-
-    const timer = setTimeout(() => setNote(undefined), NOTICE_MS);
-
-    return () => clearTimeout(timer);
-  }, [note]);
-
-  const field = (
-    <DateField
-      after={
-        <>
-          <IconButton
-            disabled={day >= lastDay}
-            label='Forward'
-            onClick={() => onChange(stepDay(day, precision, 1, lastDay))}>
-            <Chevron path='M9 5l7 7-7 7' />
-          </IconButton>
-          {sheet && onPlay && (
-            <span className={styles.sheetPlay}>
-              <PlayButton onClick={() => onPlay(Number(speed))} round />
-            </span>
-          )}
-        </>
-      }
-      before={
-        <IconButton
-          disabled={day <= MIN_DAY}
-          label='Back'
-          onClick={() => onChange(stepDay(day, precision, -1, lastDay))}>
-          <Chevron path='M15 5l-7 7 7 7' />
-        </IconButton>
-      }
-      day={day}
-      defaultText={defaultText}
-      fill={!!sheet}
-      keepPrecision={!!sheet}
-      max={lastDay}
-      min={MIN_DAY}
-      notice={notice}
-      onChange={(to, at) => {
-        // The warning wins when a typed date needs both notes.
-        if (hasBorders && !hasBorders(to)) {
-          setNote({
-            forDay: to,
-            text: `No borders are mapped for ${yearOf(to)} yet.`,
-            tone: 'warning',
-          });
-        } else if (finerPrecision(at, precision) !== precision) {
-          setNote({ text: `Switched to ${at} precision.`, tone: 'info' });
-        }
-
-        setPrecision(at);
-        onChange(to);
-      }}
-      placement='above'
-      precision={precision}
-    />
-  );
+/**
+ * The Map date control. On desktop a dock: steps, the typed date, precision, then the optional contested note, Play and speed, the slider, Jump to and key hints.
+ * With `sheet` it is the phone's bottom sheet: the stepper and round Play, and the slider once expanded.
+ * The Play, Jump to and contested parts show only when their props are passed.
+ */
+export const DateDock = (props: DockProps) => {
+  const { contestedYears, day, details, epochs, lastDay, onChange, sheet } =
+    props;
+  const state = useDockState(day);
+  const field = <DockField {...props} {...state} sheet={!!sheet} />;
   const slider = (
     <DateSlider
       contested={contestedYears}
       day={day}
       lastDay={lastDay}
       onChange={onChange}
-      precision={precision}
+      precision={state.precision}
       ticks={epochs?.map(epoch => epoch.year)}
     />
   );
 
   if (sheet) {
     return (
-      <BottomSheet
-        expanded={sheet.expanded}
-        onExpandedChange={sheet.onExpandedChange}>
-        <div className={styles.sheetField}>{field}</div>
-        {sheet.expanded && slider}
-        {details !== undefined && (
-          <>
-            <hr className={styles.rule} />
-            {details}
-          </>
-        )}
-      </BottomSheet>
+      <SheetDock details={details} field={field} sheet={sheet}>
+        {slider}
+      </SheetDock>
     );
   }
 
-  return (
-    <section aria-label='Map date' className={styles.dock}>
-      <div className={styles.row}>
-        {field}
-        <Segmented
-          label='Precision'
-          name='precision'
-          // Filtering narrows the string to a Precision without a cast.
-          onChange={value =>
-            PRECISIONS.filter(option => option === value).forEach(setPrecision)
-          }
-          options={OPTIONS}
-          value={precision}
-        />
-        {contestedCount !== undefined && (
-          <ContestedNote count={contestedCount} />
-        )}
-        {onPlay && (
-          <span className={styles.play}>
-            <PlayButton onClick={() => onPlay(Number(speed))} />
-            <Segmented
-              label='Playback speed in years per second'
-              name='speed'
-              onChange={setSpeed}
-              options={SPEEDS}
-              value={speed}
-            />
-            <span className={styles.caption}>yr/s</span>
-          </span>
-        )}
-      </div>
-      {slider}
-      <div className={styles.footer}>
-        {epochs && (
-          <JumpTo
-            current={yearOf(day)}
-            epochs={epochs}
-            onJump={year =>
-              onChange(asDay(Math.min(toDay(`${year}-01-01`), lastDay)))
-            }
-          />
-        )}
-        <span className={styles.hints}>
-          <DateKeyHints precision={precision} />
-        </span>
-      </div>
-    </section>
-  );
+  return <DesktopDock {...props} {...state} field={field} slider={slider} />;
 };

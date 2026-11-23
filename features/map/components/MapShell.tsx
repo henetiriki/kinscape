@@ -42,61 +42,24 @@ import { isCurrentOn } from '@ks/lib/domain/validity/validity.mts';
 
 import styles from '@ks/features/map/components/MapShell.module.css';
 
-export const MapShell = ({
-  action,
-  coverage,
-  email,
-  initial,
-  layers,
-  onClosePin,
-  onOpenPin,
-  onSignOut,
-  panel,
-  pin,
-  sources,
-  toast,
-}: {
-  /** The part in the `action` slot, such as "Add a pin". The caller gives none on a phone. */
-  action?: ReactNode;
-  /** The days with a Boundary version; the first one is where the notice card jumps to. */
-  coverage: Validity[];
-  /** Shown in the account menu. */
-  email: string;
-  /** The letter on the Avatar. */
-  initial: string;
-  /** The layers the map draws. */
-  layers: Layer[];
-  /** A click on empty map, Esc, a Map date that hides the open Pin, or the Pins row switched off. Keep its identity stable. */
-  onClosePin?: () => void;
-  /** A click on a Pin, with its id. */
-  onOpenPin?: (id: string) => void;
-  onSignOut: () => Promise<unknown>;
-  /** The panel in the place of the Layers panel on a desktop. A phone shows none. */
-  panel?: ReactNode;
-  /** The Pin whose popup is open. */
-  pin?: {
-    open: OpenPin;
-    /** `popup` draws the popup: floating at the `place` of the Pin on a desktop, `inline` in the date sheet on a phone. */
-    popup: (
-      form: 'floating' | 'inline',
-      place?: { x: number; y: number }
-    ) => ReactNode;
-    /** The days the Pin shows; the popup closes when the Map date leaves them. */
-    span: Validity;
-  };
-  sources: Source[];
-  /** A `Toast` for the result of an action, at the bottom centre above the dock. */
-  toast?: ReactNode;
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-}) => {
-  const phone = usePhone();
+type PinProp = {
+  open: OpenPin;
+  /** `popup` draws the popup: floating at the `place` of the Pin on a desktop, `inline` in the date sheet on a phone. */
+  popup: (
+    form: 'floating' | 'inline',
+    place?: { x: number; y: number }
+  ) => ReactNode;
+  /** The days the Pin shows; the popup closes when the Map date leaves them. */
+  span: Validity;
+};
+
+const useShellState = (layers: Layer[]) => {
   // The Map date starts on today, which is also the last date.
   const [lastDay] = useState(todayDay);
   const [mapDay, setMapDay] = useState(lastDay);
   const [visible, setVisible] = useState<Partial<Record<LayerId, boolean>>>(
     () => Object.fromEntries(layers.map(layer => [layer.id, true]))
   );
-  const showPolities = visible[polityLayer.id] !== false;
   const [showSources, setShowSources] = useState(false);
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [showLayers, setShowLayers] = useState(false);
@@ -108,6 +71,35 @@ export const MapShell = ({
 
   // The pixel point of the open Pin in the map, which the popup follows.
   const [point, setPoint] = useState<{ x: number; y: number } | null>(null);
+
+  return {
+    lastDay,
+    limits,
+    map,
+    mapDay,
+    point,
+    setLimits,
+    setMapDay,
+    setPoint,
+    setSheetExpanded,
+    setShowLayers,
+    setShowSources,
+    setVisible,
+    sheetExpanded,
+    showLayers,
+    showSources,
+    visible,
+  };
+};
+
+type ShellState = ReturnType<typeof useShellState>;
+
+// A Pin that the Map date or the Pins row hides closes, and so does Esc.
+const useClosePin = (
+  pin: PinProp | undefined,
+  { mapDay, visible }: Pick<ShellState, 'mapDay' | 'visible'>,
+  onClosePin?: () => void
+) => {
   const shown = pin !== undefined;
   const hidden =
     pin !== undefined &&
@@ -128,131 +120,246 @@ export const MapShell = ({
 
     return () => document.removeEventListener('keydown', close);
   }, [onClosePin, shown]);
+};
 
+type DockArgs = {
+  borders: (day: Day) => boolean;
+  credits: ReactNode;
+  phone: boolean;
+  pin?: PinProp;
+  state: ShellState;
+};
+
+const Dock = ({ borders, credits, phone, pin, state }: DockArgs) =>
+  phone ? (
+    <>
+      <div className={styles.credits}>{credits}</div>
+      <DateDock
+        day={state.mapDay}
+        details={pin?.popup('inline')}
+        hasBorders={borders}
+        lastDay={state.lastDay}
+        onChange={state.setMapDay}
+        sheet={{
+          expanded: state.sheetExpanded,
+          onExpandedChange: state.setSheetExpanded,
+        }}
+      />
+    </>
+  ) : (
+    <DateDock
+      day={state.mapDay}
+      hasBorders={borders}
+      lastDay={state.lastDay}
+      onChange={state.setMapDay}
+    />
+  );
+
+const NoBordersNotice = ({
+  first,
+  mapDay,
+  phone,
+  setMapDay,
+}: {
+  first: Day;
+  mapDay: Day;
+  phone: boolean;
+  setMapDay: (day: Day) => void;
+}) => {
+  const firstYear = String(yearOf(first));
+
+  return (
+    <NoticeCard
+      actions={[
+        { label: `Jump to ${firstYear}`, onClick: () => setMapDay(first) },
+      ]}
+      icon='layers'
+      phone={phone}
+      title={`No borders are mapped for ${yearOf(mapDay)} yet`}>
+      {`The map has borders from ${firstYear}.`}
+    </NoticeCard>
+  );
+};
+
+const Zoom = ({
+  limits,
+  map,
+}: { map: ShellState['map'] } & Pick<ShellState, 'limits'>) => (
+  <ZoomControls
+    atMax={limits.atMax}
+    atMin={limits.atMin}
+    onFit={() => map.current?.fit()}
+    onZoomIn={() => map.current?.zoomIn()}
+    onZoomOut={() => map.current?.zoomOut()}
+  />
+);
+
+type LayerProps = {
+  day: Day;
+  layers: Layer[];
+  onChange: (id: LayerId, show: boolean) => void;
+  visible: ShellState['visible'];
+};
+
+type PartArgs = {
+  phone: boolean;
+  props: ShellProps;
+  state: ShellState;
+};
+
+type ShellProps = {
+  /** The part in the `action` slot, such as "Add a pin". The caller gives none on a phone. */
+  action?: ReactNode;
+  /** The days with a Boundary version; the first one is where the notice card jumps to. */
+  coverage: Validity[];
+  /** Shown in the account menu. */
+  email: string;
+  /** The letter on the Avatar. */
+  initial: string;
+  /** The layers the map draws. */
+  layers: Layer[];
+  /** A click on empty map, Esc, a Map date that hides the open Pin, or the Pins row switched off. Keep its identity stable. */
+  onClosePin?: () => void;
+  /** A click on a Pin, with its id. */
+  onOpenPin?: (id: string) => void;
+  onSignOut: () => Promise<unknown>;
+  /** The panel in the place of the Layers panel on a desktop. A phone shows none. */
+  panel?: ReactNode;
+  /** The Pin whose popup is open. */
+  pin?: PinProp;
+  sources: Source[];
+  /** A `Toast` for the result of an action, at the bottom centre above the dock. */
+  toast?: ReactNode;
+};
+
+const MapPane = ({ phone, props, state }: PartArgs) => {
+  const { onClosePin, onOpenPin, pin, toast } = props;
+
+  return (
+    <>
+      <MapView
+        handle={state.map}
+        layers={props.layers}
+        mapDay={state.mapDay}
+        onEmptyClick={onClosePin}
+        onOpenPin={id => {
+          // A tap on a Pin opens the date sheet on a phone, so a close leaves it open under the finger.
+          if (phone) state.setSheetExpanded(true);
+          onOpenPin?.(id);
+        }}
+        onOpenPoint={state.setPoint}
+        onZoomLimits={state.setLimits}
+        open={pin?.open}
+        padding={freeArea(phone)}
+        visible={state.visible}
+      />
+      {!phone && pin && state.point && pin.popup('floating', state.point)}
+      {toast && <div className={styles.toast}>{toast}</div>}
+    </>
+  );
+};
+
+const Account = ({ phone, props, state }: PartArgs) => (
+  <AccountMenu
+    email={props.email}
+    initial={props.initial}
+    onOpenSources={() => state.setShowSources(true)}
+    onSignOut={props.onSignOut}
+    phone={phone}
+  />
+);
+
+const ShellLayout = ({
+  layerProps,
+  phone,
+  props,
+  state,
+}: { layerProps: LayerProps } & PartArgs) => {
+  const { action, coverage, panel, pin, sources } = props;
+  const { mapDay } = state;
+  const showPolities = state.visible[polityLayer.id] !== false;
   const credits = (
     <Credits
       collapsible={!phone}
-      onOpenAttributions={() => setShowSources(true)}
+      onOpenAttributions={() => state.setShowSources(true)}
       showPolities={showPolities}
       sources={sources}
     />
   );
-  const layerProps = {
-    day: mapDay,
-    layers,
-    onChange: (id: LayerId, show: boolean) =>
-      setVisible(current => ({ ...current, [id]: show })),
-    visible,
-  };
   const borders = (day: Day) => hasBorders(coverage, day);
   const first = coverage.at(0)?.validFrom;
-  const firstYear = first === undefined ? '' : String(yearOf(first));
+  const account = <Account phone={phone} props={props} state={state} />;
 
-  const account = (
-    <AccountMenu
-      email={email}
-      initial={initial}
-      onOpenSources={() => setShowSources(true)}
-      onSignOut={onSignOut}
-      phone={phone}
-    />
+  return (
+    <MapLayout
+      {...accountSlots(phone, account)}
+      action={action}
+      credits={phone ? undefined : credits}
+      dock={
+        <Dock
+          borders={borders}
+          credits={credits}
+          phone={phone}
+          pin={pin}
+          state={state}
+        />
+      }
+      layers={
+        phone ? (
+          <LayersButton onClick={() => state.setShowLayers(true)} />
+        ) : undefined
+      }
+      overlay={
+        showPolities && first !== undefined && !borders(mapDay) ? (
+          <NoBordersNotice
+            first={first}
+            mapDay={mapDay}
+            phone={phone}
+            setMapDay={state.setMapDay}
+          />
+        ) : undefined
+      }
+      overlayAt='top'
+      panel={phone ? undefined : (panel ?? <LayersPanel {...layerProps} />)}
+      zoom={phone ? undefined : <Zoom limits={state.limits} map={state.map} />}>
+      <MapPane phone={phone} props={props} state={state} />
+    </MapLayout>
   );
+};
+
+export const MapShell = (props: ShellProps) => {
+  const { layers, onClosePin, pin, sources } = props;
+  const phone = usePhone();
+  const state = useShellState(layers);
+  const layerProps: LayerProps = {
+    day: state.mapDay,
+    layers,
+    onChange: (id, show) =>
+      state.setVisible(current => ({ ...current, [id]: show })),
+    visible: state.visible,
+  };
+
+  useClosePin(pin, state, onClosePin);
 
   return (
     <>
-      <MapLayout
-        {...accountSlots(phone, account)}
-        action={action}
-        credits={phone ? undefined : credits}
-        dock={
-          phone ? (
-            <>
-              <div className={styles.credits}>{credits}</div>
-              <DateDock
-                day={mapDay}
-                details={pin?.popup('inline')}
-                hasBorders={borders}
-                lastDay={lastDay}
-                onChange={setMapDay}
-                sheet={{
-                  expanded: sheetExpanded,
-                  onExpandedChange: setSheetExpanded,
-                }}
-              />
-            </>
-          ) : (
-            <DateDock
-              day={mapDay}
-              hasBorders={borders}
-              lastDay={lastDay}
-              onChange={setMapDay}
-            />
-          )
-        }
-        layers={
-          phone ? (
-            <LayersButton onClick={() => setShowLayers(true)} />
-          ) : undefined
-        }
-        overlay={
-          showPolities && first !== undefined && !borders(mapDay) ? (
-            <NoticeCard
-              actions={[
-                {
-                  label: `Jump to ${firstYear}`,
-                  onClick: () => setMapDay(first),
-                },
-              ]}
-              icon='layers'
-              phone={phone}
-              title={`No borders are mapped for ${yearOf(mapDay)} yet`}>
-              {`The map has borders from ${firstYear}.`}
-            </NoticeCard>
-          ) : undefined
-        }
-        overlayAt='top'
-        panel={phone ? undefined : (panel ?? <LayersPanel {...layerProps} />)}
-        zoom={
-          phone ? undefined : (
-            <ZoomControls
-              atMax={limits.atMax}
-              atMin={limits.atMin}
-              onFit={() => map.current?.fit()}
-              onZoomIn={() => map.current?.zoomIn()}
-              onZoomOut={() => map.current?.zoomOut()}
-            />
-          )
-        }>
-        <MapView
-          handle={map}
-          layers={layers}
-          mapDay={mapDay}
-          onEmptyClick={onClosePin}
-          onOpenPin={id => {
-            // A tap on a Pin opens the date sheet on a phone, so a close leaves it open under the finger.
-            if (phone) setSheetExpanded(true);
-            onOpenPin?.(id);
-          }}
-          onOpenPoint={setPoint}
-          onZoomLimits={setLimits}
-          open={pin?.open}
-          padding={freeArea(phone)}
-          visible={visible}
-        />
-        {!phone && pin && point && pin.popup('floating', point)}
-        {toast && <div className={styles.toast}>{toast}</div>}
-      </MapLayout>
+      <ShellLayout
+        layerProps={layerProps}
+        phone={phone}
+        props={props}
+        state={state}
+      />
       {phone && (
         <Sheet
-          onClose={() => setShowLayers(false)}
-          open={showLayers}
+          onClose={() => state.setShowLayers(false)}
+          open={state.showLayers}
           title='Layers'>
           <LayersList {...layerProps} />
         </Sheet>
       )}
       <SourcesDialog
-        onClose={() => setShowSources(false)}
-        open={showSources}
+        onClose={() => state.setShowSources(false)}
+        open={state.showSources}
         sources={sources}
       />
     </>

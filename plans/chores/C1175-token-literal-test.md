@@ -139,16 +139,17 @@ If D1 is B, the build moves the seven values of D1 B to new tokens. If D3 is B, 
 
 ## Proof
 
-| Acceptance check                                      | Proven by                                      |
-| ----------------------------------------------------- | ---------------------------------------------- |
-| The test passes on the branch                         | `npm test`                                     |
-| Each case of step 2 fails                             | Fixtures in `literals.test.ts`                 |
-| A scratch `gap: 8px` fails the test                   | Evidence, not committed                        |
-| Each literal of the list is fixed                     | The repo case of `literals.test.ts`; the diff  |
-| New tokens have notes; `app/tokens.css` is current    | `design.test.ts` (`noteProblems`, stale check) |
-| `docs/architecture.md` holds steps 5 and 6            | The diff                                       |
-| Steps 2 to 6 ran; sha256 match; "No snapshot changed" | Evidence from the local session                |
-| Lint, typecheck, words, tests and coverage pass       | Evidence                                       |
+| Acceptance check                                   | Proven by                                        |
+| -------------------------------------------------- | ------------------------------------------------ |
+| The test passes on the branch                      | `npm test`                                       |
+| Each case of step 2 fails                          | Fixtures in `literals.test.ts`                   |
+| A scratch `gap: 8px` fails the test                | Evidence, not committed                          |
+| Each literal of the list is fixed                  | The repo case of `literals.test.ts`; the diff    |
+| New tokens have notes; `app/tokens.css` is current | `design.test.ts` (`noteProblems`, stale check)   |
+| `docs/architecture.md` holds steps 5 and 6         | The diff                                         |
+| Steps 2 to 5 ran; sha256 match                     | Evidence from the local session                  |
+| `design:export` prints "No snapshot changed"       | The CI `design` job and Design: Render snapshots |
+| Lint, typecheck, words, tests and coverage pass    | Evidence                                         |
 
 ## Out of scope
 
@@ -163,4 +164,4 @@ If D1 is B, the build moves the seven values of D1 B to new tokens. If D3 is B, 
 - `literals.mts` compares a `box-shadow` as a whole value, and a colour on each line of its value.
 - Review of the PR: the tech lead chose to build three unlikely cases. A colour in a `var()` fallback passes. A duration in seconds equals its `ms` token. A shadow compares in lower case. Each has a fixture.
 - Design: Render snapshots changed the 63 `design/source/*.html` files of `b94b708`: the `map-*`, `people-*`, `person-*`, `pin-*` and `relationship-*` snapshots. Only CSS-module class hashes and the order of style declarations differ, so no rendered value changes and no JPG or card changed.
-- A local `npm run design:export` prints "Rewrote:" for 52 snapshots, not "No snapshot changed". The macOS render gives sub-pixel widths, such as `48.1094px` for `48px`. The session discarded those files. The CI `design` job compares the pinned render.
+- Big: the check that `npm run design:export` prints "No snapshot changed" cannot pass in a local macOS session. It prints "Rewrote:" for 52 snapshots, because the macOS render gives sub-pixel widths, such as `48.1094px` for `48px`. The session discarded those files. The CI `design` job and Design: Render snapshots prove the check on the pinned render.

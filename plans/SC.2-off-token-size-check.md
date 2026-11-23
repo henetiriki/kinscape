@@ -2,7 +2,7 @@
 
 - **Spec:** #1192
 - **Requirement IDs:** None. The Spec changes tooling only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -31,7 +31,7 @@ Some inline styles use an expression: `style={mark(...)}` and `style={hatchStyle
 - **B.** As A, and follow a `const` in the same file that holds an object literal (`hatchStyle`). Cost: about 40 more lines and a scope walk.
 - **C.** Fail on any `style` prop that is not an object literal of literals. Cost: the build rewrites four components, which the Spec does not ask for.
 
-Recommended: A, because a value that a function computes is not a hand-typed size, and the check targets hand-typed sizes. B also catches a `const` style object, but no such object holds a literal size on `main`.
+**Answer: A** (@henetiriki)
 
 **D5 · Two copies of one size in one file** · Decides: Tech lead
 
@@ -40,7 +40,7 @@ The Spec makes an entry "file, property and value", with no line. A file can hol
 - **A.** One entry for each distinct triple, as the Spec says. Cost: none more.
 - **B.** Each entry also holds a `count`. The test fails when the code has more or fewer copies than the count. Cost: about 15 more lines; this changes the Behaviour line "A list entry is file, property and value".
 
-Recommended: B, because the Summary says no new off-token size gets in, and A lets a copy in. A loses only the copy case, which is rare in one file.
+**Answer: B** (@henetiriki)
 
 **D6 · A custom property that holds a size** · Decides: Tech lead
 
@@ -49,7 +49,7 @@ Four custom properties hold a literal size on `main`, for example `--gap: 5px` i
 - **A.** Read a custom property whose value holds a length as a size, with no group. It passes with an `own:` comment or an entry. Cost: about 10 lines; four entries on the list.
 - **B.** Skip custom properties. Cost: none; a new off-token size can enter through `--x: 7px` and `var(--x)`.
 
-Recommended: A, because B leaves a path round the check, and SC.9.1 checks the same properties next.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

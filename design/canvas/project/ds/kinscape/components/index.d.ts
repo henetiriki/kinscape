@@ -1267,6 +1267,8 @@ type PinPopupArgs = {
     form?: 'floating' | 'inline' | 'sheet';
     /** The Person's name; the loaded state shows it. */
     name?: string;
+    /** Called by "Add a pin here" in the floating popup. */
+    onAddHere?: () => void;
     /** Called by Close and by Esc inside the floating popup. */
     onClose?: () => void;
     /** Called by "Try again" in the failed state. */
@@ -1290,7 +1292,7 @@ declare const Floating: ({ children, label, loading, onClose, }: {
     loading?: boolean;
 } & Pick<PinPopupArgs, "onClose">) => import("react").JSX.Element;
 /** The popup of a Pin (PIN-02): the Person, the event type, both date lines and the address. */
-export declare const PinPopup: ({ address, event, form, name, onClose, onRetry, reading, recorded, state, }: PinPopupArgs) => import("react").JSX.Element;
+export declare const PinPopup: ({ address, event, form, name, onAddHere, onClose, onRetry, reading, recorded, state, }: PinPopupArgs) => import("react").JSX.Element;
 /** The floating popup at a map point, in pixels from the corner of the overlay area. */
 export declare const PlacedPinPopup: ({ x, y, ...rest }: {
     x: number;

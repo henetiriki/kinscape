@@ -15,6 +15,7 @@ The popup of a Pin (PIN-02): the Person, the event type, both date lines and the
 | `event` | `"other" \| "baptism" \| "birth" \| "burial" \| "death" \| "divorce" \| "land" \| "marriage" \| "occupation" \| "residence"` | yes | The Event type of the Pin. |
 | `form` | `"inline" \| "floating" \| "sheet"` | no | A floating popup on a desktop; a sheet region on a phone; `inline` fills the details of the date sheet. |
 | `name` | `string` | no | The Person's name; the loaded state shows it. |
+| `onAddHere` | `(() => void)` | no | Called by "Add a pin here" in the floating popup. |
 | `onClose` | `(() => void)` | no | Called by Close and by Esc inside the floating popup. |
 | `onRetry` | `(() => void)` | no | Called by "Try again" in the failed state. |
 | `reading` | `string` | yes | The reading of the date, such as "From 1890 to 1905". |

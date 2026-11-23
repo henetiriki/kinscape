@@ -2,7 +2,7 @@
 
 - **Spec:** #1182
 - **Requirement IDs:** None. This Chore changes no app behaviour.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The issue proves the rule with a scratch disable in the PR Evidence only. Three 
 - **B.** Prove the rule only with the scratch disable in the Evidence. Cost: a later edit can drop the rule from the config, and no check fails.
 - **Other:** your own.
 
-Recommended: A, because CI then fails when the ban goes, as it does for the test modifier rule. B loses only that guard.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

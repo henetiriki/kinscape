@@ -67,7 +67,6 @@ Each file in `design/topics/` has `paths:` frontmatter. `npm run plan:new` lists
 | Edit a pin, point moved                           | [pin-edit-moved.jpg](pin-edit-moved.jpg)                                     |
 | Edit a pin, loading                               | [pin-edit-loading.jpg](pin-edit-loading.jpg)                                 |
 | Edit a pin, did not load                          | [pin-edit-load-failed.jpg](pin-edit-load-failed.jpg)                         |
-| Draft: click popup                                | [draft-pin-click-popup.jpg](draft-pin-click-popup.jpg)                       |
 | People list                                       | [people-list.jpg](people-list.jpg)                                           |
 | People list, filter finds nothing                 | [people-list-no-match.jpg](people-list-no-match.jpg)                         |
 | People list, no people yet                        | [people-empty.jpg](people-empty.jpg)                                         |

@@ -24,6 +24,10 @@ const SCREEN_ONLY: { blocker: string; folder: string }[] = [
     folder: 'map-pin-popup',
   },
   {
+    blocker: 'The map opens no click popup until M2.14.5.2 (#868).',
+    folder: 'pin-click-popup',
+  },
+  {
     blocker:
       'The card of the count marker looks is part of the board, not a state of the map.',
     folder: 'map-pin-count',
@@ -63,7 +67,6 @@ const screenOnlyProblems = (
 
 /** Images in `design/` that `screens.json` has no entry for: draft boards, and screens that the app has not built. Remove a name when its slice adds the entry, or when a PR deletes its draft board. */
 const NO_ENTRY = [
-  'draft-pin-click-popup',
   'fuzzy-date-readings',
   'map-account-menu-phone-proposed',
   'map-account-menu-proposed',
@@ -91,7 +94,6 @@ const NO_ENTRY = [
   'map-sources-phone',
   'map-style',
   'map-style-phone',
-  'pin-click-popup',
   'pin-edit',
   'pin-edit-load-failed',
   'pin-edit-loading',

@@ -130,31 +130,20 @@ class Component extends DCLogic {
     // The Add a pin button sits in the `action` slot of MapLayout, 12px left of the account control. The panel has replaced it on the form variants.
     const action = variant === 'add-button' || variant === 'click-popup' ? h(K.AddPinButton) : undefined;
 
-    // The click popup: the frame of the Pin popup, popup-gap (14px) left of the point, the pointer on its right edge at popup-point-y (114px).
-    const clickPopup = `<div role="dialog" aria-label="Add a pin here" style="position: absolute; left: ${E.x - 14 - 304}px; top: ${E.y - 114}px; width: 304px; box-sizing: border-box; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating)">`
-      + `<span aria-hidden="true" style="position: absolute; right: -8px; top: 106px; width: 16px; height: 16px; background: var(--surface); transform: rotate(45deg); border-radius: 2px"></span>`
-      + `<div style="position: relative; padding: var(--space-16); display: flex; flex-direction: column; gap: var(--space-12)">`
-      + `<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-8)">`
-      + `<div style="display: flex; flex-direction: column; gap: var(--space-4)">${TEXT('overline', 'Point on the map')}${TEXT('mono', '-28.74, 25.31')}</div>`
-      + `<x-import component-from-global-scope="KinScape.IconButton" label="Close" style="margin: -8px -8px 0 0"><x-import component-from-global-scope="KinScape.Icon" name="close" size="20"></x-import></x-import>`
-      + `</div>`
-      + TEXT('small', 'The panel opens with this point filled in.', 'p')
-      + `<div style="display: flex">${BUTTON('Add a pin here', 'primary')}</div>`
-      + `</div></div>`;
+    // The click popup draws its own dot at the point, and sits popup-gap left of it.
+    const clickPopup = h(K.ClickPopup, { onAdd: noop, onClose: noop, point: { latitude: -28.74, longitude: 25.31 }, x: E.x, y: E.y });
 
     // A single Pin on the map, as the layer draws it: the glyph in --pin with a white halo.
     const pin = (x, y) => `<path transform="translate(${x - 11} ${y - 11}) scale(0.9167)" d="M6 18V6H18V18Z" fill="#9A3B12" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>`;
     const selected = at => `<circle cx="${at.x}" cy="${at.y}" r="16" fill="none" stroke="#264F29" stroke-width="2.5"></circle><circle cx="${at.x}" cy="${at.y}" r="20.5" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="2"></circle>`;
-    const dot = at => `<circle cx="${at.x}" cy="${at.y}" r="6" fill="#264F29" stroke="#ffffff" stroke-width="2.5"></circle>`;
     const others = [pin(1150, 318), pin(1262, 566), pin(560, 250)].join('');
 
     let below = others;
-    let above = '';
+    let above = null;
     const newPoint = variant === 'form' || variant === 'form-saving' || variant === 'form-save-failed' || variant === 'edit-moved';
     const onPin = variant === 'form-existing-place' || variant === 'edit' || variant === 'edit-loading' || variant === 'edit-load-failed';
 
     if (variant === 'click-popup') {
-      below += dot(E);
       above = clickPopup;
     } else if (newPoint) {
       below += pin(E.x, E.y) + selected(E);
@@ -225,7 +214,7 @@ class Component extends DCLogic {
       }),
       map: h(React.Fragment, null,
         drawn(svg),
-        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 1440, height: 900 } }, mount(above))
+        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 1440, height: 900 } }, above)
       ),
       panel: isForm ? formPanel : h(K.Panel, {
         bodyId: 'map-panel-body',

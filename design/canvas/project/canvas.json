@@ -710,14 +710,6 @@
       "h": 900,
       "title": "Edit a pin — did not load",
       "page": "map"
-    },
-    "Draft-pin-click-popup.dc.html": {
-      "x": 0,
-      "y": 0,
-      "w": 760,
-      "h": 400,
-      "title": "Draft — click popup",
-      "page": "drafts"
     }
   },
   "order": [
@@ -844,8 +836,8 @@
       "title": "KinScape design system",
       "namespace": "kinscape",
       "artifact": "https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi",
-      "version": "1795431887-c016",
-      "copiedAt": "2026-11-23T11:10:27Z"
+      "version": "1795448515-87b2",
+      "copiedAt": "2026-11-23T15:43:00Z"
     }
   ]
 }

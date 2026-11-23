@@ -152,6 +152,9 @@ export const PIN_DETAILS = {
 export const PLACED_X = 380;
 export const PLACED_Y = 240;
 
+/** The point of the `ClickPopup` card and its dev page. Synthetic. */
+export const CLICK_POINT = { latitude: -28.74, longitude: 25.31 };
+
 /** The tabs of a `Panel` card state: Layers and Filters, with one active filter. `body` is the id of the state's tabpanel. */
 export const panelTabs = (body: string) => [
   { controls: body, label: 'Layers', value: 'layers' },

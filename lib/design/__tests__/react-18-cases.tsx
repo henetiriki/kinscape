@@ -46,6 +46,7 @@ import { ColumnLayout } from '@ks/app/components/layout/ColumnLayout';
 import { MapLayout } from '@ks/app/components/layout/MapLayout';
 import { SignInLayout } from '@ks/app/components/layout/SignInLayout';
 import { BottomSheet } from '@ks/app/components/overlays/BottomSheet';
+import { ClickPopup } from '@ks/app/components/overlays/ClickPopup';
 import { Dialog, DialogPanel } from '@ks/app/components/overlays/Dialog';
 import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
 import { Modal } from '@ks/app/components/overlays/Modal';
@@ -74,6 +75,7 @@ import {
 } from '@ks/features/people/components/PersonField';
 import {
   CHAIN,
+  CLICK_POINT,
   CONTESTED_COUNT,
   CONTESTED_YEARS,
   EPOCHS,
@@ -192,6 +194,7 @@ export const COMPONENTS = {
   CheckboxField,
   Chip,
   ChipGroup,
+  ClickPopup,
   ColumnLayout,
   CountMarker,
   Credits,
@@ -1298,6 +1301,16 @@ export const CASES: [string, ReactElement][] = [
       x={PLACED_X}
       y={PLACED_Y}
       year={1901}
+    />,
+  ],
+  [
+    'ClickPopup · placed',
+    <ClickPopup
+      key='click-popup'
+      onAdd={noop}
+      point={CLICK_POINT}
+      x={PLACED_X}
+      y={PLACED_Y}
     />,
   ],
   [

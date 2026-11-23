@@ -8,6 +8,7 @@ import { SLOTS } from '#ks/app/components/layout/slots.mts';
 import sources from '#ks/data/sources.json' with { type: 'json' };
 import {
   CHAIN,
+  CLICK_POINT,
   CONTESTED_COUNT,
   CONTESTED_YEARS,
   EPOCHS,
@@ -1505,6 +1506,22 @@ export const CARDS: Card[] = [
         x: PLACED_X,
         y: PLACED_Y,
         year: 1901,
+      }),
+    ],
+  },
+  {
+    contain: true,
+    design: ['Click popup'],
+    group: 'Overlays',
+    handlers: ['onAdd', 'onClose'],
+    height: 520,
+    name: 'ClickPopup',
+    pad: 0,
+    states: [
+      one('ClickPopup · placed', {
+        point: CLICK_POINT,
+        x: PLACED_X,
+        y: PLACED_Y,
       }),
     ],
   },

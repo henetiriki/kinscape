@@ -1,0 +1,24 @@
+/* The point dot: 12px in the brand colour with a surface edge, centred on the point */
+.dot {
+  background: var(--brand);
+  border: 2.5px solid var(--surface);
+  border-radius: var(--radius-full);
+  box-sizing: border-box;
+  height: 12px;
+  pointer-events: none;
+  position: absolute;
+  translate: -50% -50%;
+  width: 12px;
+}
+
+/* At least 134px high with the padding, so the pointer at popup-point-y clears the bottom corner. */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  min-height: 102px;
+}
+
+.actions {
+  display: flex;
+}

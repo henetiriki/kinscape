@@ -27,6 +27,7 @@ import {
   inlinePseudoStyles,
   inlineStyles,
   linkMap,
+  measureTranslates,
   mountImports,
   pageHtml,
   prepare,
@@ -58,8 +59,8 @@ describe('the real canvas export', () => {
   const canvas = readCanvasExport('.');
   const names = canvas.snapshots.map(snapshot => snapshot.name).toSorted();
 
-  it('names the 85 snapshots of the Screens table and design/source', () => {
-    expect(names).toHaveLength(85);
+  it('names the 84 snapshots of the Screens table and design/source', () => {
+    expect(names).toHaveLength(84);
     expect(names).toEqual(snapshotNames('.'));
     expect(names).toEqual(
       screenNames(readFileSync('design/DESIGN.md', 'utf8')).toSorted()
@@ -1054,6 +1055,24 @@ describe('inlinePseudoStyles and inlineStyles', () => {
     expect(container.querySelectorAll('hr')).toHaveLength(3);
     expect(container.innerHTML).not.toContain('128, 128, 128');
     expect(container.innerHTML).toContain('rgb(226, 229, 221)');
+  });
+});
+
+describe('measureTranslates', () => {
+  it('writes a calc() translate as the px it moves the element, and leaves the rest', () => {
+    document.body.innerHTML =
+      '<p style="left: 760px; translate: calc(-100% - 14px); top: 216px">A</p><i style="translate: -50%">B</i>';
+    const box = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockReturnValueOnce({ left: 442, top: 216 } as DOMRect)
+      .mockReturnValueOnce({ left: 760, top: 216 } as DOMRect);
+
+    measureTranslates();
+
+    expect(document.body.innerHTML).toBe(
+      '<p style="left: 760px; translate: -318px 0px; top: 216px">A</p><i style="translate: -50%">B</i>'
+    );
+    expect(box).toHaveBeenCalledTimes(2);
   });
 });
 

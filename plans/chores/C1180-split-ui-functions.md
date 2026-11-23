@@ -2,7 +2,7 @@
 
 - **Spec:** #1180
 - **Requirement IDs:** None. This Chore changes no behaviour.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -23,7 +23,7 @@ Each new function goes in the same file, at module level, with no `export` (D2).
 - **B.** Same file in `app/components/`, but new files (such as `useMapEvents.ts`) in `features/`. Cost: 10 or more new files, `knip` exports, and a `docs/patterns/` path edit, which is a hand-back path.
 - **Other:** your own.
 
-Recommended: A, because one rule then covers all 24 files and no extracted function becomes public.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

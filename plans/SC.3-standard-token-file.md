@@ -112,3 +112,9 @@ A one-off script outside the repo converts `design/tokens.json` into `design/kin
 - `lib/design/notes.mts` reads the generated file until SC.4.2.
 
 ## Deviations
+
+- One value transform, `kinscape/css-text`, switches on `$type` through `cssText`. The plan named one transform per type (929f27f).
+- `dtcgProblems` does not check a leading `$`: the walk reads a `$` key as a DTCG property, not a name (929f27f).
+- `buildTokens` takes the output paths. `scripts/tokens.mts` holds them as `OUTPUTS` (929f27f).
+- The JSON format writes `notes` in file order. The design system bundle embeds `design/tokens.json`, so a new key order changed `bundle.js` (b5494aa).
+- `design/kinscape.tokens.json` has 2,609 lines, not about 1,300 (929f27f).

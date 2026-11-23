@@ -58,20 +58,21 @@ Four custom properties hold a literal size on `main`, for example `--gap: 5px` i
 
 ## Files that change
 
-| File                                    | New / changed | What                                                                                                                                                        |
-| --------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lib/design/sizes.mts`                  | New           | Reads each size of a CSS or TSX text with its line, property, value and status. Compares sizes with the list.                                               |
-| `lib/design/literals.mts`               | Changed       | Exports the group table with the two new groups, for `sizes.mts`. An `own:` comment passes on a line with any size. The message says "a line with no size". |
-| `lib/design/types.ts`                   | Changed       | `Size` and `SizeEntry` types.                                                                                                                               |
-| `lib/design/off-token-sizes.json`       | New           | The list, sorted by file, property and value. `npm run sizes` writes it.                                                                                    |
-| `scripts/sizes.mts`                     | New           | Reads each tracked file (`git ls-files`), then writes the list.                                                                                             |
-| `package.json`                          | Changed       | `"sizes": "node scripts/sizes.mts"`.                                                                                                                        |
-| `lib/design/__tests__/sizes.test.ts`    | New           | Each acceptance check on fixtures, then each tracked file against the list.                                                                                 |
-| `lib/design/__tests__/literals.test.ts` | Changed       | `gap: 7px; /* own: odd */` now passes. A new case: an `own:` comment on a line with no size still fails. `outline-offset: 2px` fails as a `focus` literal.  |
-| `scripts/__tests__/sizes.test.ts`       | New           | The script writes the list that `sizes.mts` gives for a fixture tree.                                                                                       |
-| `design/topics/tokens.md`               | Changed       | Part "The size check" after "The checks": what passes, how to add an `own:` reason, and `npm run sizes`. "The checks" names the new test.                   |
-| `docs/architecture.md`                  | Changed       | The "Tokens are the one source" row adds `lib/design/sizes.mts` to _Where_ and `lib/design/__tests__/sizes.test.ts` to _Enforced by_ (pattern-table rule).  |
-| `scripts/word-count.mts`                | Changed       | Raise the `design/topics/tokens.md` budget if the new part goes over 500 words.                                                                             |
+| File                                       | New / changed | What                                                                                                                                                        |
+| ------------------------------------------ | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lib/design/sizes.mts`                     | New           | Reads each size of a CSS or TSX text with its line, property, value and status. Compares sizes with the list.                                               |
+| `lib/design/literals.mts`                  | Changed       | Exports the group table with the two new groups, for `sizes.mts`. An `own:` comment passes on a line with any size. The message says "a line with no size". |
+| `lib/design/types.ts`                      | Changed       | `Size` and `SizeEntry` types.                                                                                                                               |
+| `lib/design/off-token-sizes.json`          | New           | The list, sorted by file, property and value. `npm run sizes` writes it.                                                                                    |
+| `scripts/sizes.mts`                        | New           | Reads each tracked file (`git ls-files`), then writes the list.                                                                                             |
+| `package.json`                             | Changed       | `"sizes": "node scripts/sizes.mts"`.                                                                                                                        |
+| `lib/design/__tests__/sizes.test.ts`       | New           | Each acceptance check on fixtures, then each tracked file against the list.                                                                                 |
+| `lib/design/__tests__/literals.test.ts`    | Changed       | `gap: 7px; /* own: odd */` now passes. A new case: an `own:` comment on a line with no size still fails. `outline-offset: 2px` fails as a `focus` literal.  |
+| `scripts/__tests__/sizes.test.ts`          | New           | The script writes the list that `sizes.mts` gives for a fixture tree.                                                                                       |
+| `design/topics/tokens.md`                  | Changed       | Part "The size check" after "The checks": what passes, how to add an `own:` reason, and `npm run sizes`. "The checks" names the new test.                   |
+| `docs/architecture.md`                     | Changed       | The "Tokens are the one source" row adds `lib/design/sizes.mts` to _Where_ and `lib/design/__tests__/sizes.test.ts` to _Enforced by_ (pattern-table rule).  |
+| `lib/design/__tests__/tokens-page.test.ts` | Changed       | A new case: the tokens page has the part "The size check".                                                                                                  |
+| `scripts/word-count.mts`                   | Changed       | Raise the `design/topics/tokens.md` budget if the new part goes over 500 words.                                                                             |
 
 ## Order of work
 
@@ -117,4 +118,5 @@ Four custom properties hold a literal size on `main`, for example `--gap: 5px` i
 ## Deviations
 
 - `lib/design/groups.mts` is a new file. It holds the group table and the CSS scan, because `literals.mts` imports `sizes.mts` and a table in `literals.mts` would make a cycle.
+- A `style` prop in a `.tsx` file also accepts `// own: <reason>` on its line, because a `//` comment is valid in TSX. A `.module.css` file accepts only `/* own: <reason> */`. The tokens page says so.
 - `lib/design/types.ts` also gets the `Rule` type, which the lint rule requires there.

@@ -87,6 +87,7 @@ export const MapShell = ({
   sources: Source[];
   /** A `Toast` for the result of an action, at the bottom centre above the dock. */
   toast?: ReactNode;
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const phone = usePhone();
   // The Map date starts on today, which is also the last date.

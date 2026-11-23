@@ -59,6 +59,7 @@ export const DateSlider = ({
   onChange: (day: Day) => void;
   precision: Precision;
   ticks?: number[];
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const max = sliderMax(precision, lastDay);
   const value = sliderValue(day, precision);

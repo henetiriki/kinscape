@@ -47,6 +47,7 @@ export const PersonFieldList = ({
   query: string;
   /** Each match, with the spelling variant that matched. */
   rows: { person: PersonSummary; variant?: string }[];
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const list = useRef<HTMLDivElement>(null);
 
@@ -150,6 +151,7 @@ export const PersonField = ({
   /** Every Person of the Tree. The caller gives no empty list. */
   people: PersonSummary[];
   state?: ControlState;
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const id = useId();
   const listId = `${id}-list`;

@@ -195,6 +195,7 @@ export const gatherTypes = (
   root: string,
   controls: Control[],
   declarations: Record<string, string>
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): string => {
   const byStem = new Map(
     Object.entries(declarations).map(([file, text]) => [stem(file), text])

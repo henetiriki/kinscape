@@ -38,6 +38,7 @@ export const PeopleList = ({
   initial: string;
   onSignOut: () => Promise<unknown>;
   people: PersonSummary[];
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const router = useRouter();
   const phone = usePhone();

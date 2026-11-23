@@ -41,6 +41,7 @@ export const RelationshipPicker = ({
   open: boolean;
   /** Every Person of the Tree except the one whose page it is. */
   people: PersonSummary[];
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const [query, setQuery] = useState('');
   const shown = findPeople(people, query);

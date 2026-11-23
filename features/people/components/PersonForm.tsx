@@ -103,6 +103,7 @@ export const PersonForm = ({
   onSignOut: () => Promise<unknown>;
   person?: PersonView;
   update: (input: { person: unknown; version: number }) => Promise<SaveResult>;
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const router = useRouter();
   const showSaved = useSavedToast();

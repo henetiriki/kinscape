@@ -47,6 +47,7 @@ export const PinPopup = ({
   reading,
   recorded,
   state,
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }: PinPopupArgs) => {
   const floating = form === 'floating';
   const loaded = state === 'loaded';

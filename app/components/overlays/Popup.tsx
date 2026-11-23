@@ -63,6 +63,7 @@ export const Popup = ({
   pins,
   place,
   year,
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }: PopupArgs) => {
   const overlineId = useId();
   const floating = form === 'floating';

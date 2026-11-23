@@ -398,6 +398,7 @@ const placedPin = async <Refusal extends 'conflict' | 'not-found'>(
  * A TreeStore over Postgres. The ids are branded, but a cast can hold anything and Postgres
  * throws on a malformed `uuid`, so a read given an id that isn't a UUID finds nothing, as in memory.
  */
+// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const databaseStore = (db: Db): TreeStore => ({
   addAccount: ({ issuer, subject, treeName }) =>
     db.transaction().execute(async trx => {

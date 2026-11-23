@@ -55,6 +55,7 @@ export const FuzzyDateField = ({
   | 'onKeyDown'
   | 'type'
   | 'value'
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 >) => {
   const id = useId();
   const slotId = `${id}-slot`;

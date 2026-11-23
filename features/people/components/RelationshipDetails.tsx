@@ -127,6 +127,7 @@ export const RelationshipDetails = ({
   other: OtherPerson;
   /** The id of the Person whose page it is. */
   self: string;
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const router = useRouter();
   const [newId] = useState(() => uuidV7());

@@ -196,6 +196,7 @@ const table = (workflows: Workflow[]): string[] => {
 const diagram = (
   workflows: Workflow[],
   [family, familyEvents]: [string, string[]]
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): string[] => {
   const byId = new Map(workflows.map(workflow => [workflow.id, workflow]));
   const listens = (workflow: Workflow) =>

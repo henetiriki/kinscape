@@ -187,6 +187,7 @@ export const run = (
   env: Record<string, string | undefined>,
   gh: Gh,
   append: (file: string, text: string) => void
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): number => {
   const [raw] = args;
   const repo = env.GH_REPO ?? '';

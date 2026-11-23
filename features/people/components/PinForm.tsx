@@ -74,6 +74,7 @@ export const PinForm = ({
   onCancel: () => void;
   onSave: (input: unknown) => Promise<{ ok: boolean }>;
   onSaved: () => void;
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const titleId = useId();
   const form = useRef<HTMLFormElement>(null);

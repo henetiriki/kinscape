@@ -90,6 +90,7 @@ export const DateDock = ({
   onPlay?: (speed: number) => void;
   /** The phone sheet instead of the dock. */
   sheet?: { expanded: boolean; onExpandedChange: (expanded: boolean) => void };
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const [precision, setPrecision] = useState<Precision>('year');
   const [speed, setSpeed] = useState('5');

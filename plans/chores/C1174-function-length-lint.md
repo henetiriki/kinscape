@@ -97,4 +97,5 @@ A new block in `eslint.config.mjs` turns on `max-lines-per-function` for each Ja
 
 ## Deviations
 
-<!-- Add these during the build. One line each: what changed, why, the commit. -->
+- Big: The reason of each disable ends in `(C1174)`, not `(#1174)`. `design.test.ts` rejects `#1174` as a hex colour literal, and the failing-tests rule bars a change to that test. The test of step 3 checks the new text.
+- Big: `PersonRelationships.tsx` has no disable, so `npm run lint` fails on it (the cap holds 46 disables). Prettier moves the disable out of the props type into the body. Constraint 2 bans a refactor. The tech lead decides the fix.

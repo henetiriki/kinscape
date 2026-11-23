@@ -100,12 +100,17 @@ const attempt = <T,>(
   }
 };
 
+// One pass can join the text around a removed comment into a new one (`<!<!-- x -->-- y -->`).
+const withoutComments = (text: string): string => {
+  const stripped = text.replace(/<!--[\s\S]*?-->/g, '');
+
+  return stripped === text ? text : withoutComments(stripped);
+};
+
 const closes = ({ gh, view }: Ctx): string[] => {
   const numbers = new Set(
     Array.from(
-      view.body
-        .replace(/<!--[\s\S]*?-->/g, '')
-        .matchAll(/\bCloses\s+#(\d+)\b/gi),
+      withoutComments(view.body).matchAll(/\bCloses\s+#(\d+)\b/gi),
       ([, number]) => number
     )
   );

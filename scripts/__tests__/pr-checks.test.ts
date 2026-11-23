@@ -163,6 +163,12 @@ describe('Closes', () => {
     expect(check({ body }).code).toBe(0);
   });
 
+  it('strips a comment that a removed comment leaves behind', () => {
+    const body = '<!<!-- x -->-- Closes #1 -->\nCloses #7';
+
+    expect(check({ body }).code).toBe(0);
+  });
+
   it('fails with no Closes line', () => {
     const { code, lines } = check({ body: 'Fixes #7' });
 

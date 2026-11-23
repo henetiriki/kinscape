@@ -35,50 +35,12 @@ class Component extends DCLogic {
     // Example Farm, in board pixels. The board places the marker, the fan and the popup from this point.
     const P = { x: 940, y: 400 };
     const TEXT = (variant, text, as) => `<x-import component-from-global-scope="KinScape.Text" variant="${variant}" as="${as || 'span'}">${text}</x-import>`;
-    const BUTTON = (text, kind, extra) => `<x-import component-from-global-scope="KinScape.Button" variant="${kind}"${extra || ''}>${text}</x-import>`;
 
     // The count marker, drawn by KinScape.CountMarker on its 44px target. A look of the card is its `state`: pressed is "active".
     const marker = (look, place) => {
       const props = look === "selected" ? ' selected="true"' : look === "default" ? "" : ` state="${look === "pressed" ? "active" : look}"`;
       const tag = `<x-import component-from-global-scope="KinScape.CountMarker" count="3"${props}></x-import>`;
       return place ? `<div style="position: absolute; left: ${place.x - 22}px; top: ${place.y - 22}px">${tag}</div>` : tag;
-    };
-
-    // The Pin popup. Event type and the reading of the date come with the Pin on the map. The Person and the address load when the popup opens.
-    // It sits 30px left of the Pin, not the 14px of layout.popup-gap: the Pin glyph is 22px wide, and the pointer must clear it.
-    const bar = width => `<span aria-hidden="true" style="display: block; width: ${width}px; max-width: 100%; height: 20px; border-radius: var(--radius-small); background: var(--line)"></span>`;
-    const popup = state => {
-      const loaded = state === 'loaded';
-      const failed = state === 'failed';
-      const person = failed ? '' : loaded ? TEXT('h3', 'Example Person') : bar(168);
-      const address = failed ? '' : [
-        `<div style="display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-12); border-radius: var(--radius-control); background: var(--surface-2)">`,
-        TEXT('overline', 'Address as recorded'),
-        loaded ? TEXT('body', 'Farm Example, district Example') : bar(220),
-        `</div>`
-      ].join('');
-      const alert = failed ? `<x-import component-from-global-scope="KinScape.Alert" tone="error" title="Couldn't load this Pin">The details didn't load.</x-import>` : '';
-      const buttons = failed
-        ? BUTTON('Try again', 'secondary')
-        : `${BUTTON('Add a pin here', 'primary', loaded ? '' : ' disabled="true"')}${BUTTON('Edit', 'secondary', loaded ? '' : ' disabled="true"')}`;
-      return [
-        `<div role="dialog" aria-label="Pin details"${loaded ? '' : failed ? '' : ' aria-busy="true"'} style="position: absolute; left: ${P.x - 30 - 304}px; top: ${P.y - 114}px; width: 304px; box-sizing: border-box; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating)">`,
-        `<span aria-hidden="true" style="position: absolute; right: -8px; top: 106px; width: 16px; height: 16px; background: var(--surface); transform: rotate(45deg); border-radius: 2px"></span>`,
-        `<div style="position: relative; padding: var(--space-16); display: flex; flex-direction: column; gap: var(--space-12)">`,
-        `<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-8)">`,
-        `<div style="display: flex; flex-direction: column; gap: var(--space-4)">`,
-        `<span style="display: flex; align-items: center; gap: var(--space-8); color: var(--pin); font-size: 16px"><x-import component-from-global-scope="KinScape.EventGlyph" event="residence"></x-import>${TEXT('overline', 'Residence')}</span>`,
-        person,
-        `</div>`,
-        `<x-import component-from-global-scope="KinScape.IconButton" label="Close" style="margin: -8px -8px 0 0"><x-import component-from-global-scope="KinScape.Icon" name="close" size="20"></x-import></x-import>`,
-        `</div>`,
-        `<div style="display: flex; flex-direction: column; gap: 2px">${TEXT('title', 'From 1890 to 1905')}${TEXT('mono', 'FROM 1890 TO 1905')}</div>`,
-        address,
-        alert,
-        `<div style="display: flex; gap: var(--space-8)">${buttons}</div>`,
-        `</div>`,
-        `</div>`
-      ].join('');
     };
 
     // A single Pin on the map, as the layer draws it: the glyph in --pin with a white halo.
@@ -99,8 +61,23 @@ class Component extends DCLogic {
         ]
       }, h(K.CountMarker, { count: 3 })));
 
+    // The Pin popup, drawn by KinScape.PlacedPinPopup at the Pin. Loading and failed show the event type and both date lines only.
+    const pinPopup = state => h(K.PlacedPinPopup, {
+      address: 'Farm Example, district Example',
+      event: 'residence',
+      name: 'Example Person',
+      onClose: noop,
+      onRetry: noop,
+      reading: 'From 1890 to 1905',
+      recorded: 'FROM 1890 TO 1905',
+      state,
+      x: P.x,
+      y: P.y
+    });
+
     let below = others;
     let above = '';
+    let popup = null;
 
     if (variant === 'count') {
       const looks = [['default', 'Default'], ['hover', 'Hover'], ['focus', 'Focus'], ['pressed', 'Pressed'], ['selected', 'Selected']];
@@ -118,7 +95,7 @@ class Component extends DCLogic {
       above = '';
     } else {
       below += pin(P.x, P.y) + selected;
-      above = popup(variant === 'popup' ? 'loaded' : variant);
+      popup = pinPopup(variant === 'popup' ? 'loaded' : variant);
     }
 
     const label = 'Map of South Africa on 1901 around Example Farm in the Orange Free State';
@@ -183,7 +160,7 @@ class Component extends DCLogic {
       }),
       map: h(React.Fragment, null,
         drawn(svg),
-        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 1440, height: 900 } }, mount(above), variant === 'fan' ? fan : null)
+        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 1440, height: 900 } }, mount(above), popup, variant === 'fan' ? fan : null)
       ),
       panel: h(K.Panel, {
         bodyId: 'map-panel-body',

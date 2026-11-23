@@ -275,12 +275,204 @@ type Component = new (props: Scope) => {
   state: Scope;
 };
 
+type PropsElement = { props?: Scope } & Element;
+
+type ReactWindow = {
+  React: {
+    createElement: (
+      component: unknown,
+      props: unknown,
+      ...children: unknown[]
+    ) => unknown;
+  };
+};
+
 type Scope = Record<string, unknown>;
 
+type TemplateHelpers = {
+  fillAttributes: (element: Element, scope: Scope) => void;
+  importProps: (element: Element, scope: Scope) => Scope;
+} & TemplateReaders;
+
+type TemplateReaders = {
+  bound: (element: Element, name: string, scope: Scope) => unknown;
+  fill: (text: string, scope: Scope) => string;
+  read: (scope: Scope, path: string) => unknown;
+  whole: (text: string) => null | string;
+};
+
 /**
- * Runs in the page: fills the board's template (`{{…}}`, `sc-for`, `sc-if`, `data-props`
- * defaults) from its Component's `renderVals()`. Playwright sends only this function's source,
- * so it uses nothing from the module.
+ * Runs in the page, before `defineTemplateWalk`: puts `kinscapeTemplate` on `window`, the
+ * helpers that read `{{…}}` bindings and fill the text and attributes of one element. Playwright
+ * sends one function, so the later steps read the helpers from `window`. Uses nothing from the
+ * module.
+ */
+export const defineTemplateHelpers = (): void => {
+  const read = (scope: Scope, path: string): unknown => {
+    const trimmed = path.trim();
+
+    if (trimmed === 'true' || trimmed === 'false') {
+      return trimmed === 'true';
+    }
+
+    return trimmed
+      .split('.')
+      .reduce<unknown>(
+        (value, key) => (value == null ? undefined : (value as Scope)[key]),
+        scope
+      );
+  };
+  const whole = (text: string) =>
+    /^\s*\{\{([^}]+)\}\}\s*$/.exec(text)?.[1] ?? null;
+  const fill = (text: string, scope: Scope) =>
+    text.replace(/\{\{([^}]+)\}\}/g, (_match, path: string) => {
+      const value = read(scope, path);
+
+      return value == null ? '' : String(value);
+    });
+  const bound = (element: Element, name: string, scope: Scope) => {
+    const path = whole(element.getAttribute(name) ?? '');
+
+    if (path === null) {
+      throw new Error(
+        `<${element.tagName.toLowerCase()} ${name}> needs one {{…}} binding`
+      );
+    }
+
+    return read(scope, path);
+  };
+  const helpers: TemplateReaders = { bound, fill, read, whole };
+
+  Object.assign(window, { kinscapeTemplate: helpers });
+};
+
+/**
+ * Runs in the page, after `defineTemplateHelpers`: adds the fillers of one element to
+ * `kinscapeTemplate`. Uses nothing from the module.
+ */
+export const defineTemplateFillers = (): void => {
+  const readers = (window as unknown as { kinscapeTemplate: TemplateReaders })
+    .kinscapeTemplate;
+  const { fill, read, whole } = readers;
+  // A component's props are values, not text: `{{ }}` holes keep their type, and
+  // `mountImports` reads them back. Kebab-case names become camelCase, except aria-* and data-*.
+  const importProps = (element: Element, scope: Scope): Scope => {
+    const props: Scope = {};
+
+    for (const { name, value } of Array.from(element.attributes)) {
+      if (name === 'component-from-global-scope' || name === 'style') {
+        continue;
+      }
+
+      const path = whole(value);
+
+      props[
+        /^(?:aria|data)-/.test(name)
+          ? name
+          : name.replace(/-([a-z])/g, (_match, letter: string) =>
+              letter.toUpperCase()
+            )
+      ] = path === null ? fill(value, scope) : read(scope, path);
+    }
+
+    return props;
+  };
+  const fillAttributes = (element: Element, scope: Scope): void => {
+    for (const { name, value } of Array.from(element.attributes)) {
+      if (!value.includes('{{')) {
+        continue;
+      }
+
+      const path = whole(value);
+
+      if (/^on[a-z]+$/.test(name)) {
+        element.removeAttribute(name);
+      } else if (path !== null && (name === 'checked' || name === 'disabled')) {
+        if (read(scope, path)) {
+          element.setAttribute(name, '');
+        } else {
+          element.removeAttribute(name);
+        }
+      } else {
+        element.setAttribute(name, fill(value, scope));
+      }
+    }
+  };
+
+  Object.assign(readers, { fillAttributes, importProps });
+};
+
+/**
+ * Runs in the page, after `defineTemplateFillers`: puts `kinscapeWalk` on `window`. It fills
+ * the text, attributes, `sc-for`, `sc-if` and `x-import` of a node. Uses nothing from the module.
+ */
+export const defineTemplateWalk = (): void => {
+  const { bound, fill, fillAttributes, importProps } = (
+    window as unknown as { kinscapeTemplate: TemplateHelpers }
+  ).kinscapeTemplate;
+  const walk = (node: Node, scope: Scope): void => {
+    for (const child of Array.from(node.childNodes)) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        if (child.nodeValue?.includes('{{')) {
+          child.nodeValue = fill(child.nodeValue, scope);
+        }
+
+        continue;
+      }
+
+      if (!(child instanceof Element)) {
+        continue;
+      }
+
+      const tag = child.tagName.toLowerCase();
+
+      if (tag === 'sc-for') {
+        const list = (bound(child, 'list', scope) || []) as unknown[];
+        const as = child.getAttribute('as') || 'item';
+        const fragment = document.createDocumentFragment();
+
+        list.forEach((item, index) => {
+          const wrap = document.createElement('div');
+
+          wrap.innerHTML = child.innerHTML;
+          walk(wrap, { ...scope, $index: index, [as]: item });
+          fragment.append(...wrap.childNodes);
+        });
+        child.replaceWith(fragment);
+        continue;
+      }
+
+      if (tag === 'sc-if') {
+        if (bound(child, 'value', scope)) {
+          walk(child, scope);
+          child.replaceWith(...child.childNodes);
+        } else {
+          child.remove();
+        }
+
+        continue;
+      }
+
+      if (tag === 'x-import') {
+        (child as { props?: Scope } & Element).props = importProps(
+          child,
+          scope
+        );
+      } else {
+        fillAttributes(child, scope);
+      }
+
+      walk(child, scope);
+    }
+  };
+
+  Object.assign(window, { kinscapeWalk: walk });
+};
+
+/**
+ * Runs in the page, after `defineTemplateWalk`: fills the board's template (`{{…}}`, `sc-for`,
+ * `sc-if`, `data-props` defaults) from its Component's `renderVals()`. Playwright sends only this
+ * function's source, so it uses nothing from the module.
  */
 export const fillTemplate = ({
   props,
@@ -288,7 +480,6 @@ export const fillTemplate = ({
 }: {
   props: Scope;
   state: Scope;
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }): void => {
   const template = document.querySelector('x-dc');
   const source = document.querySelector('script[data-dc-script]');
@@ -334,136 +525,6 @@ document.currentScript.component = typeof Component === 'undefined' ? undefined 
 
   Object.assign(component.state, state);
 
-  const read = (scope: Scope, path: string): unknown => {
-    const trimmed = path.trim();
-
-    if (trimmed === 'true' || trimmed === 'false') {
-      return trimmed === 'true';
-    }
-
-    return trimmed
-      .split('.')
-      .reduce<unknown>(
-        (value, key) => (value == null ? undefined : (value as Scope)[key]),
-        scope
-      );
-  };
-  const whole = (text: string) =>
-    /^\s*\{\{([^}]+)\}\}\s*$/.exec(text)?.[1] ?? null;
-  const fill = (text: string, scope: Scope) =>
-    text.replace(/\{\{([^}]+)\}\}/g, (_match, path: string) => {
-      const value = read(scope, path);
-
-      return value == null ? '' : String(value);
-    });
-  const bound = (element: Element, name: string, scope: Scope) => {
-    const path = whole(element.getAttribute(name) ?? '');
-
-    if (path === null) {
-      throw new Error(
-        `<${element.tagName.toLowerCase()} ${name}> needs one {{…}} binding`
-      );
-    }
-
-    return read(scope, path);
-  };
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-  const walk = (node: Node, scope: Scope): void => {
-    for (const child of Array.from(node.childNodes)) {
-      if (child.nodeType === Node.TEXT_NODE) {
-        if (child.nodeValue?.includes('{{')) {
-          child.nodeValue = fill(child.nodeValue, scope);
-        }
-
-        continue;
-      }
-
-      if (!(child instanceof Element)) {
-        continue;
-      }
-
-      const tag = child.tagName.toLowerCase();
-
-      if (tag === 'sc-for') {
-        const list = (bound(child, 'list', scope) || []) as unknown[];
-        const as = child.getAttribute('as') || 'item';
-        const fragment = document.createDocumentFragment();
-
-        list.forEach((item, index) => {
-          const wrap = document.createElement('div');
-
-          wrap.innerHTML = child.innerHTML;
-          walk(wrap, { ...scope, $index: index, [as]: item });
-          fragment.append(...wrap.childNodes);
-        });
-        child.replaceWith(fragment);
-        continue;
-      }
-
-      if (tag === 'sc-if') {
-        if (bound(child, 'value', scope)) {
-          walk(child, scope);
-          child.replaceWith(...child.childNodes);
-        } else {
-          child.remove();
-        }
-
-        continue;
-      }
-
-      if (tag === 'x-import') {
-        // A component's props are values, not text: `{{ }}` holes keep their type, and
-        // `mountImports` reads them back. Kebab-case names become camelCase, except aria-* and data-*.
-        const props: Scope = {};
-
-        for (const { name, value } of Array.from(child.attributes)) {
-          if (name === 'component-from-global-scope' || name === 'style') {
-            continue;
-          }
-
-          const path = whole(value);
-
-          props[
-            /^(?:aria|data)-/.test(name)
-              ? name
-              : name.replace(/-([a-z])/g, (_match, letter: string) =>
-                  letter.toUpperCase()
-                )
-          ] = path === null ? fill(value, scope) : read(scope, path);
-        }
-
-        (child as { props?: Scope } & Element).props = props;
-        walk(child, scope);
-        continue;
-      }
-
-      for (const { name, value } of Array.from(child.attributes)) {
-        if (!value.includes('{{')) {
-          continue;
-        }
-
-        const path = whole(value);
-
-        if (/^on[a-z]+$/.test(name)) {
-          child.removeAttribute(name);
-        } else if (
-          path !== null &&
-          (name === 'checked' || name === 'disabled')
-        ) {
-          if (read(scope, path)) {
-            child.setAttribute(name, '');
-          } else {
-            child.removeAttribute(name);
-          }
-        } else {
-          child.setAttribute(name, fill(value, scope));
-        }
-      }
-
-      walk(child, scope);
-    }
-  };
-
   const helmet = template.querySelector('helmet');
 
   if (helmet) {
@@ -471,14 +532,17 @@ document.currentScript.component = typeof Component === 'undefined' ? undefined 
     helmet.remove();
   }
 
-  walk(template, component.renderVals());
+  (
+    window as unknown as {
+      kinscapeWalk: (node: Node, scope: Scope) => void;
+    }
+  ).kinscapeWalk(template, component.renderVals());
 };
 
 /**
  * Runs in the page: the filled board as a snapshot, with scripts, links and `<x-dc>` gone,
  * `calc()` resolved and `fonts.css` loaded. Uses nothing from the module, as `fillTemplate`.
  */
-// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const pageHtml = (): string => {
   const title = document.querySelector('title');
 
@@ -486,56 +550,48 @@ export const pageHtml = (): string => {
     throw new Error('The board has no <title>');
   }
 
-  for (const script of document.querySelectorAll('script')) {
-    script.remove();
-  }
+  document.querySelectorAll('script').forEach(node => node.remove());
 
   for (const wrapper of document.querySelectorAll('x-dc')) {
     wrapper.replaceWith(...wrapper.childNodes);
   }
 
   // A snapshot asks for no outside URL (check 8 of `snapshotProblems`), so an external link points to `#`.
-  for (const link of document.querySelectorAll('[href]')) {
-    if (/^https?:\/\//i.test(String(link.getAttribute('href')))) {
-      link.setAttribute('href', '#');
-    }
+  for (const link of document.querySelectorAll(
+    '[href^="http://" i], [href^="https://" i]'
+  )) {
+    link.setAttribute('href', '#');
   }
 
   // Each `var(--name)` becomes the root's value, then `calc()` below resolves what is left.
-  const root = getComputedStyle(document.documentElement);
-
-  for (const element of document.querySelectorAll('[style]')) {
-    const text = String(element.getAttribute('style'));
-
-    if (text.includes('var(')) {
-      element.setAttribute(
-        'style',
-        text.replace(/var\((--[\w-]+)\)/g, (_match, name: string) => {
-          const value = root.getPropertyValue(name).trim();
+  for (const element of document.querySelectorAll('[style*="var("]')) {
+    element.setAttribute(
+      'style',
+      String(element.getAttribute('style')).replace(
+        /var\((--[\w-]+)\)/g,
+        (_match, name: string) => {
+          const value = getComputedStyle(document.documentElement)
+            .getPropertyValue(name)
+            .trim();
 
           if (value === '') {
             throw new Error(`${name} has no value on :root`);
           }
 
           return value;
-        })
-      );
-    }
+        }
+      )
+    );
   }
 
   // A control's wrapper goes; the one with a `style` places its slot, so it stays as a box.
   for (const wrapper of document.querySelectorAll('x-import')) {
     const placing = wrapper.getAttribute('style');
+    const box = document.createElement('div');
 
-    if (placing === null) {
-      wrapper.replaceWith(...wrapper.childNodes);
-    } else {
-      const box = document.createElement('div');
-
-      box.style.cssText = placing;
-      box.append(...wrapper.childNodes);
-      wrapper.replaceWith(box);
-    }
+    box.style.cssText = placing ?? '';
+    box.append(...wrapper.childNodes);
+    wrapper.replaceWith(...(placing === null ? box.childNodes : [box]));
   }
 
   for (const element of document.querySelectorAll<HTMLElement | SVGElement>(
@@ -555,15 +611,12 @@ export const pageHtml = (): string => {
     }
   }
 
-  for (const link of document.querySelectorAll('link')) {
-    link.remove();
-  }
-
-  const fonts = document.createElement('link');
-
-  fonts.rel = 'stylesheet';
-  fonts.href = 'fonts.css';
-  title.after(fonts);
+  // The links stay until here: `tokens.css` gives `:root` the values that `var()` reads.
+  document.querySelectorAll('link').forEach(node => node.remove());
+  title.insertAdjacentHTML(
+    'afterend',
+    '<link rel="stylesheet" href="fonts.css">'
+  );
 
   return `<!doctype html>\n${document.documentElement.outerHTML}\n`;
 };
@@ -575,23 +628,11 @@ export const pageHtml = (): string => {
  * child becomes a React element too. `page.evaluate` sends one function, so `mountImports` reads
  * this one from `window`. Uses nothing from the module, as `fillTemplate`.
  */
-// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const defineBuilder = (): void => {
-  const react = () =>
-    (
-      window as unknown as {
-        React: {
-          createElement: (
-            component: unknown,
-            props: unknown,
-            ...children: unknown[]
-          ) => unknown;
-        };
-      }
-    ).React;
+  const react = () => (window as unknown as ReactWindow).React;
 
   const build = (element: Element): unknown => {
-    const { props } = element as { props?: Record<string, unknown> } & Element;
+    const { props } = element as PropsElement;
     const path = String(element.getAttribute('component-from-global-scope'));
     const component = path
       .split('.')
@@ -710,7 +751,6 @@ export const mountImports = async (): Promise<void> => {
  * `inlinePseudoStyles` and `inlineStyles` share. `page.evaluate` sends one function, so they read
  * the helpers from `window`, as `mountImports` reads `kinscapeBuild`. Uses nothing from the module.
  */
-// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const defineStyleHelpers = (): void => {
   // Each style rule of a sheet, with the rules inside a grouping rule (`@media`).
   const styleRules = (rules: CSSRuleList): CSSStyleRule[] =>
@@ -746,11 +786,7 @@ export const defineStyleHelpers = (): void => {
   };
 
   // The value to write for a property, or nothing for one the snapshot leaves out.
-  const written = (
-    tokens: string[],
-    computed: CSSStyleDeclaration,
-    name: string
-  ): string | undefined => {
+  const written: StyleHelpers['written'] = (tokens, computed, name) => {
     // A static snapshot has no use for transitions or animations, and their names
     // (`transition-property: background`) would read as colours.
     if (/^(?:--|animation|transition)/.test(name)) {
@@ -776,11 +812,7 @@ export const defineStyleHelpers = (): void => {
 
   // Chromium gives the element's own style for a `::-webkit-` pseudo-element. So a hidden probe
   // beside the element takes the declarations, and its computed style gives the values.
-  const probed = (
-    element: HTMLElement,
-    declared: CSSStyleDeclaration[],
-    read: (computed: CSSStyleDeclaration) => string
-  ): string => {
+  const probed: StyleHelpers['probed'] = (element, declared, read) => {
     const box = document.createElement('span');
     const probe = box.appendChild(document.createElement('i'));
 
@@ -980,6 +1012,57 @@ export const designSystem = (root: string) => {
   };
 };
 
+type RenderContext = {
+  canvas: ReturnType<typeof readCanvasExport>;
+  deps: DesignExportDeps;
+  links: ReturnType<typeof linkMap>;
+  root: string;
+  tokenList: string[];
+  urls: { fonts: string; helpers: string; icon: string };
+};
+
+/** The formatted HTML of one snapshot, as `deps.render` draws it. */
+const renderSnapshot = async (
+  snapshot: CanvasSnapshot,
+  { canvas, deps, links, root, tokenList, urls }: RenderContext
+): Promise<string> => {
+  const board = readFileSync(join(root, BOARD_DIR, snapshot.file), 'utf8');
+  const target = join(root, SOURCE_DIR, `${snapshot.name}.html`);
+  const rendered = await deps.render(
+    prepare(board, canvas.icon, {
+      ...urls,
+      ...(board.includes('<x-import') && {
+        system: designSystem(root),
+      }),
+    }),
+    snapshot,
+    tokenList
+  );
+
+  return format(finish(rendered, urls.icon, links), {
+    ...(await resolveConfig(target, { editorconfig: true })),
+    filepath: target,
+  });
+};
+
+/** Writes each output whose bytes differ from the file; returns their names. */
+const writeChanged = (root: string, outputs: [string, string][]): string[] => {
+  const changed: string[] = [];
+
+  mkdirSync(join(root, SOURCE_DIR), { recursive: true });
+
+  for (const [name, html] of outputs) {
+    const target = join(root, SOURCE_DIR, `${name}.html`);
+
+    if (!existsSync(target) || readFileSync(target, 'utf8') !== html) {
+      writeFileSync(target, html);
+      changed.push(name);
+    }
+  }
+
+  return changed;
+};
+
 /**
  * Exports the named snapshots (all when none are named) from the canvas copy into
  * `design/source/`; returns the ones whose bytes changed. Writes nothing if any fails a check.
@@ -988,7 +1071,6 @@ export const exportSnapshots = async (
   root: string,
   names: string[],
   deps: DesignExportDeps
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): Promise<string[]> => {
   const canvas = readCanvasExport(root);
   const unknown = names.filter(
@@ -1021,21 +1103,13 @@ export const exportSnapshots = async (
       throw new Error(`${snapshot.name}: the clip is not inside the viewport`);
     }
 
-    const board = readFileSync(join(root, BOARD_DIR, snapshot.file), 'utf8');
-    const target = join(root, SOURCE_DIR, `${snapshot.name}.html`);
-    const rendered = await deps.render(
-      prepare(board, canvas.icon, {
-        ...urls,
-        ...(board.includes('<x-import') && {
-          system: designSystem(root),
-        }),
-      }),
-      snapshot,
-      tokenList
-    );
-    const html = await format(finish(rendered, urls.icon, links), {
-      ...(await resolveConfig(target, { editorconfig: true })),
-      filepath: target,
+    const html = await renderSnapshot(snapshot, {
+      canvas,
+      deps,
+      links,
+      root,
+      tokenList,
+      urls,
     });
 
     problems.push(
@@ -1050,20 +1124,7 @@ export const exportSnapshots = async (
     throw new Error(`No snapshot written:\n${problems.join('\n')}`);
   }
 
-  const changed: string[] = [];
-
-  mkdirSync(join(root, SOURCE_DIR), { recursive: true });
-
-  for (const [name, html] of outputs) {
-    const target = join(root, SOURCE_DIR, `${name}.html`);
-
-    if (!existsSync(target) || readFileSync(target, 'utf8') !== html) {
-      writeFileSync(target, html);
-      changed.push(name);
-    }
-  }
-
-  return changed;
+  return writeChanged(root, outputs);
 };
 
 /* v8 ignore start -- launches Chromium; only runs when invoked directly */
@@ -1098,6 +1159,9 @@ if (import.meta.main) {
         let snapshot = '';
 
         try {
+          await page.evaluate(defineTemplateHelpers);
+          await page.evaluate(defineTemplateFillers);
+          await page.evaluate(defineTemplateWalk);
           await page.evaluate(fillTemplate, { props, state });
           await page.evaluate(defineBuilder);
           await page.evaluate(mountImports);

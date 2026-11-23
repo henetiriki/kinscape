@@ -18,6 +18,9 @@ import {
   clipPage,
   defineBuilder,
   defineStyleHelpers,
+  defineTemplateFillers,
+  defineTemplateHelpers,
+  defineTemplateWalk,
   exportSnapshots,
   fillTemplate,
   finish,
@@ -450,6 +453,12 @@ describe('tokenColours and snapshotProblems', () => {
 });
 
 describe('fillTemplate', () => {
+  beforeEach(() => {
+    defineTemplateHelpers();
+    defineTemplateFillers();
+    defineTemplateWalk();
+  });
+
   const COMPONENT = `class Component extends DCLogic {
   constructor(props) { super(props); this.state = { kept: 'k', no: true }; }
   renderVals() { return { ...this.props, ...this.state }; }
@@ -604,6 +613,9 @@ describe('mountImports', () => {
   const board = (body: string) => {
     document.head.innerHTML = '<title>T</title>';
     document.body.innerHTML = `<x-dc>${body}</x-dc><script type="text/x-dc" data-dc-script>class Component extends DCLogic { renderVals() { return {}; } }</script>`;
+    defineTemplateHelpers();
+    defineTemplateFillers();
+    defineTemplateWalk();
     fillTemplate({ props: {}, state: {} });
     defineBuilder();
   };

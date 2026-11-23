@@ -2,7 +2,7 @@
 
 - **Spec:** #1175
 - **Requirement IDs:** None. This Chore changes tooling and CSS only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Issue step 4 adds a token when "two or more literals" share a value and a role. 
 - **B.** Also add a token for each value that two literals of one part share. This adds seven more tokens: the Popup pointer (16px), CountMarker (36px, 40px), PinFan (36px, 40px, 44px) and DateSlider (8px).
 - **Other:** your own.
 
-Recommended: A, because a part's height and width are one own dimension, as step 3 says.
+**Answer: A** (@henetiriki)
 
 **D2 · Negative literals** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ Recommended: A, because a part's height and width are one own dimension, as step
 - **B.** The test counts a negative value as its token. The build fixes two more literals, and the issue's step 1 and count change.
 - **Other:** your own.
 
-Recommended: A, because issue step 2 says "equals", and both margins undo an own padding or box.
+**Answer: B** (@henetiriki)
 
 **D3 · The 2px radius of a 4px bar** · Decides: Tech lead
 
@@ -38,7 +38,7 @@ The BottomSheet handle and the DateSlider track are 4px bars with a 2px radius. 
 - **B.** Give each line an `own:` comment, because each radius follows from the bar's own height.
 - **Other:** your own.
 
-Recommended: A, because step 4 asks for a token when two parts share a value and a role.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

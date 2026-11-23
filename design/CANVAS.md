@@ -113,7 +113,7 @@ Also follow these rules:
 - Mount `KinScape.MapLayout` in a map board.
 - Read the README of a component in `design/canvas/project/ds/kinscape/components/` before you use it.
 - Use only design-system components and tokens, and synthetic data.
-- Follow `design/topics/foundations.md` and `design/topics/feedback.md` for spacing, 44px targets, error placement and sentence case.
+- Follow `design/DESIGN.md`, `design/topics/foundations.md` and `design/topics/feedback.md` for spacing, 44px targets, error placement and sentence case.
 - Draw a part with no component on the Drafts page ([`COMPONENTS.md`](COMPONENTS.md#a-component-that-is-not-built)).
 - Put each screen board on the canvas page of the other boards of its screen, or on Drafts.
 

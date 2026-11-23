@@ -9,9 +9,8 @@ import { patternFiles, patternsFor } from '#ks/scripts/pattern-files.mts';
 
 // Prints the id, plan path, branch and plan PR title of a Spec, Bug or Chore (plans/README.md#item-types),
 // its related issues (plans/README.md#related-issues) and the pattern files whose paths match a path
-// that the issue cites in a code span (docs/patterns/), and the design files (design/) that match the same
-// way. If no branch and no plan file exist yet, it
-// also makes the branch from origin/main and copies plans/TEMPLATE.md to the plan path. It commits
+// that the issue cites in a code span (docs/patterns/), and the design files (design/topics/) that match the
+// same way. If no branch and no plan file exist yet, it also makes the branch from origin/main and copies plans/TEMPLATE.md to the plan path. It commits
 // nothing and edits no issue.
 // Usage: npm run plan:new -- <issue number> <slug>
 
@@ -235,6 +234,15 @@ const prepare = ({ files, git }: PlanNewDeps, n: Names, number: string) => {
   console.log(`Made ${n.branch} and ${n.planPath}.`);
 };
 
+/** Prints `<heading>: none`, or the heading and one `- ` line for each item. */
+const printList = (heading: string, items: string[]): void => {
+  console.log(
+    items.length === 0
+      ? `${heading}: none`
+      : `${heading}:\n${items.map(item => `- ${item}`).join('\n')}`
+  );
+};
+
 export const run = (args: string[], deps: PlanNewDeps): number => {
   const [number, slug] = args;
 
@@ -269,31 +277,14 @@ export const run = (args: string[], deps: PlanNewDeps): number => {
     console.log(`Branch: ${n.branch}`);
     console.log(`Plan PR title: ${n.prTitle}`);
 
-    const lines = readRelated(deps.gh, number, issue);
-
-    console.log(
-      lines.length === 0
-        ? 'Related issues: none'
-        : `Related issues:\n${lines.map(line => `- ${line}`).join('\n')}`
+    printList('Related issues', readRelated(deps.gh, number, issue));
+    printList(
+      'Pattern files',
+      patternsFor(issue.body, patternFiles(deps.files))
     );
-
-    const patterns = patternsFor(issue.body, patternFiles(deps.files));
-
-    console.log(
-      patterns.length === 0
-        ? 'Pattern files: none'
-        : `Pattern files:\n${patterns.map(path => `- ${path}`).join('\n')}`
-    );
-
-    const designs = patternsFor(
-      issue.body,
-      patternFiles(deps.files, 'design/topics')
-    );
-
-    console.log(
-      designs.length === 0
-        ? 'Design files: none'
-        : `Design files:\n${designs.map(path => `- ${path}`).join('\n')}`
+    printList(
+      'Design files',
+      patternsFor(issue.body, patternFiles(deps.files, 'design/topics'))
     );
 
     if (first !== undefined) {

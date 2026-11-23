@@ -1,4 +1,4 @@
-/** `design/tokens.json`, `DESIGN.md` and the font list as the files of KinScape's design system (Spec #445). */
+/** `design/tokens.json`, `DESIGN.md`, the design files of `design/topics/` and the font list as the files of KinScape's design system (Spec #445). */
 
 import type { Tree } from '#ks/design/types.ts';
 import type {

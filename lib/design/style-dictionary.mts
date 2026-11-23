@@ -87,16 +87,18 @@ const oldValue = (token: TransformedToken): number | string => {
     : String(token.$value);
 };
 
-const groupNotes = (node: unknown, path: string[], notes: Tree): void => {
-  if (typeof node !== 'object' || node === null || '$value' in node) {
-    return;
-  }
-
+/** Each `$description` of a group or a token, in file order, so `notes` keeps the order of the old file. */
+const collectNotes = (
+  node: Record<string, unknown>,
+  path: string[],
+  notes: Tree
+): void => {
   for (const [key, child] of Object.entries(node)) {
     if (key === '$description') {
       put(notes, path, String(child));
     } else if (!key.startsWith('$')) {
-      groupNotes(child, [...path, key], notes);
+      // A DTCG name always holds a group or a token, so `dtcgProblems` passed an object here.
+      collectNotes(child as Record<string, unknown>, [...path, key], notes);
     }
   }
 };
@@ -108,14 +110,10 @@ const tokensJson =
     const tree: Tree = {};
     const notes: Tree = {};
 
-    groupNotes(source, [], notes);
+    collectNotes(source, [], notes);
 
     for (const token of dictionary.allTokens) {
       put(tree, token.path, oldValue(token));
-
-      if (typeof token.$description === 'string') {
-        put(notes, token.path, token.$description);
-      }
     }
 
     return `${JSON.stringify({ ...tree, notes }, null, 2)}\n`;

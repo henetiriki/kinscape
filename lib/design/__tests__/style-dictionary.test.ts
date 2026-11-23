@@ -112,6 +112,13 @@ describe('buildTokens', () => {
     });
   });
 
+  // The design system bundle embeds the file, so a new key order changes its bytes.
+  it('writes notes in file order, a group note among the token notes', async () => {
+    const { notes } = JSON.parse((await buildTokens(tokens, OUT))[OUT.json]);
+
+    expect(Object.keys(notes)).toEqual(['colour', 'map', 'type']);
+  });
+
   it('ends the JSON with a newline, in two-space indent', async () => {
     const json = (await buildTokens(tokens, OUT))[OUT.json];
 

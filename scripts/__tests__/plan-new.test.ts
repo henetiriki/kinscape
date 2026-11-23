@@ -1,3 +1,4 @@
+import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { PlanNewDeps as Deps } from '@ks/scripts/types.ts';
@@ -97,13 +98,17 @@ const setup = (
       list: dir =>
         dir === 'docs/patterns'
           ? Object.keys(options.patterns ?? {})
-          : dir === FOLDERS[type]
-            ? (options.files ?? [])
-            : [],
+          : dir === 'design/topics'
+            ? readdirSync('design/topics')
+            : dir === FOLDERS[type]
+              ? (options.files ?? [])
+              : [],
       read: path =>
         path.startsWith('docs/patterns/')
           ? (options.patterns?.[path.slice('docs/patterns/'.length)] ?? '')
-          : '# Plan: x\n\n- **Spec:** #\n- **Status:** draft\n',
+          : path.startsWith('design/topics/')
+            ? readFileSync(path, 'utf8')
+            : '# Plan: x\n\n- **Spec:** #\n- **Status:** draft\n',
       write: (path, text) => {
         written.push([path, text]);
       },
@@ -396,6 +401,34 @@ describe('plan-new', () => {
 
       expect(out).toContain('Pattern files:\n- docs/patterns/domain.md');
       expect(out).toContain('Skipped the setup');
+    });
+  });
+
+  describe('the design files', () => {
+    it('lists the file whose paths match a path that the issue cites', () => {
+      const { out } = go(
+        ['7', 'x'],
+        setup({
+          body: 'Change `features/map/style.ts`.',
+          title: 'Chore: A',
+          type: 'Chore',
+        }).deps
+      );
+
+      expect(out).toContain('Design files:\n- design/topics/map.md');
+    });
+
+    it('lists none when the issue cites no design path', () => {
+      const { out } = go(
+        ['7', 'x'],
+        setup({
+          body: 'Change `server/trees/repository.mts`.',
+          title: 'Chore: A',
+          type: 'Chore',
+        }).deps
+      );
+
+      expect(out).toContain('Design files: none');
     });
   });
 

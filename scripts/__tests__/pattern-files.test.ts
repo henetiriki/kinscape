@@ -200,6 +200,27 @@ describe('the code rule files of the repo', () => {
   );
 });
 
+describe('the design files of the repo', () => {
+  const files = patternFiles(FILES, 'design/topics');
+
+  it('are the five topic files', () => {
+    expect(files.map(({ path }) => posix.basename(path)).sort()).toEqual([
+      'components.md',
+      'feedback.md',
+      'foundations.md',
+      'layout.md',
+      'map.md',
+    ]);
+  });
+
+  it.each(files)(
+    '$path has globs that each match a tracked file',
+    ({ globs }) => {
+      matchesTracked(globs);
+    }
+  );
+});
+
 describe('the pattern files of the repo', () => {
   const files = patternFiles({ list: FILES.list, read: FILES.read });
 

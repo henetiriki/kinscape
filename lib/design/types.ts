@@ -4,7 +4,7 @@ export type Card = {
   box?: string;
   /** The state boxes hold a fixed bar: each is the containing block of its `position: fixed` part. */
   contain?: boolean;
-  /** The `DESIGN.md` bullets, in any section, that the README holds, by their bold name. */
+  /** The design file bullets, in any section, that the README holds, by their bold name. */
   design: string[];
   /** The px height of each state's control, for a control that fills the viewport. The preview sets it, so the component keeps its own height. */
   frame?: number;

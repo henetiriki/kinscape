@@ -198,7 +198,7 @@ describe('the controls bundle', () => {
     ).toEqual([]);
   });
 
-  it('sets each --next-font-* variable to the DESIGN.md family', () => {
+  it('sets each --next-font-* variable to the foundations.md family', () => {
     const css = component('bundle.css');
 
     for (const [name, family] of [

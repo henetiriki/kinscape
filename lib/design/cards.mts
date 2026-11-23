@@ -35,11 +35,12 @@ const escapeRegExp = (text: string): string =>
 /** The attribute that a state's form sets on its `figure`. `DialogPanel` sets the same name. */
 export const FORM_ATTRIBUTE = 'data-form';
 
-/** The `DESIGN.md` bullets, in any `##` section, whose bold text starts with each of `names`. */
-export const designBullets = (design: string, names: string[]): string[] => {
-  const sections = design
-    .split(/^(?=## )/m)
-    .map(section => section.split('\n'));
+/** The bullets of the design file sections (`designSections`) whose bold text starts with each of `names`. */
+export const designBullets = (
+  designSections: string[],
+  names: string[]
+): string[] => {
+  const sections = designSections.map(section => section.split('\n'));
 
   return names.map(name => {
     const bullet = new RegExp(
@@ -50,11 +51,13 @@ export const designBullets = (design: string, names: string[]): string[] => {
       .filter((line): line is string => line !== undefined);
 
     if (found.length === 0) {
-      throw new Error(`DESIGN.md has no bullet "${name}"`);
+      throw new Error(`The design files have no bullet "${name}"`);
     }
 
     if (found.length > 1) {
-      throw new Error(`DESIGN.md has the bullet "${name}" in two sections`);
+      throw new Error(
+        `The design files have the bullet "${name}" in two sections`
+      );
     }
 
     return plainLinks(found[0]);

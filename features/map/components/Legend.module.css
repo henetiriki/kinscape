@@ -41,7 +41,7 @@
   border-radius: var(--radius-small);
   box-sizing: border-box;
   flex: none;
-  height: 16px;
+  height: 16px; /* own: hatch swatch */
   width: 32px;
 }
 

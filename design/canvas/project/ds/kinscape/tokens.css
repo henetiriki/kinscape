@@ -105,6 +105,7 @@
   --space-48: 48px;
   --space-64: 64px;
   --radius-link: 2px;
+  --radius-bar: 2px;
   --radius-small: 4px;
   --radius-segment-item: 7px;
   --radius-segment: 9px;
@@ -125,6 +126,8 @@
   --size-chip-remove: 26px;
   --size-row-l: 52px;
   --size-checkbox: 20px;
+  --size-handle: 40px;
+  --size-halo-hover: 52px;
   --size-date-field: 188px;
   --size-panel: 320px;
   --size-gutter: 24px;

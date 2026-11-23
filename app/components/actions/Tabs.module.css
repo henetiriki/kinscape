@@ -101,7 +101,7 @@
   font-size: var(--type-chip-size);
   font-weight: var(--type-chip-weight);
   line-height: var(--type-chip-line);
-  min-width: 20px;
+  min-width: 20px; /* own: a one-digit count stays round */
   padding: 0 6px;
   text-align: center;
 }

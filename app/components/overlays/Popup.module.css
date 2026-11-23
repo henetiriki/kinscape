@@ -24,7 +24,7 @@
   background: var(--line-strong);
   border-radius: var(--radius-full);
   height: 4px;
-  width: 40px;
+  width: var(--size-handle);
 }
 
 .top {
@@ -198,12 +198,12 @@
 /* A square turned 45°, 16 wide; the caller places it on the popup's edge. */
 .pointer {
   background: var(--surface);
-  border-radius: 2px;
-  height: 16px;
+  border-radius: 2px; /* own: soft corners of the pointer */
+  height: 16px; /* own: pointer square */
   position: absolute;
   rotate: 45deg;
   translate: -50%;
-  width: 16px;
+  width: 16px; /* own: pointer square */
 }
 
 .placedPointer {

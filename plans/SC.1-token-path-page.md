@@ -2,7 +2,7 @@
 
 - **Spec:** #1191
 - **Requirement IDs:** None (docs and one test)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -29,7 +29,7 @@ The Spec puts a link on the page to the "Tokens are the one source" row. It also
 - **B.** The page names the row as text with `docs/architecture.md` in a code span, not a link. Cost: none, but Behaviour part 5 says "a link".
 - **Other:** your own.
 
-Recommended: A, because it builds Behaviour part 5 as written. B loses only the click from the page.
+**Answer: A** (@henetiriki)
 
 **D3 · The trigger line of the publish skill** · Decides: Tech lead
 
@@ -39,7 +39,7 @@ The description of `.claude/skills/publish-design-system/SKILL.md` says to publi
 - **B.** Leave the skill. SC.4.2 edits it. Cost: none now, but a change to `tokens.md` asks for a publish that changes nothing until then.
 - **Other:** your own.
 
-Recommended: A, because two files then give one trigger.
+**Answer: A** (@henetiriki)
 
 **D4 · The index in `design/DESIGN.md`** · Decides: Tech lead
 
@@ -49,7 +49,7 @@ Recommended: A, because two files then give one trigger.
 - **B.** Add a line for the page to the index. Cost: the design system steps 2 to 6, which a local session runs. The Design files section is not in `README_SECTIONS`, so the output can stay byte-identical, but a run must prove it.
 - **Other:** your own.
 
-Recommended: A, because the Spec says the design system does not change. B gives a full index.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

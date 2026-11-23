@@ -29,7 +29,17 @@ The tech lead, or a local session that the tech lead starts, deletes these gener
 
 ## Changing the design system
 
-- **When.** A change to `design/tokens.json`, `design/DESIGN.md`, a topic file that `DESIGN_FILES` in `lib/design/system.mts` lists, a font, an icon, `CONTROLS` in `lib/design/bundle.mts`, `lib/design/cards.mts`, `lib/design/samples.mts`, `lib/design/states.mts` or a component in `CONTROLS`.
+- **When.** A change to one of these:
+  - `design/tokens.json`
+  - `design/DESIGN.md`
+  - a topic file that `DESIGN_FILES` in `lib/design/system.mts` lists
+  - a font
+  - an icon
+  - `CONTROLS` in `lib/design/bundle.mts`
+  - `lib/design/cards.mts`
+  - `lib/design/samples.mts`
+  - `lib/design/states.mts`
+  - a component in `CONTROLS`
 - **Where.** Run the steps on the branch of the Spec or Chore that makes the change, before its pull request merges. Never run them from `main`. The refresh in step 5, the session in step 7 and the workflow each commit. If the branch merges a `main` that holds another design system change, run steps 3 to 5 again.
 - **Order.**
   1. Change the code.

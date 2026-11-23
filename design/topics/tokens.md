@@ -9,15 +9,31 @@ paths:
 
 # Tokens
 
-How a token value travels today. A Spec that changes the path updates this page. `lib/design/system.mts` does not read it.
+How a token value travels today. A Spec that changes the path updates this page.
 
 ## The source
 
-`design/tokens.json` holds the values in groups: `colour`, `shadow`, `font`, `type`, `space`, `radius`, `size`, `focus`, `motion`, `layout`, `breakpoint` and `z`. A value can refer to another with `{group.name}`. The `notes` group holds the usage note of each token that needs one.
+`design/tokens.json` holds the values in these groups:
+
+- `colour`
+- `shadow`
+- `font`
+- `type`
+- `space`
+- `radius`
+- `size`
+- `focus`
+- `motion`
+- `layout`
+- `breakpoint`
+- `z`
+- `map`
+
+A value can refer to another with `{group.name}`. The `notes` group holds the usage note of each token that needs one.
 
 ## The CSS
 
-`npm run tokens` runs `scripts/tokens.mts`. It writes `app/tokens.css` as custom properties. `lib/design/__tests__/design.test.ts` fails when that file is out of date.
+`npm run tokens` runs `scripts/tokens.mts`. It writes `app/tokens.css` as custom properties. `lib/design/__tests__/design.test.ts` checks that file.
 
 ## Direct readers
 
@@ -50,8 +66,8 @@ See [Changing the design system](../CANVAS.md#changing-the-design-system). This 
 
 ## The checks
 
-- `lib/design/__tests__/literals.test.ts` fails on a `.module.css` literal that equals a token of its group.
-- A literal that is a part's own dimension carries `/* own: <reason> */`.
+- `lib/design/__tests__/literals.test.ts`
+- The `own:` comment
 
 The rule is the "Tokens are the one source" row in [`docs/architecture.md`](../../docs/architecture.md).
 

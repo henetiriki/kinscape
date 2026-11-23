@@ -1,6 +1,6 @@
 ---
 name: publish-design-system
-description: Publish KinScape's design system (tokens, fonts, icons, README, cover, components) to its Design System artifact in Claude. It sends only the files that changed. Use `/publish-design-system` after a change to `design/tokens.json`, `design/DESIGN.md`, a topic file that `DESIGN_FILES` in `lib/design/system.mts` lists, the fonts, the icons, `CONTROLS` in `lib/design/bundle.mts`, `lib/design/cards.mts`, `lib/design/samples.mts`, `lib/design/states.mts` or a component in `CONTROLS`. It needs an interactive Claude Code session signed in to claude.ai.
+description: Publish KinScape's design system (tokens, fonts, icons, README, cover, components) to its Design System artifact in Claude. It sends only the files that changed. Use `/publish-design-system` after a change to a design system input. It needs an interactive Claude Code session signed in to claude.ai.
 ---
 
 # Publish the design system
@@ -9,9 +9,24 @@ Runs `npm run design-system` and sends the result to the artifact titled "KinSca
 
 Scratch files go in `.design-system/published/`, which git ignores. Never run any other command from `.design-system/`.
 
+## When to run
+
+A change to one of these:
+
+- `design/tokens.json`
+- `design/DESIGN.md`
+- a topic file that `DESIGN_FILES` in `lib/design/system.mts` lists
+- a font
+- an icon
+- `CONTROLS` in `lib/design/bundle.mts`
+- `lib/design/cards.mts`
+- `lib/design/samples.mts`
+- `lib/design/states.mts`
+- a component in `CONTROLS`
+
 ## Run it
 
-- **3.1 Check the tools.** You need the built-in `Artifact` tool. If the session defers it, load it with ToolSearch. If the session has no `Artifact` tool (for example in a GitHub Action or a `claude -p` run), say that artifacts are off in this session, so you sent nothing. Say that the run needs an interactive Claude Code session signed in to claude.ai. Then stop.
+- **3.1 Check the tools.** You need the built-in `Artifact` tool. If the session defers it, load it with ToolSearch. If the session has no `Artifact` tool, say that artifacts are off in this session, so you sent nothing. Say that the run needs an interactive Claude Code session signed in to claude.ai. Stop.
 - **3.2 Find the address.** Run `node scripts/design-system-publish.mts address`. If it fails, show its message and stop. If the output is empty, this is the first run: go to step 3.3. Otherwise the output is the artifact's link: go to step 3.4.
 - **3.3 First run only: create it.** Create the Design System artifact "KinScape design system" with no files. Keep its link. Add `The [design system](<link>) holds the same tokens, fonts and icons for Claude.` to the end of `design/DESIGN.md`'s opening paragraph, so the next run finds the address.
 - **3.4 Generate.** Run `npm run design-system`.
@@ -27,7 +42,7 @@ Scratch files go in `.design-system/published/`, which git ignores. Never run an
 
   Send at most 255 paths a call. Skip a call with no paths left. Last, in one call, send `project/checksums.json` (when listed) and `project/design-system.json`.
 
-- **3.11 Report.** List the files you sent, count the icons you uploaded, and give the artifact's link. If you are not the owner, say who can see it. Otherwise say it is private until the owner shares it on its page. If you sent files, link [Updating the install](../../../design/CANVAS.md#updating-the-install) for the old copy on the canvas, and [Changing the design system](../../../design/CANVAS.md#changing-the-design-system) for the next steps.
+- **3.11 Report.** List the files you sent, count the icons you uploaded, and give the artifact's link. If you are not the owner, say who can see it. Otherwise say it is private until the owner shares it. If you sent files, link [Updating the install](../../../design/CANVAS.md#updating-the-install) for the old copy on the canvas, and [Changing the design system](../../../design/CANVAS.md#changing-the-design-system) for the next steps.
 
 ## Rules
 

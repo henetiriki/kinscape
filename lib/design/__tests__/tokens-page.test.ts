@@ -1,6 +1,7 @@
-import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+
+import { trackedFiles } from '@ks/scripts/__tests__/tracked';
 
 type Source = { path: string; text: string };
 
@@ -70,11 +71,8 @@ describe('unnamed', () => {
 });
 
 describe('the token page', () => {
-  const tracked = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
-    .split('\0')
-    .filter(path => path !== '' && existsSync(path));
   const readers = readersOf(
-    tracked
+    trackedFiles()
       .filter(path => SOURCE.test(path))
       .map(path => ({ path, text: readFileSync(path, 'utf8') }))
   );

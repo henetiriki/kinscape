@@ -8,13 +8,39 @@
 
 Write `design/topics/tokens.md` with the six parts of the Spec, in order. Its `paths:` frontmatter makes `npm run plan:new` list it. `DESIGN_FILES` in `lib/design/system.mts` does not change, so the design system output stays the same.
 
-A new test finds each direct reader of `design/tokens.json`. A direct reader is a tracked `.ts`, `.tsx`, `.mts` or `.mjs` file outside `__tests__/` and `e2e/`, with a string literal that ends in `design/tokens.json`. The test fails and names each reader that the page does not name in a code span. A pure helper in the test file finds the readers, and a case with a synthetic module proves the failure message.
+A new test finds each direct reader of `design/tokens.json`. A direct reader is a tracked file that meets all of these:
+
+- Its extension is one of these:
+  - `.ts`
+  - `.tsx`
+  - `.mts`
+  - `.mjs`
+- It is outside `__tests__/` and `e2e/`.
+- It has a string literal that ends in `design/tokens.json`.
+
+The test fails and names each reader that the page does not name in a code span. A pure helper in the test file finds the readers, and a case with a synthetic module proves the failure message.
 
 The 17 direct readers on `main` fall into four groups. The page gives one reason for each group:
 
-- MapLibre paint and the drawings that copy the map: `features/map/style.ts`, `features/map/layers/pins.ts`, `features/map/layers/polities.ts`, `features/map/components/Legend.tsx`, `lib/ui/hatch.ts`, `app/components/auth/SignInHero.tsx`, `app/components/layout/SignInLayout.tsx`, and the dev screens `app/screens/map-frame.tsx`, `app/screens/map-account-menu/page.tsx` and `app/screens/map-pin-count/MapPinCountScreen.tsx`. MapLibre takes values, not `var()`.
-- JavaScript that needs a number: `app/components/foundation/usePhone.ts` (the breakpoint), `app/components/layout/MapLayout.tsx` (map padding), `app/components/feedback/Toast.tsx` (the toast time).
-- Scripts that build files: `scripts/tokens.mts`, `scripts/design-system.mts`, `scripts/design-export.mts`.
+- MapLibre paint and the drawings that copy the map. MapLibre takes values, not `var()`. The readers:
+  - `features/map/style.ts`
+  - `features/map/layers/pins.ts`
+  - `features/map/layers/polities.ts`
+  - `features/map/components/Legend.tsx`
+  - `lib/ui/hatch.ts`
+  - `app/components/auth/SignInHero.tsx`
+  - `app/components/layout/SignInLayout.tsx`
+  - `app/screens/map-frame.tsx`
+  - `app/screens/map-account-menu/page.tsx`
+  - `app/screens/map-pin-count/MapPinCountScreen.tsx`
+- JavaScript that needs a number:
+  - `app/components/foundation/usePhone.ts`: the breakpoint
+  - `app/components/layout/MapLayout.tsx`: the map padding
+  - `app/components/feedback/Toast.tsx`: the toast time
+- Scripts that build files:
+  - `scripts/tokens.mts`
+  - `scripts/design-system.mts`
+  - `scripts/design-export.mts`
 - `scripts/workflows-diagram.mts`, which colours the workflow diagram.
 
 "Change a value" lists only the token steps: edit the value and its note, run `npm run tokens`, run the tests. It then links to [Changing the design system](../design/CANVAS.md#changing-the-design-system) for the rest.
@@ -67,6 +93,10 @@ The description of `.claude/skills/publish-design-system/SKILL.md` says to publi
 | `.claude/skills/publish-design-system/SKILL.md` | Changed       | D3 A: the trigger line                                                                                             |
 | `docs/glossary.md`                              | Changed       | Scale and Scale setting under Glossary terms, each Meaning cell starting "Planned (#1188)."                        |
 | `AGENTS.md`                                     | Changed       | Hand-back. Source of truth links to the page. The tech lead builds this row in a local session.                    |
+| `design/DESIGN.md`                              | Changed       | D4 B: Design files lists the page                                                                                  |
+| `design/canvas/`                                | Changed       | Step 5 of Changing the design system: `VERSION`, `project/canvas.json` and the `project/ds/kinscape/` files        |
+| `scripts/__tests__/tracked.ts`                  | Changed       | `trackedFiles`, shared by `pattern-files.test.ts` and `tokens-page.test.ts`                                        |
+| `lib/design/system.mts`                         | Changed       | The header comment names `DESIGN_FILES`, not the folder                                                            |
 
 ## Order of work
 
@@ -80,7 +110,11 @@ The description of `.claude/skills/publish-design-system/SKILL.md` says to publi
 
 ## Risks
 
-- `AGENTS.md`, `docs/architecture.md`, `design/CANVAS.md` and `docs/glossary.md` are near their budgets. If an edit goes over, cut words in the same file.
+- These files are near their budgets. If an edit goes over, cut words in the same file:
+  - `AGENTS.md`
+  - `docs/architecture.md`
+  - `design/CANVAS.md`
+  - `docs/glossary.md`
 - A reader that builds the path at run time (for example `join('design', 'tokens.json')`) escapes the string test. No module does this on `main`. A fix (an AST scan) costs about 60 lines. Review catches it.
 - SC.3 (#1193) and SC.4 move the readers. Each must update the page, or the new test fails.
 
@@ -104,4 +138,6 @@ The description of `.claude/skills/publish-design-system/SKILL.md` says to publi
 ## Deviations
 
 - The "A colour, size or font value" row links to the page as "path" in its second cell, with `docs/architecture.md` unchanged elsewhere.
-- `SKILL.md` lost five words (the budget is 650): "At once,", "(already uploaded)" and "Then".
+- `SKILL.md` lost words to stay at its budget of 650. The description now says "a design system input". A new **When to run** list holds the inputs. (#1212 review, tech lead answer)
+- `design/topics/tokens.md` names the checks and links to the row in `docs/architecture.md`. It does not restate what they check. The line "`lib/design/system.mts` does not read it" stays in `design/DESIGN.md` only. This differs from the wording of Spec parts 2 and 5. (#1212 review, tech lead answer)
+- `project/design-system.json` differs from the output of `main` in its commit stamp (`at`, `note` and `via` of `lastChange`). The other 238 files have the same sha256.

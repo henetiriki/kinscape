@@ -1,14 +1,8 @@
-import { execFileSync } from 'node:child_process';
-import {
-  existsSync,
-  lstatSync,
-  readdirSync,
-  readFileSync,
-  readlinkSync,
-} from 'node:fs';
+import { lstatSync, readdirSync, readFileSync, readlinkSync } from 'node:fs';
 import { posix } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
+import { trackedFiles } from '@ks/scripts/__tests__/tracked';
 import {
   citedPaths,
   globsOf,
@@ -136,9 +130,7 @@ describe('patternsFor', () => {
   });
 });
 
-const TRACKED = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
-  .split('\0')
-  .filter(path => path !== '' && existsSync(path));
+const TRACKED = trackedFiles();
 const matchesTracked = (globs: string[]) => {
   expect(globs.length).toBeGreaterThan(0);
   for (const glob of globs) {

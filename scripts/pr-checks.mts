@@ -5,10 +5,12 @@ import type { Gh, PrChecksDeps } from '#ks/scripts/types.ts';
 
 import { ghList } from '#ks/scripts/gh-list.mts';
 import { tablePaths, tableRows } from '#ks/scripts/hand-back.mts';
+import { TYPES, withoutComments } from '#ks/scripts/issue-status.mts';
 
 // Runs on a pull request (ci-pr-checks.yml): four rules that the PR template and plans/BUILD.md
 // state in prose. Each problem is one line in the job summary and in the log; the exit code is 1
 // if a check fails. A failed API call fails the check that needs it and the others still run.
+// The PR call is the exception: each check needs the body, the labels or the branch.
 // The workflow runs this file from the base commit, so a PR cannot change the rules that judge it.
 // Usage: node scripts/pr-checks.mts <PR number>, with GH_REPO set.
 
@@ -26,7 +28,7 @@ type Changed = {
 type Check = (ctx: Ctx) => string[];
 
 type Ctx = {
-  files: Changed[];
+  files: () => Changed[];
   gh: Gh;
   plans: () => string[];
   repo: string;
@@ -51,7 +53,6 @@ const SKIPPED_BRANCHES = [
 ];
 const TEST_FILE = /(?:^|\/)__tests__\/|^e2e\//;
 const EDITED = ['modified', 'removed', 'renamed', 'changed'];
-const TYPES = ['Spec', 'Bug', 'Chore'];
 const SECTIONS = [
   'dependencies',
   'devDependencies',
@@ -84,10 +85,10 @@ const raw = (gh: Gh, repo: string, path: string, ref: string): string =>
 
 const asToken = (name: string): RegExp =>
   new RegExp(
-    `(?<![\\w@/.-])${name.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}(?![\\w/.-])`
+    `(?<![\\w@/.-])${name.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}(?![\\w/-]|\\.\\w)`
   );
 
-// Runs a call and turns a throw into a failure line.
+// Runs a call and changes a throw to a failure line.
 const attempt = <T,>(
   check: string,
   call: string,
@@ -100,12 +101,14 @@ const attempt = <T,>(
   }
 };
 
-// One pass can join the text around a removed comment into a new one (`<!<!-- x -->-- y -->`).
-const withoutComments = (text: string): string => {
-  const stripped = text.replace(/<!--[\s\S]*?-->/g, '');
+// Reads the changed files for a check that needs them. A failed call is that check's failure line.
+const needing =
+  (name: string, check: (ctx: Ctx, files: Changed[]) => string[]): Check =>
+  ctx => {
+    const read = attempt(name, 'reading the files', ctx.files);
 
-  return stripped === text ? text : withoutComments(stripped);
-};
+    return 'error' in read ? [read.error] : check(ctx, read.value);
+  };
 
 const closes = ({ gh, view }: Ctx): string[] => {
   const numbers = new Set(
@@ -146,7 +149,7 @@ const closes = ({ gh, view }: Ctx): string[] => {
   ];
 };
 
-const editedTests = ({ files, plans }: Ctx): string[] => {
+const editedTests = ({ plans }: Ctx, files: Changed[]): string[] => {
   const edited = files.filter(
     ({ filename, previous_filename, status }) =>
       EDITED.includes(status) &&
@@ -198,13 +201,31 @@ const bigLines = (plan: string): string[] => {
     .filter(line => line.startsWith('Big:'));
 };
 
-const newDependencies = ({ files, gh, plans, repo, view }: Ctx): string[] => {
+const newDependencies = (
+  { gh, plans, repo, view }: Ctx,
+  files: Changed[]
+): string[] => {
   if (!files.some(file => paths(file).includes('package.json'))) {
     return [];
   }
 
+  // The files call is a diff from the merge base, so the base package.json is the one there.
+  // The tip of the base branch also holds what the base branch changed after the branch point.
+  const mergeBase = attempt('New dependencies', 'finding the merge base', () =>
+    gh([
+      'api',
+      '--jq',
+      '.merge_base_commit.sha',
+      `repos/${repo}/compare/${view.baseRefOid}...${view.headRefOid}?per_page=1`,
+    ]).trim()
+  );
+
+  if ('error' in mergeBase) {
+    return [mergeBase.error];
+  }
+
   const found = attempt('New dependencies', 'reading package.json', () => ({
-    base: names(raw(gh, repo, 'package.json', view.baseRefOid)),
+    base: names(raw(gh, repo, 'package.json', mergeBase.value)),
     head: names(raw(gh, repo, 'package.json', view.headRefOid)),
   }));
 
@@ -250,7 +271,7 @@ const newDependencies = ({ files, gh, plans, repo, view }: Ctx): string[] => {
     );
 };
 
-const size = ({ files, view }: Ctx): string[] => {
+const size = ({ view }: Ctx, files: Changed[]): string[] => {
   const counted = files
     .filter(({ filename }) => !UNCOUNTED.some(re => re.test(filename)))
     .reduce((sum, { additions, deletions }) => sum + additions + deletions, 0);
@@ -265,30 +286,34 @@ const size = ({ files, view }: Ctx): string[] => {
 
 const CHECKS: [string, Check][] = [
   ['Closes', closes],
-  ['Edited tests', editedTests],
-  ['New dependencies', newDependencies],
-  ['Size', size],
+  ['Edited tests', needing('Edited tests', editedTests)],
+  ['New dependencies', needing('New dependencies', newDependencies)],
+  ['Size', needing('Size', size)],
 ];
 
-// `from` is the index in CHECKS of the first skipped check.
-const skip = (
-  view: View,
-  files: Changed[]
-): { from: number; reason: string } | undefined => {
+// `from` is the index in CHECKS of the first skipped check. If the files cannot be read, the
+// checks that need them report that, so a diff of only plans is not known to be one.
+const skip = ({
+  files,
+  view,
+}: Ctx): { from: number; reason: string } | undefined => {
   if (SKIPPED_BRANCHES.some(re => re.test(view.headRefName))) {
     return { from: 0, reason: `the head branch is \`${view.headRefName}\`` };
   }
 
-  return files.every(file =>
-    paths(file).every(path => path.startsWith('plans/'))
-  )
+  const read = attempt('Skip', 'reading the files', files);
+
+  return 'value' in read &&
+    read.value.every(file =>
+      paths(file).every(path => path.startsWith('plans/'))
+    )
     ? { from: 1, reason: 'each changed path is under `plans/`' }
     : undefined;
 };
 
 const context = (pr: string, repo: string, gh: Gh): Ctx | string => {
-  const loaded = attempt('PR checks', 'reading the PR', () => {
-    const view: View = JSON.parse(
+  const loaded = attempt('PR checks', 'reading the PR', (): View =>
+    JSON.parse(
       gh([
         'pr',
         'view',
@@ -296,26 +321,24 @@ const context = (pr: string, repo: string, gh: Gh): Ctx | string => {
         '--json',
         'body,labels,headRefName,baseRefOid,headRefOid',
       ])
-    );
-
-    return {
-      files: ghList<Changed>(gh, `repos/${repo}/pulls/${pr}/files`),
-      view,
-    };
-  });
+    )
+  );
 
   if ('error' in loaded) {
     return loaded.error;
   }
 
-  const { files, view } = loaded.value;
+  const view = loaded.value;
+  let changed: Changed[] | undefined;
   let cached: string[] | undefined;
+  const files = (): Changed[] =>
+    (changed ??= ghList<Changed>(gh, `repos/${repo}/pulls/${pr}/files`));
 
   return {
     files,
     gh,
     plans: () => {
-      cached ??= files
+      cached ??= files()
         .filter(
           ({ filename, status }) => PLAN.test(filename) && status !== 'removed'
         )
@@ -336,7 +359,7 @@ const report = (pr: string, repo: string, gh: Gh): string[] => {
     return [`- ${ctx}`];
   }
 
-  const skipped = skip(ctx.view, ctx.files);
+  const skipped = skip(ctx);
 
   return CHECKS.flatMap(([name, check], index) => {
     if (skipped !== undefined && index >= skipped.from) {

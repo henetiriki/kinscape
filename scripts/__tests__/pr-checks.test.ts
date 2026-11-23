@@ -7,6 +7,7 @@ import { CAP, run } from '@ks/scripts/pr-checks.mts';
 const ENV = { GH_REPO: 'owner/repo' };
 const BASE = 'b'.repeat(40);
 const HEAD = 'a'.repeat(40);
+const MERGE = 'c'.repeat(40);
 const PLAN_PATH = 'plans/chores/C1-x.md';
 
 type File = {
@@ -27,6 +28,7 @@ type World = {
   issue?: { issueType: { name: string } | null; state: string };
   labels?: string[];
   plans?: Record<string, string>;
+  tipPackage?: string;
 };
 
 const plan = (rows: string, deviations = ''): string => `# Plan
@@ -91,15 +93,24 @@ const setup = (world: World = {}) => {
         .join('\n');
     }
 
+    if (call.includes('/compare/')) {
+      fail('merge');
+
+      return `${MERGE}\n`;
+    }
+
     const path = /contents\/([^?]+)\?ref=(\w+)/.exec(call);
     const [, name, ref] = path ?? [];
 
     if (name === 'package.json') {
-      fail(ref === BASE ? 'base' : 'head');
+      fail(ref === MERGE ? 'base' : 'head');
 
-      return ref === BASE
+      // The base tip differs from the merge base: `main` moved after the branch point.
+      return ref === MERGE
         ? (world.basePackage ?? pkg({}))
-        : (world.headPackage ?? pkg({}));
+        : ref === BASE
+          ? (world.tipPackage ?? pkg({}))
+          : (world.headPackage ?? pkg({}));
     }
 
     fail('plan');
@@ -137,13 +148,22 @@ describe('usage', () => {
     expect(console.error).toHaveBeenCalledTimes(2);
   });
 
-  it('fails when the PR or its files cannot be read', () => {
-    for (const failing of ['view', 'files']) {
-      const { code, lines } = check({ failing: [failing] });
+  it('fails every check when the PR cannot be read', () => {
+    const { code, lines } = check({ failing: ['view'] });
 
-      expect(code).toBe(1);
+    expect(code).toBe(1);
+    expect(lines).toBe('- PR checks: reading the PR failed: view down');
+  });
+
+  it('fails only the checks that need the files when they cannot be read', () => {
+    const { code, lines } = check({ failing: ['files'] });
+
+    expect(code).toBe(1);
+    expect(lines).toContain('Closes: pass.');
+
+    for (const name of ['Edited tests', 'New dependencies', 'Size']) {
       expect(lines).toContain(
-        `- PR checks: reading the PR failed: ${failing} down`
+        `- ${name}: reading the files failed: files down`
       );
     }
   });
@@ -157,7 +177,11 @@ describe('Closes', () => {
     expect(lines).toContain('Closes: pass.');
   });
 
-  it('counts a repeated number once, ignoring case and comments', () => {
+  it('ignores the text after an unterminated comment', () => {
+    expect(check({ body: 'Closes #7\n<!-- Closes #8' }).code).toBe(0);
+  });
+
+  it('counts a repeated number once, and ignores case and comments', () => {
     const body = '<!-- Closes #1 -->\ncloses #7\nCloses #7';
 
     expect(check({ body }).code).toBe(0);
@@ -337,6 +361,32 @@ describe('New dependencies', () => {
     }
   });
 
+  it('passes a package that ends a sentence', () => {
+    const plans = {
+      [PLAN_PATH]: plan('| `package.json` | Changed | Add zod. |'),
+    };
+    const big = { [PLAN_PATH]: plan('', 'Big: add zod.') };
+
+    expect(check({ ...added, files: changed, plans }).code).toBe(0);
+    expect(check({ ...added, files: changed, plans: big }).code).toBe(0);
+  });
+
+  it('compares with package.json at the merge base, not the base tip', () => {
+    const { code, gh } = check({
+      basePackage: pkg({ zod: '1' }),
+      files: changed,
+      headPackage: pkg({ zod: '1' }),
+      tipPackage: pkg({}),
+    });
+
+    expect(code).toBe(0);
+    expect(gh).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.stringContaining(`compare/${BASE}...${HEAD}`),
+      ])
+    );
+  });
+
   it('fails a package that the plan does not name', () => {
     const plans = {
       [PLAN_PATH]: plan(
@@ -382,6 +432,9 @@ describe('New dependencies', () => {
     expect(
       check({ ...added, failing: ['plan'], files: changed }).lines
     ).toContain('- New dependencies: reading the plans failed: plan down');
+    expect(check({ failing: ['merge'], files: changed }).lines).toContain(
+      '- New dependencies: finding the merge base failed: merge down'
+    );
   });
 });
 
@@ -446,6 +499,12 @@ describe('skips', () => {
       );
       expect(lines).toContain('Size: skipped');
     }
+  });
+
+  it('skips a head branch without reading the files', () => {
+    const { code } = check({ branch: 'revert-1-x', failing: ['files'] });
+
+    expect(code).toBe(0);
   });
 
   it('does not skip other branches', () => {

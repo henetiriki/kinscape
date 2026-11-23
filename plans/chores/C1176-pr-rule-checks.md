@@ -51,6 +51,7 @@ With no changed plan, each edited test and each new dependency fails, as the Cho
 | `scripts/pr-checks.mts`               | New           | The four checks, the skips and the summary lines                                                                                                  |
 | `scripts/__tests__/pr-checks.test.ts` | New           | Each check with a pass and a failure, each skip, a failed API call                                                                                |
 | `scripts/hand-back.mts`               | Changed       | Export `tableRows`; `tablePaths` uses it. The tests in `hand-back.test.ts` do not change                                                          |
+| `scripts/issue-status.mts`            | Changed       | Export `withoutComments`; `pr-checks.mts` imports it and `TYPES`                                                                                  |
 | `scripts/types.ts`                    | Changed       | `PrChecksDeps`: `append` and `gh`                                                                                                                 |
 | `scripts/github/ruleset-main.json`    | Changed       | Required check `pr-checks`, integration id 15368                                                                                                  |
 | `scripts/github/labels.sh`            | Changed       | `size: accepted`, "The tech lead accepts a PR over the line cap"                                                                                  |
@@ -100,4 +101,6 @@ With no changed plan, each edited test and each new dependency fails, as the Cho
 - `pr-checks.mts` exports `CAP`, and has the helpers `context` and `report`, to stay under `max-lines-per-function`.
 - Check 1 reads the issue with `gh issue view --json state,issueType`, as `agent-gate.mts` does.
 - The build wrote `pr-checks.mts` before its test, so no failing-test line exists.
-- `pr-checks.mts` strips HTML comments until none remain (helper `withoutComments`), to close CodeQL alert 11.
+- Check 1 uses `withoutComments` and `TYPES` from `issue-status.mts`: that helper also drops an unterminated comment and closes CodeQL alerts 11 and 12.
+- Check 3 reads the base `package.json` at the merge base. A `compare` call finds it, because the files call is a diff from the merge base.
+- Checks 2 to 4 read the files in their own call. If it fails, check 1 still runs.

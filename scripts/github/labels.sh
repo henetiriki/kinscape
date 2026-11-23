@@ -17,6 +17,8 @@ hand-back|B60205|It changes a hand-back path: the tech lead builds that part
 fix-review|FBCA04|Claude fixes the review's findings on this PR
 # Added by the tech lead to a pull request to start claude-resolve-conflict.yml; the run removes it
 resolve-conflict|0E8A16|Claude merges main into this PR and resolves the conflicts
+# Added by the tech lead to a pull request over the line cap of pr-checks.mts
+size: accepted|5319E7|The tech lead accepts a PR over the line cap
 EOF
 }
 

@@ -96,3 +96,7 @@ With no changed plan, each edited test and each new dependency fails, as the Cho
 - No skip when the base commit has no script (the Chore's Constraints).
 
 ## Deviations
+
+- `pr-checks.mts` exports `CAP`, and has the helpers `context` and `report`, to stay under `max-lines-per-function`.
+- Check 1 reads the issue with `gh issue view --json state,issueType`, as `agent-gate.mts` does.
+- The build wrote `pr-checks.mts` before its test, so no failing-test line exists.

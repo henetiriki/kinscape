@@ -27,11 +27,72 @@ const DEV = 'status: ready-for-dev';
 
 const json = <T,>(gh: Gh, args: string[]): T => JSON.parse(gh(args));
 
+// Swaps the label if the issue is still on Claude's turn and `may` agrees.
+const handBack = (gh: Gh, issue: number, may: () => boolean): void => {
+  const { labels } = json<{ labels: { name: string }[] }>(gh, [
+    'issue',
+    'view',
+    String(issue),
+    '--json',
+    'labels',
+  ]);
+
+  if (labels.some(({ name: label }) => label === AGENT) && may()) {
+    gh([
+      'issue',
+      'edit',
+      String(issue),
+      '--remove-label',
+      AGENT,
+      '--add-label',
+      DEV,
+    ]);
+    console.log(`Return: #${issue} is now ${DEV}.`);
+  }
+};
+
+// Whether an open PR closes the issue.
+const closedByOpenPr = (gh: Gh, issue: number): boolean =>
+  json<({ number: number } & Closing)[]>(gh, [
+    'pr',
+    'list',
+    '--state',
+    'open',
+    '--limit',
+    '200',
+    '--json',
+    'number,closingIssuesReferences',
+  ]).some(({ closingIssuesReferences }) =>
+    closingIssuesReferences.some(({ number }) => number === issue)
+  );
+
+// The issues of this repository that a PR closes, if it is still an open plan draft.
+const planIssues = (gh: Gh, thread: number, repo: string): number[] => {
+  const [owner, name] = repo.split('/');
+  const pr = json<{ isDraft: boolean; state: string; title: string } & Closing>(
+    gh,
+    [
+      'pr',
+      'view',
+      String(thread),
+      '--json',
+      'state,isDraft,title,closingIssuesReferences',
+    ]
+  );
+
+  return pr.state === 'OPEN' && pr.isDraft && pr.title.endsWith('(plan)')
+    ? pr.closingIssuesReferences.flatMap(({ number, repository }) =>
+        repository.name === name && repository.owner.login === owner
+          ? [number]
+          : []
+      )
+    : [];
+};
+
 export const run = (
   args: string[],
   env: Record<string, string | undefined>,
   gh: Gh
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): number => {
   const [kind, raw] = args;
   const repo = env.GH_REPO ?? '';
@@ -49,7 +110,6 @@ export const run = (
   }
 
   const thread = Number(raw);
-  const [owner, name] = repo.split('/');
   let failed = false;
   const attempt = <T,>(number: number, action: () => T): T | undefined => {
     try {
@@ -61,74 +121,20 @@ export const run = (
       return undefined;
     }
   };
-  // Swaps the label if the issue is still on Claude's turn and `may` agrees.
-  const handBack = (issue: number, may: () => boolean): void => {
-    const { labels } = json<{ labels: { name: string }[] }>(gh, [
-      'issue',
-      'view',
-      String(issue),
-      '--json',
-      'labels',
-    ]);
-
-    if (labels.some(({ name: label }) => label === AGENT) && may()) {
-      gh([
-        'issue',
-        'edit',
-        String(issue),
-        '--remove-label',
-        AGENT,
-        '--add-label',
-        DEV,
-      ]);
-      console.log(`Return: #${issue} is now ${DEV}.`);
-    }
-  };
 
   if (kind === 'plan') {
     attempt(thread, () =>
-      handBack(
-        thread,
-        () =>
-          !json<({ number: number } & Closing)[]>(gh, [
-            'pr',
-            'list',
-            '--state',
-            'open',
-            '--limit',
-            '200',
-            '--json',
-            'number,closingIssuesReferences',
-          ]).some(({ closingIssuesReferences }) =>
-            closingIssuesReferences.some(({ number }) => number === thread)
-          )
-      )
+      handBack(gh, thread, () => !closedByOpenPr(gh, thread))
     );
 
     return failed ? 1 : 0;
   }
 
-  const issues = attempt(thread, () => {
-    const pr = json<
-      { isDraft: boolean; state: string; title: string } & Closing
-    >(gh, [
-      'pr',
-      'view',
-      String(thread),
-      '--json',
-      'state,isDraft,title,closingIssuesReferences',
-    ]);
+  const issues = attempt(thread, () => planIssues(gh, thread, repo));
 
-    return pr.state === 'OPEN' && pr.isDraft && pr.title.endsWith('(plan)')
-      ? pr.closingIssuesReferences.flatMap(({ number, repository }) =>
-          repository.name === name && repository.owner.login === owner
-            ? [number]
-            : []
-        )
-      : [];
-  });
-
-  issues?.forEach(issue => attempt(issue, () => handBack(issue, () => true)));
+  issues?.forEach(issue =>
+    attempt(issue, () => handBack(gh, issue, () => true))
+  );
 
   return failed ? 1 : 0;
 };

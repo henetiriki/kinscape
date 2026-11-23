@@ -394,12 +394,12 @@ const placedPin = async <Refusal extends 'conflict' | 'not-found'>(
   }
 };
 
-/**
- * A TreeStore over Postgres. The ids are branded, but a cast can hold anything and Postgres
- * throws on a malformed `uuid`, so a read given an id that isn't a UUID finds nothing, as in memory.
- */
-// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-export const databaseStore = (db: Db): TreeStore => ({
+const accountStore = (
+  db: Db
+): Pick<
+  TreeStore,
+  'addAccount' | 'findAccount' | 'findTree' | 'findTrees'
+> => ({
   addAccount: ({ issuer, subject, treeName }) =>
     db.transaction().execute(async trx => {
       const account = await trx
@@ -428,6 +428,38 @@ export const databaseStore = (db: Db): TreeStore => ({
 
       return ok({ accountId: account.id, treeId: tree.id });
     }),
+  findAccount: async (issuer, subject) =>
+    db
+      .selectFrom('account')
+      .where('issuer', '=', issuer)
+      .where('subject', '=', subject)
+      .select('id')
+      .executeTakeFirst(),
+  findTree: async ({ accountId, treeId }) =>
+    parseAccountId(accountId) && parseTreeId(treeId)
+      ? db
+          .selectFrom('tree')
+          .innerJoin('treeAccount', 'treeAccount.treeId', 'tree.id')
+          .where('treeAccount.accountId', '=', accountId)
+          .where('tree.id', '=', treeId)
+          .select(['tree.id', 'tree.name'])
+          .executeTakeFirst()
+      : undefined,
+  findTrees: async accountId =>
+    parseAccountId(accountId)
+      ? db
+          .selectFrom('tree')
+          .innerJoin('treeAccount', 'treeAccount.treeId', 'tree.id')
+          .where('treeAccount.accountId', '=', accountId)
+          .orderBy('tree.id')
+          .select(['tree.id', 'tree.name'])
+          .execute()
+      : [],
+});
+
+const personStore = (
+  db: Db
+): Pick<TreeStore, 'addPerson' | 'findPerson' | 'listPersons'> => ({
   addPerson: ({ person, ...scope }) =>
     added(db, scope, {
       ids: [person.id],
@@ -445,34 +477,59 @@ export const databaseStore = (db: Db): TreeStore => ({
           .where('id', '=', person.id)
           .executeTakeFirstOrThrow(),
     }),
-  addPin: async ({ pin, ...scope }) =>
-    savedOrNotFound(
-      await added(db, scope, {
-        check: () => pinnable(db, scope, pin),
-        ids: [pin.id, pin.personId, pin.placeId],
-        insert: () =>
-          db
-            .insertInto('pin')
-            .values({
-              ...pinFieldsOf(pin),
-              id: pin.id,
-              treeId: scope.treeId,
-            })
-            .onConflict(conflict =>
-              conflict.columns(['treeId', 'id']).doNothing()
-            )
-            .execute(),
-        map: pinOf,
-        read: () =>
-          selectPin(db, scope)
-            .where('id', '=', pin.id)
-            .executeTakeFirstOrThrow(),
-      })
-    ),
-  addPinAt: ({ pin, place, ...scope }) =>
-    placedPin(db, scope, place, inner =>
-      inner.addPin({ ...scope, pin: { ...pin, placeId: place.id } })
-    ),
+  findPerson: async ({ personId, ...scope }) => {
+    const row = (await reaches(db, scope, personId))
+      ? await selectPerson(db, scope)
+          .where('id', '=', personId)
+          .executeTakeFirst()
+      : undefined;
+
+    return row === undefined ? undefined : personOf(row);
+  },
+  // In a UTF-8 database `collate "C"` compares bytes, which is code-point order, as the memory store does.
+  listPersons: async scope =>
+    (await reaches(db, scope))
+      ? (
+          await selectPerson(db, scope)
+            .orderBy(sql`surname collate "C"`)
+            .orderBy(sql`given_names collate "C"`)
+            .orderBy('id')
+            .limit(MAX_LISTED)
+            .execute()
+        ).map(personOf)
+      : [],
+});
+
+const personUpdate = (db: Db): Pick<TreeStore, 'updatePerson'> => ({
+  updatePerson: ({ person, version, ...scope }) =>
+    updated(db, scope, {
+      exists: () =>
+        selectPerson(db, scope)
+          .where('id', '=', person.id)
+          .select('id')
+          .executeTakeFirst(),
+      ids: [person.id],
+      map: personOf,
+      update: () =>
+        db
+          .updateTable('person')
+          .set({
+            ...fieldsOf(person),
+            updatedAt: sql`now()`,
+            version: sql`version + 1`,
+          })
+          .where('treeId', '=', scope.treeId)
+          .where('id', '=', person.id)
+          .where('version', '=', version)
+          .returningAll()
+          .executeTakeFirst(),
+      version,
+    }),
+});
+
+const placeStore = (
+  db: Db
+): Pick<TreeStore, 'addPlace' | 'findPlace' | 'listPlaces'> => ({
   addPlace: async ({ place, ...scope }) =>
     savedOrNotFound(
       await added(db, scope, {
@@ -496,6 +553,56 @@ export const databaseStore = (db: Db): TreeStore => ({
             .executeTakeFirstOrThrow(),
       })
     ),
+  findPlace: async ({ placeId, ...scope }) => {
+    const row = (await reaches(db, scope, placeId))
+      ? await selectPlace(db, scope)
+          .where('id', '=', placeId)
+          .executeTakeFirst()
+      : undefined;
+
+    return row === undefined ? undefined : placeOf(row);
+  },
+  listPlaces: async scope =>
+    (await reaches(db, scope))
+      ? (
+          await selectPlace(db, scope).orderBy('id').limit(MAX_PLACES).execute()
+        ).map(placeOf)
+      : [],
+});
+
+const placeUpdate = (db: Db): Pick<TreeStore, 'updatePlace'> => ({
+  updatePlace: ({ place, version, ...scope }) =>
+    updated(db, scope, {
+      exists: () =>
+        selectPlace(db, scope)
+          .where('id', '=', place.id)
+          .select('id')
+          .executeTakeFirst(),
+      ids: [place.id],
+      map: placeOf,
+      update: () =>
+        db
+          .updateTable('place')
+          .set({
+            ...placeFieldsOf(place),
+            updatedAt: sql`now()`,
+            version: sql`version + 1`,
+          })
+          .where('treeId', '=', scope.treeId)
+          .where('id', '=', place.id)
+          .where('version', '=', version)
+          .returningAll()
+          .executeTakeFirst(),
+      version,
+    }),
+});
+
+const relationshipStore = (
+  db: Db
+): Pick<
+  TreeStore,
+  'addRelationship' | 'findRelationship' | 'listRelationships'
+> => ({
   addRelationship: async ({ relationship, ...scope }) => {
     const ends = endsOf(relationship);
 
@@ -526,38 +633,6 @@ export const databaseStore = (db: Db): TreeStore => ({
       })
     );
   },
-  findAccount: async (issuer, subject) =>
-    db
-      .selectFrom('account')
-      .where('issuer', '=', issuer)
-      .where('subject', '=', subject)
-      .select('id')
-      .executeTakeFirst(),
-  findPerson: async ({ personId, ...scope }) => {
-    const row = (await reaches(db, scope, personId))
-      ? await selectPerson(db, scope)
-          .where('id', '=', personId)
-          .executeTakeFirst()
-      : undefined;
-
-    return row === undefined ? undefined : personOf(row);
-  },
-  findPin: async ({ pinId, ...scope }) => {
-    const row = (await reaches(db, scope, pinId))
-      ? await selectPin(db, scope).where('id', '=', pinId).executeTakeFirst()
-      : undefined;
-
-    return row === undefined ? undefined : pinOf(row);
-  },
-  findPlace: async ({ placeId, ...scope }) => {
-    const row = (await reaches(db, scope, placeId))
-      ? await selectPlace(db, scope)
-          .where('id', '=', placeId)
-          .executeTakeFirst()
-      : undefined;
-
-    return row === undefined ? undefined : placeOf(row);
-  },
   findRelationship: async ({ relationshipId, ...scope }) => {
     const row = (await reaches(db, scope, relationshipId))
       ? await selectRelationship(db, scope)
@@ -567,65 +642,6 @@ export const databaseStore = (db: Db): TreeStore => ({
 
     return row === undefined ? undefined : relationshipOf(row);
   },
-  findTree: async ({ accountId, treeId }) =>
-    parseAccountId(accountId) && parseTreeId(treeId)
-      ? db
-          .selectFrom('tree')
-          .innerJoin('treeAccount', 'treeAccount.treeId', 'tree.id')
-          .where('treeAccount.accountId', '=', accountId)
-          .where('tree.id', '=', treeId)
-          .select(['tree.id', 'tree.name'])
-          .executeTakeFirst()
-      : undefined,
-  findTrees: async accountId =>
-    parseAccountId(accountId)
-      ? db
-          .selectFrom('tree')
-          .innerJoin('treeAccount', 'treeAccount.treeId', 'tree.id')
-          .where('treeAccount.accountId', '=', accountId)
-          .orderBy('tree.id')
-          .select(['tree.id', 'tree.name'])
-          .execute()
-      : [],
-  // In a UTF-8 database `collate "C"` compares bytes, which is code-point order, as the memory store does.
-  listPersons: async scope =>
-    (await reaches(db, scope))
-      ? (
-          await selectPerson(db, scope)
-            .orderBy(sql`surname collate "C"`)
-            .orderBy(sql`given_names collate "C"`)
-            .orderBy('id')
-            .limit(MAX_LISTED)
-            .execute()
-        ).map(personOf)
-      : [],
-  listPins: async scope =>
-    (await reaches(db, scope))
-      ? (await selectSpanned(db, scope).execute()).map(spannedPinOf)
-      : [],
-  // The clip is in SQL so `limit` caps the current Pins. A null birth or death clips nothing, as in
-  // `spanOf`. The plain date bounds let Postgres use `pin_date_idx`.
-  listPinsOn: async ({ day, ...scope }) =>
-    (await reaches(db, scope))
-      ? (
-          await selectSpanned(db, scope)
-            .where('pin.dateValidFrom', '<=', day)
-            .where('pin.dateValidTo', '>', day)
-            .where(
-              sql<boolean>`greatest(pin.date_valid_from, person.birth_valid_from) <= ${day}`
-            )
-            .where(
-              sql<boolean>`${day} < least(pin.date_valid_to, person.death_valid_to)`
-            )
-            .execute()
-        ).map(row => pinOf(row))
-      : [],
-  listPlaces: async scope =>
-    (await reaches(db, scope))
-      ? (
-          await selectPlace(db, scope).orderBy('id').limit(MAX_PLACES).execute()
-        ).map(placeOf)
-      : [],
   listRelationships: async scope =>
     (await reaches(db, scope))
       ? (
@@ -635,87 +651,9 @@ export const databaseStore = (db: Db): TreeStore => ({
             .execute()
         ).map(relationshipOf)
       : [],
-  updatePerson: ({ person, version, ...scope }) =>
-    updated(db, scope, {
-      exists: () =>
-        selectPerson(db, scope)
-          .where('id', '=', person.id)
-          .select('id')
-          .executeTakeFirst(),
-      ids: [person.id],
-      map: personOf,
-      update: () =>
-        db
-          .updateTable('person')
-          .set({
-            ...fieldsOf(person),
-            updatedAt: sql`now()`,
-            version: sql`version + 1`,
-          })
-          .where('treeId', '=', scope.treeId)
-          .where('id', '=', person.id)
-          .where('version', '=', version)
-          .returningAll()
-          .executeTakeFirst(),
-      version,
-    }),
-  updatePin: ({ pin, version, ...scope }) =>
-    updated(db, scope, {
-      check: () => pinnable(db, scope, pin),
-      exists: () =>
-        selectPin(db, scope)
-          .where('id', '=', pin.id)
-          .select('id')
-          .executeTakeFirst(),
-      ids: [pin.id, pin.personId, pin.placeId],
-      map: pinOf,
-      update: () =>
-        db
-          .updateTable('pin')
-          .set({
-            ...pinFieldsOf(pin),
-            updatedAt: sql`now()`,
-            version: sql`version + 1`,
-          })
-          .where('treeId', '=', scope.treeId)
-          .where('id', '=', pin.id)
-          .where('version', '=', version)
-          .returningAll()
-          .executeTakeFirst(),
-      version,
-    }),
-  updatePinAt: ({ pin, place, version, ...scope }) =>
-    placedPin(db, scope, place, inner =>
-      inner.updatePin({
-        ...scope,
-        pin: { ...pin, placeId: place.id },
-        version,
-      })
-    ),
-  updatePlace: ({ place, version, ...scope }) =>
-    updated(db, scope, {
-      exists: () =>
-        selectPlace(db, scope)
-          .where('id', '=', place.id)
-          .select('id')
-          .executeTakeFirst(),
-      ids: [place.id],
-      map: placeOf,
-      update: () =>
-        db
-          .updateTable('place')
-          .set({
-            ...placeFieldsOf(place),
-            updatedAt: sql`now()`,
-            version: sql`version + 1`,
-          })
-          .where('treeId', '=', scope.treeId)
-          .where('id', '=', place.id)
-          .where('version', '=', version)
-          .returningAll()
-          .executeTakeFirst(),
-      version,
-    }),
+});
+
+const relationshipUpdate = (db: Db): Pick<TreeStore, 'updateRelationship'> => ({
   updateRelationship: ({ relationship, version, ...scope }) => {
     const ends = endsOf(relationship);
     // The row matches by Tree, id, type and both Persons: an update never changes them.
@@ -750,4 +688,121 @@ export const databaseStore = (db: Db): TreeStore => ({
       version,
     });
   },
+});
+
+const pinStore = (
+  db: Db
+): Pick<TreeStore, 'addPin' | 'addPinAt' | 'findPin'> => ({
+  addPin: async ({ pin, ...scope }) =>
+    savedOrNotFound(
+      await added(db, scope, {
+        check: () => pinnable(db, scope, pin),
+        ids: [pin.id, pin.personId, pin.placeId],
+        insert: () =>
+          db
+            .insertInto('pin')
+            .values({
+              ...pinFieldsOf(pin),
+              id: pin.id,
+              treeId: scope.treeId,
+            })
+            .onConflict(conflict =>
+              conflict.columns(['treeId', 'id']).doNothing()
+            )
+            .execute(),
+        map: pinOf,
+        read: () =>
+          selectPin(db, scope)
+            .where('id', '=', pin.id)
+            .executeTakeFirstOrThrow(),
+      })
+    ),
+  addPinAt: ({ pin, place, ...scope }) =>
+    placedPin(db, scope, place, inner =>
+      inner.addPin({ ...scope, pin: { ...pin, placeId: place.id } })
+    ),
+  findPin: async ({ pinId, ...scope }) => {
+    const row = (await reaches(db, scope, pinId))
+      ? await selectPin(db, scope).where('id', '=', pinId).executeTakeFirst()
+      : undefined;
+
+    return row === undefined ? undefined : pinOf(row);
+  },
+});
+
+const pinLists = (db: Db): Pick<TreeStore, 'listPins' | 'listPinsOn'> => ({
+  listPins: async scope =>
+    (await reaches(db, scope))
+      ? (await selectSpanned(db, scope).execute()).map(spannedPinOf)
+      : [],
+  // The clip is in SQL so `limit` caps the current Pins. A null birth or death clips nothing, as in
+  // `spanOf`. The plain date bounds let Postgres use `pin_date_idx`.
+  listPinsOn: async ({ day, ...scope }) =>
+    (await reaches(db, scope))
+      ? (
+          await selectSpanned(db, scope)
+            .where('pin.dateValidFrom', '<=', day)
+            .where('pin.dateValidTo', '>', day)
+            .where(
+              sql<boolean>`greatest(pin.date_valid_from, person.birth_valid_from) <= ${day}`
+            )
+            .where(
+              sql<boolean>`${day} < least(pin.date_valid_to, person.death_valid_to)`
+            )
+            .execute()
+        ).map(row => pinOf(row))
+      : [],
+});
+
+const pinUpdate = (db: Db): Pick<TreeStore, 'updatePin' | 'updatePinAt'> => ({
+  updatePin: ({ pin, version, ...scope }) =>
+    updated(db, scope, {
+      check: () => pinnable(db, scope, pin),
+      exists: () =>
+        selectPin(db, scope)
+          .where('id', '=', pin.id)
+          .select('id')
+          .executeTakeFirst(),
+      ids: [pin.id, pin.personId, pin.placeId],
+      map: pinOf,
+      update: () =>
+        db
+          .updateTable('pin')
+          .set({
+            ...pinFieldsOf(pin),
+            updatedAt: sql`now()`,
+            version: sql`version + 1`,
+          })
+          .where('treeId', '=', scope.treeId)
+          .where('id', '=', pin.id)
+          .where('version', '=', version)
+          .returningAll()
+          .executeTakeFirst(),
+      version,
+    }),
+  updatePinAt: ({ pin, place, version, ...scope }) =>
+    placedPin(db, scope, place, inner =>
+      inner.updatePin({
+        ...scope,
+        pin: { ...pin, placeId: place.id },
+        version,
+      })
+    ),
+});
+
+/**
+ * A TreeStore over Postgres. The ids are branded, but a cast can hold anything and Postgres
+ * throws on a malformed `uuid`, so a read given an id that isn't a UUID finds nothing, as in memory.
+ */
+export const databaseStore = (db: Db): TreeStore => ({
+  ...accountStore(db),
+  ...personStore(db),
+  ...personUpdate(db),
+  ...pinLists(db),
+  ...pinStore(db),
+  ...pinUpdate(db),
+  ...placeStore(db),
+  ...placeUpdate(db),
+  ...relationshipStore(db),
+  ...relationshipUpdate(db),
 });

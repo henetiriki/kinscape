@@ -113,6 +113,41 @@ const declarations = (program: ts.Program): Record<string, string> => {
 
 const oneLine = (text: string): string => text.replace(/\s+/g, ' ').trim();
 
+// The names of the required props of each form of a union of props.
+const formsOf = (
+  checker: ts.TypeChecker,
+  parameterType: ts.Type | undefined,
+  isOwn: (prop: ts.Symbol) => boolean
+): string[][] =>
+  parameterType?.isUnion()
+    ? parameterType.types.map(member =>
+        checker
+          .getPropertiesOfType(member)
+          .filter(
+            prop => isOwn(prop) && !(prop.flags & ts.SymbolFlags.Optional)
+          )
+          .map(prop => prop.name)
+          .toSorted()
+      )
+    : [];
+
+const typeText = (
+  checker: ts.TypeChecker,
+  file: ts.SourceFile,
+  prop: ts.Symbol
+): string => {
+  const type = checker.getTypeOfSymbolAtLocation(prop, file);
+  const members = type.isUnion()
+    ? type.types.filter(member => !(member.flags & ts.TypeFlags.Undefined))
+    : [type];
+
+  return members.every(member => member.isLiteral())
+    ? members.map(member => checker.typeToString(member)).join(' | ')
+    : checker
+        .typeToString(type, file, ts.TypeFormatFlags.NoTruncation)
+        .replace(/ \| undefined$/, '');
+};
+
 /**
  * A control's JSDoc summary and the props its source declares. Props it takes from its HTML
  * element (declared under `node_modules`) are left out, and `rest` says there were some.
@@ -121,7 +156,6 @@ const describeControl = (
   program: ts.Program,
   root: string,
   { name, path }: Control
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): Docs => {
   const checker = program.getTypeChecker();
   const file = program.getSourceFile(join(root, path))!;
@@ -143,32 +177,9 @@ const describeControl = (
         !declaration.getSourceFile().fileName.includes('/node_modules/')
     );
   const own = all.filter(isOwn);
-  const forms = parameterType?.isUnion()
-    ? parameterType.types.map(member =>
-        checker
-          .getPropertiesOfType(member)
-          .filter(
-            prop => isOwn(prop) && !(prop.flags & ts.SymbolFlags.Optional)
-          )
-          .map(prop => prop.name)
-          .toSorted()
-      )
-    : [];
-  const typeText = (prop: ts.Symbol): string => {
-    const type = checker.getTypeOfSymbolAtLocation(prop, file);
-    const members = type.isUnion()
-      ? type.types.filter(member => !(member.flags & ts.TypeFlags.Undefined))
-      : [type];
-
-    return members.every(member => member.isLiteral())
-      ? members.map(member => checker.typeToString(member)).join(' | ')
-      : checker
-          .typeToString(type, file, ts.TypeFormatFlags.NoTruncation)
-          .replace(/ \| undefined$/, '');
-  };
 
   return {
-    forms,
+    forms: formsOf(checker, parameterType, isOwn),
     props: own
       .map(prop => ({
         doc: oneLine(
@@ -176,7 +187,7 @@ const describeControl = (
         ),
         name: prop.name,
         optional: Boolean(prop.flags & ts.SymbolFlags.Optional),
-        type: typeText(prop),
+        type: typeText(checker, file, prop),
       }))
       .toSorted((a, b) => a.name.localeCompare(b.name)),
     rest: own.length < all.length,
@@ -314,29 +325,17 @@ const writeGallery = (
   ];
 };
 
-/**
- * Empties `out` and writes the design system's `project/` there: the index, tokens, fonts,
- * icons, README, cover and the shared controls' bundle. It also writes `gallery/`: one page for
- * each card, which a browser opens from disk, and the React files they load. Returns the files
- * written, relative to `out`. Two runs on one commit write the same bytes: the timestamps are
- * HEAD's commit time.
- */
-// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-export const run = async (root: string, out: string): Promise<string[]> => {
-  const raw = JSON.parse(
-    readFileSync(join(root, 'design/tokens.json'), 'utf8')
-  ) as Tree;
-  const files = fontFiles(readFileSync(join(root, 'app/layout.tsx'), 'utf8'));
-  const fonts = systemFonts(files, raw);
-  const system = systemTokens(raw, fonts);
-  const sha = git(root, ['rev-parse', 'HEAD']).slice(0, 7);
-  const at = new Date(
-    Number(git(root, ['log', '-1', '--format=%ct'])) * 1000
-  ).toISOString();
-  const design = designSections(
-    DESIGN_FILES.map(file => readFileSync(join(root, file), 'utf8'))
-  );
-  const written: string[] = [];
+type Writer = {
+  copy: (path: string, source: string) => void;
+  text: (path: string, content: string) => void;
+};
+
+// Writes under `out/project`, and records each path in `written`, in the order written.
+const projectWriter = (
+  root: string,
+  out: string,
+  written: string[]
+): Writer => {
   const put = (path: string, write: (target: string) => void) => {
     const target = join(out, 'project', path);
 
@@ -344,11 +343,22 @@ export const run = async (root: string, out: string): Promise<string[]> => {
     write(target);
     written.push(join('project', path));
   };
-  const text = (path: string, content: string) =>
-    put(path, target => writeFileSync(target, content));
-  const copy = (path: string, source: string) =>
-    put(path, target => copyFileSync(join(root, source), target));
-  const ranges = Object.fromEntries(
+
+  return {
+    copy: (path, source) =>
+      put(path, target => copyFileSync(join(root, source), target)),
+    text: (path, content) =>
+      put(path, target => writeFileSync(target, content)),
+  };
+};
+
+// The unicode range of each font file, keyed by its file name.
+const fontRanges = (
+  root: string,
+  files: ReturnType<typeof fontFiles>,
+  fonts: ReturnType<typeof systemFonts>
+): Record<string, string> =>
+  Object.fromEntries(
     files.map(({ path }, index) => {
       const source = resolve(root, 'app', path);
 
@@ -359,14 +369,29 @@ export const run = async (root: string, out: string): Promise<string[]> => {
     })
   ) as Record<string, string>;
 
-  const controls = await buildControls(root);
-  const script = `${bundleHeader(CONTROLS.map(({ name }) => name))}\n${logoInline(controls.js, readFileSync(join(root, 'app/icon0.svg')))}`;
-  const styles = `${readFileSync(join(root, 'app/tokens.css'), 'utf8')}\n${fontNames(raw)}\n${controls.css}`;
-
-  checkScript(script);
-  checkStyle(styles);
-  checkTypes(controls.types);
-  rmSync(out, { force: true, recursive: true });
+// The bundle, the tokens and the README of `project/`.
+const writeBundleFiles = (
+  { text }: Writer,
+  {
+    at,
+    controls,
+    design,
+    ranges,
+    script,
+    sha,
+    styles,
+    system,
+  }: {
+    at: string;
+    controls: Controls;
+    design: ReturnType<typeof designSections>;
+    ranges: Record<string, string>;
+    script: string;
+    sha: string;
+    styles: string;
+    system: ReturnType<typeof systemTokens>;
+  }
+): void => {
   text(`components/${BUNDLE_JS}`, script);
   text(`components/${BUNDLE_CSS}`, styles);
   text('components/index.d.ts', controls.types);
@@ -374,7 +399,14 @@ export const run = async (root: string, out: string): Promise<string[]> => {
   text('tokens.json', json(system));
   text('tokens.css', systemCss(system, ranges));
   text('README.md', readme(design));
+};
 
+// The README and preview of each card; returns the previews for the gallery.
+const writeCards = (
+  { text }: Writer,
+  controls: Controls,
+  design: ReturnType<typeof designSections>
+): Record<string, string> => {
   const previews: Record<string, string> = {};
 
   for (const card of CARDS) {
@@ -392,6 +424,15 @@ export const run = async (root: string, out: string): Promise<string[]> => {
     previews[card.name] = page;
   }
 
+  return previews;
+};
+
+// The cover, the fonts, the logo and the icons.
+const writeCopies = (
+  { copy, text }: Writer,
+  root: string,
+  files: ReturnType<typeof fontFiles>
+): void => {
   text(
     'components/Cover/preview.html',
     readFileSync(join(root, 'lib/design/cover.html'), 'utf8')
@@ -408,7 +449,54 @@ export const run = async (root: string, out: string): Promise<string[]> => {
       copy(`assets/Icons/${name}`, join('design/source', name));
     }
   }
+};
 
+/**
+ * Empties `out` and writes the design system's `project/` there: the index, tokens, fonts,
+ * icons, README, cover and the shared controls' bundle. It also writes `gallery/`: one page for
+ * each card, which a browser opens from disk, and the React files they load. Returns the files
+ * written, relative to `out`. Two runs on one commit write the same bytes: the timestamps are
+ * HEAD's commit time.
+ */
+
+export const run = async (root: string, out: string): Promise<string[]> => {
+  const raw = JSON.parse(
+    readFileSync(join(root, 'design/tokens.json'), 'utf8')
+  ) as Tree;
+  const files = fontFiles(readFileSync(join(root, 'app/layout.tsx'), 'utf8'));
+  const fonts = systemFonts(files, raw);
+  const system = systemTokens(raw, fonts);
+  const sha = git(root, ['rev-parse', 'HEAD']).slice(0, 7);
+  const at = new Date(
+    Number(git(root, ['log', '-1', '--format=%ct'])) * 1000
+  ).toISOString();
+  const design = designSections(
+    DESIGN_FILES.map(file => readFileSync(join(root, file), 'utf8'))
+  );
+  const written: string[] = [];
+  const writer = projectWriter(root, out, written);
+  const controls = await buildControls(root);
+  const script = `${bundleHeader(CONTROLS.map(({ name }) => name))}\n${logoInline(controls.js, readFileSync(join(root, 'app/icon0.svg')))}`;
+  const styles = `${readFileSync(join(root, 'app/tokens.css'), 'utf8')}\n${fontNames(raw)}\n${controls.css}`;
+
+  checkScript(script);
+  checkStyle(styles);
+  checkTypes(controls.types);
+  rmSync(out, { force: true, recursive: true });
+  writeBundleFiles(writer, {
+    at,
+    controls,
+    design,
+    ranges: fontRanges(root, files, fonts),
+    script,
+    sha,
+    styles,
+    system,
+  });
+
+  const previews = writeCards(writer, controls, design);
+
+  writeCopies(writer, root, files);
   written.push(...writeGallery(root, out, previews));
 
   return written;

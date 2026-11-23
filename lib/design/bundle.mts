@@ -186,82 +186,84 @@ export const checkTypes = (text: string): void =>
 const stem = (file: string): string =>
   file.replace(/\.d\.[cm]?ts$/, '').replace(/\.[cm]?[jt]sx?$/, '');
 
-/**
- * One types file from the declarations TypeScript emitted (keyed by file). It holds the
- * declarations the controls reach, then each control with `<Name>Props` read from it: no
- * control exports its props type.
- */
-export const gatherTypes = (
-  root: string,
-  controls: Control[],
-  declarations: Record<string, string>
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
+/** What the reading of the declarations collects: its imports and the files still to read. */
+type Gathering = {
+  byStem: Map<string, string>;
+  controlStems: string[];
+  external: Set<string>;
+  queue: string[];
+  root: string;
+  types: Map<string, Set<string>>;
+};
+
+// Only a control's own value is on `window.KinScape`, so no other value is exported.
+const bodyOf = (
+  state: Gathering,
+  file: string,
+  text: string,
+  own: string[] = []
 ): string => {
-  const byStem = new Map(
-    Object.entries(declarations).map(([file, text]) => [stem(file), text])
-  );
-  const external = new Set<string>();
-  const types = new Map<string, Set<string>>();
-  const shared = new Map<string, string>();
-  const bodies = new Map<string, string>();
-  const queue: string[] = [];
-  const controlStems = controls.map(({ path }) => stem(resolve(root, path)));
-  // Only a control's own value is on `window.KinScape`, so no other value is exported.
-  const bodyOf = (file: string, text: string, own: string[] = []): string => {
-    for (const match of text.matchAll(IMPORT)) {
-      const specifier = match[1];
+  const { byStem, controlStems, external, queue, root, types } = state;
 
-      if (
-        specifier.startsWith('.') ||
-        specifier.startsWith('@ks/') ||
-        specifier.startsWith('#ks/')
-      ) {
-        const target = stem(
-          specifier.startsWith('.')
-            ? resolve(dirname(file), specifier)
-            : resolve(root, specifier.slice(4))
-        );
+  for (const match of text.matchAll(IMPORT)) {
+    const specifier = match[1];
 
-        if (!byStem.has(target)) {
-          throw new Error(
-            `No declaration for ${specifier} imported by ${file}`
-          );
-        }
+    if (
+      specifier.startsWith('.') ||
+      specifier.startsWith('@ks/') ||
+      specifier.startsWith('#ks/')
+    ) {
+      const target = stem(
+        specifier.startsWith('.')
+          ? resolve(dirname(file), specifier)
+          : resolve(root, specifier.slice(4))
+      );
 
-        if (!controlStems.includes(target)) queue.push(target);
+      if (!byStem.has(target)) {
+        throw new Error(`No declaration for ${specifier} imported by ${file}`);
+      }
+
+      if (!controlStems.includes(target)) queue.push(target);
+    } else {
+      const named = /^import type \{([^}]*)\}/.exec(match[0]);
+
+      if (named === null) {
+        external.add(match[0].trim());
       } else {
-        const named = /^import type \{([^}]*)\}/.exec(match[0]);
+        const names = named[1]
+          .split(',')
+          .map(name => name.trim())
+          .filter(Boolean);
 
-        if (named === null) {
-          external.add(match[0].trim());
-        } else {
-          const names = named[1]
-            .split(',')
-            .map(name => name.trim())
-            .filter(Boolean);
-
-          types.set(
-            specifier,
-            new Set([...(types.get(specifier) ?? []), ...names])
-          );
-        }
+        types.set(
+          specifier,
+          new Set([...(types.get(specifier) ?? []), ...names])
+        );
       }
     }
+  }
 
-    return text
-      .replace(IMPORT, '')
-      .replace(/^export \{\};\n?/m, '')
-      .replace(
-        /^export ((?:declare )?(?:const|function|class|enum|type|interface) ([\w$]+))/gm,
-        (all, rest: string, name: string) =>
-          own.includes(name) || /^(type|interface) /.test(rest) ? all : rest
-      )
-      .trim();
-  };
+  return text
+    .replace(IMPORT, '')
+    .replace(/^export \{\};\n?/m, '')
+    .replace(
+      /^export ((?:declare )?(?:const|function|class|enum|type|interface) ([\w$]+))/gm,
+      (all, rest: string, name: string) =>
+        own.includes(name) || /^(type|interface) /.test(rest) ? all : rest
+    )
+    .trim();
+};
 
-  // A file may hold more than one control; its declarations are written once.
-  for (const [index, file] of controlStems.entries()) {
-    const text = byStem.get(file);
+// The body of each control's file. A file may hold more than one control; its declarations are
+// written once.
+const collectBodies = (
+  state: Gathering,
+  controls: Control[]
+): Map<string, string> => {
+  const bodies = new Map<string, string>();
+
+  for (const [index, file] of state.controlStems.entries()) {
+    const text = state.byStem.get(file);
 
     if (text === undefined) {
       throw new Error(`No declaration for ${controls[index].path}`);
@@ -271,19 +273,51 @@ export const gatherTypes = (
       bodies.set(
         file,
         bodyOf(
+          state,
           file,
           text,
           controls
-            .filter((_, other) => controlStems[other] === file)
+            .filter((_, other) => state.controlStems[other] === file)
             .map(({ name }) => name)
         )
       );
     }
   }
 
-  for (let next = queue.shift(); next !== undefined; next = queue.shift()) {
+  return bodies;
+};
+
+/**
+ * One types file from the declarations TypeScript emitted (keyed by file). It holds the
+ * declarations the controls reach, then each control with `<Name>Props` read from it: no
+ * control exports its props type.
+ */
+export const gatherTypes = (
+  root: string,
+  controls: Control[],
+  declarations: Record<string, string>
+): string => {
+  const state: Gathering = {
+    byStem: new Map(
+      Object.entries(declarations).map(([file, text]) => [stem(file), text])
+    ),
+    controlStems: controls.map(({ path }) => stem(resolve(root, path))),
+    external: new Set<string>(),
+    queue: [],
+    root,
+    types: new Map<string, Set<string>>(),
+  };
+  const { controlStems, external, types } = state;
+  const bodies = collectBodies(state, controls);
+  const shared = new Map<string, string>();
+
+  for (
+    let next = state.queue.shift();
+    next !== undefined;
+    next = state.queue.shift()
+  ) {
     if (!shared.has(next)) {
-      shared.set(next, bodyOf(next, byStem.get(next) as string));
+      shared.set(next, bodyOf(state, next, state.byStem.get(next) as string));
     }
   }
 

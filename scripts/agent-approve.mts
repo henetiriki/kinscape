@@ -33,9 +33,31 @@ import { isHandBack, LABEL, tablePaths } from '#ks/scripts/hand-back.mts';
 // `go=false` is written and the exit code is 1.
 // Only text from an author_association of OWNER counts; everything else on the PR is ignored.
 
+/** What every step of a run shares: the PR, the repository and the ways to talk to GitHub. */
+type Context = {
+  footer: string[];
+  gh: Gh;
+  raw: string;
+  repo: string;
+  write: (line: string) => void;
+};
+
 type Item = {
   authorAssociation: string;
   body: string;
+};
+
+/** The plan under approval, and the commit that the owner read. */
+type Plan = {
+  approver: string;
+  commit: string;
+  file: string;
+  handBack: boolean;
+  message: string;
+  pr: Pr;
+  sha: string;
+  text: string;
+  url: string;
 };
 
 type Pr = {
@@ -98,12 +120,294 @@ const answersFrom = (pr: Pr): string[] => {
   return [...answers.values()];
 };
 
+const post = ({ footer, gh, raw }: Context, ...lines: string[]): void => {
+  gh(
+    ['pr', 'comment', raw, '--body-file', '-'],
+    [...lines, ...footer].join('\n')
+  );
+};
+
+// Nothing is committed and no model runs: tell the owner why, and what to do.
+const comment = (context: Context, ...lines: string[]): void => {
+  post(context, 'Not approved yet:', '', ...lines);
+};
+
+// A failed label move is logged against its PR or issue, so the others still go.
+const attempt = (number: number | string, action: () => void): void => {
+  try {
+    action();
+  } catch (error) {
+    console.error(
+      `#${number}: moving the label failed: ${(error as Error).message}`
+    );
+  }
+};
+
+// Moves one closed issue to the target label, unless it is blocked or already there.
+const moveIssue = (gh: Gh, number: number, target: string): void => {
+  const labels = json<{ labels: { name: string }[] }>(gh, [
+    'issue',
+    'view',
+    String(number),
+    '--json',
+    'labels',
+  ]).labels.map(({ name: label }) => label);
+
+  if (labels.includes(BLOCKED) || labels.includes(target)) {
+    return;
+  }
+
+  gh([
+    'issue',
+    'edit',
+    String(number),
+    ...labels
+      .filter(label => label.startsWith('status: '))
+      .flatMap(label => ['--remove-label', label]),
+    '--add-label',
+    target,
+  ]);
+};
+
+// Sets the label of each issue that the PR closes in this repository.
+const moveLabels = ({ gh, raw, repo }: Context, go: boolean): void => {
+  const [owner, name] = repo.split('/');
+  const pr = json<{
+    closingIssuesReferences: {
+      number: number;
+      repository: { name: string; owner: { login: string } };
+    }[];
+    labels: { name: string }[];
+  }>(gh, ['pr', 'view', raw, '--json', 'closingIssuesReferences,labels']);
+
+  if (!go && pr.labels.some(({ name: label }) => label === LABEL)) {
+    return;
+  }
+
+  pr.closingIssuesReferences
+    .filter(
+      ({ repository }) =>
+        repository.name === name && repository.owner.login === owner
+    )
+    .forEach(({ number }) =>
+      attempt(number, () => moveIssue(gh, number, go ? AGENT : DEV))
+    );
+};
+
+// Writes the outcome, and on a go the commit to build, then sets each closed issue's label from it.
+const finish = (context: Context, go: boolean, head = ''): void => {
+  context.write(`go=${go}`);
+
+  if (go) {
+    context.write(`head=${head}`);
+  }
+
+  attempt(context.raw, () => moveLabels(context, go));
+};
+
+const stop = (context: Context, ...lines: string[]): number => {
+  comment(context, ...lines);
+  finish(context, false);
+
+  return 0;
+};
+
+// The plan is approved at `head`. A `hand-back` PR whose plan has no row that CI can build goes to
+// the tech lead (plans/README.md#hand-back), so no build run starts. The approval is already
+// committed, so a failed comment is not the catch's "Approve the plan again": log it and stop.
+const proceed = (
+  context: Context,
+  handBack: boolean,
+  head: string,
+  text: string
+): number => {
+  const tech = handBack && tablePaths(text).every(isHandBack);
+
+  if (tech) {
+    try {
+      post(
+        context,
+        'The plan is approved. This PR has `hand-back`, so the tech lead builds it (plans/README.md, hand-back rule); no build run starts.'
+      );
+    } catch (error) {
+      console.error(`#${context.raw}: ${(error as Error).message}`);
+      finish(context, false);
+
+      return 1;
+    }
+  }
+
+  finish(context, !tech, head);
+
+  return 0;
+};
+
+// The head is not the commit the owner read.
+const stopMoved = (context: Context, { commit, pr }: Plan): number =>
+  stop(
+    context,
+    `- The approval is for \`${commit.slice(0, 7)}\`, but the branch is now at \`${pr.headRefOid.slice(0, 7)}\`. Approve the plan again.`
+  );
+
+const quiet = ({ write }: Context, { commit, file }: Plan): number => {
+  console.log(
+    `${file} was approved after the review's commit ${commit.slice(0, 7)}: nothing to do.`
+  );
+  write('go=false');
+
+  return 0;
+};
+
+// Two quick approvals, where the second waits for the first run, build included: that
+// run did the work, so there is nothing to tell or move. It built the plan, so the PR is
+// ready (the event saw a draft), or it stopped with only its approval commit pushed. Any
+// other moved head stops as a draft's does: the owner read another commit, and a build
+// that failed after pushing needs the approval again. Only the fields needed come back:
+// the comparison carries every commit and file diff.
+const afterMovedHead = (context: Context, plan: Plan): number => {
+  const { commit, message, pr } = plan;
+
+  if (!pr.isDraft) {
+    return quiet(context, plan);
+  }
+
+  const { first, status, total } = json<{
+    first: string;
+    status: string;
+    total: number;
+  }>(context.gh, [
+    'api',
+    `repos/${context.repo}/compare/${commit}...${pr.headRefOid}`,
+    '--jq',
+    '{status: .status, total: .total_commits, first: (.commits[0].commit.message // "")}',
+  ]);
+
+  return status === 'ahead' && total === 1 && first === message
+    ? quiet(context, plan)
+    : stopMoved(context, plan);
+};
+
+const alreadyApproved = (context: Context, plan: Plan): number => {
+  const { commit, file, handBack, pr, text } = plan;
+
+  if (pr.headRefOid !== commit) {
+    return afterMovedHead(context, plan);
+  }
+
+  console.log(`${file} is already approved.`);
+
+  return proceed(context, handBack, pr.headRefOid, text);
+};
+
+const recordApproval = (context: Context, plan: Plan): number => {
+  const { approver, commit, file, handBack, message, pr, sha, text, url } =
+    plan;
+
+  if (pr.headRefOid !== commit) {
+    return stopMoved(context, plan);
+  }
+
+  if (!/^- \*\*Status:\*\* draft\s*$/m.test(text)) {
+    return stop(context, `- \`${file}\` has no \`- **Status:** draft\` line.`);
+  }
+
+  // An answer to a decision this draft no longer has (an earlier draft's) is skipped, not an error.
+  const decisions = new Set(
+    [...text.matchAll(/^\*\*(D\d+) · /gm)].map(([, id]) => id)
+  );
+  const answers = answersFrom(pr).filter(answer =>
+    decisions.has(answer.split('=')[0])
+  );
+  const result = approve(text, approver, answers, file);
+
+  if (result.errors.length > 0) {
+    return stop(
+      context,
+      ...result.errors.map(error => `- ${error}`),
+      '',
+      'Answer again in a new comment: the latest answer to a decision counts.'
+    );
+  }
+
+  if (result.open.length > 0) {
+    return stop(
+      context,
+      `- No answer yet for ${list(result.open)}.`,
+      '',
+      'Reply on this PR as `D1: B` or `D2: other, <your answer>`, then approve the plan again.'
+    );
+  }
+
+  const made = json<{ commit: { sha: string } }>(
+    context.gh,
+    ['api', '--method', 'PUT', url, '--input', '-'],
+    JSON.stringify({
+      branch: pr.headRefName,
+      content: Buffer.from(result.text).toString('base64'),
+      message,
+      sha,
+    })
+  ).commit.sha;
+
+  console.log(`Recorded the approval of ${file} by @${approver} as ${made}.`);
+
+  return proceed(context, handBack, made, result.text);
+};
+
+// Reads the PR and its one plan, then approves it or says why not.
+const decide = (context: Context, approver: string, commit: string): number => {
+  const { gh, raw, repo } = context;
+  const pr = json<Pr>(gh, [
+    'pr',
+    'view',
+    raw,
+    '--json',
+    'files,headRefName,headRefOid,isDraft,labels,reviews,comments',
+  ]);
+  const plans = pr.files
+    .map(({ path }) => path)
+    .filter(path => PLAN.test(path));
+
+  if (plans.length !== 1) {
+    return stop(
+      context,
+      `- A plan PR has exactly one plan file under \`plans/\`; this one has ${plans.length}.`
+    );
+  }
+
+  const [file] = plans;
+  const url = `repos/${repo}/contents/${file}`;
+  const { content, sha } = json<{ content: string; sha: string }>(gh, [
+    'api',
+    '--method',
+    'GET',
+    url,
+    '-f',
+    `ref=${pr.headRefOid}`,
+  ]);
+  const text = Buffer.from(content, 'base64').toString('utf8');
+  const plan: Plan = {
+    approver,
+    commit,
+    file,
+    handBack: pr.labels.some(({ name }) => name === LABEL),
+    message: `plan(${file.replace(/^.*\//, '').split('-')[0]}): approved by @${approver}`,
+    pr,
+    sha,
+    text,
+    url,
+  };
+
+  return /^- \*\*Status:\*\* approved\s*$/m.test(text)
+    ? alreadyApproved(context, plan)
+    : recordApproval(context, plan);
+};
+
 export const run = (
   args: string[],
   env: Record<string, string | undefined>,
   gh: Gh,
   write: (line: string) => void
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): number => {
   const [raw] = args;
   const repo = env.GH_REPO ?? '';
@@ -125,246 +429,18 @@ export const run = (
 
   const runUrl = env.RUN_URL ?? '';
   const footer = RUN_URL.test(runUrl) ? ['', `[Run](${runUrl})`] : [];
-  const post = (...lines: string[]): void => {
-    gh(
-      ['pr', 'comment', raw, '--body-file', '-'],
-      [...lines, ...footer].join('\n')
-    );
-  };
-  // Nothing is committed and no model runs: tell the owner why, and what to do.
-  const comment = (...lines: string[]): void => {
-    post('Not approved yet:', '', ...lines);
-  };
-  // A failed label move is logged against its PR or issue, so the others still go.
-  const attempt = (number: number | string, action: () => void): void => {
-    try {
-      action();
-    } catch (error) {
-      console.error(
-        `#${number}: moving the label failed: ${(error as Error).message}`
-      );
-    }
-  };
-  // Writes the outcome, and on a go the commit to build, then sets each closed issue's label from it.
-  const finish = (go: boolean, head = ''): void => {
-    write(`go=${go}`);
-
-    if (go) {
-      write(`head=${head}`);
-    }
-
-    attempt(raw, () => {
-      const [owner, name] = repo.split('/');
-      const target = go ? AGENT : DEV;
-      const pr = json<{
-        closingIssuesReferences: {
-          number: number;
-          repository: { name: string; owner: { login: string } };
-        }[];
-        labels: { name: string }[];
-      }>(gh, ['pr', 'view', raw, '--json', 'closingIssuesReferences,labels']);
-
-      if (!go && pr.labels.some(({ name: label }) => label === LABEL)) {
-        return;
-      }
-
-      pr.closingIssuesReferences
-        .filter(
-          ({ repository }) =>
-            repository.name === name && repository.owner.login === owner
-        )
-        .forEach(({ number }) =>
-          attempt(number, () => {
-            const labels = json<{ labels: { name: string }[] }>(gh, [
-              'issue',
-              'view',
-              String(number),
-              '--json',
-              'labels',
-            ]).labels.map(({ name: label }) => label);
-
-            if (labels.includes(BLOCKED) || labels.includes(target)) {
-              return;
-            }
-
-            gh([
-              'issue',
-              'edit',
-              String(number),
-              ...labels
-                .filter(label => label.startsWith('status: '))
-                .flatMap(label => ['--remove-label', label]),
-              '--add-label',
-              target,
-            ]);
-          })
-        );
-    });
-  };
-  const stop = (...lines: string[]): number => {
-    comment(...lines);
-    finish(false);
-
-    return 0;
-  };
-  // The plan is approved at `head`. A `hand-back` PR whose plan has no row that CI can build goes to
-  // the tech lead (plans/README.md#hand-back), so no build run starts. The approval is already
-  // committed, so a failed comment is not the catch's "Approve the plan again": log it and stop.
-  const proceed = (handBack: boolean, head: string, text: string): number => {
-    const tech = handBack && tablePaths(text).every(isHandBack);
-
-    if (tech) {
-      try {
-        post(
-          'The plan is approved. This PR has `hand-back`, so the tech lead builds it (plans/README.md, hand-back rule); no build run starts.'
-        );
-      } catch (error) {
-        console.error(`#${raw}: ${(error as Error).message}`);
-        finish(false);
-
-        return 1;
-      }
-    }
-
-    finish(!tech, head);
-
-    return 0;
-  };
+  const context: Context = { footer, gh, raw, repo, write };
 
   try {
-    const pr = json<Pr>(gh, [
-      'pr',
-      'view',
-      raw,
-      '--json',
-      'files,headRefName,headRefOid,isDraft,labels,reviews,comments',
-    ]);
-    const plans = pr.files
-      .map(({ path }) => path)
-      .filter(path => PLAN.test(path));
-    const handBack = pr.labels.some(({ name }) => name === LABEL);
-
-    // The head is not the commit the owner read.
-    const stopMoved = (): number =>
-      stop(
-        `- The approval is for \`${commit.slice(0, 7)}\`, but the branch is now at \`${pr.headRefOid.slice(0, 7)}\`. Approve the plan again.`
-      );
-
-    if (plans.length !== 1) {
-      return stop(
-        `- A plan PR has exactly one plan file under \`plans/\`; this one has ${plans.length}.`
-      );
-    }
-
-    const [file] = plans;
-    const url = `repos/${repo}/contents/${file}`;
-    const message = `plan(${file.replace(/^.*\//, '').split('-')[0]}): approved by @${approver}`;
-    const { content, sha } = json<{ content: string; sha: string }>(gh, [
-      'api',
-      '--method',
-      'GET',
-      url,
-      '-f',
-      `ref=${pr.headRefOid}`,
-    ]);
-    const text = Buffer.from(content, 'base64').toString('utf8');
-
-    if (/^- \*\*Status:\*\* approved\s*$/m.test(text)) {
-      if (pr.headRefOid !== commit) {
-        // Two quick approvals, where the second waits for the first run, build included: that
-        // run did the work, so there is nothing to tell or move. It built the plan, so the PR is
-        // ready (the event saw a draft), or it stopped with only its approval commit pushed. Any
-        // other moved head stops as a draft's does: the owner read another commit, and a build
-        // that failed after pushing needs the approval again. Only the fields needed come back:
-        // the comparison carries every commit and file diff.
-        const quiet = (): number => {
-          console.log(
-            `${file} was approved after the review's commit ${commit.slice(0, 7)}: nothing to do.`
-          );
-          write('go=false');
-
-          return 0;
-        };
-
-        if (!pr.isDraft) {
-          return quiet();
-        }
-
-        const { first, status, total } = json<{
-          first: string;
-          status: string;
-          total: number;
-        }>(gh, [
-          'api',
-          `repos/${repo}/compare/${commit}...${pr.headRefOid}`,
-          '--jq',
-          '{status: .status, total: .total_commits, first: (.commits[0].commit.message // "")}',
-        ]);
-
-        return status === 'ahead' && total === 1 && first === message
-          ? quiet()
-          : stopMoved();
-      }
-
-      console.log(`${file} is already approved.`);
-
-      return proceed(handBack, pr.headRefOid, text);
-    }
-
-    if (pr.headRefOid !== commit) {
-      return stopMoved();
-    }
-
-    if (!/^- \*\*Status:\*\* draft\s*$/m.test(text)) {
-      return stop(`- \`${file}\` has no \`- **Status:** draft\` line.`);
-    }
-
-    // An answer to a decision this draft no longer has (an earlier draft's) is skipped, not an error.
-    const decisions = new Set(
-      [...text.matchAll(/^\*\*(D\d+) · /gm)].map(([, id]) => id)
-    );
-    const answers = answersFrom(pr).filter(answer =>
-      decisions.has(answer.split('=')[0])
-    );
-    const result = approve(text, approver, answers, file);
-
-    if (result.errors.length > 0) {
-      return stop(
-        ...result.errors.map(error => `- ${error}`),
-        '',
-        'Answer again in a new comment: the latest answer to a decision counts.'
-      );
-    }
-
-    if (result.open.length > 0) {
-      return stop(
-        `- No answer yet for ${list(result.open)}.`,
-        '',
-        'Reply on this PR as `D1: B` or `D2: other, <your answer>`, then approve the plan again.'
-      );
-    }
-
-    const made = json<{ commit: { sha: string } }>(
-      gh,
-      ['api', '--method', 'PUT', url, '--input', '-'],
-      JSON.stringify({
-        branch: pr.headRefName,
-        content: Buffer.from(result.text).toString('base64'),
-        message,
-        sha,
-      })
-    ).commit.sha;
-
-    console.log(`Recorded the approval of ${file} by @${approver} as ${made}.`);
-
-    return proceed(handBack, made, result.text);
+    return decide(context, approver, commit);
   } catch (error) {
     console.error(`#${raw}: ${(error as Error).message}`);
-    finish(false);
+    finish(context, false);
 
     // So the owner isn't left with only a red job; the likeliest failure is a plan that changed meanwhile.
     try {
       comment(
+        context,
         '- A GitHub call failed (the plan may have changed meanwhile). Approve the plan again.'
       );
     } catch (again) {

@@ -241,13 +241,66 @@ const stop = (
   }
 };
 
+// What the gate checked and decided, in the log and on the run page: a pass otherwise looks
+// the same as a skip. The page's heading carries the verdict, so a pass adds no line for it.
+const reportGate = (
+  summary: (markdown: string) => void,
+  {
+    go,
+    kind,
+    notes,
+    thread,
+    verdict,
+  }: {
+    go: boolean;
+    kind: Kind;
+    notes: string[];
+    thread: number;
+    verdict: string;
+  }
+): void => {
+  [...notes, verdict].forEach(line => console.log(line));
+  summary(
+    [
+      `### Gate: ${go ? 'go' : 'stopped'} (${kind} #${thread})`,
+      '',
+      ...[...notes, ...(go ? [] : [verdict])].map(line => `- ${line}`),
+    ].join('\n')
+  );
+};
+
+const openNote = (kind: Kind, thread: number): string =>
+  ({
+    build: `PR #${thread} is an open draft whose title ends "(plan)".`,
+    fix: `PR #${thread} is open, is not a draft and has the \`fix-review\` label.`,
+    plan: `#${thread} is open and has \`status: ready-for-agent\`.`,
+    resolve: `PR #${thread} is open and has the \`resolve-conflict\` label.`,
+  })[kind];
+
+// A fix or a resolve has no blocker to check: neither changes what the plan builds.
+const reasonsFor = (
+  gh: Gh,
+  repo: string,
+  kind: Kind,
+  thread: number,
+  notes: string[]
+): Stop => {
+  const none = (): Stop => ({ handBack: false, reasons: [] });
+
+  return {
+    build: () => buildReasons(gh, repo, thread, notes),
+    fix: none,
+    plan: () => planReasons(gh, repo, thread, notes),
+    resolve: none,
+  }[kind]();
+};
+
 export const run = (
   args: string[],
   env: Record<string, string | undefined>,
   gh: Gh,
   write: (line: string) => void,
   summary: (markdown: string) => void
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): number => {
   const [kind, raw] = args;
   const repo = env.GH_REPO ?? '';
@@ -269,18 +322,8 @@ export const run = (
 
   const thread = Number(raw);
   const notes: string[] = [];
-  // What the gate checked and decided, in the log and on the run page: a pass otherwise looks
-  // the same as a skip. The page's heading carries the verdict, so a pass adds no line for it.
-  const report = (go: boolean, verdict: string): void => {
-    [...notes, verdict].forEach(line => console.log(line));
-    summary(
-      [
-        `### Gate: ${go ? 'go' : 'stopped'} (${kind} #${thread})`,
-        '',
-        ...[...notes, ...(go ? [] : [verdict])].map(line => `- ${line}`),
-      ].join('\n')
-    );
-  };
+  const report = (go: boolean, verdict: string): void =>
+    reportGate(summary, { go, kind, notes, thread, verdict });
   const stale = staleReason(gh, kind, thread);
 
   // Not an error: nothing to tell anyone, so no comment and no label change.
@@ -291,24 +334,9 @@ export const run = (
     return 0;
   }
 
-  notes.push(
-    {
-      build: `PR #${thread} is an open draft whose title ends "(plan)".`,
-      fix: `PR #${thread} is open, is not a draft and has the \`fix-review\` label.`,
-      plan: `#${thread} is open and has \`status: ready-for-agent\`.`,
-      resolve: `PR #${thread} is open and has the \`resolve-conflict\` label.`,
-    }[kind]
-  );
+  notes.push(openNote(kind, thread));
 
-  // A fix or a resolve has no blocker to check: neither changes what the plan builds.
-  const none = (): Stop => ({ handBack: false, reasons: [] });
-  const why = {
-    build: () => buildReasons(gh, repo, thread, notes),
-    fix: none,
-    plan: () => planReasons(gh, repo, thread, notes),
-    resolve: none,
-  }[kind]();
-
+  const why = reasonsFor(gh, repo, kind, thread, notes);
   const go = why.reasons.length === 0;
 
   write(`go=${go}`);

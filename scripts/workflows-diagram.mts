@@ -193,10 +193,45 @@ const table = (workflows: Workflow[]): string[] => {
   ];
 };
 
+// The event nodes, the workflow nodes, and the edges between them.
+const edges = (
+  events: string[],
+  nodes: Workflow[],
+  byId: Map<string, Workflow>
+): string[] => [
+  ...events.map(event => `  on_${id(event)}([${event}])`),
+  ...nodes.map(({ id: node, name }) => `  ${node}["${escape(name)}"]`),
+  ...events.flatMap(event =>
+    nodes
+      .filter(({ triggers }) => triggers.some(([e]) => e === event))
+      .map(({ id: node }) => `  on_${id(event)} --> ${node}`)
+  ),
+  ...nodes.flatMap(({ calls, id: node }) =>
+    calls
+      .filter(call => byId.has(call))
+      .map(call => `  ${node} -.->|calls| ${call}`)
+  ),
+];
+
+// The colour of each group, and the nodes that take it.
+const styles = (groups: string[], nodes: Workflow[]): string[] => [
+  ...groups.map(group => {
+    const [fill, stroke] = FILLS[group];
+
+    return `  classDef ${id(group).toLowerCase()} fill:${colours[fill]},stroke:${colours[stroke]}`;
+  }),
+  ...groups.map(
+    group =>
+      `  class ${nodes
+        .filter(node => node.group === group)
+        .map(({ id: node }) => node)
+        .join(',')} ${id(group).toLowerCase()}`
+  ),
+];
+
 const diagram = (
   workflows: Workflow[],
   [family, familyEvents]: [string, string[]]
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): string[] => {
   const byId = new Map(workflows.map(workflow => [workflow.id, workflow]));
   const listens = (workflow: Workflow) =>
@@ -236,30 +271,8 @@ const diagram = (
     '```mermaid',
     ...FRONTMATTER,
     'flowchart TB',
-    ...events.map(event => `  on_${id(event)}([${event}])`),
-    ...nodes.map(({ id: node, name }) => `  ${node}["${escape(name)}"]`),
-    ...events.flatMap(event =>
-      nodes
-        .filter(({ triggers }) => triggers.some(([e]) => e === event))
-        .map(({ id: node }) => `  on_${id(event)} --> ${node}`)
-    ),
-    ...nodes.flatMap(({ calls, id: node }) =>
-      calls
-        .filter(call => byId.has(call))
-        .map(call => `  ${node} -.->|calls| ${call}`)
-    ),
-    ...groups.map(group => {
-      const [fill, stroke] = FILLS[group];
-
-      return `  classDef ${id(group).toLowerCase()} fill:${colours[fill]},stroke:${colours[stroke]}`;
-    }),
-    ...groups.map(
-      group =>
-        `  class ${nodes
-          .filter(node => node.group === group)
-          .map(({ id }) => id)
-          .join(',')} ${id(group).toLowerCase()}`
-    ),
+    ...edges(events, nodes, byId),
+    ...styles(groups, nodes),
     '```',
     '',
   ];

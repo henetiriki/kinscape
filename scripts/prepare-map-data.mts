@@ -254,6 +254,69 @@ const collection = (features: ReturnType<typeof version>[]) => ({
   type: 'FeatureCollection',
 });
 
+type Geometries = ReturnType<typeof geometries>;
+
+const oldCollection = (old: Geometries) =>
+  collection(
+    [...old].map(([key, geometry]) =>
+      version(geometry, key, {
+        confidence: 'low',
+        source: BOUNDARY_SOURCE_1994,
+        validFrom: FIRST_DATE,
+        validTo: TWELFTH_DATE,
+      })
+    )
+  );
+
+// The Union shapes of Lesotho and eSwatini until the Interim Constitution, then today's provinces.
+const todayCollection = (today: Geometries, joined: Geometries) =>
+  collection(
+    [...today].flatMap(([key, geometry]) =>
+      FOREIGN.includes(key)
+        ? [
+            version(joined.get(key) as Feature['geometry'], key, {
+              confidence: 'low',
+              source: BOUNDARY_SOURCE,
+              validFrom: UNION_DATE,
+              validTo: FIRST_DATE,
+            }),
+            version(geometry, key, {
+              confidence: 'high',
+              source: BOUNDARY_SOURCE,
+              validFrom: FIRST_DATE,
+              validTo: null,
+            }),
+          ]
+        : [
+            version(geometry, key, {
+              confidence: 'low',
+              source: BOUNDARY_SOURCE,
+              validFrom: TWELFTH_DATE,
+              validTo: SIXTEENTH_DATE,
+            }),
+            version(geometry, key, {
+              confidence: 'high',
+              source: BOUNDARY_SOURCE,
+              validFrom: SIXTEENTH_DATE,
+              validTo: null,
+            }),
+          ]
+    )
+  );
+
+const unionCollection = (union: Geometries) =>
+  collection(
+    [...union].map(([key, geometry]) =>
+      version(geometry, key, {
+        confidence: 'low',
+        source:
+          key === FREE_STATE_KEY ? BOUNDARY_SOURCE_1994 : BOUNDARY_SOURCE_1910,
+        validFrom: UNION_DATE,
+        validTo: FIRST_DATE,
+      })
+    )
+  );
+
 /**
  * `provinces1910` holds the four Union provinces, Lesotho and eSwatini, gap
  * filled together so they meet. `union` holds the four provinces to the Interim
@@ -266,7 +329,6 @@ export const boundaryVersions = (
   provinces: Feature[],
   provinces1994: Feature[],
   provinces1910: Feature[]
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ) => {
   const today = geometries(provinces, Object.keys(POLITY_IDS));
   const old = geometries(
@@ -281,62 +343,9 @@ export const boundaryVersions = (
   const union = new Map([...joined].filter(([key]) => !FOREIGN.includes(key)));
 
   return {
-    old: collection(
-      [...old].map(([key, geometry]) =>
-        version(geometry, key, {
-          confidence: 'low',
-          source: BOUNDARY_SOURCE_1994,
-          validFrom: FIRST_DATE,
-          validTo: TWELFTH_DATE,
-        })
-      )
-    ),
-    today: collection(
-      [...today].flatMap(([key, geometry]) =>
-        FOREIGN.includes(key)
-          ? [
-              version(joined.get(key) as Feature['geometry'], key, {
-                confidence: 'low',
-                source: BOUNDARY_SOURCE,
-                validFrom: UNION_DATE,
-                validTo: FIRST_DATE,
-              }),
-              version(geometry, key, {
-                confidence: 'high',
-                source: BOUNDARY_SOURCE,
-                validFrom: FIRST_DATE,
-                validTo: null,
-              }),
-            ]
-          : [
-              version(geometry, key, {
-                confidence: 'low',
-                source: BOUNDARY_SOURCE,
-                validFrom: TWELFTH_DATE,
-                validTo: SIXTEENTH_DATE,
-              }),
-              version(geometry, key, {
-                confidence: 'high',
-                source: BOUNDARY_SOURCE,
-                validFrom: SIXTEENTH_DATE,
-                validTo: null,
-              }),
-            ]
-      )
-    ),
-    union: collection(
-      [...union].map(([key, geometry]) =>
-        version(geometry, key, {
-          confidence: 'low',
-          source:
-            key === FREE_STATE_KEY
-              ? BOUNDARY_SOURCE_1994
-              : BOUNDARY_SOURCE_1910,
-          validFrom: UNION_DATE,
-          validTo: FIRST_DATE,
-        })
-      )
-    ),
+    old: oldCollection(old),
+    today: todayCollection(today, joined),
+    union: unionCollection(union),
   };
 };
 

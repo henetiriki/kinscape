@@ -111,11 +111,118 @@ const pick = (
     : undefined;
 };
 
+const isVisibleType = (type: string): boolean => VISIBLE_TYPES.includes(type);
+
+// The issues of this repository that the PR closes.
+const closingIssues = (gh: Gh, repo: string, pull: number): number[] => {
+  const [owner, name] = repo.split('/');
+
+  return JSON.parse(
+    gh(['pr', 'view', String(pull), '--json', 'closingIssuesReferences'])
+  ).closingIssuesReferences.flatMap(
+    (issue: {
+      number: number;
+      repository: { name: string; owner: { login: string } };
+    }) =>
+      issue.repository.name === name && issue.repository.owner.login === owner
+        ? [issue.number]
+        : []
+  );
+};
+
+const readIssue = (
+  gh: Gh,
+  number: number
+): { labels: string[]; type: string } => {
+  const {
+    issueType,
+    labels,
+  }: { issueType: { name: string } | null; labels: { name: string }[] } =
+    JSON.parse(
+      gh(['issue', 'view', String(number), '--json', 'labels,issueType'])
+    );
+
+  return {
+    labels: labels.map(({ name: label }) => label),
+    type: issueType?.name ?? '',
+  };
+};
+
+type Attempt = <T>(what: string, action: () => T) => T | undefined;
+
+const targetFor = (
+  move: Move,
+  visibleType: boolean,
+  visible: boolean | undefined
+): string =>
+  move === 'ready'
+    ? visibleType && visible
+      ? TARGET.po
+      : TARGET.dev
+    : TARGET[move];
+
+// The closed issues that carry a status and are not blocked.
+const statusIssues = (gh: Gh, attempt: Attempt, closing: number[]) =>
+  closing.flatMap(number => {
+    const issue = attempt(`reading #${number}`, () => readIssue(gh, number));
+
+    return issue !== undefined &&
+      TYPES.includes(issue.type) &&
+      !issue.labels.includes(BLOCKED)
+      ? [{ ...issue, number }]
+      : [];
+  });
+
+// Whether a changed file is visible to the user; undefined if the list failed.
+const visibleFiles = (
+  gh: Gh,
+  attempt: Attempt,
+  repo: string,
+  number: number
+): boolean | undefined =>
+  attempt('listing the changed files', () =>
+    ghList<Changed>(gh, `repos/${repo}/pulls/${number}/files`)
+  )?.some(({ filename, previous_filename }) =>
+    [filename, previous_filename].some(
+      path => path !== undefined && !invisible(path)
+    )
+  );
+
+// Moves the issue to the target status, unless it is there already.
+const relabel = (
+  gh: Gh,
+  attempt: Attempt,
+  { labels, number }: { labels: string[]; number: number },
+  target: string
+): void => {
+  if (labels.includes(target)) {
+    console.log(`Issue status: #${number} is already on ${target}.`);
+
+    return;
+  }
+
+  const edited = attempt(`moving #${number}`, () =>
+    gh([
+      'issue',
+      'edit',
+      String(number),
+      ...labels
+        .filter(label => label.startsWith(STATUS))
+        .flatMap(label => ['--remove-label', label]),
+      '--add-label',
+      target,
+    ])
+  );
+
+  if (edited !== undefined) {
+    console.log(`Issue status: #${number} is now ${target}.`);
+  }
+};
+
 export const run = (
   env: Record<string, string | undefined>,
   event: Event,
   gh: Gh
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): number => {
   const repo = String(env.GH_REPO);
   const pull = event.pull_request;
@@ -159,112 +266,32 @@ export const run = (
       return undefined;
     }
   };
-  const [owner, name] = repo.split('/');
-  const closing = attempt('reading the closing issues', (): number[] =>
-    JSON.parse(
-      gh([
-        'pr',
-        'view',
-        String(pull.number),
-        '--json',
-        'closingIssuesReferences',
-      ])
-    ).closingIssuesReferences.flatMap(
-      (issue: {
-        number: number;
-        repository: { name: string; owner: { login: string } };
-      }) =>
-        issue.repository.name === name && issue.repository.owner.login === owner
-          ? [issue.number]
-          : []
-    )
+  const closing = attempt('reading the closing issues', () =>
+    closingIssues(gh, repo, pull.number)
   );
 
   if (closing === undefined) {
     return 1;
   }
 
-  const issues = closing.flatMap(number => {
-    const issue = attempt(
-      `reading #${number}`,
-      (): { labels: string[]; type: string } => {
-        const {
-          issueType,
-          labels,
-        }: { issueType: { name: string } | null; labels: { name: string }[] } =
-          JSON.parse(
-            gh(['issue', 'view', String(number), '--json', 'labels,issueType'])
-          );
-
-        return {
-          labels: labels.map(({ name: label }) => label),
-          type: issueType?.name ?? '',
-        };
-      }
-    );
-
-    return issue !== undefined &&
-      TYPES.includes(issue.type) &&
-      !issue.labels.includes(BLOCKED)
-      ? [{ ...issue, number }]
-      : [];
-  });
-  const isVisibleType = (type: string): boolean => VISIBLE_TYPES.includes(type);
+  const issues = statusIssues(gh, attempt, closing);
 
   // Rows 2 and 3: the changed files matter only to a Spec or Bug whose PR says what to try.
-  let visible: boolean | undefined = false;
-
-  if (
+  const visible =
     move === 'ready' &&
     hasForThePo(pull.body) &&
     issues.some(({ type }) => isVisibleType(type))
-  ) {
-    const files = attempt('listing the changed files', () =>
-      ghList<Changed>(gh, `repos/${repo}/pulls/${pull.number}/files`)
-    );
+      ? visibleFiles(gh, attempt, repo, pull.number)
+      : false;
 
-    visible = files?.some(({ filename, previous_filename }) =>
-      [filename, previous_filename].some(
-        path => path !== undefined && !invisible(path)
-      )
-    );
-  }
-
-  for (const { labels, number, type } of issues) {
-    const visibleType = isVisibleType(type);
+  for (const issue of issues) {
+    const visibleType = isVisibleType(issue.type);
 
     if (move === 'ready' && visibleType && visible === undefined) {
       continue;
     }
 
-    const target =
-      move === 'ready'
-        ? visibleType && visible
-          ? TARGET.po
-          : TARGET.dev
-        : TARGET[move];
-
-    if (labels.includes(target)) {
-      console.log(`Issue status: #${number} is already on ${target}.`);
-      continue;
-    }
-
-    const edited = attempt(`moving #${number}`, () =>
-      gh([
-        'issue',
-        'edit',
-        String(number),
-        ...labels
-          .filter(label => label.startsWith(STATUS))
-          .flatMap(label => ['--remove-label', label]),
-        '--add-label',
-        target,
-      ])
-    );
-
-    if (edited !== undefined) {
-      console.log(`Issue status: #${number} is now ${target}.`);
-    }
+    relabel(gh, attempt, issue, targetFor(move, visibleType, visible));
   }
 
   return failed ? 1 : 0;

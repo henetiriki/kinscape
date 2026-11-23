@@ -418,6 +418,19 @@ describe('plan-new', () => {
       expect(out).toContain('Design files:\n- design/topics/map.md');
     });
 
+    it('lists the token page when the issue cites the token file', () => {
+      const { out } = go(
+        ['7', 'x'],
+        setup({
+          body: 'Change `design/tokens.json`.',
+          title: 'Chore: A',
+          type: 'Chore',
+        }).deps
+      );
+
+      expect(out).toContain('- design/topics/tokens.md');
+    });
+
     it('lists none when the issue cites no design path', () => {
       const { out } = go(
         ['7', 'x'],

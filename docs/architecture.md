@@ -17,7 +17,7 @@ Built: Next.js App Router, React, TypeScript, MapLibre.
 | A server variable or table      | `server/env.mts` (lint: `no-restricted-syntax`); a new `server/db/migrations/NNNN.sql` (never edit)            |
 | Tree data                       | `server/trees/`, behind `openTree`: its `TreeStore` methods, group and mapper                                  |
 | Design checks and token tooling | `lib/design/` (dev-only); the runtime `resolveTokens` is in `design/tokens.mts`                                |
-| A colour, size or font value    | `design/tokens.json` + notes, then `npm run tokens`                                                            |
+| A colour, size or font value    | `design/tokens.json` + notes, then `npm run tokens` ([path](../design/topics/tokens.md))                       |
 | Boundary and name data          | `data/`; basemap files in `public/map/` (`npm run map:prepare`)                                                |
 | A tool, check or CI helper      | `scripts/`, tests in `__tests__/`                                                                              |
 | A browser test                  | `e2e/`                                                                                                         |

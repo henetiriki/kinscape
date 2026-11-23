@@ -69,6 +69,7 @@ export const parseCaFile = (source: Record<string, string | undefined>) => {
  * Test-only `KINSCAPE_DEV_PAGES` shows the screens (`dev-pages.mts`).
  * `KINSCAPE_DATABASE_CA_FILE` (`parseCaFile`) follows the same Vercel rule.
  */
+// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const parseEnv = (source: Record<string, string | undefined>) => {
   const onVercel = isOnVercel(source);
 

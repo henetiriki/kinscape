@@ -62,6 +62,7 @@ export const DateField = ({
   placement?: 'above' | 'below';
   precision: Precision;
   state?: ControlState;
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const messageId = useId();
   const shown = shownDate(day, precision);

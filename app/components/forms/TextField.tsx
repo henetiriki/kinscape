@@ -49,6 +49,7 @@ export const TextField = ({
   size?: 'l';
   state?: ControlState;
   type?: 'email' | 'password' | 'search' | 'text';
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 } & Omit<ComponentProps<'input'>, 'className' | 'id' | 'size' | 'type'>) => {
   const field = useFieldMessage({
     describedBy: rest['aria-describedby'],

@@ -37,6 +37,7 @@ const Lines = ({ d }: { d: string[] }) =>
  * The illustration is decoration and loads nothing; each line in the caption is drawn as well as coloured (NFR-06).
  * Two drawings share the path data: the wide one with a label, the phone crop without (the `@media` block shows one).
  */
+// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const SignInHero = () => {
   const id = useId();
   const clip = `${id}-land`;

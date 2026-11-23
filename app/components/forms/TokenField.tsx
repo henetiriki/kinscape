@@ -35,6 +35,7 @@ export const TokenField = ({
   state?: ControlState;
   /** When given, the field shows these and only reports changes; the caller holds them. */
   values?: string[];
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const id = useId();
   const input = useRef<HTMLInputElement>(null);

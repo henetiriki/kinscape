@@ -86,6 +86,7 @@ export const MapView = ({
   padding: Padding;
   /** Each layer is on unless its entry is `false`. */
   visible: Partial<Record<LayerId, boolean>>;
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);

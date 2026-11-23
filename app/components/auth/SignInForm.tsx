@@ -29,6 +29,7 @@ export const SignInForm = ({
   action: SignInAction;
   /** Where to go after signing in; the action checks it. */
   returnTo?: string;
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const phone = usePhone();
   const titleId = useId();

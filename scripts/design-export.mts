@@ -288,6 +288,7 @@ export const fillTemplate = ({
 }: {
   props: Scope;
   state: Scope;
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }): void => {
   const template = document.querySelector('x-dc');
   const source = document.querySelector('script[data-dc-script]');
@@ -366,6 +367,7 @@ document.currentScript.component = typeof Component === 'undefined' ? undefined 
 
     return read(scope, path);
   };
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
   const walk = (node: Node, scope: Scope): void => {
     for (const child of Array.from(node.childNodes)) {
       if (child.nodeType === Node.TEXT_NODE) {
@@ -476,6 +478,7 @@ document.currentScript.component = typeof Component === 'undefined' ? undefined 
  * Runs in the page: the filled board as a snapshot, with scripts, links and `<x-dc>` gone,
  * `calc()` resolved and `fonts.css` loaded. Uses nothing from the module, as `fillTemplate`.
  */
+// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const pageHtml = (): string => {
   const title = document.querySelector('title');
 
@@ -572,6 +575,7 @@ export const pageHtml = (): string => {
  * child becomes a React element too. `page.evaluate` sends one function, so `mountImports` reads
  * this one from `window`. Uses nothing from the module, as `fillTemplate`.
  */
+// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const defineBuilder = (): void => {
   const react = () =>
     (
@@ -706,6 +710,7 @@ export const mountImports = async (): Promise<void> => {
  * `inlinePseudoStyles` and `inlineStyles` share. `page.evaluate` sends one function, so they read
  * the helpers from `window`, as `mountImports` reads `kinscapeBuild`. Uses nothing from the module.
  */
+// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const defineStyleHelpers = (): void => {
   // Each style rule of a sheet, with the rules inside a grouping rule (`@media`).
   const styleRules = (rules: CSSRuleList): CSSStyleRule[] =>
@@ -983,6 +988,7 @@ export const exportSnapshots = async (
   root: string,
   names: string[],
   deps: DesignExportDeps
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): Promise<string[]> => {
   const canvas = readCanvasExport(root);
   const unknown = names.filter(

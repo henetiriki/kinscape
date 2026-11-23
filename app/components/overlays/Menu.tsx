@@ -117,6 +117,7 @@ export const Menu = ({
   initial,
   onSelect,
   ...panel
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }: AccountMenuProps) => {
   const [open, setOpen] = useState(false);
   const anchor = useRef<HTMLDivElement>(null);

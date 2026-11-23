@@ -333,6 +333,7 @@ const recentRunIds = (gh: Gh, workflow: string, since: Date): number[] =>
 export const summarise = (
   transcripts: { id: number; transcript: Transcript; workflow: string }[],
   settings: (file: string) => Settings
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): Report => {
   // Each group keeps the first denial it saw under each settings file, to judge against that file,
   // and the sessions (one per transcript) it hit: a refresh run with several has the same run id

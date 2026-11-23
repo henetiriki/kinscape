@@ -1,6 +1,7 @@
-import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+
+import { tracked } from '@ks/scripts/__tests__/tracked';
 
 // The test builds the tag from parts, so this file does not match itself.
 const TAG = ['@', 'later'].join('');
@@ -14,13 +15,6 @@ const untagged = (files: Record<string, string>): string[] =>
         new RegExp(`${TAG}(?! #\\d)`).test(line) ? [`${path}:${index + 1}`] : []
       )
   );
-
-const tracked = (): string[] =>
-  execFileSync('git', ['ls-files', '*.ts', '*.tsx', '*.mts'], {
-    encoding: 'utf8',
-  })
-    .split('\n')
-    .filter(path => path !== '' && !path.startsWith('design/canvas/'));
 
 describe('untagged', () => {
   it('flags the tag with no number', () => {

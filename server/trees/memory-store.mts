@@ -60,6 +60,7 @@ export const memoryStore = (
   seed: SeedAccount[] = [],
   readOnly: TreeId[] = [],
   failing: TreeId[] = []
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): TreeStore => {
   const accounts = new Map<string, AccountId>();
   const trees = new Map<TreeId, Tree>();

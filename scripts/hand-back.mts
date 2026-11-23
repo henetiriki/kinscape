@@ -87,6 +87,7 @@ export const run = (
   args: string[],
   env: Record<string, string | undefined>,
   gh: Gh
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): number => {
   const [pr] = args;
   const repo = env.GH_REPO ?? '';

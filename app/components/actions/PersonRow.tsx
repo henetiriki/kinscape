@@ -46,6 +46,7 @@ export const PersonRow = ({
   state?: ControlState;
   surname: string;
 } & Omit<ComponentProps<'a'>, 'children' | 'className' | 'href'> &
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
   PersonDates) => {
   const note = personNote(maidenName, matchedVariant);
   const dates = (

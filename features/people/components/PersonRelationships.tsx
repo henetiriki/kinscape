@@ -64,25 +64,7 @@ const otherOf = (from: Omit<OtherPerson, 'id'>, id: string): OtherPerson => ({
   surname: from.surname,
 });
 
-/**
- * The Relationships page of a Person (PPL-02): three groups of Relationships, or the notice of a
- * load that failed. The subtitle is the name and a save note, with the dates on a line below. A
- * load that failed may have no `person`, so the subtitle is then the save note only. "Add" opens
- * the picker of its group, and a pick opens the details dialog. "Edit" is a link to this page with
- * `?edit={id}`, and the page opens the details dialog of that Relationship. The picker stays
- * mounted after it closes, so the browser returns focus to "Add".
- */
-export const PersonRelationships = ({
-  actions,
-  edit,
-  email,
-  failed,
-  groups,
-  initial,
-  onSignOut,
-  people,
-  person,
-}: {
+type PersonRelationshipsProps = {
   email: string;
   initial: string;
   onSignOut: () => Promise<unknown>;
@@ -105,7 +87,28 @@ export const PersonRelationships = ({
       people?: undefined;
       person?: RelationshipsPerson;
     }
-)) => {
+);
+
+/**
+ * The Relationships page of a Person (PPL-02): three groups of Relationships, or the notice of a
+ * load that failed. The subtitle is the name and a save note, with the dates on a line below. A
+ * load that failed may have no `person`, so the subtitle is then the save note only. "Add" opens
+ * the picker of its group, and a pick opens the details dialog. "Edit" is a link to this page with
+ * `?edit={id}`, and the page opens the details dialog of that Relationship. The picker stays
+ * mounted after it closes, so the browser returns focus to "Add".
+ */
+export const PersonRelationships = ({
+  actions,
+  edit,
+  email,
+  failed,
+  groups,
+  initial,
+  onSignOut,
+  people,
+  person,
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
+}: PersonRelationshipsProps) => {
   const router = useRouter();
   const [adding, setAdding] = useState<RelationshipGroup>();
   const [open, setOpen] = useState(false);

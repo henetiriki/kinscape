@@ -69,6 +69,7 @@ export const MapFrame = ({
   children?: (phone: boolean) => ReactNode;
   details?: ReactNode;
   panel?: ReactNode;
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const phone = usePhone();
   const menu = (

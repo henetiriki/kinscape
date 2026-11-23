@@ -2,7 +2,7 @@
 
 - **Spec:** #1172
 - **Requirement IDs:** None. This Chore changes tooling only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ Step 3 says: "Move it into the tests that use it." Two tests import it: `relatio
 - **B.** Copy the list of eight codes into each test. Cost: two copies, and no check finds a new code that a copy misses.
 - **Other:** your own.
 
-Recommended: A, because one copy holds the codes and the type keeps them complete.
+**Answer: A** (@henetiriki)
 
 **D3 · Name the `@later` test in _Enforcement_** · Decides: Tech lead
 
@@ -30,7 +30,7 @@ Recommended: A, because one copy holds the codes and the type keeps them complet
 - **B.** Write only the text of step 6. Cost: no doc names the test of step 4.
 - **Other:** your own.
 
-Recommended: A, because the pattern-table rule asks for the test name.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

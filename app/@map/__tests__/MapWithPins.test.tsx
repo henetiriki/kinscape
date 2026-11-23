@@ -61,6 +61,7 @@ const pinOf = (id: number, from: string, to: null | string) => ({
   id: `01900000-0000-7000-b000-00000000000${id}`,
   latitude: -33.9,
   longitude: 18.4,
+  placeId: `01900000-0000-7000-a000-00000000000${id}`,
   qualifier: to === null ? 'EXACT' : 'FROM',
   span: { validFrom: toDay(from), validTo: to === null ? null : toDay(to) },
 });
@@ -239,6 +240,7 @@ describe('the Pin popup', () => {
     address: 'Farm Example, district Example',
     eventType: 'residence',
     givenNames: 'Example',
+    precision: 'farm',
     surname: 'Person',
   };
   const answer = (url: string) => {
@@ -402,6 +404,26 @@ describe('the Pin popup', () => {
 
     addPin.mockReturnValue({});
     expect(() => act(() => lastShell().onOpenPin(SECOND.id))).not.toThrow();
+  });
+
+  // PIN-01, PIN-06
+  it('gives "Add a pin here" the Place and precision of the Pin, and closes the popup', async () => {
+    const addHere = vi.fn();
+
+    addPin.mockReturnValue({ addHere });
+    fetchStub.mockImplementation(answer);
+    renderMap();
+    await click(FIRST.id);
+    await screen.findByRole('heading', { name: 'Example Person' });
+    fireEvent.click(screen.getByRole('button', { name: 'Add a pin here' }));
+
+    expect(addHere).toHaveBeenCalledExactlyOnceWith({
+      id: FIRST.placeId,
+      latitude: FIRST.latitude,
+      longitude: FIRST.longitude,
+      precision: 'farm',
+    });
+    expect(screen.queryByRole('dialog')).toBeNull();
   });
 
   // NFR-05

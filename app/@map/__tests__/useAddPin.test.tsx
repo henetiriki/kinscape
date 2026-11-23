@@ -9,12 +9,15 @@ vi.mock('@ks/features/people', () => ({
     onCancel: () => void;
     onSave: (input: unknown) => Promise<{ ok: boolean }>;
     onSaved: () => void;
+    place?: { id: string };
     point?: { latitude: number; longitude: number };
   }) => {
     form(props);
 
     return (
       <div>
+        <span data-testid='form-place'>{props.place?.id ?? ''}</span>
+        <input aria-label='Typed' defaultValue='' />
         <span data-testid='form-point'>
           {props.point
             ? `${props.point.latitude},${props.point.longitude}`
@@ -31,19 +34,39 @@ vi.mock('@ks/features/people', () => ({
   },
 }));
 
+import type { PlaceId } from '@ks/lib/domain/ids/types.ts';
+
 import { createPinAction } from '@ks/app/@map/actions';
 import { useAddPin } from '@ks/app/@map/useAddPin';
 
 // PIN-01, NFR-05
 const onSaved = vi.fn();
 
+const PLACE_1 = {
+  id: 'place-1' as PlaceId,
+  latitude: -29.12,
+  longitude: 26.21,
+  precision: 'farm',
+} as const;
+const PLACE_2 = {
+  ...PLACE_1,
+  id: 'place-2' as PlaceId,
+  precision: 'town',
+} as const;
+
 const Probe = () => {
-  const { action, click, closeClick, onEmptyClick, panel } = useAddPin({
-    onSaved,
-  });
+  const { action, addHere, click, closeClick, onEmptyClick, panel } = useAddPin(
+    { onSaved }
+  );
 
   return (
     <>
+      <button onClick={() => addHere?.(PLACE_1)} type='button'>
+        Here 1
+      </button>
+      <button onClick={() => addHere?.(PLACE_2)} type='button'>
+        Here 2
+      </button>
       <div data-testid='action'>{action}</div>
       <div data-testid='panel'>{panel}</div>
       <div data-testid='click'>
@@ -254,6 +277,60 @@ it('gives the button again after the panel of a click closes', () => {
   expect(screen.getByRole('button', { name: 'Add a pin' })).toBeInstanceOf(
     HTMLElement
   );
+});
+
+// PIN-01, PIN-06
+it('opens the panel at an existing Place from addHere, and gives no button', () => {
+  render(<Probe />);
+  fireEvent.click(screen.getByRole('button', { name: 'Here 1' }));
+
+  expect(slot('form-place').textContent).toBe('place-1');
+  expect(slot('action').textContent).toBe('');
+});
+
+// PIN-01, PIN-06
+it('keeps the Place and opens no popup on a click on empty map', () => {
+  render(<Probe />);
+  fireEvent.click(screen.getByRole('button', { name: 'Here 1' }));
+  emptyClick();
+
+  expect(slot('form-place').textContent).toBe('place-1');
+  expect(slot('form-point').textContent).toBe('');
+  expect(slot('click').textContent).toBe('');
+});
+
+// PIN-01, PIN-06
+it('switches to another Place and clears the typed values', () => {
+  render(<Probe />);
+  fireEvent.click(screen.getByRole('button', { name: 'Here 1' }));
+  fireEvent.change(screen.getByLabelText('Typed'), {
+    target: { value: 'typed' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Here 2' }));
+
+  expect(slot('form-place').textContent).toBe('place-2');
+  expect((screen.getByLabelText('Typed') as HTMLInputElement).value).toBe('');
+});
+
+// PIN-01, PIN-06
+it('clears the typed values for the same Place chosen again', () => {
+  render(<Probe />);
+  fireEvent.click(screen.getByRole('button', { name: 'Here 1' }));
+  fireEvent.change(screen.getByLabelText('Typed'), {
+    target: { value: 'typed' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Here 1' }));
+
+  expect((screen.getByLabelText('Typed') as HTMLInputElement).value).toBe('');
+});
+
+// PIN-01
+it('closes the click popup when addHere opens the panel', () => {
+  render(<Probe />);
+  emptyClick();
+  fireEvent.click(screen.getByRole('button', { name: 'Here 1' }));
+
+  expect(slot('click').textContent).toBe('');
 });
 
 // NFR-05

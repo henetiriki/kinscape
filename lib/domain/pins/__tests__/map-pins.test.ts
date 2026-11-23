@@ -46,6 +46,7 @@ describe('mapPins', () => {
       'id',
       'latitude',
       'longitude',
+      'placeId',
       'qualifier',
       'span',
     ]);
@@ -55,6 +56,7 @@ describe('mapPins', () => {
       id: id('a1'),
       latitude: -33.9,
       longitude: 18.4,
+      placeId: id('b1'),
       qualifier: 'EXACT',
       span: { validFrom: toDay('1850-03-04'), validTo: toDay('1850-03-05') },
     });
@@ -74,6 +76,7 @@ describe('mapPins', () => {
       'id',
       'latitude',
       'longitude',
+      'placeId',
       'qualifier',
       'span',
     ]);
@@ -106,6 +109,7 @@ describe('mapPins', () => {
     );
 
     expect(mapped).toHaveLength(2);
+    expect(mapped[0]!.placeId).toBe(mapped[1]!.placeId);
     expect(mapped[0]).toMatchObject({ latitude: -33.9, longitude: 18.4 });
     expect(mapped[1]).toMatchObject({ latitude: -33.9, longitude: 18.4 });
   });

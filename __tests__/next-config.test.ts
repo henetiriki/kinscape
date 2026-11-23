@@ -28,7 +28,7 @@ describe('next.config', () => {
       },
       {
         headers: [{ key: 'Cache-Control', value: 'private, no-store' }],
-        source: '/screens/pin-form',
+        source: '/screens/pin-form/:path*',
       },
       {
         headers: [{ key: 'Cache-Control', value: 'private, no-store' }],

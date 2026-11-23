@@ -136,6 +136,10 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
     await showTop(page);
     await page.getByRole('button', { name: 'Save' }).blur();
   },
+  // The page opens the panel at a synthetic Place. The board shows the Persons loaded.
+  'pin-form-existing-place': async page => {
+    await page.getByRole('combobox', { name: 'Person' }).waitFor();
+  },
   // The Researcher Tree has no Person.
   'pin-form-no-people': async page => {
     await page.getByRole('button', { name: 'Add a pin' }).click();

@@ -23,6 +23,7 @@ export const mapPins = (pins: SpannedPin[], places: Place[]): MapPin[] => {
             id: pin.id,
             latitude: place.latitude,
             longitude: place.longitude,
+            placeId: place.id,
             qualifier: pin.date.qualifier,
             span: pin.span,
           },

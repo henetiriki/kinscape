@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { PersonView } from '@ks/lib/domain/persons/types.ts';
 import type { Pin } from '@ks/lib/domain/pins/types.ts';
+import type { Place } from '@ks/lib/domain/places/types.ts';
 
 import { fuzzyDateOf } from '@ks/lib/domain/dates/fuzzy-date.mts';
 import {
@@ -35,20 +36,30 @@ const person = {
   version: 4,
 } as unknown as PersonView;
 
+const place: Place = {
+  id: parsePlaceId('01900000-0000-7000-a000-0000000000c1')!,
+  latitude: -29.12,
+  longitude: 26.21,
+  precision: 'town',
+  version: 3,
+};
+
 describe('pinDetails', () => {
-  it('holds only the names, the event type and the address', () => {
-    const details = pinDetails(pin, person);
+  it('holds only the names, the event type, the address and the precision of the Place', () => {
+    const details = pinDetails(pin, person, place);
 
     expect(Object.keys(details).sort()).toEqual([
       'address',
       'eventType',
       'givenNames',
+      'precision',
       'surname',
     ]);
     expect(details).toEqual({
       address: '1 Church Street',
       eventType: 'baptism',
       givenNames: 'Ana Maria',
+      precision: 'town',
       surname: 'Smit',
     });
   });

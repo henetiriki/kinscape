@@ -66,9 +66,10 @@ const nextConfig: NextConfig = {
       source: '/',
     },
     {
-      // The dev page of the add-pin boards mounts the same action.
+      // The dev pages of the add-pin boards mount the same action. `:path*` covers `/screens/pin-form`
+      // and `/screens/pin-form/existing-place`.
       headers: [{ key: 'Cache-Control', value: 'private, no-store' }],
-      source: '/screens/pin-form',
+      source: '/screens/pin-form/:path*',
     },
     {
       // Tree data: no shared cache may keep it (docs/security.md). `:path*` covers `/people`,

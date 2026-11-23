@@ -20,9 +20,9 @@ import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
 // there.
 
 const SEEDED = 9_995;
-// The save tests of pin-form.spec.ts and map-click.spec.ts add one Pin each to the same Tree, so a
-// count reads up to two more once they ran. The seed leaves room for five more Pins.
-const ALL = `(?:${SEEDED}|${SEEDED + 1}|${SEEDED + 2})`;
+// The save tests of pin-form.spec.ts, map-click.spec.ts and this file add one Pin each to the same
+// Tree, so a count reads up to three more once they ran. The seed leaves room for five more Pins.
+const ALL = `(?:${SEEDED}|${SEEDED + 1}|${SEEDED + 2}|${SEEDED + 3})`;
 
 const hasImage = (page: Page, eventType: string) =>
   page.evaluate(
@@ -250,6 +250,58 @@ test('with the panel open, a click on a Pin keeps the coordinates', async ({
   await page.mouse.click(pin.x, pin.y);
   await expect(popup(page)).toBeVisible();
   await expect(coordinates(page)).toHaveValue(before);
+});
+
+// PIN-01, PIN-06: "Add a pin here" fixes the Place, and a save joins the Place.
+test('"Add a pin here" saves a Pin at the Place of the Pin', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await goTo(page, '1950');
+
+  const pin = await pickPin(page);
+
+  await page.mouse.click(pin.x, pin.y);
+  await popup(page).getByRole('heading', { level: 3 }).waitFor();
+  await popup(page).getByRole('button', { name: 'Add a pin here' }).click();
+  await expect(popup(page)).toBeHidden();
+  await expect(coordinates(page)).toBeDisabled();
+  await expect(coordinates(page)).toHaveValue(/^-?\d+\.\d{6}, -?\d+\.\d{6}$/);
+  await expect(page.getByLabel('Precision')).toBeDisabled();
+
+  const placeId = async () =>
+    (
+      (await (await page.request.get('/data/pins')).json()) as {
+        id: string;
+        placeId: string;
+      }[]
+    ).find(({ id }) => id === pin.id)!.placeId;
+  const atPlace = async () => {
+    const id = await placeId();
+    const all = (await (await page.request.get('/data/pins')).json()) as {
+      placeId: string;
+    }[];
+
+    return all.filter(({ placeId: other }) => other === id).length;
+  };
+  const places = async () =>
+    new Set(
+      (
+        (await (await page.request.get('/data/pins')).json()) as {
+          placeId: string;
+        }[]
+      ).map(({ placeId: id }) => id)
+    ).size;
+  const before = { atPlace: await atPlace(), places: await places() };
+
+  await page.getByRole('combobox', { name: 'Person' }).click();
+  await page.getByRole('option').first().click();
+  await page.getByLabel('Event type').selectOption('residence');
+  await page.getByLabel('Date', { exact: true }).fill('1950');
+  await page.getByRole('button', { name: 'Save' }).click();
+  await expect(page.getByRole('form', { name: 'Add a pin' })).toBeHidden();
+  await expect.poll(atPlace).toBe(before.atPlace + 1);
+  expect(await places()).toBe(before.places);
 });
 
 // PIN-02, MAP-02: the Pins row hides the Pin, so the popup closes.

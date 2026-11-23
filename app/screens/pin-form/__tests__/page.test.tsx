@@ -9,6 +9,9 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ prefetch: vi.fn(), push: vi.fn() }),
 }));
 
+import ExistingPlacePage, {
+  metadata as existingMetadata,
+} from '@ks/app/screens/pin-form/existing-place/page';
 import Page, { metadata } from '@ks/app/screens/pin-form/page';
 
 // PIN-01. Data is synthetic.
@@ -30,6 +33,30 @@ it('puts the panel of the hook in the place of the tabbed panel', async () => {
   expect(
     screen.queryByRole('complementary', { name: 'Layers and filters' })
   ).toBeNull();
+});
+
+// PIN-01, PIN-06
+it('opens the panel at a synthetic Place on the existing-place page', async () => {
+  const addHere = vi.fn();
+
+  addPin.mockReturnValue({ addHere });
+  render(await ExistingPlacePage());
+
+  expect(addHere).toHaveBeenCalledExactlyOnceWith({
+    id: '01900000-0000-7000-a000-0000000000c1',
+    latitude: -29.12,
+    longitude: 26.21,
+    precision: 'farm',
+  });
+  expect(existingMetadata.title).toBe('Add a pin at a Place');
+});
+
+// NFR-05
+it('opens nothing at a Place when the hook gives no addHere', async () => {
+  addPin.mockReturnValue({});
+  render(await ExistingPlacePage());
+
+  screen.getByTestId('search-slot');
 });
 
 it('titles the page', () => {

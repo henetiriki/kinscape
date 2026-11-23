@@ -287,7 +287,12 @@ test('"Add a pin here" saves a Pin at the Place of the Pin', async ({
   const before = await atPlace();
 
   await page.getByRole('combobox', { name: 'Person' }).click();
-  await page.getByRole('option').first().click();
+  // The Event type select has options too, so the pick names the Person list.
+  await page
+    .getByRole('listbox', { name: 'People' })
+    .getByRole('option')
+    .first()
+    .click();
   await page.getByLabel('Event type').selectOption('residence');
   await page.getByLabel('Date', { exact: true }).fill('1950');
   await page.getByRole('button', { name: 'Save' }).click();

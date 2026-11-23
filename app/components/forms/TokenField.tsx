@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { KeyboardEvent, ReactNode } from 'react';
 
 import { useId, useRef, useState } from 'react';
 
@@ -11,6 +11,87 @@ import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
 
 import styles from '@ks/app/components/forms/TextField.module.css';
+
+const useTokens = (
+  defaultValues: string[],
+  controlled: string[] | undefined,
+  onChange: ((values: string[]) => void) | undefined
+) => {
+  const input = useRef<HTMLInputElement>(null);
+  const [own, setValues] = useState(defaultValues);
+  const values = controlled ?? own;
+
+  const change = (next: string[]) => {
+    setValues(next);
+    onChange?.(next);
+  };
+
+  const add = () => {
+    const text = input.current!.value.trim();
+
+    input.current!.value = '';
+    if (text && !values.some(v => v.toLowerCase() === text.toLowerCase()))
+      change([...values, text]);
+  };
+
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      add();
+    } else if (
+      event.key === 'Backspace' &&
+      !event.currentTarget.value &&
+      values.length
+    )
+      change(values.slice(0, -1));
+  };
+
+  const remove = (value: string) => {
+    change(values.filter(v => v !== value));
+    input.current!.focus();
+  };
+
+  return { input, onKeyDown, remove, values };
+};
+
+const Chips = ({
+  disabled,
+  remove,
+  values,
+}: {
+  disabled?: boolean;
+  remove: (value: string) => void;
+  values: string[];
+}) =>
+  values.map(value => (
+    <RemovableChip
+      disabled={disabled}
+      key={value}
+      onRemove={() => remove(value)}
+      value={value}
+    />
+  ));
+
+const Message = ({
+  error,
+  helper,
+  id,
+}: {
+  error?: ReactNode;
+  helper?: ReactNode;
+  id: string;
+}) =>
+  error ? (
+    <Text id={id} role='alert' tone='error' variant='small'>
+      {error}
+    </Text>
+  ) : (
+    helper && (
+      <span className={styles.panelHelper} id={id}>
+        {helper}
+      </span>
+    )
+  );
 
 /** A field of removable chips with an input that adds the next one on Enter. */
 export const TokenField = ({
@@ -35,27 +116,15 @@ export const TokenField = ({
   state?: ControlState;
   /** When given, the field shows these and only reports changes; the caller holds them. */
   values?: string[];
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const id = useId();
-  const input = useRef<HTMLInputElement>(null);
-  const [own, setValues] = useState(defaultValues);
-  const values = controlled ?? own;
+  const { input, onKeyDown, remove, values } = useTokens(
+    defaultValues,
+    controlled,
+    onChange
+  );
   const helperId = `${id}-helper`;
   const message = error ?? helper;
-
-  const change = (next: string[]) => {
-    setValues(next);
-    onChange?.(next);
-  };
-
-  const add = () => {
-    const text = input.current!.value.trim();
-
-    input.current!.value = '';
-    if (text && !values.some(v => v.toLowerCase() === text.toLowerCase()))
-      change([...values, text]);
-  };
 
   return (
     <div className={styles.field}>
@@ -67,51 +136,21 @@ export const TokenField = ({
         data-mark={error ? 'error' : undefined}
         data-state={state}
         role='group'>
-        {values.map(value => (
-          <RemovableChip
-            disabled={disabled}
-            key={value}
-            onRemove={() => {
-              change(values.filter(v => v !== value));
-              input.current!.focus();
-            }}
-            value={value}
-          />
-        ))}
+        <Chips disabled={disabled} remove={remove} values={values} />
         <input
           aria-describedby={message ? helperId : undefined}
           aria-invalid={error ? true : undefined}
           className={styles.input}
           disabled={disabled}
           id={id}
-          onKeyDown={event => {
-            if (event.key === 'Enter') {
-              event.preventDefault();
-              add();
-            } else if (
-              event.key === 'Backspace' &&
-              !event.currentTarget.value &&
-              values.length
-            )
-              change(values.slice(0, -1));
-          }}
+          onKeyDown={onKeyDown}
           placeholder={placeholder}
           ref={input}
           type='text'
         />
         {error && <Icon name='error' />}
       </span>
-      {error ? (
-        <Text id={helperId} role='alert' tone='error' variant='small'>
-          {error}
-        </Text>
-      ) : (
-        helper && (
-          <span className={styles.panelHelper} id={helperId}>
-            {helper}
-          </span>
-        )
-      )}
+      <Message error={error} helper={helper} id={helperId} />
     </div>
   );
 };

@@ -1,5 +1,7 @@
 'use client';
 
+import type { ReactNode } from 'react';
+
 import { useId } from 'react';
 
 import type { ChainLevel, PopupPin } from '@ks/app/components/overlays/types';
@@ -53,6 +55,81 @@ const Pins = ({ pins }: { pins: PopupPin[] }) => (
   </>
 );
 
+const Header = ({
+  coordinates,
+  overlineId,
+  place,
+  year,
+}: { overlineId: string } & Pick<
+  PopupArgs,
+  'coordinates' | 'place' | 'year'
+>) => (
+  <div className={styles.header}>
+    <Text id={overlineId} variant='overline'>
+      On this spot in {year}
+    </Text>
+    <div className={styles.place}>
+      <Text as='h3' variant='h3'>
+        {place}
+      </Text>
+      <Text variant='mono'>{coordinates}</Text>
+    </div>
+  </div>
+);
+
+const Chain = ({ chain }: { chain: ChainLevel[] }) => (
+  <ol className={styles.chain}>
+    {chain.map(({ detail, level, name }) => (
+      <li key={level}>
+        <Text variant='overline'>{level}</Text>
+        <span className={styles.name}>
+          <span className={styles.value}>{name}</span>
+          {detail && <Text variant='caption'>{detail}</Text>}
+        </span>
+      </li>
+    ))}
+  </ol>
+);
+
+const Sheet = ({
+  children,
+  overlineId,
+  pins,
+}: {
+  children: ReactNode;
+  overlineId: string;
+  pins: PopupPin[];
+}) => (
+  <section aria-labelledby={overlineId} className={styles.sheet}>
+    <span aria-hidden='true' className={styles.handle} data-testid='handle' />
+    {children}
+    <Pins pins={pins} />
+    <Text variant='small'>
+      Look-up only on a phone. Add people and pins on a tablet or computer.
+    </Text>
+  </section>
+);
+
+const Inset = ({ pins }: { pins: PopupPin[] }) =>
+  pins.length > 0 && (
+    <div className={styles.inset}>
+      <Text variant='overline'>
+        {pins.length} {pins.length === 1 ? 'pin' : 'pins'} here
+      </Text>
+      <Pins pins={pins} />
+    </div>
+  );
+
+const copyChain =
+  (chain: ChainLevel[], onCopied?: (ok: boolean) => void) => async () => {
+    try {
+      await navigator.clipboard.writeText(chainText(chain));
+      onCopied?.(true);
+    } catch {
+      onCopied?.(false);
+    }
+  };
+
 /** "What was this spot part of on the map date?": the Jurisdiction chain and the pins there. */
 export const Popup = ({
   chain,
@@ -63,63 +140,27 @@ export const Popup = ({
   pins,
   place,
   year,
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }: PopupArgs) => {
   const overlineId = useId();
-  const floating = form === 'floating';
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(chainText(chain));
-      onCopied?.(true);
-    } catch {
-      onCopied?.(false);
-    }
-  };
+  const copy = copyChain(chain, onCopied);
 
   const header = (
-    <div className={styles.header}>
-      <Text id={overlineId} variant='overline'>
-        On this spot in {year}
-      </Text>
-      <div className={styles.place}>
-        <Text as='h3' variant='h3'>
-          {place}
-        </Text>
-        <Text variant='mono'>{coordinates}</Text>
-      </div>
-    </div>
+    <Header
+      coordinates={coordinates}
+      overlineId={overlineId}
+      place={place}
+      year={year}
+    />
   );
 
-  const list = (
-    <ol className={styles.chain}>
-      {chain.map(({ detail, level, name }) => (
-        <li key={level}>
-          <Text variant='overline'>{level}</Text>
-          <span className={styles.name}>
-            <span className={styles.value}>{name}</span>
-            {detail && <Text variant='caption'>{detail}</Text>}
-          </span>
-        </li>
-      ))}
-    </ol>
-  );
+  const list = <Chain chain={chain} />;
 
-  if (!floating) {
+  if (form !== 'floating') {
     return (
-      <section aria-labelledby={overlineId} className={styles.sheet}>
-        <span
-          aria-hidden='true'
-          className={styles.handle}
-          data-testid='handle'
-        />
+      <Sheet overlineId={overlineId} pins={pins}>
         {header}
         {list}
-        <Pins pins={pins} />
-        <Text variant='small'>
-          Look-up only on a phone. Add people and pins on a tablet or computer.
-        </Text>
-      </section>
+      </Sheet>
     );
   }
 
@@ -145,14 +186,7 @@ export const Popup = ({
         </button>
       </div>
       {list}
-      {pins.length > 0 && (
-        <div className={styles.inset}>
-          <Text variant='overline'>
-            {pins.length} {pins.length === 1 ? 'pin' : 'pins'} here
-          </Text>
-          <Pins pins={pins} />
-        </div>
-      )}
+      <Inset pins={pins} />
       <Button icon='copy' onClick={copy} size='xs'>
         Copy chain
       </Button>

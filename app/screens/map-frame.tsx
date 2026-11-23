@@ -53,6 +53,43 @@ export const AtPoint = ({
   </div>
 );
 
+const Dock = ({ details, phone }: { details?: ReactNode; phone: boolean }) => (
+  <DateDock
+    contestedCount={phone ? undefined : CONTESTED_COUNT}
+    contestedYears={phone ? undefined : CONTESTED_YEARS}
+    day={MAP_DATE}
+    details={phone ? details : undefined}
+    epochs={phone ? undefined : EPOCHS}
+    lastDay={TODAY}
+    onChange={noop}
+    onPlay={noop}
+    sheet={
+      phone
+        ? { expanded: details !== undefined, onExpandedChange: noop }
+        : undefined
+    }
+  />
+);
+
+const LayersPanel = () => (
+  <Panel
+    bodyId='map-panel-body'
+    end={<Legend />}
+    gap={14}
+    label='Layers and filters'
+    onSelect={noop}
+    selected='layers'
+    tabs={panelTabs('map-panel-body')}>
+    {LAYER_GROUPS.map(({ heading, rows }) => (
+      <LayerGroup
+        heading={heading}
+        key={heading}
+        rows={rows.map(row => ({ ...row, onChange: noop }))}
+      />
+    ))}
+  </Panel>
+);
+
 /**
  * The map screen's frame over the sea colour that stands in for the map, as the Pin boards draw it.
  * `children` sits on the map; on a phone, `details` fills the expanded Map date sheet. On a desktop,
@@ -69,7 +106,6 @@ export const MapFrame = ({
   children?: (phone: boolean) => ReactNode;
   details?: ReactNode;
   panel?: ReactNode;
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const phone = usePhone();
   const menu = (
@@ -80,23 +116,7 @@ export const MapFrame = ({
       phone={phone}
     />
   );
-  const dock = (
-    <DateDock
-      contestedCount={phone ? undefined : CONTESTED_COUNT}
-      contestedYears={phone ? undefined : CONTESTED_YEARS}
-      day={MAP_DATE}
-      details={phone ? details : undefined}
-      epochs={phone ? undefined : EPOCHS}
-      lastDay={TODAY}
-      onChange={noop}
-      onPlay={noop}
-      sheet={
-        phone
-          ? { expanded: details !== undefined, onExpandedChange: noop }
-          : undefined
-      }
-    />
-  );
+  const dock = <Dock details={details} phone={phone} />;
 
   return (
     // The sea colour sits on its own layer, as the map canvas does.
@@ -122,26 +142,7 @@ export const MapFrame = ({
           {...accountSlots(phone, menu)}
           action={action}
           dock={dock}
-          panel={
-            panel ?? (
-              <Panel
-                bodyId='map-panel-body'
-                end={<Legend />}
-                gap={14}
-                label='Layers and filters'
-                onSelect={noop}
-                selected='layers'
-                tabs={panelTabs('map-panel-body')}>
-                {LAYER_GROUPS.map(({ heading, rows }) => (
-                  <LayerGroup
-                    heading={heading}
-                    key={heading}
-                    rows={rows.map(row => ({ ...row, onChange: noop }))}
-                  />
-                ))}
-              </Panel>
-            )
-          }
+          panel={panel ?? <LayersPanel />}
           search={<SearchBar form='bar' />}
           zoom={<ZoomControls />}>
           {children?.(phone)}

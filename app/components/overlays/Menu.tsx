@@ -111,14 +111,7 @@ type AccountMenuProps = Pick<MenuPanelArgs, 'email' | 'footer' | 'groups'> & {
   onSelect: (id: string) => void;
 };
 
-/** The Avatar and its Menu, 8 below it and right-aligned. */
-export const Menu = ({
-  form,
-  initial,
-  onSelect,
-  ...panel
-  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
-}: AccountMenuProps) => {
+const useMenu = () => {
   const [open, setOpen] = useState(false);
   const anchor = useRef<HTMLDivElement>(null);
   const menu = useRef<HTMLDivElement>(null);
@@ -161,6 +154,18 @@ export const Menu = ({
       ].focus();
     }
   };
+
+  return { anchor, closeToAvatar, menu, onKeyDown, open, setOpen };
+};
+
+/** The Avatar and its Menu, 8 below it and right-aligned. */
+export const Menu = ({
+  form,
+  initial,
+  onSelect,
+  ...panel
+}: AccountMenuProps) => {
+  const { anchor, closeToAvatar, menu, onKeyDown, open, setOpen } = useMenu();
 
   return (
     <div

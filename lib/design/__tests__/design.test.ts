@@ -21,6 +21,20 @@ it.each([OUTPUTS.css, OUTPUTS.json])(
   }
 );
 
+// The CSS leaves out most map tokens, so a reference to one would name no variable.
+it('defines each var() of app/tokens.css there, or as a next/font variable', () => {
+  const css = read(OUTPUTS.css);
+  const defined = new Set(
+    [...css.matchAll(/^\s+(--[\w-]+):/gm)].map(([, name]) => name)
+  );
+  const used = [...css.matchAll(/var\((--[\w-]+)\)/g)].map(([, name]) => name);
+
+  expect(used.length).toBeGreaterThan(0);
+  expect(
+    used.filter(name => !defined.has(name) && !name.startsWith('--next-font-'))
+  ).toEqual([]);
+});
+
 it('has design/kinscape.tokens.json follow the DTCG 2025.10 rules', () => {
   expect(dtcgProblems(JSON.parse(read('design/kinscape.tokens.json')))).toEqual(
     []

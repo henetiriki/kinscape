@@ -4,6 +4,10 @@ import type { Tree } from '#ks/design/types.ts';
 
 export const REFERENCE = /^\{([^{}]+)\}$/;
 
+/** The token path that a `{group.name}` value refers to, or `undefined` for any other value. */
+export const referenceIn = (value: unknown): string | undefined =>
+  typeof value === 'string' ? REFERENCE.exec(value)?.[1] : undefined;
+
 /** A colour token as `#rrggbb`. */
 export const HEX_COLOUR = /^#([0-9a-f]{6})$/i;
 

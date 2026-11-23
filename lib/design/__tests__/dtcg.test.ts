@@ -170,19 +170,65 @@ describe('dtcgProblems', () => {
           ghost: { $type: 'color', $value: '{colour.gone}' },
           plain: { $value: ink },
         },
-        shadow: {
-          thumb: {
-            $type: 'shadow',
-            $value: [{ color: '{colour.missing}' }],
-          },
-        },
       })
     ).toEqual([
       'colour.a.b: the name has ".", "{" or "}"',
       'colour.c{d}: the name has ".", "{" or "}"',
       'colour.ghost: {colour.gone} names no token',
       'colour.plain: no $type',
-      'shadow.thumb: {colour.missing} names no token',
+    ]);
+  });
+
+  // A value in the old shape, or a null, must fail the check and not the build.
+  it('names a member that is not a group or a token, and a null $value', () => {
+    expect(
+      dtcgProblems({
+        colour: {
+          brand: '#264f29',
+          empty: null,
+          ink: { $type: 'color', $value: null },
+        },
+      })
+    ).toEqual([
+      'colour.brand: not a group or a token',
+      'colour.empty: not a group or a token',
+      'colour.ink: $value is null',
+    ]);
+  });
+
+  it('names a reference inside a composite value', () => {
+    expect(
+      dtcgProblems({
+        colour: { ink: { $type: 'color', $value: ink } },
+        shadow: {
+          thumb: {
+            $type: 'shadow',
+            $value: [{ blur: px(2), color: '{colour.ink}' }],
+          },
+        },
+      })
+    ).toEqual(['shadow.thumb: {colour.ink} is inside a composite value']);
+  });
+
+  // design/tokens.json holds one note at each path.
+  it('names a note at the root, and a group note over a token note', () => {
+    expect(
+      dtcgProblems({
+        $description: 'The tokens.',
+        type: {
+          body: {
+            $description: 'Panels and popups.',
+            size: {
+              $description: 'Body size.',
+              $type: 'dimension',
+              $value: px(15),
+            },
+          },
+        },
+      })
+    ).toEqual([
+      '(root): a note at the root',
+      'type.body: a group note and a token note under it',
     ]);
   });
 });

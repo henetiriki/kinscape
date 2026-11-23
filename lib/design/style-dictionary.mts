@@ -1,4 +1,4 @@
-/** Style Dictionary for KinScape: the DTCG token file in, `app/tokens.css` and the old token tree out. */
+/** Style Dictionary for KinScape: the DTCG token file in, `app/tokens.css` and `design/tokens.json` out. */
 
 import type {
   DesignTokens,
@@ -8,7 +8,9 @@ import type {
 
 import StyleDictionary from 'style-dictionary';
 
-import { REFERENCE } from '#ks/design/tokens.mts';
+import type { Tree } from '#ks/design/types.ts';
+
+import { referenceIn } from '#ks/design/tokens.mts';
 import {
   cssName,
   fontStack,
@@ -20,13 +22,8 @@ import { cssText, fontStackOf } from '#ks/lib/design/dtcg.mts';
 const HEADER =
   '/* Generated from design/kinscape.tokens.json by `npm run tokens`. Do not edit. */';
 
-const referenceOf = (token: TransformedToken): string | undefined => {
-  const original: unknown = token.original.$value;
-
-  return typeof original === 'string'
-    ? REFERENCE.exec(original)?.[1]
-    : undefined;
-};
+const referenceOf = (token: TransformedToken): string | undefined =>
+  referenceIn(token.original.$value);
 
 /** A `map` token goes to the CSS only if HTML markers draw with it too. */
 const inCss = ({ path }: TransformedToken): boolean =>
@@ -60,8 +57,6 @@ const css = ({ dictionary }: FormatFnArguments): string =>
     '',
   ].join('\n');
 
-type Tree = { [key: string]: number | string | Tree };
-
 const put = (tree: Tree, path: string[], value: number | string): void => {
   const node = path
     .slice(0, -1)
@@ -70,7 +65,7 @@ const put = (tree: Tree, path: string[], value: number | string): void => {
   node[path.at(-1)!] = value;
 };
 
-/** The value the old token tree holds: a reference as text, a `map` number as a number, else the CSS text. */
+/** The value that `design/tokens.json` holds: a reference as text, a `map` number as a number, else the CSS text. */
 const oldValue = (token: TransformedToken): number | string => {
   const original: unknown = token.original.$value;
 
@@ -87,7 +82,7 @@ const oldValue = (token: TransformedToken): number | string => {
     : String(token.$value);
 };
 
-/** Each `$description` of a group or a token, in file order, so `notes` keeps the order of the old file. */
+/** Each `$description` of a group or a token, in file order. The design system bundle embeds `design/tokens.json`, so its key order must not change. */
 const collectNotes = (
   node: Record<string, unknown>,
   path: string[],
@@ -97,13 +92,13 @@ const collectNotes = (
     if (key === '$description') {
       put(notes, path, String(child));
     } else if (!key.startsWith('$')) {
-      // A DTCG name always holds a group or a token, so `dtcgProblems` passed an object here.
+      // `dtcgProblems` ran first and found no member that is not a group or a token.
       collectNotes(child as Record<string, unknown>, [...path, key], notes);
     }
   }
 };
 
-/** `design/tokens.json` as it was before the DTCG file: the tokens, then `notes` from each `$description`. */
+/** `design/tokens.json` for its direct readers: the tokens, then `notes` from each `$description`. */
 const tokensJson =
   (source: Record<string, unknown>) =>
   ({ dictionary }: FormatFnArguments): string => {
@@ -119,7 +114,7 @@ const tokensJson =
     return `${JSON.stringify({ ...tree, notes }, null, 2)}\n`;
   };
 
-/** The CSS file and the old token tree from the DTCG `tokens`, keyed by the destinations in `out`. */
+/** `app/tokens.css` and `design/tokens.json` from the DTCG `tokens`, keyed by the destinations in `out`. */
 export const buildTokens = async (
   tokens: DesignTokens,
   out: { css: string; json: string }

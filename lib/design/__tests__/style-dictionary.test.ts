@@ -50,8 +50,7 @@ const tokens = {
       weight: { $type: 'fontWeight', $value: 400 },
     },
   },
-  // A group may also set the type of its tokens.
-  z: { $type: 'number', menu: { $type: 'number', $value: 10 } },
+  z: { menu: { $type: 'number', $value: 10 } },
 };
 
 describe('buildTokens', () => {

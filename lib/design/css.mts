@@ -29,8 +29,8 @@ export const fontStack = (stack: string): string => {
 
 /**
  * The `map` tokens that HTML markers on the map draw with too: the halo of a Pin and the ring of
- * the open Pin. The map layers read them as values, and the count marker and the fan of Pins as
- * CSS variables, so each value lives in one place.
+ * the open Pin. The map layers read them as values, and the count marker and the fan of Pins read
+ * them as CSS variables. Thus each value lives in one place.
  */
 export const MAP_SHARED = ['pin-halo.colour', 'pin-halo.opacity', 'selected'];
 

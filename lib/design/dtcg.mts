@@ -9,7 +9,7 @@ import type {
   DtcgTransition,
 } from '#ks/lib/design/types.ts';
 
-import { hexChannels, isTree, REFERENCE } from '#ks/design/tokens.mts';
+import { hexChannels, isTree, referenceIn } from '#ks/design/tokens.mts';
 
 /** A see-through colour is `rgb(r g b / a)`, the form the design export reads. */
 export const cssColour = (colour: DtcgColour): string => {
@@ -119,49 +119,94 @@ export const cssText = ({ $type, $value, path }: DtcgToken): string => {
 
 type Leaf = { path: string[]; token: Record<string, unknown> };
 
-const tokensIn = (node: Record<string, unknown>, path: string[]): Leaf[] =>
-  Object.entries(node).flatMap(([key, child]): Leaf[] => {
-    if (key.startsWith('$') || !isTree(child)) {
-      return [];
-    }
-
-    const at = [...path, key];
-
-    return '$value' in child
-      ? [{ path: at, token: child }]
-      : tokensIn(child, at);
-  });
+/** The tokens that a walk found, and the problems on its way. */
+type Walk = { leaves: Leaf[]; problems: string[] };
 
 const BAD_NAME = /[.{}]/;
 
-const referencesIn = (value: unknown): string[] => {
-  if (typeof value === 'string') {
-    const reference = REFERENCE.exec(value)?.[1];
+const hasNote = (node: Record<string, unknown>): boolean =>
+  '$description' in node;
 
-    return reference === undefined ? [] : [reference];
-  }
+const walk = (node: Record<string, unknown>, path: string[]): Walk =>
+  Object.entries(node).reduce<Walk>(
+    (found, [key, child]) => {
+      if (key.startsWith('$')) {
+        return found;
+      }
 
-  return isTree(value) ? Object.values(value).flatMap(referencesIn) : [];
+      const at = [...path, key];
+
+      if (!isTree(child)) {
+        found.problems.push(`${at.join('.')}: not a group or a token`);
+
+        return found;
+      }
+
+      if ('$value' in child) {
+        found.leaves.push({ path: at, token: child });
+
+        return found;
+      }
+
+      const inner = walk(child, at);
+
+      // The notes of design/tokens.json hold one text at each path, so a group note hides the notes under it.
+      if (hasNote(child) && inner.leaves.some(({ token }) => hasNote(token))) {
+        found.problems.push(
+          `${at.join('.')}: a group note and a token note under it`
+        );
+      }
+
+      found.leaves.push(...inner.leaves);
+      found.problems.push(...inner.problems);
+
+      return found;
+    },
+    { leaves: [], problems: [] }
+  );
+
+/** The references at any depth inside a composite value: an object or a list. */
+const nestedReferences = (value: unknown): string[] =>
+  isTree(value)
+    ? Object.values(value).flatMap(child => {
+        const reference = referenceIn(child);
+
+        return reference === undefined ? nestedReferences(child) : [reference];
+      })
+    : [];
+
+const tokenProblems = ({ path, token }: Leaf, names: Set<string>): string[] => {
+  const name = path.join('.');
+  const reference = referenceIn(token.$value);
+
+  return [
+    ...(path.some(key => BAD_NAME.test(key))
+      ? [`${name}: the name has ".", "{" or "}"`]
+      : []),
+    ...(token.$value === null ? [`${name}: $value is null`] : []),
+    ...(reference === undefined || names.has(reference)
+      ? []
+      : [`${name}: {${reference}} names no token`]),
+    // Style Dictionary does not resolve a reference inside a composite value for the CSS.
+    ...nestedReferences(token.$value).map(
+      inner => `${name}: {${inner}} is inside a composite value`
+    ),
+    ...('$type' in token ? [] : [`${name}: no $type`]),
+  ];
 };
 
-/** What breaks the DTCG 2025.10 rules: a token with no `$type`, a name with `.`, `{` or `}`, or a reference to no token. */
+/**
+ * What breaks the DTCG 2025.10 rules or the build: a member that is not a group or a token, a token
+ * with no `$type` or a null `$value`, a name with `.`, `{` or `}`, a reference to no token or inside a
+ * composite value, and a group note over a token note. Each problem names its path.
+ */
 export const dtcgProblems = (tree: Record<string, unknown>): string[] => {
-  const leaves = tokensIn(tree, []);
+  const { leaves, problems } = walk(tree, []);
   const names = new Set(leaves.map(({ path }) => path.join('.')));
 
-  return leaves
-    .flatMap(({ path, token }) => {
-      const name = path.join('.');
-
-      return [
-        ...(path.some(key => BAD_NAME.test(key))
-          ? [`${name}: the name has ".", "{" or "}"`]
-          : []),
-        ...referencesIn(token.$value)
-          .filter(reference => !names.has(reference))
-          .map(reference => `${name}: {${reference}} names no token`),
-        ...('$type' in token ? [] : [`${name}: no $type`]),
-      ];
-    })
-    .toSorted();
+  return [
+    ...(hasNote(tree) ? ['(root): a note at the root'] : []),
+    ...problems,
+    ...leaves.flatMap(leaf => tokenProblems(leaf, names)),
+  ].toSorted();
 };

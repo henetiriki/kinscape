@@ -34,7 +34,7 @@ A value can refer to another with `{group.name}`. A `$description` holds the usa
 
 ## The CSS
 
-`npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css` and, for the direct readers, `design/tokens.json`. Do not edit either. `lib/design/__tests__/design.test.ts` fails if either is stale or the source breaks DTCG.
+`npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css` and `design/tokens.json`. Edit neither. `lib/design/__tests__/design.test.ts` fails if either is stale or the source breaks DTCG.
 
 ## Direct readers
 
@@ -56,7 +56,7 @@ Each module outside tests that imports or reads `design/tokens.json`. `lib/desig
   - `app/components/layout/MapLayout.tsx`: the map padding.
   - `app/components/feedback/Toast.tsx`: the toast time.
 - **Scripts that build files.**
-  - `scripts/tokens.mts`
+  - `scripts/tokens.mts` writes the file ([The CSS](#the-css)).
   - `scripts/design-system.mts`
   - `scripts/design-export.mts`
   - `scripts/sizes.mts`

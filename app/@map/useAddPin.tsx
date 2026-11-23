@@ -1,29 +1,42 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 
 import { useCallback, useState } from 'react';
 
+import type { ClickPoint } from '@ks/app/components/overlays/types';
+
 import { createPinAction } from '@ks/app/@map/actions';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
+import { ClickPopup } from '@ks/app/components/overlays/ClickPopup';
+import { useDismiss } from '@ks/app/components/overlays/useDismiss';
 import { AddPinButton } from '@ks/features/map';
 import { PinForm } from '@ks/features/people';
 
-/**
- * The open state of the "Add a pin" panel (PIN-01, NFR-05). On a desktop it gives the button while
- * the panel is closed and the panel while it is open. A phone gets neither. A saved Pin closes the
- * panel and calls `onSaved`, so the caller loads the Pins again. A save that ends after Cancel or
- * Esc closed the panel also calls `onSaved`, because the server has saved the Pin.
- */
-export const useAddPin = ({
-  onSaved,
-}: {
-  onSaved: () => void;
-}): { action?: ReactNode; panel?: ReactNode } => {
-  const phone = usePhone();
-  const [open, setOpen] = useState(false);
-  const close = useCallback(() => setOpen(false), []);
-  const save = useCallback(
+/** The add flow: closed, the click popup at a point, or the panel with an optional point. */
+type Flow =
+  | { kind: 'click'; point: ClickPoint }
+  | { kind: 'closed' }
+  | { kind: 'panel'; point?: ClickPoint };
+
+const CLOSED: Flow = { kind: 'closed' };
+
+type Result = {
+  action?: ReactNode;
+  /** The click popup, for the `click` prop of `MapShell`. */
+  click?: {
+    popup: (place: { x: number; y: number }) => ReactNode;
+    position: [number, number];
+  };
+  /** Closes the click popup, and leaves an open panel alone. */
+  closeClick?: () => void;
+  /** A click on empty map: opens the click popup, or sets the point of an open panel. */
+  onEmptyClick?: (point: ClickPoint) => void;
+  panel?: ReactNode;
+};
+
+const useSave = (onSaved: () => void) =>
+  useCallback(
     async (input: unknown) => {
       const result = await createPinAction(input);
 
@@ -34,13 +47,68 @@ export const useAddPin = ({
     [onSaved]
   );
 
+const clickPopup = (
+  point: ClickPoint,
+  set: (flow: Flow) => void
+): NonNullable<Result['click']> => ({
+  popup: ({ x, y }) => (
+    <ClickPopup
+      onAdd={added => set({ kind: 'panel', point: added })}
+      onClose={() => set(CLOSED)}
+      point={point}
+      x={x}
+      y={y}
+    />
+  ),
+  position: [point.longitude, point.latitude],
+});
+
+/**
+ * The state of the add flow (PIN-01, NFR-05). On a desktop it gives the button while the panel is
+ * closed, the panel while it is open, and the click popup after a click on empty map. A click on
+ * empty map with the panel open sets the point of the panel and opens no popup. A phone gets none
+ * of these. A saved Pin closes the panel and calls `onSaved`, so the caller loads the Pins again. A
+ * save that ends after Cancel or Esc closed the panel also calls `onSaved`, because the server has
+ * saved the Pin.
+ */
+export const useAddPin = ({ onSaved }: { onSaved: () => void }): Result => {
+  const phone = usePhone();
+  const [flow, setFlow] = useState<Flow>(CLOSED);
+  const close = useCallback(() => setFlow(CLOSED), []);
+  const closeClick = useCallback(
+    () => setFlow(current => (current.kind === 'click' ? CLOSED : current)),
+    []
+  );
+  const onEmptyClick = useCallback(
+    (point: ClickPoint) =>
+      setFlow(current =>
+        current.kind === 'panel'
+          ? { kind: 'panel', point }
+          : { kind: 'click', point }
+      ),
+    []
+  );
+  const save = useSave(onSaved);
+
+  // Esc closes the popup when nothing else owns it; Esc inside the popup closes it too.
+  useDismiss(flow.kind === 'click', close, { escape: true });
+
   if (phone) {
     return {};
   }
 
-  return open
-    ? {
-        panel: <PinForm onCancel={close} onSave={save} onSaved={close} />,
-      }
-    : { action: <AddPinButton onClick={() => setOpen(true)} /> };
+  const panelProps: ComponentProps<typeof PinForm> | undefined =
+    flow.kind === 'panel'
+      ? { onCancel: close, onSave: save, onSaved: close, point: flow.point }
+      : undefined;
+
+  return {
+    action: panelProps ? undefined : (
+      <AddPinButton onClick={() => setFlow({ kind: 'panel' })} />
+    ),
+    click: flow.kind === 'click' ? clickPopup(flow.point, setFlow) : undefined,
+    closeClick,
+    onEmptyClick,
+    panel: panelProps && <PinForm {...panelProps} />,
+  };
 };

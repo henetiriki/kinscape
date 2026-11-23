@@ -4,6 +4,7 @@ import type { FormEvent, RefObject } from 'react';
 
 import { useEffect, useId, useRef, useState } from 'react';
 
+import type { ClickPoint } from '@ks/app/components/overlays/types';
 import type { PinMessages } from '@ks/features/people/components/types.ts';
 import type { PersonSummary } from '@ks/lib/domain/persons/types.ts';
 
@@ -16,6 +17,7 @@ import { TextAreaField } from '@ks/app/components/forms/TextAreaField';
 import { TextField } from '@ks/app/components/forms/TextField';
 import { Surface } from '@ks/app/components/foundation/Surface';
 import { Text } from '@ks/app/components/foundation/Text';
+import { pointText } from '@ks/app/components/overlays/ClickPopup';
 import { FuzzyDateField } from '@ks/features/people/components/FuzzyDateField';
 import { PersonField } from '@ks/features/people/components/PersonField';
 import {
@@ -64,6 +66,8 @@ type PinFormProps = {
   onCancel: () => void;
   onSave: (input: unknown) => Promise<{ ok: boolean }>;
   onSaved: () => void;
+  /** A point for the coordinates field. A new point replaces the text of that field only. */
+  point?: ClickPoint;
 };
 
 // Esc closes the panel only when it starts in the panel, or on the page when no control holds the
@@ -129,10 +133,26 @@ const checkFields = (
   return { checked, next, raw };
 };
 
+// The text of the coordinates field. The state sits here, not in the field, so it outlives the
+// loading look. A new `point` sets the text while rendering, which keeps the other fields.
+const useCoordinates = (point?: ClickPoint) => {
+  const [text, setText] = useState(point ? pointText(point) : '');
+  const [seen, setSeen] = useState(point);
+
+  if (point !== seen) {
+    setSeen(point);
+
+    if (point) setText(pointText(point));
+  }
+
+  return { setText, text };
+};
+
 const usePinForm = (
-  { onCancel, onSave, onSaved }: PinFormProps,
+  { onCancel, onSave, onSaved, point }: PinFormProps,
   form: RefObject<HTMLFormElement | null>
 ) => {
+  const coordinates = useCoordinates(point);
   const titleId = useId();
   const people = usePeople();
   const [ids] = useState(() => ({ pin: uuidV7(), place: uuidV7() }));
@@ -181,6 +201,7 @@ const usePinForm = (
   };
 
   return {
+    coordinates,
     failed,
     loadFailed,
     loading,
@@ -261,7 +282,10 @@ const EventFields = ({ messages }: Pick<Form, 'messages'>) => (
   </>
 );
 
-const PlaceFields = ({ messages }: Pick<Form, 'messages'>) => (
+const PlaceFields = ({
+  coordinates,
+  messages,
+}: Pick<Form, 'coordinates' | 'messages'>) => (
   <>
     <TextField
       aria-required='true'
@@ -270,7 +294,9 @@ const PlaceFields = ({ messages }: Pick<Form, 'messages'>) => (
       helper='In decimal degrees, such as -33.93, 18.42.'
       label='Coordinates'
       name='coordinates'
+      onChange={event => coordinates.setText(event.target.value)}
       spellCheck={false}
+      value={coordinates.text}
     />
     <TextField
       error={messages.address}
@@ -312,7 +338,7 @@ const Fields = ({ f }: { f: Form }) => (
       setPerson={f.setPerson}
     />
     <EventFields messages={f.messages} />
-    <PlaceFields messages={f.messages} />
+    <PlaceFields coordinates={f.coordinates} messages={f.messages} />
     <NoteFields messages={f.messages} />
   </>
 );

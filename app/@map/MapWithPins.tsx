@@ -61,7 +61,15 @@ const OpenPinPopup = ({
 export const MapWithPins = (
   props: Omit<
     ComponentProps<typeof MapShell>,
-    'action' | 'layers' | 'onClosePin' | 'onOpenPin' | 'panel' | 'pin' | 'toast'
+    | 'action'
+    | 'click'
+    | 'layers'
+    | 'onClosePin'
+    | 'onEmptyClick'
+    | 'onOpenPin'
+    | 'panel'
+    | 'pin'
+    | 'toast'
   >
 ) => {
   const { data, errorUpdatedAt, isError, refetch } = usePins();
@@ -78,9 +86,14 @@ export const MapWithPins = (
     <MapShell
       {...props}
       action={add.action}
+      click={add.click}
       layers={layers}
       onClosePin={close}
-      onOpenPin={setOpenId}
+      onEmptyClick={add.onEmptyClick}
+      onOpenPin={id => {
+        setOpenId(id);
+        add.closeClick?.();
+      }}
       panel={add.panel}
       pin={
         open && {

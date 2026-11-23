@@ -376,6 +376,34 @@ describe('the Pin popup', () => {
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 
+  // PIN-01
+  it('gives the shell the click popup and the empty-click handler of the add-pin hook', async () => {
+    const clicked = { popup: () => 'CLICK', position: [1, 2] };
+    const onEmptyClick = vi.fn();
+
+    addPin.mockReturnValue({ click: clicked, onEmptyClick });
+    fetchStub.mockImplementation(answer);
+    renderMap();
+    await click(FIRST.id);
+
+    expect(lastShell().click).toBe(clicked);
+    expect(lastShell().onEmptyClick).toBe(onEmptyClick);
+  });
+
+  // PIN-01
+  it('closes the click popup on a click on a Pin, and takes none from a phone', async () => {
+    const closeClick = vi.fn();
+
+    addPin.mockReturnValue({ closeClick });
+    fetchStub.mockImplementation(answer);
+    renderMap();
+    await click(FIRST.id);
+    expect(closeClick).toHaveBeenCalledOnce();
+
+    addPin.mockReturnValue({});
+    expect(() => act(() => lastShell().onOpenPin(SECOND.id))).not.toThrow();
+  });
+
   // NFR-05
   it('draws the inline form when the shell gives no place', async () => {
     fetchStub.mockImplementation(answer);

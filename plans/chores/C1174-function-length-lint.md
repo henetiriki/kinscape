@@ -98,4 +98,5 @@ A new block in `eslint.config.mjs` turns on `max-lines-per-function` for each Ja
 ## Deviations
 
 - Big: The reason of each disable ends in `(C1174)`, not `(#1174)`. `design.test.ts` rejects `#1174` as a hex colour literal, and the failing-tests rule bars a change to that test. The test of step 3 checks the new text. The tech lead accepted this in the local build.
-- Big: `PersonRelationships.tsx` gets a block pair, not the one-line disable of D3: `/* eslint-disable max-lines-per-function -- <reason> */` above its doc comment and `/* eslint-enable max-lines-per-function */` below it. Prettier moves a one-line disable out of its props union. `length-disables.test.ts` counts the block disable and checks its reason, so the cap stays 47. The tech lead chose this in the local build.
+- Big: `PersonRelationships.tsx` moves its props union to `type PersonRelationshipsProps`, against Constraint 2. Prettier moves a one-line disable out of the union, and a block pair also covers the nested callbacks. The tech lead chose this in the review fix.
+- Big: `length-disables.test.ts` accepts only the exact line of step 2. It flags a block, same-line or rule-list disable. It also fails when the count is not equal to `CAP`, so each removal lowers `CAP`. The tech lead chose the equal cap in the review fix.

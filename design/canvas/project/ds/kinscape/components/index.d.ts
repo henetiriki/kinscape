@@ -1265,6 +1265,10 @@ type PinPopupArgs = {
     /** Loading and failed show the event type and both date lines only. */
     state: PinPopupState;
 };
+/** The top row of a popup: its header column and Close, 8px up and right. `ClickPopup` shares it. */
+declare const PopupTop: ({ children, onClose, }: {
+    children: ReactNode;
+} & Pick<PinPopupArgs, "onClose">) => import("react").JSX.Element;
 /** The frame of a floating popup: the surface, the pointer and Esc. `ClickPopup` shares it. */
 declare const Floating: ({ children, label, loading, onClose, }: {
     children: ReactNode;

@@ -622,6 +622,34 @@ export const pageHtml = (): string => {
 };
 
 /**
+ * Runs in the page, after `inlineStyles` and before `pageHtml`. Chromium keeps a percentage
+ * `translate` (`calc(-100% - 14px)`) as calc() in the computed style, so this writes the px
+ * that it moves the element. Uses nothing from the module, as `fillTemplate`.
+ */
+export const measureTranslates = (): void => {
+  const TRANSLATE = /translate: calc\([^;]*\)/;
+
+  for (const element of document.querySelectorAll<HTMLElement>(
+    '[style*="translate: calc("]'
+  )) {
+    const placed = String(element.getAttribute('style'));
+    const moved = element.getBoundingClientRect();
+
+    element.setAttribute('style', placed.replace(TRANSLATE, 'translate: none'));
+
+    const home = element.getBoundingClientRect();
+
+    element.setAttribute(
+      'style',
+      placed.replace(
+        TRANSLATE,
+        `translate: ${moved.left - home.left}px ${moved.top - home.top}px`
+      )
+    );
+  }
+};
+
+/**
  * Runs in the page, after `fillTemplate`: puts `kinscapeBuild` on `window`. It turns an
  * `<x-import>` into a React element from the global its `component-from-global-scope` names
  * (`KinScape.Button`), with the props `fillTemplate` kept and its content as children. An HTML
@@ -1168,6 +1196,7 @@ if (import.meta.main) {
           await page.evaluate(defineStyleHelpers);
           await page.evaluate(inlinePseudoStyles, tokens);
           await page.evaluate(inlineStyles, tokens);
+          await page.evaluate(measureTranslates);
 
           if (clip) {
             await page.evaluate(clipPage, { clip, viewport });

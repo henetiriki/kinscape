@@ -71,6 +71,7 @@ export const PINS_LAYER_ID = 'pins';
  * request is sent (NFR-01). Two circles under the symbols draw the selection ring; their filter
  * keeps only the open Pin (PIN-02), so no ring shows while none is open.
  */
+// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const pinsLayer = (pins: MapPin[]): Layer => {
   const groups = groupByPlace(pins);
   const byId = new Map(pins.map(pin => [pin.id, pin]));

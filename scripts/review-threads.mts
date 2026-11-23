@@ -151,6 +151,7 @@ export const run = (
   gh: Gh,
   out: (text: string) => void,
   readBody: () => string = () => ''
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): number => {
   const [command, raw, id] = args;
   const repo = env.GH_REPO || env.GITHUB_REPOSITORY || '';

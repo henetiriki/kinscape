@@ -37,6 +37,7 @@ export const NoticeCard = ({
   /** `large`: the icon on top, an H3 title, 380 wide. */
   size?: 'large';
   title: string;
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 }) => {
   const titleId = useId();
   const loading = progress !== undefined;

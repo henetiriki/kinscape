@@ -266,6 +266,7 @@ export const boundaryVersions = (
   provinces: Feature[],
   provinces1994: Feature[],
   provinces1910: Feature[]
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ) => {
   const today = geometries(provinces, Object.keys(POLITY_IDS));
   const old = geometries(

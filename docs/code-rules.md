@@ -5,7 +5,7 @@ Write code that follows these rules. The reviewer flags a change that breaks one
 ## Code smells (not style)
 
 - Keep logic in one place: no copied helper, and no second implementation of one port.
-- Keep a function under about 60 lines and to one phase.
+- Keep a function to one phase.
 - Build no stand-in for a missing component: see the [missing-components rule](../plans/README.md#missing-components).
 - Define a type or constant once. Search for its name first.
 - Use a domain type where one exists (`Day`, branded ids, `lib/domain/validity/`), not a list of primitives.

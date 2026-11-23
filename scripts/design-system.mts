@@ -121,6 +121,7 @@ const describeControl = (
   program: ts.Program,
   root: string,
   { name, path }: Control
+  // eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 ): Docs => {
   const checker = program.getTypeChecker();
   const file = program.getSourceFile(join(root, path))!;
@@ -320,6 +321,7 @@ const writeGallery = (
  * written, relative to `out`. Two runs on one commit write the same bytes: the timestamps are
  * HEAD's commit time.
  */
+// eslint-disable-next-line max-lines-per-function -- over 60 lines before the rule (C1174)
 export const run = async (root: string, out: string): Promise<string[]> => {
   const raw = JSON.parse(
     readFileSync(join(root, 'design/tokens.json'), 'utf8')

@@ -222,6 +222,17 @@ export default defineConfig([
     },
   },
   {
+    // A function does one phase. Each disable gives its reason, and scripts/__tests__/length-disables.test.ts caps their count.
+    files: ['**/*.{js,jsx,mjs,mts,ts,tsx}'],
+    ignores: ['**/__tests__/**', 'e2e/**'],
+    rules: {
+      'max-lines-per-function': [
+        'error',
+        { max: 60, skipBlankLines: true, skipComments: true },
+      ],
+    },
+  },
+  {
     // The page rule of design/topics/components.md#in-the-repo.
     files: ['app/**/page.tsx'],
     ignores: ['app/screens/**'],

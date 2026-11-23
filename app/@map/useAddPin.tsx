@@ -19,12 +19,12 @@ import { usePinEdit } from '@ks/features/pins';
 
 /**
  * The flow: closed, the click popup at a point, the add panel with an optional point or an
- * existing Place, or the edit panel of a Pin. `again` counts the "Add a pin here" and "Edit"
- * choices, so each one gives the panel a new key.
+ * existing Place, or the edit panel of a Pin. `again` counts each panel that opens, so each one
+ * gets a new key. A save that ends late closes only the panel with its own `again`.
  */
 type Flow =
-  | { again?: number; id: PinId; kind: 'edit' }
-  | { again?: number; kind: 'panel'; place?: FixedPlace; point?: ClickPoint }
+  | { again: number; id: PinId; kind: 'edit' }
+  | { again: number; kind: 'panel'; place?: FixedPlace; point?: ClickPoint }
   | { kind: 'click'; point: ClickPoint }
   | { kind: 'closed' };
 
@@ -67,16 +67,11 @@ const useSave = (
 
 const clickPopup = (
   point: ClickPoint,
-  set: (flow: Flow) => void
+  open: (point: ClickPoint) => void,
+  close: () => void
 ): ClickProp => ({
   popup: ({ x, y }) => (
-    <ClickPopup
-      onAdd={added => set({ kind: 'panel', point: added })}
-      onClose={() => set(CLOSED)}
-      point={point}
-      x={x}
-      y={y}
-    />
+    <ClickPopup onAdd={open} onClose={close} point={point} x={x} y={y} />
   ),
   position: [point.longitude, point.latitude],
 });
@@ -122,6 +117,17 @@ const useFlowActions = (setFlow: Dispatch<SetStateAction<Flow>>) => {
       () => setFlow(current => (current.kind === 'click' ? CLOSED : current)),
       [setFlow]
     ),
+    closeOwn: useCallback(
+      (own: number) =>
+        setFlow(current =>
+          current.kind !== 'click' &&
+          current.kind !== 'closed' &&
+          current.again === own
+            ? CLOSED
+            : current
+        ),
+      [setFlow]
+    ),
     edit: useCallback(
       (id: PinId) => {
         again.current += 1;
@@ -137,9 +143,16 @@ const useFlowActions = (setFlow: Dispatch<SetStateAction<Flow>>) => {
             : current.kind === 'panel'
               ? current.place
                 ? current
-                : { kind: 'panel', point }
+                : { ...current, point }
               : { kind: 'click', point }
         ),
+      [setFlow]
+    ),
+    openPanel: useCallback(
+      (point?: ClickPoint) => {
+        again.current += 1;
+        setFlow({ again: again.current, kind: 'panel', point });
+      },
       [setFlow]
     ),
   };
@@ -149,6 +162,7 @@ const useFlowActions = (setFlow: Dispatch<SetStateAction<Flow>>) => {
 const panelOf = (
   flow: Flow,
   close: () => void,
+  closeOwn: (own: number) => void,
   save: (input: unknown) => Promise<{ ok: boolean }>,
   saveEdit: (input: unknown) => Promise<{ ok: boolean }>
 ) =>
@@ -157,7 +171,7 @@ const panelOf = (
       key={flow.again}
       onCancel={close}
       onSave={save}
-      onSaved={close}
+      onSaved={() => closeOwn(flow.again)}
       place={flow.place}
       point={flow.point}
     />
@@ -167,7 +181,7 @@ const panelOf = (
       key={`edit-${flow.again}`}
       onCancel={close}
       onSave={saveEdit}
-      onSaved={close}
+      onSaved={() => closeOwn(flow.again)}
     />
   ) : undefined;
 
@@ -189,8 +203,15 @@ export const useAddPin = ({
 }): Result => {
   const phone = usePhone();
   const [flow, setFlow] = useState<Flow>(CLOSED);
-  const { addHere, close, closeClick, edit, onEmptyClick } =
-    useFlowActions(setFlow);
+  const {
+    addHere,
+    close,
+    closeClick,
+    closeOwn,
+    edit,
+    onEmptyClick,
+    openPanel,
+  } = useFlowActions(setFlow);
   const save = useSave(onSaved, createPinAction);
   const saveEdit = useSave(onEdited, updatePinAction);
 
@@ -207,13 +228,16 @@ export const useAddPin = ({
   return {
     action:
       flow.kind === 'panel' || flow.kind === 'edit' ? undefined : (
-        <AddPinButton onClick={() => setFlow({ kind: 'panel' })} />
+        <AddPinButton onClick={() => openPanel()} />
       ),
     addHere,
-    click: flow.kind === 'click' ? clickPopup(flow.point, setFlow) : undefined,
+    click:
+      flow.kind === 'click'
+        ? clickPopup(flow.point, openPanel, close)
+        : undefined,
     closeClick,
     edit,
     onEmptyClick,
-    panel: panelOf(flow, close, save, saveEdit),
+    panel: panelOf(flow, close, closeOwn, save, saveEdit),
   };
 };

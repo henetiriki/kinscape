@@ -482,6 +482,66 @@ it('closes the edit panel after a save', () => {
 });
 
 // NFR-05
+// PIN-02
+it('keeps the newer panel open when the save of an older panel ends', () => {
+  render(<Probe />);
+  fireEvent.click(screen.getByRole('button', { name: 'Edit 1' }));
+
+  const older = form.mock.calls.at(-1)![0].onSaved as () => void;
+
+  fireEvent.click(screen.getByRole('button', { name: 'Here 1' }));
+  fireEvent.change(screen.getByLabelText('Typed'), {
+    target: { value: 'typed' },
+  });
+  act(() => older());
+
+  expect(slot('form-place').textContent).toBe(PLACE_1.id);
+  expect((screen.getByLabelText('Typed') as HTMLInputElement).value).toBe(
+    'typed'
+  );
+});
+
+// PIN-01
+it('keeps the click popup open when the save of an older panel ends', () => {
+  render(<Probe />);
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin' }));
+
+  const older = form.mock.calls.at(-1)![0].onSaved as () => void;
+
+  fireEvent.click(screen.getByRole('button', { name: 'Cancel form' }));
+  emptyClick();
+  act(() => older());
+
+  expect(slot('position').textContent).toBe('25.5,-28.5');
+});
+
+// PIN-01
+it('leaves a closed flow closed when the save of an older panel ends', () => {
+  render(<Probe />);
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin' }));
+
+  const older = form.mock.calls.at(-1)![0].onSaved as () => void;
+
+  fireEvent.click(screen.getByRole('button', { name: 'Cancel form' }));
+  act(() => older());
+
+  expect(slot('panel').textContent).toBe('');
+});
+
+// PIN-01
+it('keeps a new add panel open when the save of an older add panel ends', () => {
+  render(<Probe />);
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin' }));
+
+  const older = form.mock.calls.at(-1)![0].onSaved as () => void;
+
+  fireEvent.click(screen.getByRole('button', { name: 'Cancel form' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin' }));
+  act(() => older());
+
+  expect(slot('panel').textContent).toContain('Cancel form');
+});
+
 it('opens nothing on a click on a phone', () => {
   window.matchMedia = (() => ({
     addEventListener: () => {},

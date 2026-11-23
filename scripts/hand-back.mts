@@ -63,8 +63,8 @@ const patterns = HAND_BACK.map(toRegExp);
 export const isHandBack = (path: string): boolean =>
   patterns.some(re => re.test(path));
 
-// The backticked paths in the first column of a plan's Files that change table.
-export const tablePaths = (plan: string): string[] => {
+// The cells of each row of a plan's Files that change table.
+export const tableRows = (plan: string): string[][] => {
   const lines = plan.split(/\r?\n/);
   const start = lines.findIndex(line => SECTION.test(line));
 
@@ -78,10 +78,14 @@ export const tablePaths = (plan: string): string[] => {
   return (end < 0 ? rest : rest.slice(0, end))
     .map(line => line.trim())
     .filter(line => line.startsWith('|'))
-    .flatMap(line =>
-      Array.from(line.split('|')[1].matchAll(/`([^`]+)`/g), ([, path]) => path)
-    );
+    .map(line => line.split('|').slice(1));
 };
+
+// The backticked paths in the first column of a plan's Files that change table.
+export const tablePaths = (plan: string): string[] =>
+  tableRows(plan).flatMap(([first]) =>
+    Array.from(first.matchAll(/`([^`]+)`/g), ([, path]) => path)
+  );
 
 export const run = (
   args: string[],

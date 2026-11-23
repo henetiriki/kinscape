@@ -47,7 +47,6 @@ In a [decision's](../docs/how-we-work.md#decisions) question, name each related 
 - Run `npm run plan:new`.
 - Commit the plan as `plan(<id>): draft` with `Status: draft`.
 - Open a draft PR with the plan PR title from the table.
-- Put `Closes #<issue>` in its body.
 - Stop.
 
 Only the tech lead's approving review approves the plan. [`agent-approve.mts`](../scripts/agent-approve.mts) commits the approval as `plan(<id>): approved by @<tech-lead>`. A `@claude` comment is feedback: revise the plan only. A respond run records a plan answer in the plan only. The build rewords the issues ([reword step](../.github/agent/build.md#reword)).

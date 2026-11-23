@@ -21,6 +21,7 @@ What starts each GitHub Actions workflow, its jobs, and the reusable workflows i
 | CI: Seed Playwright cache<br>`ci-playwright-cache.yml` | push | `main · paths: package-lock.json, .github/workflows/ci-playwright-cache.yml` | seed |
 | | schedule | `0 5 * * 1,4` | |
 | | workflow_dispatch | | |
+| CI: PR checks<br>`ci-pr-checks.yml` | pull_request | `opened, synchronize, reopened, edited, labeled, unlabeled` | pr-checks |
 | CI<br>`ci.yml` | pull_request | `opened, synchronize, reopened, ready_for_review` | quality · test · coverage · boundaries · words · image · e2e · design · gallery |
 | | push | `main` | |
 | Claude: Build<br>`claude-build.yml` · calls Claude: Run (shared) | pull_request_review | `submitted` | approve · build |
@@ -58,6 +59,7 @@ flowchart TB
   backlog_issue_status["Backlog: Move issue status"]
   backlog_milestone["Backlog: Inherit milestone"]
   ci_cache_cleanup["CI: Delete PR caches"]
+  ci_pr_checks["CI: PR checks"]
   ci["CI"]
   claude_build["Claude: Build"]
   claude_code_review["Claude: Code review"]
@@ -69,6 +71,7 @@ flowchart TB
   on_pull_request --> backlog_issue_status
   on_pull_request --> backlog_milestone
   on_pull_request --> ci_cache_cleanup
+  on_pull_request --> ci_pr_checks
   on_pull_request --> ci
   on_pull_request --> claude_code_review
   on_pull_request --> claude_fix_review
@@ -86,7 +89,7 @@ flowchart TB
   classDef ci fill:#e8f1f7,stroke:#3e7fa6
   classDef claude fill:#e6eee4,stroke:#264f29
   class backlog_issue_status,backlog_milestone backlog
-  class ci_cache_cleanup,ci ci
+  class ci_cache_cleanup,ci_pr_checks,ci ci
   class claude_build,claude_code_review,claude_fix_review,claude_hand_back,claude_resolve_conflict,claude_respond,claude_run claude
 ```
 

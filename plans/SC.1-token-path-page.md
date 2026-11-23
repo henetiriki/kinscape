@@ -102,3 +102,8 @@ The description of `.claude/skills/publish-design-system/SKILL.md` says to publi
 - The standard token format and its readers: SC.3 (#1193) and SC.4.
 
 ## Deviations
+
+- D2 A needs no `ALLOWLIST` entry: `scripts/__tests__/doc-links.test.ts` finds no cycle and fails on the stale entry. `scripts/doc-links.mts` does not change.
+- The "A colour, size or font value" row links to the page as "path" in its second cell, with `docs/architecture.md` unchanged elsewhere.
+- Not built: `.claude/skills/publish-design-system/SKILL.md` (D3 A). The run denied the write. The tech lead edits it.
+- Not built: the `AGENTS.md` link (hand-back row).

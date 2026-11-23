@@ -11,6 +11,7 @@ Each file in `design/topics/` has `paths:` frontmatter. `npm run plan:new` lists
 - [components.md](topics/components.md): In the repo, Components.
 - [feedback.md](topics/feedback.md): States, Feedback and validation.
 - [map.md](topics/map.md): Event glyphs, Map style, Attributions.
+- [tokens.md](topics/tokens.md): how a token value travels. The design system does not read it.
 
 ## Screens
 

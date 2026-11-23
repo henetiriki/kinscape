@@ -203,13 +203,14 @@ describe('the code rule files of the repo', () => {
 describe('the design files of the repo', () => {
   const files = patternFiles(FILES, 'design/topics');
 
-  it('are the five topic files', () => {
+  it('are the six topic files', () => {
     expect(files.map(({ path }) => posix.basename(path)).sort()).toEqual([
       'components.md',
       'feedback.md',
       'foundations.md',
       'layout.md',
       'map.md',
+      'tokens.md',
     ]);
   });
 

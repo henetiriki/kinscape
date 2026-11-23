@@ -70,6 +70,7 @@ describe('budgetFor', () => {
     ['design/topics/components.md', 1900],
     ['design/topics/feedback.md', 750],
     ['design/topics/map.md', 550],
+    ['design/topics/tokens.md', 500],
     ['design/CANVAS.md', 1650],
     ['design/COMPONENTS.md', 600],
     ['plans/BUILD.md', 570],

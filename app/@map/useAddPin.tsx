@@ -2,7 +2,7 @@
 
 import type { ComponentProps, ReactNode } from 'react';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import type { ClickPoint } from '@ks/app/components/overlays/types';
 import type { ClickProp } from '@ks/features/map';
@@ -14,21 +14,31 @@ import { useDismiss } from '@ks/app/components/overlays/useDismiss';
 import { AddPinButton } from '@ks/features/map';
 import { PinForm } from '@ks/features/people';
 
-/** The add flow: closed, the click popup at a point, or the panel with an optional point. */
+type FixedPlace = NonNullable<ComponentProps<typeof PinForm>['place']>;
+
+/**
+ * The add flow: closed, the click popup at a point, or the panel with an optional point or an
+ * existing Place. `again` counts the "Add a pin here" choices, so each one gives the panel a new key.
+ */
 type Flow =
+  | { again?: number; kind: 'panel'; place?: FixedPlace; point?: ClickPoint }
   | { kind: 'click'; point: ClickPoint }
-  | { kind: 'closed' }
-  | { kind: 'panel'; point?: ClickPoint };
+  | { kind: 'closed' };
 
 const CLOSED: Flow = { kind: 'closed' };
 
 type Result = {
   action?: ReactNode;
+  /** Opens the panel at an existing Place, with empty fields, and closes the click popup. */
+  addHere?: (place: FixedPlace) => void;
   /** The click popup, for the `click` prop of `MapShell`. */
   click?: ClickProp;
   /** Closes the click popup, and leaves an open panel alone. */
   closeClick?: () => void;
-  /** A click on empty map: opens the click popup, or sets the point of an open panel. */
+  /**
+   * A click on empty map: opens the click popup, or sets the point of an open panel. A panel at an
+   * existing Place keeps its Place and opens no popup.
+   */
   onEmptyClick?: (point: ClickPoint) => void;
   panel?: ReactNode;
 };
@@ -81,11 +91,18 @@ export const useAddPin = ({ onSaved }: { onSaved: () => void }): Result => {
     (point: ClickPoint) =>
       setFlow(current =>
         current.kind === 'panel'
-          ? { kind: 'panel', point }
+          ? current.place
+            ? current
+            : { kind: 'panel', point }
           : { kind: 'click', point }
       ),
     []
   );
+  const again = useRef(0);
+  const addHere = useCallback((place: FixedPlace) => {
+    again.current += 1;
+    setFlow({ again: again.current, kind: 'panel', place });
+  }, []);
   const save = useSave(onSaved);
 
   // Esc closes the popup when nothing else owns it; Esc inside the popup closes it too.
@@ -98,18 +115,25 @@ export const useAddPin = ({ onSaved }: { onSaved: () => void }): Result => {
     return {};
   }
 
-  const panelProps: ComponentProps<typeof PinForm> | undefined =
-    flow.kind === 'panel'
-      ? { onCancel: close, onSave: save, onSaved: close, point: flow.point }
-      : undefined;
-
   return {
-    action: panelProps ? undefined : (
-      <AddPinButton onClick={() => setFlow({ kind: 'panel' })} />
-    ),
+    action:
+      flow.kind === 'panel' ? undefined : (
+        <AddPinButton onClick={() => setFlow({ kind: 'panel' })} />
+      ),
+    addHere,
     click: flow.kind === 'click' ? clickPopup(flow.point, setFlow) : undefined,
     closeClick,
     onEmptyClick,
-    panel: panelProps && <PinForm {...panelProps} />,
+    panel:
+      flow.kind === 'panel' ? (
+        <PinForm
+          key={flow.again}
+          onCancel={close}
+          onSave={save}
+          onSaved={close}
+          place={flow.place}
+          point={flow.point}
+        />
+      ) : undefined,
   };
 };

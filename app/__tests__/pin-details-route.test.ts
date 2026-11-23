@@ -46,7 +46,7 @@ describe('GET /data/pins/{id}', () => {
   });
 
   // PIN-02, NFR-10
-  it('sends only the names, the event type and the address', async () => {
+  it('sends only the names, the event type, the address and the precision', async () => {
     const { signInAs } = await setup();
 
     signInAs('a');
@@ -59,12 +59,14 @@ describe('GET /data/pins/{id}', () => {
       'address',
       'eventType',
       'givenNames',
+      'precision',
       'surname',
     ]);
     expect(body).toEqual({
       address: '1 Church Street',
       eventType: 'baptism',
       givenNames: 'Ana',
+      precision: 'town',
       surname: 'Smit a',
     });
     expect(JSON.stringify(body)).not.toMatch(
@@ -121,6 +123,22 @@ describe('GET /data/pins/{id}', () => {
     adapters.current = {
       ...(adapters.current as object),
       store: { ...store, findPerson: async () => undefined },
+    };
+
+    const response = await ask(PIN);
+
+    expect(response.status).toBe(404);
+    expect(await response.text()).toBe('');
+  });
+
+  // Risks
+  it('answers 404 with no body when the Place of the Pin is missing', async () => {
+    const { signInAs, store } = await setup();
+
+    signInAs('a');
+    adapters.current = {
+      ...(adapters.current as object),
+      store: { ...store, findPlace: async () => undefined },
     };
 
     const response = await ask(PIN);

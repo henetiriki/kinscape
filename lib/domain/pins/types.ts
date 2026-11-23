@@ -26,12 +26,13 @@ export type EventType = PinInput['eventType'];
 
 /**
  * What the map needs of a Pin (NFR-03): the position of its Place, its span, its event type and the
- * parts of its date. `date2` is there only for a Pin with two dates. It holds no Place id, Person
- * id, address, source or note.
+ * parts of its date. `date2` is there only for a Pin with two dates. It holds the id of its
+ * Place, so "Add a pin here" can join that Place. It holds no Person id, address, source or note.
  */
 export type MapPin = {
   eventType: EventType;
   id: Pin['id'];
+  placeId: Place['id'];
   span: Validity;
 } & Pick<FuzzyDate, 'date1' | 'date2' | 'qualifier'> &
   Pick<Place, 'latitude' | 'longitude'>;
@@ -39,11 +40,15 @@ export type MapPin = {
 /** A saved Pin. `version` starts at 1 and rises by 1 for each update. */
 export type Pin = { version: number } & PinInput;
 
-/** What the popup shows of a Pin beyond the Pin of the map (PIN-02). It holds no date. */
+/**
+ * What the popup shows of a Pin beyond the Pin of the map (PIN-02), and the precision of its Place.
+ * It holds no date.
+ */
 export type PinDetails = {
   address: PinInput['address'];
   eventType: EventType;
   givenNames: string;
+  precision: Place['precision'];
   surname: string;
 };
 

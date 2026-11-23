@@ -56,6 +56,7 @@ const pinOn = (
   id: `pin-${id}` as MapPin['id'],
   latitude: -33.9,
   longitude: 18.4,
+  placeId: `place-${id}` as MapPin['placeId'],
   qualifier: 'EXACT',
   span: { validFrom: toDay(from), validTo: to === null ? null : toDay(to) },
 });

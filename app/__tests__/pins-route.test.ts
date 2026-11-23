@@ -27,6 +27,7 @@ const MAP_PIN_KEYS = [
   'id',
   'latitude',
   'longitude',
+  'placeId',
   'qualifier',
   'span',
 ];
@@ -62,7 +63,7 @@ describe('GET /data/pins', () => {
   });
 
   // NFR-01, NFR-03
-  it('sends each Pin with only its id, position, span, event type and dates', async () => {
+  it('sends each Pin with only its id, Place id, position, span, event type and dates', async () => {
     const { signInAs } = await setup();
 
     signInAs('a');
@@ -79,9 +80,10 @@ describe('GET /data/pins', () => {
       id: PIN,
       latitude: -33.9,
       longitude: 18.4,
+      placeId: PLACE,
     });
     expect(JSON.stringify(body)).not.toMatch(
-      /Church Street|private note|parish register|Ana|Smit|01900000-0000-7000-a000/
+      /Church Street|private note|parish register|Ana|Smit|01900000-0000-7000-8000/
     );
   });
 

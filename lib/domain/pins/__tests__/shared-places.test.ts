@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { MapPin } from '@ks/lib/domain/pins/types.ts';
 
-import { parsePinId } from '@ks/lib/domain/ids/ids.mts';
+import { parsePinId, parsePlaceId } from '@ks/lib/domain/ids/ids.mts';
 import {
   aloneParts,
   groupByPlace,
@@ -24,6 +24,7 @@ const pin = (
   id: parsePinId(`01900000-0000-7000-8000-0000000000${last}`)!,
   latitude,
   longitude,
+  placeId: parsePlaceId('01900000-0000-7000-a000-0000000000c1')!,
   qualifier: 'EXACT',
   span: { validFrom: day(from), validTo: to === null ? null : day(to) },
 });

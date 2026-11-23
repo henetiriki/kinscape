@@ -147,6 +147,15 @@ it('shows an error alert and "Try again" when failed, and asks again on a press'
 });
 
 // NFR-05
+// PIN-01
+it('calls onAddHere from "Add a pin here"', () => {
+  const onAddHere = vi.fn();
+
+  show({ onAddHere });
+  fireEvent.click(screen.getByRole('button', { name: 'Add a pin here' }));
+  expect(onAddHere).toHaveBeenCalledOnce();
+});
+
 it('has "Add a pin here" and "Edit" on a desktop, and neither on a phone', () => {
   const { unmount } = show();
 

@@ -5,6 +5,7 @@ import type { ComponentProps } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 
 import type { MapPin } from '@ks/lib/domain/pins/types.ts';
+import type { Place } from '@ks/lib/domain/places/types.ts';
 
 import { useAddPin } from '@ks/app/@map/useAddPin';
 import { Toast } from '@ks/app/components/feedback/Toast';
@@ -15,16 +16,21 @@ import { usePinDetails, usePins } from '@ks/features/pins';
 import { readFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date-text.mts';
 import { formatFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date.mts';
 
+type AddHerePlace = Pick<Place, 'id' | 'latitude' | 'longitude' | 'precision'>;
+
 /**
  * The popup of the open Pin. It asks for the details when it mounts, so the popup sends no
  * request before a click. The loading and failed states show the event type and both date lines
  * from the Pin of the map.
  */
 const OpenPinPopup = ({
+  onAddHere,
   onClose,
   pin,
   place,
 }: {
+  /** Opens the panel at the Place of the Pin, with the precision from its details. */
+  onAddHere?: (place: AddHerePlace) => void;
   onClose: () => void;
   pin: MapPin;
   /** The point of the Pin on a desktop; none on a phone, where the popup sits in the date sheet. */
@@ -35,6 +41,18 @@ const OpenPinPopup = ({
     address: data?.address,
     event: pin.eventType,
     name: data && `${data.givenNames} ${data.surname}`.trim(),
+    onAddHere:
+      data && onAddHere
+        ? () => {
+            onAddHere({
+              id: pin.placeId,
+              latitude: pin.latitude,
+              longitude: pin.longitude,
+              precision: data.precision,
+            });
+            onClose();
+          }
+        : undefined,
     onClose,
     onRetry: () => void refetch(),
     reading: readFuzzyDate(pin),
@@ -56,12 +74,14 @@ const OpenPinPopup = ({
 /** The `pin` prop of the shell for the open Pin. */
 const pinProp = (
   open: MapPin,
-  close: () => void
+  close: () => void,
+  addHere?: (place: AddHerePlace) => void
 ): NonNullable<ComponentProps<typeof MapShell>['pin']> => ({
   open: { id: open.id, position: [open.longitude, open.latitude] },
   popup: (form, place) => (
     <OpenPinPopup
       key={open.id}
+      onAddHere={addHere}
       onClose={close}
       pin={open}
       place={form === 'floating' ? place : undefined}
@@ -112,7 +132,7 @@ export const MapWithPins = (
         add.closeClick?.();
       }}
       panel={add.panel}
-      pin={open && pinProp(open, close)}
+      pin={open && pinProp(open, close, add.addHere)}
       toast={
         isError && errorUpdatedAt !== dismissedAt ? (
           <Toast

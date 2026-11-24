@@ -375,7 +375,7 @@ const PersonChoice = ({
   setPerson,
 }: Pick<Form, 'defaultPerson' | 'messages' | 'people' | 'setPerson'>) =>
   people.data!.length === 0 ? (
-    <div className={styles.none}>
+    <div className={styles.stack}>
       <Text variant='label'>Person</Text>
       <NoticeCard
         actions={[{ href: '/people/new', label: 'Add a person' }]}
@@ -453,18 +453,22 @@ const PlaceFields = ({
       label='Address as recorded'
       name='address'
     />
-    <SelectField
-      defaultValue={place?.precision ?? editFields?.precision ?? 'approximate'}
-      disabled={place !== undefined || stays}
-      error={messages.precision}
-      key={stays ? 'fixed' : 'free'}
-      label='Precision'
-      name='precision'
-      options={PRECISION_OPTIONS}
-    />
-    {(place || stays) && (
-      <Text variant='small'>This is the precision of the Place.</Text>
-    )}
+    <div className={styles.stack}>
+      <SelectField
+        defaultValue={
+          place?.precision ?? editFields?.precision ?? 'approximate'
+        }
+        disabled={place !== undefined || stays}
+        error={messages.precision}
+        key={stays ? 'fixed' : 'free'}
+        label='Precision'
+        name='precision'
+        options={PRECISION_OPTIONS}
+      />
+      {(place || stays) && (
+        <Text variant='small'>This is the precision of the Place.</Text>
+      )}
+    </div>
   </>
 );
 

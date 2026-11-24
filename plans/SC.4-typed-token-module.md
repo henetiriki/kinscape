@@ -2,7 +2,7 @@
 
 - **Spec:** #1194
 - **Requirement IDs:** None. Tooling and code only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@ A new Style Dictionary format in `lib/design/style-dictionary.mts` writes `desig
 - **C.** Each `px` length is a number in its group export, and no text form exists. Acceptance check 1 compares after the test adds `px`. `usePhone.ts` adds `px` to the breakpoints. Cost: Acceptance check 1 changes its meaning.
 - **Other:** your own.
 
-Recommended: A, because each reader then gets a number with no parse, and the text export still matches `design/tokens.json` exactly. B is a little smaller, but `Toast.tsx` still reads a unit out of a string.
+**Answer: A** (@henetiriki)
 
 **D6 · The architecture row names the old reader path** · Decides: Tech lead
 
@@ -29,7 +29,7 @@ The "Tokens are the one source" row of `docs/architecture.md` says that MapLibre
 - **B.** Leave the row. #1196 edits it. Cost: the row is false until #1196 merges.
 - **Other:** your own.
 
-Recommended: A, because the row then says what `main` does.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

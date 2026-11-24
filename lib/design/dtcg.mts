@@ -118,19 +118,18 @@ export const cssText = ({ $type, $value, path }: DtcgToken): string => {
   }
 };
 
-/** Each token under `node`, in file order. `path` is the path of `node`. */
+/** Each token under `node`, in file order. `path` is the path of `node`. A member that is not a group or a token has no token. */
 export const tokenLeaves = (node: DtcgTree, path: string[] = []): DtcgToken[] =>
   Object.entries(node).flatMap(([key, child]) => {
-    if (key.startsWith('$')) {
+    if (key.startsWith('$') || !isTree(child)) {
       return [];
     }
 
     const at = [...path, key];
-    const group = child as DtcgTree;
 
-    return '$value' in group
-      ? [{ ...group, path: at } as DtcgToken]
-      : tokenLeaves(group, at);
+    return '$value' in child
+      ? [{ ...child, path: at } as DtcgToken]
+      : tokenLeaves(child as DtcgTree, at);
   });
 
 /** A reference as `{path}`; any other value as its CSS text. */
@@ -159,7 +158,7 @@ export const resolvedText = (tree: DtcgTree, path: string): string => {
     : resolvedText(tree, reference);
 };
 
-/** Each `$description` of a group or a token, with the path it sits at, in file order. */
+/** Each `$description` of a group or a token, with the path it sits at, in file order. A member that is not a group or a token has none. */
 export const descriptions = (
   node: DtcgTree,
   path: string[] = []
@@ -169,7 +168,7 @@ export const descriptions = (
       return typeof child === 'string' ? [[path, child]] : [];
     }
 
-    return key.startsWith('$')
+    return key.startsWith('$') || !isTree(child)
       ? []
       : descriptions(child as DtcgTree, [...path, key]);
   });

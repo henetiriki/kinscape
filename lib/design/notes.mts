@@ -39,7 +39,9 @@ const needed = (tokens: DtcgTree): Entry<string | undefined>[] =>
       }
 
       if (group === 'type') {
-        return Object.keys(child).map(style => [`type.${style}`, undefined]);
+        return Object.keys(child)
+          .filter(style => !style.startsWith('$'))
+          .map(style => [`type.${style}`, undefined]);
       }
 
       if (group === 'map') {

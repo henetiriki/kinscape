@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { DtcgTree } from '@ks/lib/design/types.ts';
 
 import tokens from '@ks/design/kinscape.tokens.json';
+import { colour } from '@ks/lib/design/__tests__/dtcg-fixtures.ts';
 import {
   contrastRatio,
   formatRatio,
@@ -52,10 +53,6 @@ describe('valueAt', () => {
 });
 
 describe('ratioOf', () => {
-  const colour = (hex: string) => ({
-    $type: 'color',
-    $value: { colorSpace: 'srgb', components: [0, 0, 0], hex },
-  });
   const fixture: DtcgTree = {
     colour: {
       a: colour('#000000'),

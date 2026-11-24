@@ -25,9 +25,16 @@ Four modules need the same reads:
 - the leaves
 - the text of a value
 - a resolved value
-- each `$description` `collectNotes` in `lib/design/style-dictionary.mts` already walks each `$description`.
+- each `$description`
 
-- **A.** `lib/design/dtcg.mts` exports these readers: `tokenLeaves`, `tokenText`, `resolvedText`, `descriptions` and `notesOf`. The four modules use them. `collectNotes` uses `descriptions`. Cost: about 60 lines with tests.
+`collectNotes` in `lib/design/style-dictionary.mts` already walks each `$description`.
+
+- **A.** `lib/design/dtcg.mts` exports these readers. The four modules use them. `collectNotes` uses `descriptions`. Cost: about 60 lines with tests.
+  - `tokenLeaves`
+  - `tokenText`
+  - `resolvedText`
+  - `descriptions`
+  - `notesOf`
 - **B.** Each module walks the DTCG tree itself. Cost: about the same lines, with three copies of the walk.
 - **Other:** your own.
 
@@ -76,6 +83,7 @@ On `main`, `noteProblems` writes `notes.<path> names no token that needs a note`
 | `lib/design/__tests__/contrast.test.ts` | changed       | Read `design/kinscape.tokens.json`. The `ratioOf` fixture takes the DTCG shape.                                                                                             |
 | `lib/design/__tests__/notes.test.ts`    | changed       | The fixture takes the DTCG shape, with each note as a `$description`. The same cases and messages, except D3.                                                               |
 | `lib/design/__tests__/design.test.ts`   | changed       | The `noteProblems` call takes the parsed `design/kinscape.tokens.json`. The rest stays for SC.4.2.                                                                          |
+| `lib/design/__tests__/dtcg-fixtures.ts` | new           | The `colour` and `px` token builders for the DTCG fixtures.                                                                                                                 |
 | `design/topics/tokens.md`               | changed       | The design system and the canvas: one sentence that `npm run design-system` reads `design/kinscape.tokens.json`.                                                            |
 
 ## Order of work
@@ -113,6 +121,10 @@ SC.4.2 (#1196) does these:
 - Change `Rule`, `groups.mts` and `literals.mts`.
 - Change the other scripts, the checks and the e2e specs.
 - Delete `design/tokens.json` and `design/tokens.mts`.
-- The `design/tokens.json` comment in `dtcg.mts` and `dtcg.test.ts`: SC.4.2.
+- Change the `design/tokens.json` comment in `dtcg.mts` and `dtcg.test.ts`.
 
 ## Deviations
+
+- New file `lib/design/__tests__/dtcg-fixtures.ts`: the `colour` and `px` builders, shared by `notes.test.ts`, `contrast.test.ts` and `system.test.ts` (tech lead's choice in a fix review).
+- `tokenLeaves` and `descriptions` skip a member that is not a group or a token. `noteProblems` and `groupFor` skip a `$` member of `type`. Each has a test (tech lead's decision on two unlikely cases in a fix review).
+- `system.test.ts` adds a test with literal names, values and notes, so a bug in a helper shows.

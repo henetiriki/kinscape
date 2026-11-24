@@ -2,16 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import type { DtcgTree } from '@ks/lib/design/types.ts';
 
+import { colour, px } from '@ks/lib/design/__tests__/dtcg-fixtures.ts';
 import { noteProblems } from '@ks/lib/design/notes.mts';
 
-const colour = (hex: string) => ({
-  $type: 'color',
-  $value: { colorSpace: 'srgb', components: [0, 0, 0], hex },
-});
-const px = (value: number) => ({
-  $type: 'dimension',
-  $value: { unit: 'px', value },
-});
 const num = (value: number) => ({ $type: 'number', $value: value });
 const ref = (type: string, path: string) => ({
   $type: type,
@@ -139,6 +132,12 @@ describe('noteProblems', () => {
     ((tree.font as DtcgTree).body as Record<string, unknown>).$description = 3;
 
     expect(noteProblems(tree)).toEqual(['font.body has no note']);
+  });
+
+  it('names a note on the type group, and no style for it', () => {
+    expect(noteProblems(withNotes({ ...notes, type: 'Text styles.' }))).toEqual(
+      ['type: a note where none is needed']
+    );
   });
 
   it('names an empty or blank note', () => {

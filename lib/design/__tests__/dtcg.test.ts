@@ -278,6 +278,14 @@ describe('tokenLeaves', () => {
       ['type', 'body', 'size'],
     ]);
   });
+
+  it('skips a member that is not a group or a token', () => {
+    expect(
+      tokenLeaves({ colour: { description: 'x', ...sample.colour } }).map(
+        ({ path }) => path.join('.')
+      )
+    ).toEqual(['colour.brand', 'colour.focus', 'colour.glass', 'colour.link']);
+  });
 });
 
 describe('tokenText', () => {
@@ -316,6 +324,10 @@ describe('descriptions', () => {
       [['colour', 'brand'], 'Primary buttons.'],
       [['type', 'body'], 'Panels.'],
     ]);
+  });
+
+  it('skips a member that is not a group or a token', () => {
+    expect(descriptions({ colour: { description: 'x' } })).toEqual([]);
   });
 });
 

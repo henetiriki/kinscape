@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { DtcgTree, SystemTokens } from '@ks/lib/design/types.ts';
 
+import { colour } from '@ks/lib/design/__tests__/dtcg-fixtures.ts';
 import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '@ks/lib/design/bundle.mts';
 import { cssName } from '@ks/lib/design/css.mts';
 import { notesOf, resolvedText, tokenLeaves } from '@ks/lib/design/dtcg.mts';
@@ -93,13 +94,36 @@ describe('systemTokens', () => {
     expect(all(system).length).toBe(177);
   });
 
+  it('writes a few tokens as literal name, value and note', () => {
+    const byName = new Map(all(system).map(token => [token.name, token]));
+
+    expect(byName.get('brand')?.value).toBe('#264f29');
+    expect(byName.get('brand')?.usage).toMatch(
+      /^Primary buttons, links and selection\. /
+    );
+    expect(byName.get('surface')?.value).toBe('#ffffff');
+    expect(byName.get('space-4')?.value).toBe('4px');
+    expect(byName.get('space-4')?.usage).toBe(
+      'Gaps inside a control, icon to text, and between tight rows.'
+    );
+    expect(byName.get('radius-panel')?.value).toBe('12px');
+    expect(byName.get('size-touch')?.value).toBe('44px');
+  });
+
+  it('ignores a $description on the type group', () => {
+    const fixture = structuredClone(raw);
+
+    (fixture.type as Record<string, unknown>).$description = 'Text styles.';
+
+    expect(systemTokens(fixture, fonts).type.groups).toEqual(
+      system.type.groups
+    );
+  });
+
   it('leaves out a token with no $description', () => {
     const fixture = structuredClone(raw);
 
-    (fixture.colour as DtcgTree).undocumented = {
-      $type: 'color',
-      $value: { colorSpace: 'srgb', components: [0, 0, 0], hex: '#010203' },
-    };
+    (fixture.colour as DtcgTree).undocumented = colour('#010203');
 
     const names = systemTokens(fixture, fonts).color.tokens.map(
       ({ name }) => name

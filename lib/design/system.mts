@@ -90,7 +90,9 @@ const groupFor = (
   notes: Map<string, string>,
   key: string
 ): SystemGroup => {
-  const styles = Object.entries(tree.type as Record<string, DtcgTree>);
+  const styles = Object.entries(tree.type as Record<string, DtcgTree>).filter(
+    ([name]) => !name.startsWith('$')
+  );
 
   return {
     family: key,

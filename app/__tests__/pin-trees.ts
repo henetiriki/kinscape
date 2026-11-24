@@ -70,3 +70,25 @@ export const seedTrees = async (latitudeA = -33.9, latitudeB = -26.2) => {
 
   return { sessions, store, tokens };
 };
+
+/** An id of a Pin that no Tree holds. */
+export const NO_PIN = '01900000-0000-7000-b000-0000000000d9';
+
+/**
+ * Seeds the two Trees and puts their adapters in `adapters.current`. A route test passes its own
+ * hoisted mocks, because `vi.mock` takes them from the test file.
+ */
+export const setupRoute = async (
+  adapters: { current: unknown },
+  jar: { get: { mockReturnValue: (value: unknown) => unknown } }
+) => {
+  const { sessions, store, tokens } = await seedTrees();
+
+  adapters.current = { sessions, store };
+
+  return {
+    signInAs: (subject: 'a' | 'b') =>
+      jar.get.mockReturnValue({ value: tokens[subject] }),
+    store,
+  };
+};

@@ -72,6 +72,44 @@ const saveWith = async (page: Page, answer: 'abort' | 'hold') => {
   await page.getByRole('button', { name: 'Save' }).click();
 };
 
+/** The fields of the synthetic Pin of the edit boards. Its Person is Maria Magdalena du Toit. */
+const EDIT_FIELDS = {
+  address: 'Farm Example, district Example',
+  date: 'FROM 1890 TO 1905',
+  eventType: 'residence',
+  latitude: -29.12,
+  longitude: 26.21,
+  notes: 'Lived here with the Example family.',
+  personId: '01900000-0000-7000-8000-0000000000a1',
+  precision: 'farm',
+  sources: 'Example parish register, 1890.',
+  version: 1,
+};
+
+/**
+ * The dev page asks for `/data/pins/{id}/edit` as it loads, before a state runs. The state routes
+ * the request, then reloads the page, so the first request meets the route. `hold` never answers.
+ */
+const editPanel = async (page: Page, answer: 'fail' | 'hold' | 'ok') => {
+  await page.route('**/data/pins/*/edit', route =>
+    answer === 'hold'
+      ? new Promise<void>(() => {})
+      : answer === 'fail'
+        ? route.fulfill({ status: 404 })
+        : route.fulfill({ json: EDIT_FIELDS })
+  );
+  await page.reload();
+};
+
+/** Waits until the edit panel has its Persons and its fields. */
+const editReady = async (page: Page) => {
+  await page.getByRole('combobox', { name: 'Person' }).waitFor();
+  await page
+    .getByRole('button', { name: 'Save' })
+    .and(page.locator(':enabled'))
+    .waitFor();
+};
+
 /** Puts the page in the state a screen in `design/screens.json` names, before the screenshot. */
 export const states: Record<string, (page: Page) => Promise<void>> = {
   // The board draws the menu open with People hovered.
@@ -111,6 +149,35 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
       .getByRole('alert')
       .filter({ hasText: /Couldn't save|changed while/ })
       .waitFor();
+  },
+  // The board shows the form of a Pin at its own point: the precision is fixed.
+  'pin-edit': async page => {
+    await editPanel(page, 'ok');
+    await editReady(page);
+  },
+  // The route answers 404, so the panel shows its alert.
+  'pin-edit-load-failed': async page => {
+    await editPanel(page, 'fail');
+    await page
+      .getByRole('alert')
+      .filter({ hasText: "Couldn't load this Pin" })
+      .waitFor();
+  },
+  // The route holds the request, so the panel stays in its loading state.
+  'pin-edit-loading': async page => {
+    await editPanel(page, 'hold');
+    await page.getByRole('form', { name: 'Edit a pin' }).waitFor();
+  },
+  // The board shows a typed point: the precision is free.
+  'pin-edit-moved': async page => {
+    await editPanel(page, 'ok');
+    await editReady(page);
+    await page.getByLabel('Coordinates').fill('-28.742600, 25.311800');
+    await page
+      .getByRole('form', { name: 'Edit a pin' })
+      .getByLabel('Precision', { exact: true })
+      .selectOption('farm');
+    await page.getByLabel('Coordinates').blur();
   },
   'pin-form': async page => {
     await openPinForm(page);

@@ -2,6 +2,7 @@
 
 import type { ComponentProps } from 'react';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 
 import type { FixedPlace } from '@ks/features/people';
@@ -24,12 +25,15 @@ import { formatFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date.mts';
 const OpenPinPopup = ({
   onAddHere,
   onClose,
+  onEdit,
   pin,
   place,
 }: {
   /** Opens the panel at the Place of the Pin, with the precision from its details. */
   onAddHere?: (place: FixedPlace) => void;
   onClose: () => void;
+  /** Opens the edit panel for the Pin. */
+  onEdit?: (id: MapPin['id']) => void;
   pin: MapPin;
   /** The point of the Pin on a desktop; none on a phone, where the popup sits in the date sheet. */
   place?: { x: number; y: number };
@@ -52,6 +56,12 @@ const OpenPinPopup = ({
           }
         : undefined,
     onClose,
+    onEdit: onEdit
+      ? () => {
+          onEdit(pin.id);
+          onClose();
+        }
+      : undefined,
     onRetry: () => void refetch(),
     reading: readFuzzyDate(pin),
     recorded: formatFuzzyDate(pin),
@@ -73,7 +83,7 @@ const OpenPinPopup = ({
 const pinProp = (
   open: MapPin,
   close: () => void,
-  addHere?: (place: FixedPlace) => void
+  { addHere, edit }: Pick<ReturnType<typeof useAddPin>, 'addHere' | 'edit'>
 ): NonNullable<ComponentProps<typeof MapShell>['pin']> => ({
   open: { id: open.id, position: [open.longitude, open.latitude] },
   popup: (form, place) => (
@@ -81,6 +91,7 @@ const pinProp = (
       key={open.id}
       onAddHere={addHere}
       onClose={close}
+      onEdit={edit}
       pin={open}
       place={form === 'floating' ? place : undefined}
     />
@@ -109,7 +120,17 @@ export const MapWithPins = (
 ) => {
   const { data, errorUpdatedAt, isError, refetch } = usePins();
   const phone = usePhone();
-  const add = useAddPin({ onSaved: () => void refetch() });
+  const queryClient = useQueryClient();
+  // A save of an edit marks each held query of the Pins as stale, the details of the popup too.
+  // The query of the edit fields stays out: it is still mounted, and a reload would ask again.
+  const add = useAddPin({
+    onEdited: () =>
+      void queryClient.invalidateQueries({
+        predicate: ({ queryKey }) => queryKey[2] !== 'edit',
+        queryKey: ['pins'],
+      }),
+    onSaved: () => void refetch(),
+  });
   // The toast of one failure stays hidden once dismissed; a new failure has a new time.
   const [dismissedAt, setDismissedAt] = useState(0);
   const [openId, setOpenId] = useState<string>();
@@ -130,7 +151,7 @@ export const MapWithPins = (
         add.closeClick?.();
       }}
       panel={add.panel}
-      pin={open && pinProp(open, close, add.addHere)}
+      pin={open && pinProp(open, close, add)}
       toast={
         isError && errorUpdatedAt !== dismissedAt ? (
           <Toast

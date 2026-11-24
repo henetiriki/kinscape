@@ -4,8 +4,12 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { MapPin } from '@ks/lib/domain/pins/types.ts';
 
 import { QueryProvider } from '@ks/app/QueryProvider';
-import { usePinDetails, usePins } from '@ks/features/pins';
-import { fetchPinDetails, fetchPins } from '@ks/features/pins/query';
+import { usePinDetails, usePinEdit, usePins } from '@ks/features/pins';
+import {
+  fetchPinDetails,
+  fetchPinEdit,
+  fetchPins,
+} from '@ks/features/pins/query';
 
 // PIN-02, NFR-01, NFR-03. Data is synthetic.
 const PIN = {
@@ -204,6 +208,68 @@ it('rejects fetchPinDetails on a response that is not OK', async () => {
   fetchStub.mockResolvedValue(new Response(null, { status: 404 }));
 
   await expect(fetchPinDetails(PIN.id)).rejects.toThrow('404');
+});
+
+const EDIT = { address: '1 Church Street', version: 2 };
+
+const EditProbe = () => {
+  const { data, isError } = usePinEdit(PIN.id);
+
+  return <p>{`edit: ${isError ? 'error' : (data?.version ?? 'loading')}`}</p>;
+};
+
+it('asks for the edit fields by the key of the Pin and shows the version', async () => {
+  fetchStub.mockResolvedValue(Response.json(EDIT));
+
+  render(
+    <QueryProvider>
+      <EditProbe />
+    </QueryProvider>
+  );
+
+  await waitFor(() => {
+    expect(document.body.textContent).toContain('edit: 2');
+  });
+  expect(fetchStub).toHaveBeenCalledTimes(1);
+  expect(fetchStub.mock.calls[0][0]).toBe(`/data/pins/${PIN.id}/edit`);
+});
+
+it('asks again for the edit fields when the form mounts again', async () => {
+  fetchStub.mockImplementation(async () => Response.json(EDIT));
+
+  const { rerender } = render(
+    <QueryProvider>
+      <EditProbe />
+    </QueryProvider>
+  );
+
+  await waitFor(() => {
+    expect(document.body.textContent).toContain('edit: 2');
+  });
+  rerender(<QueryProvider>{null}</QueryProvider>);
+  // `gcTime: 0` drops the query on the next timer tick.
+  await new Promise(resolve => setTimeout(resolve, 10));
+  rerender(
+    <QueryProvider>
+      <EditProbe />
+    </QueryProvider>
+  );
+  await waitFor(() => {
+    expect(document.body.textContent).toContain('edit: 2');
+  });
+  expect(fetchStub).toHaveBeenCalledTimes(2);
+});
+
+it('rejects fetchPinEdit on a response that is not OK', async () => {
+  fetchStub.mockResolvedValue(new Response(null, { status: 404 }));
+
+  await expect(fetchPinEdit(PIN.id)).rejects.toThrow('404');
+});
+
+it('gives the fields that fetchPinEdit reads', async () => {
+  fetchStub.mockResolvedValue(Response.json(EDIT));
+
+  await expect(fetchPinEdit(PIN.id)).resolves.toEqual(EDIT);
 });
 
 it('gives the details that fetchPinDetails reads', async () => {

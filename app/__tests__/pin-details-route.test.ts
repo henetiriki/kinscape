@@ -8,26 +8,19 @@ vi.mock('@ks/server/adapters.mts', () => ({
   appAdapters: () => adapters.current,
 }));
 
-import { OTHER_PIN, PIN, seedTrees } from '@ks/app/__tests__/pin-trees';
+import {
+  NO_PIN,
+  OTHER_PIN,
+  PIN,
+  setupRoute,
+} from '@ks/app/__tests__/pin-trees';
 import { GET } from '@ks/app/data/pins/[id]/route';
 
 // PIN-02, NFR-03, NFR-10. Data is synthetic.
-const NO_PIN = '01900000-0000-7000-b000-0000000000d9';
-
 const ask = (id: string) =>
   GET(new Request('http://x'), { params: Promise.resolve({ id }) });
 
-const setup = async () => {
-  const { sessions, store, tokens } = await seedTrees();
-
-  adapters.current = { sessions, store };
-
-  return {
-    signInAs: (subject: 'a' | 'b') =>
-      jar.get.mockReturnValue({ value: tokens[subject] }),
-    store,
-  };
-};
+const setup = () => setupRoute(adapters, jar);
 
 beforeEach(() => {
   vi.clearAllMocks();

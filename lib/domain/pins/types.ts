@@ -52,6 +52,17 @@ export type PinDetails = {
   surname: string;
 };
 
+/**
+ * What the edit form needs of a Pin (PIN-02): the form fields, the date as text, the point and
+ * precision of its Place, and the `version`. It holds no Pin id or Place id.
+ */
+export type PinEditFields = {
+  date: string;
+  personId: PinInput['personId'];
+  version: number;
+} & Pick<PinInput, 'address' | 'eventType' | 'notes' | 'sources'> &
+  Pick<Place, 'latitude' | 'longitude' | 'precision'>;
+
 /** The error kind of each form field that failed. A kind never holds input text. */
 export type PinFieldErrors = {
   fields: {

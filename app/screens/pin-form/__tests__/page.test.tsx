@@ -9,6 +9,9 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ prefetch: vi.fn(), push: vi.fn() }),
 }));
 
+import EditPage, {
+  metadata as editMetadata,
+} from '@ks/app/screens/pin-form/edit/page';
 import ExistingPlacePage, {
   metadata as existingMetadata,
 } from '@ks/app/screens/pin-form/existing-place/page';
@@ -55,6 +58,28 @@ it('opens the panel at a synthetic Place on the existing-place page', async () =
 it('opens nothing at a Place when the hook gives no addHere', async () => {
   addPin.mockReturnValue({});
   render(await ExistingPlacePage());
+
+  screen.getByTestId('search-slot');
+});
+
+// PIN-02
+it('opens the edit panel for a synthetic Pin on the edit page', async () => {
+  const edit = vi.fn();
+
+  addPin.mockReturnValue({ edit });
+  render(await EditPage());
+
+  expect(edit).toHaveBeenCalledExactlyOnceWith(
+    '01900000-0000-7000-b000-0000000000d1'
+  );
+  expect(editMetadata.title).toBe('Edit a pin');
+  addPin.mock.calls[0][0].onEdited();
+});
+
+// NFR-05
+it('opens no edit panel when the hook gives no edit', async () => {
+  addPin.mockReturnValue({});
+  render(await EditPage());
 
   screen.getByTestId('search-slot');
 });

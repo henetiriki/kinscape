@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { useQuery } from '@tanstack/react-query';
 import {
   act,
   fireEvent,
@@ -424,6 +425,78 @@ describe('the Pin popup', () => {
       precision: 'farm',
     });
     expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  // PIN-02
+  it('opens the edit panel for the Pin from "Edit", and closes the popup', async () => {
+    const edit = vi.fn();
+
+    addPin.mockReturnValue({ edit });
+    fetchStub.mockImplementation(answer);
+    renderMap();
+    await click(FIRST.id);
+    await screen.findByRole('heading', { name: 'Example Person' });
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
+
+    expect(edit).toHaveBeenCalledExactlyOnceWith(FIRST.id);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(
+      fetchStub.mock.calls.filter(([url]) => String(url).endsWith('/edit'))
+    ).toHaveLength(0);
+  });
+
+  // PIN-02
+  it('invalidates the Pins after a saved edit, so the Pins load again', async () => {
+    fetchStub.mockImplementation(answer);
+    addPin.mockReturnValue({});
+    renderMap();
+    await waitFor(() => {
+      expect(captions()).toBe(LOADED);
+    });
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      addPin.mock.calls.at(-1)![0].onEdited();
+    });
+    await waitFor(() => {
+      expect(fetchStub).toHaveBeenCalledTimes(2);
+    });
+    expect(fetchStub).toHaveBeenLastCalledWith('/data/pins');
+  });
+
+  // NFR-10
+  it('does not ask again for the fields of the open edit panel after a saved edit', async () => {
+    const editFields = vi.fn(() => Promise.resolve({ version: 1 }));
+    const Probe = () => {
+      useQuery({
+        queryFn: editFields,
+        queryKey: ['pins', FIRST.id, 'edit'],
+        staleTime: Infinity,
+      });
+
+      return null;
+    };
+
+    fetchStub.mockImplementation(answer);
+    addPin.mockReturnValue({});
+    render(
+      <QueryProvider>
+        <Probe />
+        <MapWithPins {...props} />
+      </QueryProvider>
+    );
+    await waitFor(() => {
+      expect(captions()).toBe(LOADED);
+    });
+
+    await act(async () => {
+      addPin.mock.calls.at(-1)![0].onEdited();
+    });
+    await waitFor(() => {
+      expect(fetchStub).toHaveBeenCalledTimes(2);
+    });
+
+    expect(editFields).toHaveBeenCalledOnce();
   });
 
   // NFR-05

@@ -20,9 +20,10 @@ import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
 // there.
 
 const SEEDED = 9_995;
-// The save tests of pin-form.spec.ts, map-click.spec.ts and this file add one Pin each to the same
-// Tree. After they run, a count reads up to three more. The seed leaves room for five more Pins.
-const ALL = `(?:${SEEDED}|${SEEDED + 1}|${SEEDED + 2}|${SEEDED + 3})`;
+// The save tests of pin-form.spec.ts, pin-edit.spec.ts, map-click.spec.ts and this file add one Pin
+// each to the same Tree. After they run, a count reads up to four more. The seed leaves room for
+// five more Pins.
+const ALL = `(?:${SEEDED}|${SEEDED + 1}|${SEEDED + 2}|${SEEDED + 3}|${SEEDED + 4})`;
 
 const hasImage = (page: Page, eventType: string) =>
   page.evaluate(

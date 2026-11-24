@@ -46,7 +46,9 @@ const savedPins = async (
   known: Set<string>,
   window: { from: number; to: number }
 ) => {
-  const response = await page.request.get('/data/pins');
+  // The server can close a connection while it is idle, and the last call comes after a reload.
+  // `maxRetries` makes Playwright retry a reset connection (`ECONNRESET`).
+  const response = await page.request.get('/data/pins', { maxRetries: 3 });
   const pins = (await response.json()) as ListedPin[];
 
   return pins.filter(

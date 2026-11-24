@@ -20,7 +20,7 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var noop = function () {};
   var Control = window.KinScape["Legend"];
   var handlers = [];
-  var states = [{"label":"Legend · default","props":{}}];
+  var states = [{"label":"Legend · default","props":{}},{"label":"Legend · drawn marks","props":{"rows":["border","approximate","events"]}}];
   var give = function (props, names) {
     names.forEach(function (name) {
       var at = name.indexOf('.');

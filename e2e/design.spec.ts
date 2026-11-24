@@ -110,7 +110,8 @@ test('the checkbox uses the brand colour', async ({ page }) => {
     Number.parseInt(brand.slice(i, i + 2), 16)
   );
 
-  await expect(
-    page.getByRole('checkbox', { name: 'Polity borders' })
-  ).toHaveCSS('background-color', `rgb(${r}, ${g}, ${b})`);
+  await expect(page.getByRole('checkbox', { name: 'Polities' })).toHaveCSS(
+    'background-color',
+    `rgb(${r}, ${g}, ${b})`
+  );
 });

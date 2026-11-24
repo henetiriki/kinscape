@@ -389,6 +389,7 @@ describe('MapView', () => {
     const test: Layer = {
       description: 'd',
       filters: day => ({ 'test-fills': filter(day) as never }),
+      group: 'boundaries',
       id: 'test',
       label: 'Test',
       layers: [{ id: 'test-fills', source: 'test', type: 'fill' }],
@@ -412,6 +413,7 @@ describe('MapView', () => {
     const bare: Layer = {
       description: 'd',
       filters: () => ({}),
+      group: 'boundaries',
       id: 'bare',
       label: 'Bare',
       layers: [{ id: 'bare-fills', source: 'bare', type: 'fill' }],
@@ -441,6 +443,7 @@ describe('MapView', () => {
       filters: (day, open) => ({
         'pick-ring': ['==', ['literal', `${day}:${open}`], 'x'] as never,
       }),
+      group: 'boundaries',
       id: 'pick',
       label: 'Pick',
       layers: [

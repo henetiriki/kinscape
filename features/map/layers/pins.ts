@@ -163,6 +163,7 @@ export const pinsLayer = (pins: MapPin[]): Layer => {
     description: (day: Day) =>
       `${pins.filter(({ span }) => isCurrentOn(span, day)).length} of ${pins.length} true on this date`,
     filters: pinFilters,
+    group: 'pins',
     icons: Object.fromEntries(
       EVENT_ORDER.map(event => [`${PREFIX}${event}`, EVENT_PATHS[event]])
     ),

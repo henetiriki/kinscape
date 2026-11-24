@@ -116,10 +116,10 @@ const oneLine = (text: string): string => text.replace(/\s+/g, ' ').trim();
 // The names of the required props of each form of a union of props.
 const formsOf = (
   checker: ts.TypeChecker,
-  parameterType: ts.Type | undefined,
+  parameterType: ts.Type,
   isOwn: (prop: ts.Symbol) => boolean
 ): string[][] =>
-  parameterType?.isUnion()
+  parameterType.isUnion()
     ? parameterType.types.map(member =>
         checker
           .getPropertiesOfType(member)
@@ -148,6 +148,20 @@ const typeText = (
         .replace(/ \| undefined$/, '');
 };
 
+/** The props parameter of a control. A control with no props has no card props table, so it fails by name. */
+export const propsParameter = (
+  signature: ts.Signature,
+  name: string
+): ts.Symbol => {
+  const [parameter] = signature.getParameters();
+
+  if (!parameter) {
+    throw new Error(`${name} takes no props: its card needs a props table`);
+  }
+
+  return parameter;
+};
+
 /**
  * A control's JSDoc summary and the props its source declares. Props it takes from its HTML
  * element (declared under `node_modules`) are left out, and `rest` says there were some.
@@ -165,12 +179,9 @@ const describeControl = (
   const [signature] = checker
     .getTypeOfSymbolAtLocation(symbol, file)
     .getCallSignatures();
-  const [parameter] = signature.getParameters();
-  // A control with no props, such as `Legend`, has no parameter.
-  const parameterType = parameter
-    ? checker.getTypeOfSymbolAtLocation(parameter, file)
-    : undefined;
-  const all = parameterType ? checker.getPropertiesOfType(parameterType) : [];
+  const parameter = propsParameter(signature, name);
+  const parameterType = checker.getTypeOfSymbolAtLocation(parameter, file);
+  const all = checker.getPropertiesOfType(parameterType);
   const isOwn = (prop: ts.Symbol): boolean =>
     prop.declarations!.some(
       declaration =>

@@ -71,7 +71,7 @@ const Dock = ({ details, phone }: { details?: ReactNode; phone: boolean }) => (
   />
 );
 
-const LayersPanel = () => (
+const BoardPanel = () => (
   <Panel
     bodyId='map-panel-body'
     end={<Legend />}
@@ -142,7 +142,7 @@ export const MapFrame = ({
           {...accountSlots(phone, menu)}
           action={action}
           dock={dock}
-          panel={panel ?? <LayersPanel />}
+          panel={panel ?? <BoardPanel />}
           search={<SearchBar form='bar' />}
           zoom={<ZoomControls />}>
           {children?.(phone)}

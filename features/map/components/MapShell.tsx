@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 
 import { useEffect, useRef, useState } from 'react';
 
+import type { Tab } from '@ks/app/components/actions/types';
 import type { ClickPoint } from '@ks/app/components/overlays/types';
 import type {
   ClickProp,
@@ -28,12 +29,11 @@ import {
 } from '@ks/features/map/components/AccountMenu';
 import { Credits } from '@ks/features/map/components/Credits';
 import { DateDock } from '@ks/features/map/components/DateDock';
+import { LayersBody } from '@ks/features/map/components/LayersBody';
 import { LayersButton } from '@ks/features/map/components/LayersButton';
-import {
-  LayersList,
-  LayersPanel,
-} from '@ks/features/map/components/LayersPanel';
+import { Legend } from '@ks/features/map/components/Legend';
 import { MapView } from '@ks/features/map/components/MapView';
+import { Panel } from '@ks/features/map/components/Panel';
 import { SourcesDialog } from '@ks/features/map/components/SourcesDialog';
 import { ZoomControls } from '@ks/features/map/components/ZoomControls';
 import { PINS_LAYER_ID } from '@ks/features/map/layers/pins';
@@ -41,8 +41,15 @@ import { polityLayer } from '@ks/features/map/layers/polities';
 import { hasBorders } from '@ks/lib/domain/map/coverage.mts';
 import { todayDay, yearOf } from '@ks/lib/domain/map/map-date.mts';
 import { isCurrentOn } from '@ks/lib/domain/validity/validity.mts';
+import { DRAWN_LEGEND_ROWS } from '@ks/lib/ui/legend.mts';
 
 import styles from '@ks/features/map/components/MapShell.module.css';
+
+/** The panel has one tab until the Filters tab arrives. */
+const LAYERS_BODY_ID = 'layers-panel-body';
+const LAYERS_TABS: Tab[] = [
+  { controls: LAYERS_BODY_ID, label: 'Layers', value: 'layers' },
+];
 
 type PinProp = {
   open: OpenPin;
@@ -281,6 +288,21 @@ const Account = ({ phone, props, state }: PartArgs) => (
   />
 );
 
+/** The legend of the marks that the map draws. */
+const DrawnLegend = () => <Legend rows={DRAWN_LEGEND_ROWS} />;
+
+/** The desktop panel: one tab, "Layers", over the groups, and the legend at the end. */
+const LayersTab = (props: LayerProps) => (
+  <Panel
+    bodyId={LAYERS_BODY_ID}
+    end={<DrawnLegend />}
+    label='Layers'
+    selected='layers'
+    tabs={LAYERS_TABS}>
+    <LayersBody {...props} />
+  </Panel>
+);
+
 const ShellLayout = ({
   layerProps,
   phone,
@@ -332,7 +354,7 @@ const ShellLayout = ({
         ) : undefined
       }
       overlayAt='top'
-      panel={phone ? undefined : (panel ?? <LayersPanel {...layerProps} />)}
+      panel={phone ? undefined : (panel ?? <LayersTab {...layerProps} />)}
       zoom={phone ? undefined : <Zoom limits={state.limits} map={state.map} />}>
       <MapPane phone={phone} props={props} state={state} />
     </MapLayout>
@@ -366,7 +388,8 @@ export const MapShell = (props: ShellProps) => {
           onClose={() => state.setShowLayers(false)}
           open={state.showLayers}
           title='Layers'>
-          <LayersList {...layerProps} />
+          <LayersBody {...layerProps} />
+          <DrawnLegend />
         </Sheet>
       )}
       <SourcesDialog

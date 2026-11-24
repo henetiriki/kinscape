@@ -133,6 +133,14 @@ describe('noteProblems', () => {
     expect(noteProblems(tokens)).toContain('colour.brand has no note');
   });
 
+  it('names a note that is not text as no note', () => {
+    const tree = withNotes(without('font.body'));
+
+    ((tree.font as DtcgTree).body as Record<string, unknown>).$description = 3;
+
+    expect(noteProblems(tree)).toEqual(['font.body has no note']);
+  });
+
   it('names an empty or blank note', () => {
     expect(
       noteProblems(

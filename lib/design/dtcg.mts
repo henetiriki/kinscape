@@ -133,7 +133,7 @@ export const tokenLeaves = (node: DtcgTree, path: string[] = []): DtcgToken[] =>
       : tokenLeaves(group, at);
   });
 
-/** A reference as `{path}`, as `design/tokens.json` held it; any other value as its CSS text. */
+/** A reference as `{path}`; any other value as its CSS text. */
 export const tokenText = (token: DtcgToken): string => {
   const reference = referenceIn(token.$value);
 
@@ -166,7 +166,7 @@ export const descriptions = (
 ): [string[], string][] =>
   Object.entries(node).flatMap(([key, child]): [string[], string][] => {
     if (key === '$description') {
-      return [[path, String(child)]];
+      return typeof child === 'string' ? [[path, child]] : [];
     }
 
     return key.startsWith('$')

@@ -37,7 +37,7 @@ The Bug puts the 1 px low text of the `Residence` and `Farm` selects out of scop
 
 ## Order of work
 
-1. Add the e2e helper and the three gap checks. Run them on `main` and see the hint check fail with 12 px.
+1. Add the e2e helper and the three gap checks. Run them on `main`. The hint check fails with 12 px.
 2. Wrap the Precision field and the hint, and rename the class.
 3. Run the checks in `AGENTS.md` › Commands. Push.
 4. Read the `pin-edit` and `pin-form-existing-place` scores in the log of the `design` job.

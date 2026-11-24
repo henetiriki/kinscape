@@ -1,13 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import type { Tree } from '@ks/design/types.ts';
-
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import tokens from '@ks/design/kinscape.tokens.json';
 import { ratioOf } from '@ks/lib/design/contrast.mts';
 import { COLOUR_ROLES, MINIMUM, roleSentences } from '@ks/lib/design/roles.mts';
-
-const tokens = resolveTokens(rawTokens);
 
 // NFR-06: text 4.5:1, borders 3:1, on unrounded ratios.
 describe('COLOUR_ROLES', () => {
@@ -90,7 +85,7 @@ describe('roleSentences', () => {
       { path: 'colour.ink', role: 'border' as const },
     ];
 
-    expect(roleSentences(tokens as Tree, 'colour.ink', roles)).toHaveLength(2);
+    expect(roleSentences(tokens, 'colour.ink', roles)).toHaveLength(2);
   });
 
   it('gives no sentence for a path with no role', () => {

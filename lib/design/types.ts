@@ -79,6 +79,9 @@ export type DtcgTransition = {
   timingFunction: number[];
 };
 
+/** A group of `design/kinscape.tokens.json`: tokens and groups, and an optional note. */
+export type DtcgTree = { [key: string]: unknown; $description?: string };
+
 /** A problem that `tokenLiterals` finds in a `.module.css` file: its 1-based line and what is wrong. */
 export type LiteralProblem = { line: number; text: string };
 

@@ -60,14 +60,13 @@ Each module outside tests that imports `design/tokens.generated.ts` or reads `de
   - `app/components/feedback/Toast.tsx`: the toast time.
 - **Scripts that build files.**
   - `scripts/tokens.mts` writes the file ([The CSS](#the-css)).
-  - `scripts/design-system.mts`
   - `scripts/design-export.mts`
   - `scripts/sizes.mts`
 - **The workflow diagram.** `scripts/workflows-diagram.mts` colours the diagram from the colour tokens.
 
 ## The design system and the canvas
 
-See [Changing the design system](../CANVAS.md#changing-the-design-system). This page does not repeat those steps.
+`npm run design-system` reads `design/kinscape.tokens.json`. See [Changing the design system](../CANVAS.md#changing-the-design-system).
 
 ## The checks
 

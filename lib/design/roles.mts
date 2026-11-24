@@ -1,7 +1,6 @@
-/** The role of each colour token, and the token that its contrast uses (NFR-06). `notes` in `design/tokens.json` holds the use text. */
+/** The role of each colour token, and the token that its contrast uses (NFR-06). `$description` in `design/kinscape.tokens.json` holds the use text. */
 
-import type { Tree } from '#ks/design/types.ts';
-import type { ColourRole, Role } from '#ks/lib/design/types.ts';
+import type { ColourRole, DtcgTree, Role } from '#ks/lib/design/types.ts';
 
 import { DEFAULT_ON, formatRatio, ratioOf } from '#ks/lib/design/contrast.mts';
 import { systemName } from '#ks/lib/design/css.mts';
@@ -58,7 +57,7 @@ export const COLOUR_ROLES: ColourRole[] = [
   ...system('info'),
 ];
 
-const sentence = (tokens: Tree, { on, path, role }: ColourRole): string => {
+const sentence = (tokens: DtcgTree, { on, path, role }: ColourRole): string => {
   const minimum = MINIMUM[role];
 
   if (minimum === undefined) {
@@ -72,7 +71,7 @@ const sentence = (tokens: Tree, { on, path, role }: ColourRole): string => {
 
 /** One sentence for each entry of `path`, for the usage text of its token. */
 export const roleSentences = (
-  tokens: Tree,
+  tokens: DtcgTree,
   path: string,
   roles: ColourRole[] = COLOUR_ROLES
 ): string[] =>

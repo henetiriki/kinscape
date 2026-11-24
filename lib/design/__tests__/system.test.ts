@@ -1,12 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-import type { Tree } from '@ks/design/types.ts';
-import type { SystemTokens } from '@ks/lib/design/types.ts';
+import type { DtcgTree, SystemTokens } from '@ks/lib/design/types.ts';
 
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { colour } from '@ks/lib/design/__tests__/dtcg-fixtures.ts';
 import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '@ks/lib/design/bundle.mts';
 import { cssName } from '@ks/lib/design/css.mts';
+import { notesOf, resolvedText, tokenLeaves } from '@ks/lib/design/dtcg.mts';
 import { formatProblems } from '@ks/lib/design/format.mts';
 import { roleSentences } from '@ks/lib/design/roles.mts';
 import {
@@ -23,7 +23,9 @@ import {
   unicodeRange,
 } from '@ks/lib/design/system.mts';
 
-const raw = JSON.parse(readFileSync('design/tokens.json', 'utf8')) as Tree;
+const raw = JSON.parse(
+  readFileSync('design/kinscape.tokens.json', 'utf8')
+) as DtcgTree;
 const design = designSections(
   DESIGN_FILES.map(file => readFileSync(file, 'utf8'))
 );
@@ -32,13 +34,6 @@ const files = fontFiles(readFileSync('app/layout.tsx', 'utf8'));
 const fonts = systemFonts(files, raw);
 const system = systemTokens(raw, fonts);
 const ranges = Object.fromEntries(fonts.map(({ file }) => [file, 'U+0000']));
-
-const leaves = (node: Tree, path: string[]): [string[], number | string][] =>
-  Object.entries(node).flatMap(([key, child]) =>
-    typeof child === 'object'
-      ? leaves(child, [...path, key])
-      : [[[...path, key], child] as [string[], number | string]]
-  );
 
 const all = (tokens: SystemTokens) =>
   [
@@ -55,7 +50,7 @@ const all = (tokens: SystemTokens) =>
 
 describe('systemTokens', () => {
   it('carries every token that has a note, resolved to its value, with its note', () => {
-    const resolved = resolveTokens(raw);
+    const notes = notesOf(raw);
     const byName = new Map(all(system).map(({ name, value }) => [name, value]));
     const follow = (value: string): string => {
       const target = /^\{(.+)\}$/.exec(value)?.[1];
@@ -74,23 +69,18 @@ describe('systemTokens', () => {
       'space',
       'z',
     ].flatMap(group =>
-      leaves(resolved[group] as Tree, [group]).flatMap(([path, value]) => {
-        const usage = path.reduce<unknown>(
-          (node, key) => (node as Tree | undefined)?.[key],
-          raw.notes
-        );
+      tokenLeaves(raw[group] as DtcgTree, [group]).flatMap(({ path }) => {
+        const usage = notes.get(path.join('.'));
 
-        return typeof usage === 'string'
-          ? [
+        return usage === undefined
+          ? []
+          : [
               {
                 name: cssName(path).slice(2),
-                usage: [usage, ...roleSentences(resolved, path.join('.'))].join(
-                  ' '
-                ),
-                value: String(value),
+                usage: [usage, ...roleSentences(raw, path.join('.'))].join(' '),
+                value: resolvedText(raw, path.join('.')),
               },
-            ]
-          : [];
+            ];
       })
     );
 
@@ -102,6 +92,45 @@ describe('systemTokens', () => {
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
     expect(all(system).length).toBe(177);
+  });
+
+  it('writes a few tokens as literal name, value and note', () => {
+    const byName = new Map(all(system).map(token => [token.name, token]));
+
+    expect(byName.get('brand')?.value).toBe('#264f29');
+    expect(byName.get('brand')?.usage).toMatch(
+      /^Primary buttons, links and selection\. /
+    );
+    expect(byName.get('surface')?.value).toBe('#ffffff');
+    expect(byName.get('space-4')?.value).toBe('4px');
+    expect(byName.get('space-4')?.usage).toBe(
+      'Gaps inside a control, icon to text, and between tight rows.'
+    );
+    expect(byName.get('radius-panel')?.value).toBe('12px');
+    expect(byName.get('size-touch')?.value).toBe('44px');
+  });
+
+  it('ignores a $description on the type group', () => {
+    const fixture = structuredClone(raw);
+
+    (fixture.type as Record<string, unknown>).$description = 'Text styles.';
+
+    expect(systemTokens(fixture, fonts).type.groups).toEqual(
+      system.type.groups
+    );
+  });
+
+  it('leaves out a token with no $description', () => {
+    const fixture = structuredClone(raw);
+
+    (fixture.colour as DtcgTree).undocumented = colour('#010203');
+
+    const names = systemTokens(fixture, fonts).color.tokens.map(
+      ({ name }) => name
+    );
+
+    expect(names).not.toContain('undocumented');
+    expect(names).toContain('brand');
   });
 
   // NFR-06
@@ -158,7 +187,7 @@ describe('systemTokens', () => {
     expect(system.color.themes).toEqual([{ id: 'light', name: 'Light' }]);
   });
 
-  it('has one type group per font key, with the styles in tokens.json order', () => {
+  it('has one type group per font key, with the styles in file order', () => {
     const names = system.type.groups.map(group => [
       group.name,
       group.family,
@@ -250,13 +279,13 @@ describe('fontFiles and systemFonts', () => {
     ]);
   });
 
-  it('rejects a file that no font in tokens.json starts', () => {
+  it('rejects a file that no font in design/kinscape.tokens.json starts', () => {
     expect(() =>
       systemFonts(
         [{ path: '../x/inter-latin.woff2', style: 'normal', weight: '400' }],
         raw
       )
-    ).toThrow('No font in tokens.json for inter-latin.woff2');
+    ).toThrow('No font in design/kinscape.tokens.json for inter-latin.woff2');
   });
 });
 
@@ -363,7 +392,7 @@ describe('Motion in foundations.md', () => {
   const section = /^## Motion$([\s\S]*)/m.exec(foundations)?.[1] ?? '';
 
   it('names each motion token once, as code, and no duration', () => {
-    const missing = Object.keys(raw.motion as Tree).filter(
+    const missing = Object.keys(raw.motion as DtcgTree).filter(
       key => section.split(`\`${key}\``).length !== 2
     );
 

@@ -7,6 +7,7 @@ import type {
   DtcgShadowLayer,
   DtcgToken,
   DtcgTransition,
+  DtcgTree,
 } from '#ks/lib/design/types.ts';
 
 import { hexChannels, isTree, referenceIn } from '#ks/design/tokens.mts';
@@ -116,6 +117,65 @@ export const cssText = ({ $type, $value, path }: DtcgToken): string => {
       throw new Error(`${path.join('.')}: no CSS for $type ${$type}`);
   }
 };
+
+/** Each token under `node`, in file order. `path` is the path of `node`. A member that is not a group or a token has no token. */
+export const tokenLeaves = (node: DtcgTree, path: string[] = []): DtcgToken[] =>
+  Object.entries(node).flatMap(([key, child]) => {
+    if (key.startsWith('$') || !isTree(child)) {
+      return [];
+    }
+
+    const at = [...path, key];
+
+    return '$value' in child
+      ? [{ ...child, path: at } as DtcgToken]
+      : tokenLeaves(child as DtcgTree, at);
+  });
+
+/** A reference as `{path}`; any other value as its CSS text. */
+export const tokenText = (token: DtcgToken): string => {
+  const reference = referenceIn(token.$value);
+
+  return reference === undefined ? cssText(token) : `{${reference}}`;
+};
+
+/** The CSS text of the token at `path` (`colour.brand`), after each reference it names. */
+export const resolvedText = (tree: DtcgTree, path: string): string => {
+  const keys = path.split('.');
+  const node = keys.reduce<unknown>(
+    (at, key) => (isTree(at) ? at[key] : undefined),
+    tree
+  );
+
+  if (!isTree(node) || !('$value' in node)) {
+    throw new Error(`Unknown token reference {${path}}`);
+  }
+
+  const reference = referenceIn(node.$value);
+
+  return reference === undefined
+    ? cssText({ ...node, path: keys } as DtcgToken)
+    : resolvedText(tree, reference);
+};
+
+/** Each `$description` of a group or a token, with the path it sits at, in file order. A member that is not a group or a token has none. */
+export const descriptions = (
+  node: DtcgTree,
+  path: string[] = []
+): [string[], string][] =>
+  Object.entries(node).flatMap(([key, child]): [string[], string][] => {
+    if (key === '$description') {
+      return typeof child === 'string' ? [[path, child]] : [];
+    }
+
+    return key.startsWith('$') || !isTree(child)
+      ? []
+      : descriptions(child as DtcgTree, [...path, key]);
+  });
+
+/** The `$description` of each group or token, by dotted path. */
+export const notesOf = (tree: DtcgTree): Map<string, string> =>
+  new Map(descriptions(tree).map(([path, note]) => [path.join('.'), note]));
 
 type Leaf = { path: string[]; token: Record<string, unknown> };
 

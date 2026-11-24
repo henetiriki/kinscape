@@ -1,7 +1,8 @@
-/** `design/tokens.json`, `DESIGN.md`, the design files that `DESIGN_FILES` lists and the font list as the files of KinScape's design system (Spec #445). */
+/** `design/kinscape.tokens.json`, `DESIGN.md`, the design files that `DESIGN_FILES` lists and the font list as the files of KinScape's design system (Spec #445). */
 
-import type { Tree } from '#ks/design/types.ts';
 import type {
+  DtcgToken,
+  DtcgTree,
   SystemFile,
   SystemFont,
   SystemGroup,
@@ -9,9 +10,15 @@ import type {
   SystemTokens,
 } from '#ks/lib/design/types.ts';
 
-import { isTree, REFERENCE, resolveTokens } from '#ks/design/tokens.mts';
+import { REFERENCE } from '#ks/design/tokens.mts';
 import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '#ks/lib/design/bundle.mts';
 import { familyName, systemName } from '#ks/lib/design/css.mts';
+import {
+  notesOf,
+  resolvedText,
+  tokenLeaves,
+  tokenText,
+} from '#ks/lib/design/dtcg.mts';
 import { roleSentences } from '#ks/lib/design/roles.mts';
 
 /** The design files that hold the README sections and the component bullets, relative to the repo root. */
@@ -43,22 +50,6 @@ export const README_SECTIONS = [
 const LINK = /(!?)\[([^\]]*)\]\(([^)]*)\)/g;
 const FILE = /path:\s*'([^']+)',\s*style:\s*'([^']+)',\s*weight:\s*'([^']+)'/g;
 
-const leaves = (node: Tree, path: string[]): [string[], number | string][] =>
-  Object.entries(node).flatMap(([key, child]) =>
-    isTree(child)
-      ? leaves(child, [...path, key])
-      : [[[...path, key], child] as [string[], number | string]]
-  );
-
-const noteAt = (notes: Tree, path: string[]): string | undefined => {
-  const note = path.reduce<unknown>(
-    (node, key) => (node as Tree | undefined)?.[key],
-    notes
-  );
-
-  return typeof note === 'string' ? note : undefined;
-};
-
 const alias = (value: string): string => {
   const reference = REFERENCE.exec(value)?.[1];
 
@@ -69,51 +60,65 @@ const alias = (value: string): string => {
 
 /** Each leaf of the given groups that has a note, as a token: aliases point at the converted name. `extra` gives sentences that follow the note. */
 const noted = (
-  tokens: Tree,
-  notes: Tree,
+  tree: DtcgTree,
+  notes: Map<string, string>,
   groups: string[],
+  value: (token: DtcgToken) => string,
   extra: (path: string[]) => string[] = () => []
 ): SystemToken[] =>
-  groups.flatMap(group => {
-    return leaves(tokens[group] as Tree, [group]).flatMap(([path, value]) => {
-      const usage = noteAt(notes, path);
+  groups.flatMap(group =>
+    tokenLeaves(tree[group] as DtcgTree, [group]).flatMap(token => {
+      const usage = notes.get(token.path.join('.'));
 
       return usage === undefined
         ? []
         : [
             {
-              name: systemName(path),
-              usage: [usage, ...extra(path)].join(' '),
-              value: alias(String(value)),
+              name: systemName(token.path),
+              usage: [usage, ...extra(token.path)].join(' '),
+              value: alias(value(token)),
             },
           ];
-    });
-  });
+    })
+  );
 
 const capitalised = (key: string): string =>
   key.charAt(0).toUpperCase() + key.slice(1);
 
-const groupFor = (tokens: Tree, notes: Tree, key: string): SystemGroup => {
-  const styles = Object.entries(tokens.type as Record<string, Tree>);
+const groupFor = (
+  tree: DtcgTree,
+  notes: Map<string, string>,
+  key: string
+): SystemGroup => {
+  const styles = Object.entries(tree.type as Record<string, DtcgTree>).filter(
+    ([name]) => !name.startsWith('$')
+  );
 
   return {
     family: key,
     name: capitalised(key),
-    styles: styles.flatMap(([name, style]) =>
-      style.font === `{font.${key}}`
+    styles: styles.flatMap(([name, style]) => {
+      const text = Object.fromEntries(
+        tokenLeaves(style, ['type', name]).map(token => [
+          token.path[2],
+          tokenText(token),
+        ])
+      );
+
+      return text.font === `{font.${key}}`
         ? [
             {
-              fontSize: String(style.size),
+              fontSize: text.size,
               fontStyle: 'normal',
-              fontWeight: String(style.weight),
-              letterSpacing: String(style.tracking),
-              lineHeight: String(style.line),
+              fontWeight: text.weight,
+              letterSpacing: text.tracking,
+              lineHeight: text.line,
               name,
-              usage: noteAt(notes, ['type', name]) as string,
+              usage: notes.get(`type.${name}`) as string,
             },
           ]
-        : []
-    ),
+        : [];
+    }),
   };
 };
 
@@ -131,10 +136,10 @@ export const fontFiles = (layout: string): SystemFile[] =>
 /** `type.fonts`: each file under `fonts/`, with the family whose slug starts its file name. */
 export const systemFonts = (
   files: SystemFile[],
-  tokens: Tree
+  tokens: DtcgTree
 ): SystemFont[] => {
-  const families = Object.values(tokens.font as Tree).map(stack =>
-    familyName(String(stack))
+  const families = tokenLeaves(tokens.font as DtcgTree, ['font']).map(token =>
+    familyName(tokenText(token))
   );
 
   return files.map(({ path, style, weight }) => {
@@ -142,7 +147,7 @@ export const systemFonts = (
     const family = families.find(name => base.startsWith(`${slug(name)}-`));
 
     if (family === undefined) {
-      throw new Error(`No font in tokens.json for ${base}`);
+      throw new Error(`No font in design/kinscape.tokens.json for ${base}`);
     }
 
     return { family, file: `fonts/${base}`, style, weight };
@@ -150,26 +155,27 @@ export const systemFonts = (
 };
 
 /** `tokens.json` for the type: the tokens that have a note, in one light theme. */
-export const systemTokens = (raw: Tree, fonts: SystemFont[]): SystemTokens => {
-  const notes = raw.notes as Tree;
-  const font = raw.font as Tree;
-  const keys = Object.keys(font);
-  const unresolved = Object.fromEntries(
-    Object.entries(raw).filter(([group]) => group !== 'notes')
-  );
-  const resolved = resolveTokens(unresolved);
-  const list = (...groups: string[]) => noted(unresolved, notes, groups);
+export const systemTokens = (
+  tree: DtcgTree,
+  fonts: SystemFont[]
+): SystemTokens => {
+  const notes = notesOf(tree);
+  const font = tokenLeaves(tree.font as DtcgTree, ['font']);
+  const keys = font.map(({ path }) => path[1]);
+  const list = (...groups: string[]) => noted(tree, notes, groups, tokenText);
   /** The format rules allow an alias only in `color`, so these families hold values. */
   const valued = (group: string) => ({
-    tokens: noted(resolved, notes, [group]),
+    tokens: noted(tree, notes, [group], ({ path }) =>
+      resolvedText(tree, path.join('.'))
+    ),
   });
 
   return {
     breakpoint: valued('breakpoint'),
     color: {
       themes: [{ id: 'light', name: 'Light' }],
-      tokens: noted(unresolved, notes, ['colour', 'map'], path =>
-        roleSentences(resolved, path.join('.'))
+      tokens: noted(tree, notes, ['colour', 'map'], tokenText, path =>
+        roleSentences(tree, path.join('.'))
       ),
     },
     focus: { tokens: list('focus') },
@@ -180,9 +186,11 @@ export const systemTokens = (raw: Tree, fonts: SystemFont[]): SystemTokens => {
     size: { tokens: list('size') },
     spacing: { tokens: list('space') },
     type: {
-      families: Object.fromEntries(keys.map(key => [key, String(font[key])])),
+      families: Object.fromEntries(
+        font.map(token => [token.path[1], tokenText(token)])
+      ),
       fonts,
-      groups: keys.map(key => groupFor(unresolved, notes, key)),
+      groups: keys.map(key => groupFor(tree, notes, key)),
     },
     version: 1,
     z: valued('z'),

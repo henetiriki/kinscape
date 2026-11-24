@@ -1,9 +1,10 @@
-/** The usage notes in `design/tokens.json`: which tokens need one, and what is wrong with the notes. */
+/** The usage notes in `design/kinscape.tokens.json`: which tokens need one, and what is wrong with the notes. */
 
-import type { Tree } from '#ks/design/types.ts';
+import type { DtcgTree } from '#ks/lib/design/types.ts';
 
-import { isTree, resolveTokens } from '#ks/design/tokens.mts';
+import { isTree } from '#ks/design/tokens.mts';
 import { coloursIn } from '#ks/lib/design/css.mts';
+import { notesOf, resolvedText, tokenLeaves } from '#ks/lib/design/dtcg.mts';
 
 /** Groups where every token needs a note. `type` needs one per style, `map` one per colour. */
 const GROUPS = new Set([
@@ -21,52 +22,49 @@ const GROUPS = new Set([
 
 type Entry<T> = [string, T];
 
-const leaves = (node: Tree, path: string[]): Entry<number | string>[] =>
-  Object.entries(node).flatMap(([key, child]) =>
-    isTree(child)
-      ? leaves(child, [...path, key])
-      : [[[...path, key].join('.'), child] as Entry<number | string>]
-  );
+const valued = (tokens: DtcgTree, group: string): Entry<string>[] =>
+  tokenLeaves(tokens[group] as DtcgTree, [group]).map(({ path }) => {
+    const name = path.join('.');
 
-const valued = (node: Tree, path: string[]): Entry<string>[] =>
-  leaves(node, path).map(([name, value]) => [name, String(value)]);
+    return [name, resolvedText(tokens, name)];
+  });
 
 /** Each token that needs a note, as `[path, value]`; a `type` style has no single value. */
-const needed = (tokens: Tree): Entry<string | undefined>[] =>
+const needed = (tokens: DtcgTree): Entry<string | undefined>[] =>
   Object.entries(tokens).flatMap(
     ([group, child]): Entry<string | undefined>[] => {
+      // A `$description` at the root is text, not a group.
       if (!isTree(child)) {
         return [];
       }
 
       if (group === 'type') {
-        return Object.keys(child).map(style => [`type.${style}`, undefined]);
+        return Object.keys(child)
+          .filter(style => !style.startsWith('$'))
+          .map(style => [`type.${style}`, undefined]);
       }
 
       if (group === 'map') {
-        return valued(child, [group]).filter(
+        return valued(tokens, group).filter(
           ([, value]) => coloursIn(value).length > 0
         );
       }
 
-      return GROUPS.has(group) ? valued(child, [group]) : [];
+      return GROUPS.has(group) ? valued(tokens, group) : [];
     }
   );
 
 /** One message per problem: a missing, empty or value-repeating note, or a note for no token that needs one. */
-export const noteProblems = (tokens: Tree): string[] => {
-  const { notes, ...rest } = tokens;
-  const written = new Map<string, number | string>(
-    isTree(notes) ? leaves(notes, []) : []
-  );
-  const wanted = needed(resolveTokens(rest));
+export const noteProblems = (tokens: DtcgTree): string[] => {
+  const written = notesOf(tokens);
+  const wanted = needed(tokens);
   const paths = new Set(wanted.map(([path]) => path));
 
   return [
     ...wanted.flatMap(([path, value]) => {
       const note = written.get(path);
 
-      if (typeof note !== 'string') {
+      if (note === undefined) {
         return [`${path} has no note`];
       }
 
@@ -81,6 +79,6 @@ export const noteProblems = (tokens: Tree): string[] => {
     }),
     ...[...written.keys()]
       .filter(path => !paths.has(path))
-      .map(path => `notes.${path} names no token that needs a note`),
+      .map(path => `${path}: a note where none is needed`),
   ];
 };

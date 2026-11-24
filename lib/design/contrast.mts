@@ -1,8 +1,9 @@
 /** WCAG contrast of design tokens: `#rrggbb` and `rgb(r g b / a)` values, ratios and their display. */
 
-import type { Tree } from '#ks/design/types.ts';
+import type { DtcgTree } from '#ks/lib/design/types.ts';
 
 import { HEX_COLOUR, hexChannels } from '#ks/design/tokens.mts';
+import { resolvedText } from '#ks/lib/design/dtcg.mts';
 
 type Rgb = [number, number, number];
 
@@ -46,19 +47,15 @@ export const contrastRatio = (a: string, b: string): number => {
 export const formatRatio = (ratio: number): string => `${ratio.toFixed(1)}:1`;
 
 /** The resolved value at a token path such as `colour.brand` or `map.hatch.colour`. */
-export const valueAt = (tokens: Tree, path: string): string => {
-  let node: number | string | Tree = tokens;
-
-  for (const key of path.split('.')) {
-    node = (node as Tree)[key];
-  }
-
-  return String(node);
-};
+export const valueAt = (tokens: DtcgTree, path: string): string =>
+  resolvedText(tokens, path);
 
 /** The token that a contrast uses when a role names none. */
 export const DEFAULT_ON = 'colour.surface';
 
 /** The unrounded contrast of a token on another (`DEFAULT_ON` unless `on` says). */
-export const ratioOf = (tokens: Tree, path: string, on = DEFAULT_ON): number =>
-  contrastRatio(valueAt(tokens, path), valueAt(tokens, on));
+export const ratioOf = (
+  tokens: DtcgTree,
+  path: string,
+  on = DEFAULT_ON
+): number => contrastRatio(valueAt(tokens, path), valueAt(tokens, on));

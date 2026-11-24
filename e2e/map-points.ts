@@ -1,6 +1,6 @@
 import type { Locator, Page } from '@playwright/test';
 
-import { expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 import type { TestWindow } from '@ks/e2e/types';
 
@@ -33,6 +33,19 @@ export const afterPaint = (page: Page) =>
       })
   );
 
+/**
+ * The wait for the first draw after a page load. The first draw of about 10,000 Pins in software
+ * WebGL can pass the 10 s `expect` limit of `ciLimits` on a busy runner.
+ */
+export const FIRST_DRAW = 20_000;
+
+/**
+ * The worker slot of the running test, 0 to 2. CI runs 3 workers; a local run can have more, and
+ * a higher slot would move a date window before 1652 or a start point off the map. Copies of a
+ * save test run side by side on one Tree, so each takes its own point, Pin or date window by slot.
+ */
+export const slot = () => test.info().parallelIndex % 3;
+
 /** The event type of each Pin symbol that the map draws now. */
 export const shownTypes = async (page: Page) => {
   await page.waitForFunction(() => 'kinscapeMap' in window);
@@ -56,20 +69,28 @@ export const goTo = async (page: Page, date: string) => {
 
 /**
  * A Pin the click picks at its own point, away from the furniture: the page point to click and the
- * id the app reads from the click.
+ * id the app reads from the click. `fromEnd` takes the free Pin that many places from the end of
+ * the list, so a test that adds a Pin at its Place leaves the first Pin to the other tests.
  */
-export const pickPin = async (page: Page) => {
+export const pickPin = async (page: Page, fromEnd?: number) => {
   await expect
-    .poll(async () => (await shownTypes(page)).length)
+    .poll(async () => (await shownTypes(page)).length, { timeout: FIRST_DRAW })
     .toBeGreaterThan(0);
 
-  return page.evaluate(() => {
+  return page.evaluate(wanted => {
     const { kinscapeMap: map } = window as unknown as TestWindow;
     const { left, top } = map.getContainer().getBoundingClientRect();
+    const free: { id: string; x: number; y: number }[] = [];
+    const features = map.queryRenderedFeatures(undefined, { layers: ['pins'] });
+    const want = wanted ?? 0;
 
-    for (const feature of map.queryRenderedFeatures(undefined, {
-      layers: ['pins'],
-    })) {
+    for (const feature of wanted === undefined
+      ? features
+      : features.reverse()) {
+      if (free.length > want) {
+        break;
+      }
+
       const point = map.project(feature.geometry.coordinates);
       const [top1] = map.queryRenderedFeatures(point, { layers: ['pins'] });
       const x = left + point.x;
@@ -98,12 +119,18 @@ export const pickPin = async (page: Page) => {
         point.y < window.innerHeight - 300 &&
         top1
       ) {
-        return { id: top1.properties.id, x, y };
+        free.push({ id: top1.properties.id, x, y });
       }
     }
 
-    throw new Error('No Pin is in the free area');
-  });
+    const pin = free[want];
+
+    if (pin === undefined) {
+      throw new Error('No Pin is in the free area');
+    }
+
+    return pin;
+  }, fromEnd);
 };
 
 /** Where the Pin is on the page now, from the map. */

@@ -2,7 +2,7 @@
 
 - **Spec:** #1224
 - **Requirement IDs:** [PIN-01](../../docs/requirements.md#pin-01), [PIN-02](../../docs/requirements.md#pin-02)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The Bug puts the 1 px low text of the `Residence` and `Farm` selects out of scop
 - **B.** The build fixes only the gap and reports the two scores in the PR. If a score is above 0.25%, the build files a new Bug for the select text and writes a "Big:" line for check 4. Cost: check 4 stays open until that Bug merges.
 - **Other:** your own.
 
-Recommended: A, because the Bug asks for both fixes in one place. B loses check 4 in this PR.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

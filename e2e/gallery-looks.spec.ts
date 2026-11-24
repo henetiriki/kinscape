@@ -1175,7 +1175,7 @@ test.describe('at 1440px', () => {
 
     await expect(legend.locator('circle')).toHaveCount(0);
     await expect(legend.locator('span[aria-hidden="true"]')).toHaveCount(0);
-    await expect(legend.locator('path')).toHaveCount(2);
+    await expect(legend.locator('svg[height="12"] path')).toHaveCount(2);
     await expect(legend.getByText('Contested claim')).toHaveCount(0);
   });
 

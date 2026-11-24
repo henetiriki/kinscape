@@ -1,3 +1,5 @@
+import type { Page } from '@playwright/test';
+
 import { expect, test } from '@playwright/test';
 
 import type { TestWindow } from '@ks/e2e/types';
@@ -22,27 +24,31 @@ const EACH_TYPE = EVENT_TYPES.map((eventType, index) => ({
   span: { validFrom: 53_000, validTo: null },
 }));
 
+/** The count of Pin symbols that the map draws now. */
+const drawnPins = (page: Page) =>
+  page.evaluate(
+    () =>
+      (window as unknown as TestWindow).kinscapeMap.queryRenderedFeatures(
+        undefined,
+        { layers: ['pins'] }
+      ).length
+  );
+
 test.describe('the researcher Tree with a Pin of each Event type', () => {
   test.use({ storageState: fixtureStateFor(researcher.email) });
 
-  // PIN-03: the Tree has no Pins of its own, so the response is the test's own.
-  test('draws each Event type as an SDF image on the map', async ({ page }) => {
+  // The Tree has no Pins of its own, so the response is the test's own.
+  test.beforeEach(async ({ page }) => {
     await page.route('**/data/pins', route =>
       route.fulfill({ json: EACH_TYPE })
     );
     await page.goto('/');
     await expect(page.getByText('10 of 10 true on this date')).toBeVisible();
-    await expect
-      .poll(() =>
-        page.evaluate(
-          () =>
-            (window as unknown as TestWindow).kinscapeMap.queryRenderedFeatures(
-              undefined,
-              { layers: ['pins'] }
-            ).length
-        )
-      )
-      .toBe(EVENT_TYPES.length);
+  });
+
+  // PIN-03
+  test('draws each Event type as an SDF image on the map', async ({ page }) => {
+    await expect.poll(() => drawnPins(page)).toBe(EVENT_TYPES.length);
 
     for (const eventType of EVENT_TYPES) {
       expect(
@@ -52,6 +58,19 @@ test.describe('the researcher Tree with a Pin of each Event type', () => {
         )
       ).toBe(true);
     }
+  });
+
+  // MAP-02, PIN-03: the Pins row hides and shows the Pins.
+  test('the Pins row hides the Pins when off and shows them when on', async ({
+    page,
+  }) => {
+    const row = page.getByRole('checkbox', { name: 'Pins' });
+
+    await expect.poll(() => drawnPins(page)).toBe(EVENT_TYPES.length);
+    await row.uncheck();
+    await expect.poll(() => drawnPins(page)).toBe(0);
+    await row.check();
+    await expect.poll(() => drawnPins(page)).toBe(EVENT_TYPES.length);
   });
 });
 

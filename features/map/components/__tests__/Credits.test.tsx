@@ -18,8 +18,8 @@ const source = (id: string, layer: string, attribution: string): Source => ({
 
 const sources = [
   source('land', 'Land', 'Made with Natural Earth'),
-  source('admin', 'Polity borders', 'Made with Natural Earth'),
-  source('font', 'Polity borders', 'Public Sans'),
+  source('admin', 'Polities', 'Made with Natural Earth'),
+  source('font', 'Polities', 'Public Sans'),
   source('lib', 'Map renderer', 'MapLibre'),
 ];
 
@@ -34,7 +34,7 @@ it('joins the credits of what is on screen, once each, ending in a link', () => 
   );
 });
 
-it('drops the credits of Polity borders while that layer is off', () => {
+it('drops the credits of Polities while that layer is off', () => {
   const { container } = render(
     <Credits
       onOpenAttributions={vi.fn()}

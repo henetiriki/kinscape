@@ -118,6 +118,8 @@ export type Layer = {
     description: ((day: Day) => string) | string;
     /** The filter for each drawing layer id on `day`. `open` is the id of the Pin whose popup is open. */
     filters: (day: Day, open?: string) => Record<string, ExpressionSpecification>;
+    /** The group of the Layers panel that holds the layer's row. */
+    group: LayerGroupId;
     /**
      * The icons the layer's symbols use: an image id mapped to a 24 × 24 path. The map draws each
      * as an SDF image when the style asks for it.
@@ -136,7 +138,9 @@ export type Layer = {
     select?: string[];
     sources: Record<string, SourceSpecification>;
 };
-/** A layer's key: in the `visible` record and, with `-help`, in its panel row's DOM ids. */
+/** A group of the Layers panel: the id of a `PANEL_GROUPS` entry. */
+export type LayerGroupId = 'boundaries' | 'pins';
+/** A layer's key: in the `visible` record and as the React key of its panel row. */
 export type LayerId = string;
 /** What `MapShell` calls to drive the map from the zoom card. */
 export type MapHandle = {
@@ -360,6 +364,11 @@ export type Validity = {
     validTo: Day | null;
 };
 
+/** The rows of the Legend, in the order it draws them. */
+declare const LEGEND_ROWS: readonly ["border", "approximate", "contested", "uncertain", "events"];
+/** The rows for the marks the live map draws. BND-04 and EXP-02 add `contested` and `uncertain`. */
+declare const DRAWN_LEGEND_ROWS: LegendRow[];
+
 export type ContestedYears = {
     from: number;
     to: number;
@@ -369,6 +378,8 @@ export type Epoch = {
     year: number;
 };
 export type EventType = keyof typeof EVENT_PATHS;
+/** A row of the Legend: the recorded border, the dashed border, the hatch, the halo or the Event glyphs. */
+export type LegendRow = (typeof LEGEND_ROWS)[number];
 
 type Base = {
     /** Fills the width of its container. */
@@ -826,8 +837,14 @@ type DockProps = {
 export declare const DateDock: (props: DockProps) => import("react").JSX.Element;
 export type DateDockProps = Parameters<typeof DateDock>[0];
 
-/** "Reading the map": how borders, contested claims, uncertain dates and Event types are drawn. The swatches are decoration. */
-export declare const Legend: () => import("react").JSX.Element;
+/**
+ * "Reading the map": how borders, contested claims, uncertain dates and Event types are drawn. The
+ * swatches are decoration. `rows` lists the rows to draw, and the default is all of them. The live
+ * map lists only the marks it draws.
+ */
+export declare const Legend: ({ rows, }: {
+    rows?: readonly LegendRow[];
+}) => import("react").JSX.Element;
 export type LegendProps = Parameters<typeof Legend>[0];
 
 /**

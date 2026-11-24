@@ -81,12 +81,10 @@ const creditsText = async (page: Page) => {
 };
 
 // MAP-02
-test('the Polity borders row toggles and drops its credits', async ({
-  page,
-}) => {
+test('the Polities row toggles and drops its credits', async ({ page }) => {
   await page.goto('/');
 
-  const row = page.getByRole('checkbox', { name: 'Polity borders' });
+  const row = page.getByRole('checkbox', { name: 'Polities' });
 
   await expect(row).toBeChecked();
   await expect(await creditsText(page)).toContainText('Public Sans');

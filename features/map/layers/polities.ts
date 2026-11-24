@@ -27,7 +27,7 @@ const fillColour = [
   FALLBACK_FILL,
 ] as unknown as ExpressionSpecification;
 
-/** The "Polity borders" row: the fills, borders and labels the Map date filters. */
+/** The "Polities" row: the fills, borders and labels the Map date filters. */
 export const polityLayer: Layer = {
   description: 'Fills, borders and names of the Polities on the Map date.',
   filters: day => ({
@@ -36,8 +36,9 @@ export const polityLayer: Layer = {
     'polity-fills': dateFilter(day, 'boundary'),
     'polity-labels': dateFilter(day, 'label'),
   }),
+  group: 'boundaries',
   id: 'polity-borders',
-  label: 'Polity borders',
+  label: 'Polities',
   layers: [
     {
       before: 'rivers',

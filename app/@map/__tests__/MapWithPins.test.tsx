@@ -106,7 +106,7 @@ afterEach(() => {
 });
 
 describe('MapWithPins', () => {
-  it('passes the shell its props and the Polity borders row before the Pins row', async () => {
+  it('passes the shell its props and the Polities row before the Pins row', async () => {
     fetchStub.mockResolvedValue(Response.json(PINS));
     renderMap();
 

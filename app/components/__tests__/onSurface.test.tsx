@@ -11,7 +11,7 @@ const rule = (file: string, selector: string) => {
 
 // NFR-06: Vitest doesn't resolve `composes:`, so the rules are read as text.
 it.each([
-  ['features/map/components/LayersPanel.module.css', '.panel', 'raised'],
+  ['features/map/components/Panel.module.css', '.panel', 'raised'],
   ['features/map/components/DateDock.module.css', '.dock', 'raised'],
   ['app/components/feedback/Toast.module.css', '.toast', 'floating'],
 ])(

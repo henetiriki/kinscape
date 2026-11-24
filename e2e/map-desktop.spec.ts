@@ -110,6 +110,49 @@ for (const width of WIDTHS) {
   });
 }
 
+// MAP-05
+test.describe('the Layers panel on /', () => {
+  test.use({ viewport: { height: 900, width: 1440 } });
+
+  test('holds one tab, the groups Boundaries and Pins, and the legend of the marks the map draws', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    const panel = page.getByRole('complementary', { name: 'Layers' });
+
+    await expect(panel.getByRole('tab')).toHaveText(['Layers']);
+    await expect(panel.getByRole('group')).toHaveCount(2);
+    await expect(
+      panel
+        .getByRole('group', { name: 'Boundaries' })
+        .getByRole('checkbox', { name: 'Polities' })
+    ).toBeChecked();
+    await expect(
+      panel
+        .getByRole('group', { name: 'Pins' })
+        .getByRole('checkbox', { name: 'Pins' })
+    ).toBeChecked();
+    await expect(
+      panel.getByRole('heading', { name: 'Reading the map' })
+    ).toBeVisible();
+
+    for (const row of [
+      'Border as recorded',
+      'Approximate border',
+      'Birth',
+      'Residence',
+      'Marriage',
+      'Death',
+    ]) {
+      await expect(panel.getByText(row, { exact: true })).toBeVisible();
+    }
+
+    await expect(panel.getByText('Contested claim')).toHaveCount(0);
+    await expect(panel.getByText(/Uncertain date/)).toHaveCount(0);
+  });
+});
+
 // NFR-05, NFR-06: the controls on the map carry hashed class names, not the plain ones.
 test.describe('hashed class names on /', () => {
   test.use({ viewport: { height: 800, width: 1440 } });
@@ -124,7 +167,7 @@ test.describe('hashed class names on /', () => {
       [page.getByRole('button', { name: 'Zoom in' }), 'iconBtn'],
       // The Sources dialog is closed, so its links are in the DOM but hidden.
       [page.locator('table a'), 'textLink'],
-      [page.getByRole('checkbox', { name: 'Polity borders' }), 'checkbox'],
+      [page.getByRole('checkbox', { name: 'Polities' }), 'checkbox'],
       [page.locator('label', { hasText: 'Month' }), 'segItem'],
     ] as const) {
       const tokens = await control

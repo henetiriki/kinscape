@@ -30,6 +30,8 @@ export type Layer = {
   description: ((day: Day) => string) | string;
   /** The filter for each drawing layer id on `day`. `open` is the id of the Pin whose popup is open. */
   filters: (day: Day, open?: string) => Record<string, ExpressionSpecification>;
+  /** The group of the Layers panel that holds the layer's row. */
+  group: LayerGroupId;
   /**
    * The icons the layer's symbols use: an image id mapped to a 24 × 24 path. The map draws each
    * as an SDF image when the style asks for it.
@@ -53,7 +55,10 @@ export type Layer = {
   sources: Record<string, SourceSpecification>;
 };
 
-/** A layer's key: in the `visible` record and, with `-help`, in its panel row's DOM ids. */
+/** A group of the Layers panel: the id of a `PANEL_GROUPS` entry. */
+export type LayerGroupId = 'boundaries' | 'pins';
+
+/** A layer's key: in the `visible` record and as the React key of its panel row. */
 export type LayerId = string;
 
 /** What `MapShell` calls to drive the map from the zoom card. */

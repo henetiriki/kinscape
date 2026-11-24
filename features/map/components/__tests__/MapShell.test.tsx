@@ -47,7 +47,7 @@ vi.mock('@ks/features/map/components/MapView', async () => {
 import { freeArea } from '@ks/app/components/layout/MapLayout';
 import { testLayer } from '@ks/features/map/__tests__/test-layer';
 import { MapShell } from '@ks/features/map/components/MapShell';
-import { PINS_LAYER_ID } from '@ks/features/map/layers/pins';
+import { PINS_LAYER_ID, pinsLayer } from '@ks/features/map/layers/pins';
 import { polityLayer } from '@ks/features/map/layers/polities';
 
 const sources: Source[] = [
@@ -56,7 +56,7 @@ const sources: Source[] = [
     author: 'a',
     dateChecked: '2026-10-19',
     id: 'one',
-    layer: 'Polity borders',
+    layer: 'Polities',
     licence: 'Public domain',
     licenceLink: 'https://example.com',
     title: 'Natural Earth admin-1',
@@ -109,7 +109,7 @@ it('signs out from the account menu', () => {
   expect(onSignOut).toHaveBeenCalledOnce();
 });
 
-it('shows the map for today with Polity borders on', () => {
+it('shows the map for today with the Polities on', () => {
   render(
     <MapShell
       {...account}
@@ -179,6 +179,41 @@ describe('the zoom card', () => {
     window.matchMedia = query;
     expect(screen.queryByRole('button', { name: 'Zoom in' })).toBeNull();
   });
+});
+
+// MAP-05
+it('mounts the Panel "Layers" with one tab, the two groups and the legend', () => {
+  render(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={[polityLayer, pinsLayer([])]}
+      sources={sources}
+    />
+  );
+
+  const panel = screen.getByRole('complementary', { name: 'Layers' });
+
+  expect(
+    within(panel)
+      .getAllByRole('tab')
+      .map(tab => tab.textContent)
+  ).toEqual(['Layers']);
+  expect(
+    within(panel)
+      .getAllByRole('group')
+      .map(group => group.getAttribute('aria-labelledby'))
+  ).toHaveLength(2);
+  within(within(panel).getByRole('group', { name: 'Boundaries' })).getByRole(
+    'checkbox',
+    { name: 'Polities' }
+  );
+  within(within(panel).getByRole('group', { name: 'Pins' })).getByRole(
+    'checkbox',
+    { name: 'Pins' }
+  );
+  within(panel).getByRole('heading', { name: 'Reading the map' });
+  expect(within(panel).queryByText('Contested claim')).toBeNull();
 });
 
 // MAP-05: a layer is one file and one line in the list.
@@ -265,7 +300,7 @@ it('shows what the page puts in the toast slot', () => {
 });
 
 // MAP-02
-it('hides and restores the Polity borders from the Layers panel', () => {
+it('hides and restores the Polities from the Layers panel', () => {
   render(
     <MapShell
       {...account}
@@ -275,7 +310,7 @@ it('hides and restores the Polity borders from the Layers panel', () => {
     />
   );
 
-  const row = screen.getByRole('checkbox', { name: /Polity borders/ });
+  const row = screen.getByRole('checkbox', { name: 'Polities' });
 
   fireEvent.click(row);
   expect(lastProps().visible[polityLayer.id]).toBe(false);
@@ -333,6 +368,7 @@ it('puts `action` in the action slot and `panel` in the place of the Layers pane
 
   expect(screen.getByTestId('action-slot').textContent).toBe('Add a pin');
   expect(screen.getByTestId('panel-slot').textContent).toBe('The form panel');
+  expect(screen.queryByRole('tab', { name: 'Layers' })).toBeNull();
 
   rerender(
     <MapShell
@@ -344,6 +380,7 @@ it('puts `action` in the action slot and `panel` in the place of the Layers pane
   );
   expect(screen.queryByTestId('action-slot')).toBeNull();
   expect(screen.getByTestId('panel-slot').textContent).toContain('Polities');
+  screen.getByRole('tab', { name: 'Layers' });
 });
 
 describe('on a phone', () => {
@@ -433,6 +470,27 @@ describe('on a phone', () => {
     expect(lastProps().mapDay).toBeLessThan(dayOf(new Date()));
   });
 
+  // MAP-05
+  it('opens the Layers sheet with the groups and the legend, and no tab list', () => {
+    render(
+      <MapShell
+        {...account}
+        coverage={coverage}
+        layers={[polityLayer, pinsLayer([])]}
+        sources={sources}
+      />
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Layers and filters' }));
+
+    const sheet = screen.getByRole('dialog');
+
+    within(sheet).getByRole('group', { name: 'Boundaries' });
+    within(sheet).getByRole('group', { name: 'Pins' });
+    within(sheet).getByRole('heading', { name: 'Reading the map' });
+    expect(within(sheet).queryByRole('tablist')).toBeNull();
+    expect(within(sheet).queryByText('Contested claim')).toBeNull();
+  });
+
   // MAP-02
   it('opens Layers in a sheet, turns the Polities off and closes it', () => {
     render(
@@ -444,7 +502,7 @@ describe('on a phone', () => {
       />
     );
     fireEvent.click(screen.getByRole('button', { name: 'Layers and filters' }));
-    fireEvent.click(screen.getByRole('checkbox', { name: /Polity borders/ }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Polities' }));
     expect(lastProps().visible[polityLayer.id]).toBe(false);
     fireEvent.click(screen.getByRole('button', { name: 'Close' }));
     const heading = screen.getByRole('heading', {
@@ -561,10 +619,10 @@ describe('the pre-boundary notice', () => {
   });
 
   // MAP-02
-  it('shows no card with Polity borders off', () => {
+  it('shows no card with the Polities off', () => {
     renderOn();
     typeDate('1900-06-01');
-    fireEvent.click(screen.getByRole('checkbox', { name: /Polity borders/ }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Polities' }));
     expect(title('1900')).toBeNull();
   });
 

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
@@ -67,4 +67,34 @@ it('hides every swatch from assistive tech', () => {
 it('builds the hatch colour from map.hatch as an rgba() value, which the design export can read', () => {
   expect(map.hatch).toEqual({ colour: '#8b4a1c', opacity: 0.34 });
   expect(HATCH_LINE).toBe('rgba(139, 74, 28, 0.34)');
+});
+
+// MAP-05
+describe('with the `rows` prop', () => {
+  it('draws only the rows it lists', () => {
+    render(<Legend rows={['border', 'events']} />);
+
+    screen.getByText('Border as recorded');
+    screen.getByText('Birth');
+    expect(screen.queryByText('Approximate border')).toBeNull();
+    expect(screen.queryByText('Contested claim')).toBeNull();
+    expect(screen.queryByText(/Uncertain date/)).toBeNull();
+  });
+
+  it('leaves out the Event glyphs when `events` is not listed', () => {
+    render(<Legend rows={['approximate', 'contested', 'uncertain']} />);
+
+    screen.getByText('Approximate border');
+    screen.getByText('Contested claim');
+    screen.getByText('Uncertain date (ABT, BEF, AFT…)');
+    expect(screen.queryByText('Birth')).toBeNull();
+    expect(screen.queryByText('Border as recorded')).toBeNull();
+  });
+
+  it('draws the heading with no row listed', () => {
+    render(<Legend rows={[]} />);
+
+    screen.getByRole('heading', { level: 3, name: 'Reading the map' });
+    expect(screen.queryAllByRole('img', { hidden: true })).toHaveLength(0);
+  });
 });

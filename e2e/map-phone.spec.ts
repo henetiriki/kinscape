@@ -112,6 +112,32 @@ test.describe('phone, 390 × 844', () => {
     expect(centre.y).toBeLessThan(sheetTop);
   });
 
+  // MAP-05
+  test('the Layers sheet holds the two groups and the legend, and no tab list', async ({
+    page,
+  }) => {
+    await page.getByRole('button', { name: 'Layers and filters' }).click();
+
+    const dialog = page.getByRole('dialog', { name: 'Layers' });
+
+    await expect(
+      dialog
+        .getByRole('group', { name: 'Boundaries' })
+        .getByRole('checkbox', { name: 'Polities' })
+    ).toBeVisible();
+    await expect(
+      dialog
+        .getByRole('group', { name: 'Pins' })
+        .getByRole('checkbox', { name: 'Pins' })
+    ).toBeVisible();
+    await expect(
+      dialog.getByRole('heading', { name: 'Reading the map' })
+    ).toBeVisible();
+    await expect(dialog.getByText('Border as recorded')).toBeVisible();
+    await expect(dialog.getByText('Contested claim')).toHaveCount(0);
+    await expect(dialog.getByRole('tablist')).toHaveCount(0);
+  });
+
   // MAP-02
   test('Layers opens a sheet, turns the Polities off and closes', async ({
     page,
@@ -121,7 +147,7 @@ test.describe('phone, 390 × 844', () => {
     const dialog = page.getByRole('dialog', { name: 'Layers' });
 
     await expect(dialog).toBeVisible();
-    await dialog.getByRole('checkbox', { name: 'Polity borders' }).click();
+    await dialog.getByRole('checkbox', { name: 'Polities' }).click();
     await expect.poll(() => drawnPolities(page)).toBe(0);
     await dialog.getByRole('button', { name: 'Close' }).click();
     await expect(dialog).toBeHidden();

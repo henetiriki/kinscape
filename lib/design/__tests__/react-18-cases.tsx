@@ -100,6 +100,7 @@ import {
 import { MIN_DAY } from '@ks/lib/domain/map/map-date.mts';
 import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
 import { EventGlyph } from '@ks/lib/ui/EventGlyph';
+import { DRAWN_LEGEND_ROWS } from '@ks/lib/ui/legend.mts';
 
 // The shared controls (DS.5) must work in the React 18 the design system targets as well as the app's 19.
 
@@ -961,6 +962,7 @@ export const CASES: [string, ReactElement][] = [
     </PinFan>,
   ],
   ['Legend · default', <Legend key='legend' />],
+  ['Legend · drawn marks', <Legend key='drawn' rows={DRAWN_LEGEND_ROWS} />],
   ...EVENT_TYPES.map((event): [string, ReactElement] => [
     `EventGlyph · ${event}`,
     <EventGlyph event={event} key={event} />,

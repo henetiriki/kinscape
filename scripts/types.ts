@@ -75,6 +75,13 @@ export type DesignShotsCiDeps = {
 
 export type Gh = (args: string[], input?: string) => string;
 
+/** What `gh-fetch.mts` needs to call the GitHub API: `fetch`, the token and `<owner>/<repo>`. */
+export type GhFetchDeps = {
+  fetch: typeof fetch;
+  repo: string;
+  token: string;
+};
+
 /** A rule of `headers()` in `next.config.ts`, as the no-store check reads it. */
 export type HeaderRule = {
   has?: unknown[];

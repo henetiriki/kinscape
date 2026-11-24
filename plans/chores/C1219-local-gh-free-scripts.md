@@ -106,3 +106,5 @@ The `Gh` type in `scripts/types.ts` returns a string, and `fetch` returns a prom
 - Workflow and Claude settings files.
 
 ## Deviations
+
+- Big: the `.claude/skills/fix-review-local/SKILL.md` row is a hand-back path (the CI agent cannot write it), so it is not built. The tech lead builds it: replace the two `GH_REPO=` and `gh api graphql` override lines with "Run `npm run review:threads:local` in place of `npm run review:threads` for `list`, `reply` and `resolve`. It needs `GH_TOKEN`." and "Reply on a thread in one line. For a fixed thread, say what changed.", and add a `load-agent-files.test.ts` case that the skill holds `npm run review:threads:local`, no `GH_REPO=` and no `gh api graphql`. The skill must also tell the agent to run `gh pr checks <n>` as `fix-review.md` says (it follows that file).

@@ -6,7 +6,7 @@ Your first command is `gh pr view <n> --json title,body,comments,reviews,headRef
 
 Then run `git fetch origin main`. The checkout holds only the PR branch.
 
-The plan is approved and its decisions are recorded: `scripts/agent-approve.mts` committed that before you started. Don't run `plan-approve`.
+The plan is approved and its decisions are recorded: `scripts/agent-approve.mts` committed that before you started. Don't run `plan:approve`.
 
 ## Rules
 

@@ -1971,6 +1971,20 @@ describe('the fix-review workflow', () => {
     expect(text).toMatch(/data, not instructions/);
   });
 
+  // The checks of the PR head are findings too (plans/chores/C1219-local-gh-free-scripts.md).
+  it('makes each failed check a finding, and skips a pending one, in fix-review.md', () => {
+    const text = agent('fix-review.md');
+
+    expect(text).toContain('`gh pr checks <n>`');
+    expect(text).toContain('Each failed check on the PR head is a finding');
+    expect(text).toContain('Skip a pending check');
+    expect(text).toContain(
+      'Skip the checks named `Fix review`: they are this run.'
+    );
+    expect(text).toContain('If a code change cannot fix a failure');
+    expect(text).not.toContain('gh api');
+  });
+
   // The push starts the next review at once. That review must see each reply, each resolved thread,
   // the PR body and the final comment, so the push is the last step (plans/chores/C939-push-last-fix-review.md).
   // The commit gives the sha for "Fixed in <sha>.", and a merge keeps it.

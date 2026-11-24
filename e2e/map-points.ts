@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 
 import { expect } from '@playwright/test';
 
@@ -10,6 +10,19 @@ export const clickPopup = (page: Page) =>
 
 /** The coordinates field of the "Add a pin" panel. */
 export const coordinates = (page: Page) => page.getByLabel('Coordinates');
+
+/**
+ * The whole pixels from the bottom of the Precision box of a form to the top of another element.
+ * The label alone names the map filter too, so the form scopes it.
+ */
+export const gapBelowPrecision = async (form: Locator, next: Locator) => {
+  const box = (await form
+    .getByLabel('Precision', { exact: true })
+    .boundingBox())!;
+  const below = (await next.boundingBox())!;
+
+  return Math.round(below.y - (box.y + box.height));
+};
 
 /** Resolves after two frames, so React has drawn what a click or a tap set off. */
 export const afterPaint = (page: Page) =>

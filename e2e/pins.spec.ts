@@ -8,6 +8,7 @@ import {
   clickPopup,
   coordinates,
   emptyPoint,
+  gapBelowPrecision,
   goTo,
   pickPin,
   pinPoint,
@@ -272,6 +273,12 @@ test('"Add a pin here" saves a Pin at the Place of the Pin', async ({
   await expect(
     page.getByRole('form', { name: 'Add a pin' }).getByLabel('Precision')
   ).toBeDisabled();
+  expect(
+    await gapBelowPrecision(
+      page.getByRole('form', { name: 'Add a pin' }),
+      page.getByText('This is the precision of the Place.')
+    )
+  ).toBe(8);
 
   const pinsData = async () =>
     (await (await page.request.get('/data/pins')).json()) as {

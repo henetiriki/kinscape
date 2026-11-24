@@ -4,7 +4,13 @@ import { expect, test } from '@playwright/test';
 
 import type { TestWindow } from '@ks/e2e/types';
 
-import { clickPopup, coordinates, emptyPoint, goTo } from '@ks/e2e/map-points';
+import {
+  clickPopup,
+  coordinates,
+  emptyPoint,
+  gapBelowPrecision,
+  goTo,
+} from '@ks/e2e/map-points';
 
 // PIN-01, PIN-02: the test saves its own Pin, then edits its date, its Person and its point. The
 // Pin is on the empty map at the Map date 1950, as `map-click.spec.ts` does.
@@ -118,6 +124,13 @@ test('edits the date, the Person and the point of a saved Pin', async ({
   await expect(
     editForm(page).getByLabel('Precision', { exact: true })
   ).toBeDisabled();
+  // The board puts the hint 8 px below the box.
+  expect(
+    await gapBelowPrecision(
+      editForm(page),
+      editForm(page).getByText('This is the precision of the Place.')
+    )
+  ).toBe(8);
 
   // A new date: the Pin shows at 1922 and hides at 1950.
   await page.getByLabel('Date', { exact: true }).fill('FROM 1920 TO 1925');
@@ -151,6 +164,15 @@ test('edits the date, the Person and the point of a saved Pin', async ({
   await expect(
     editForm(page).getByLabel('Precision', { exact: true })
   ).toBeEnabled();
+  await expect(
+    editForm(page).getByText('This is the precision of the Place.')
+  ).toHaveCount(0);
+  expect(
+    await gapBelowPrecision(
+      editForm(page),
+      editForm(page).getByText('Sources', { exact: true })
+    )
+  ).toBe(12);
   await saveEdit(page);
   await expect.poll(() => pinsAt(page, second)).toBeGreaterThan(0);
   await expect.poll(() => pinsAt(page, first)).toBe(0);

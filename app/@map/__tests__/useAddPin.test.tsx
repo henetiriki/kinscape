@@ -9,7 +9,12 @@ vi.mock('@ks/app/@map/actions', () => ({
   createPinAction: vi.fn(),
   updatePinAction: vi.fn(),
 }));
-vi.mock('@ks/features/pins', () => ({ usePinEdit: pinEdit }));
+const writePin = vi.hoisted(() => vi.fn());
+
+vi.mock('@ks/features/pins', () => ({
+  usePinEdit: pinEdit,
+  useWritePin: () => writePin,
+}));
 vi.mock('@ks/features/people', () => ({
   PinForm: (props: {
     edit?: { id: string; query: unknown };
@@ -48,8 +53,7 @@ import { createPinAction, updatePinAction } from '@ks/app/@map/actions';
 import { useAddPin } from '@ks/app/@map/useAddPin';
 
 // PIN-01, NFR-05
-const onSaved = vi.fn();
-const onEdited = vi.fn();
+const MAP_PIN = { id: 'mapped' };
 const PIN_1 = '01900000-0000-7000-b000-0000000000d1' as PinId;
 const PIN_2 = '01900000-0000-7000-b000-0000000000d2' as PinId;
 
@@ -67,7 +71,7 @@ const PLACE_2 = {
 
 const Probe = () => {
   const { action, addHere, click, closeClick, edit, onEmptyClick, panel } =
-    useAddPin({ onEdited, onSaved });
+    useAddPin();
 
   return (
     <>
@@ -115,8 +119,7 @@ const desktop = window.matchMedia;
 const slot = (name: string) => screen.getByTestId(name);
 
 beforeEach(() => {
-  onSaved.mockReset();
-  onEdited.mockReset();
+  writePin.mockReset();
   form.mockReset();
   pinEdit.mockReset();
   pinEdit.mockReturnValue({ data: undefined });
@@ -144,7 +147,7 @@ it('closes the panel on cancel and gives the button again', () => {
   expect(screen.getByRole('button', { name: 'Add a pin' })).toBeInstanceOf(
     HTMLElement
   );
-  expect(onSaved).not.toHaveBeenCalled();
+  expect(writePin).not.toHaveBeenCalled();
 });
 
 it('closes the panel after a save, and leaves the Pins to the save itself', () => {
@@ -153,22 +156,24 @@ it('closes the panel after a save, and leaves the Pins to the save itself', () =
   fireEvent.click(screen.getByRole('button', { name: 'Saved form' }));
 
   expect(slot('panel').textContent).toBe('');
-  expect(onSaved).not.toHaveBeenCalled();
+  expect(writePin).not.toHaveBeenCalled();
 });
 
-it('saves with createPinAction, gives back its answer, and calls onSaved for a saved Pin', async () => {
-  vi.mocked(createPinAction).mockResolvedValue({ ok: true } as never);
+it('saves with createPinAction, gives back its answer, and writes the MapPin of a saved Pin', async () => {
+  const answer = { ok: true, value: MAP_PIN } as never;
+
+  vi.mocked(createPinAction).mockResolvedValue(answer);
   render(<Probe />);
   fireEvent.click(screen.getByRole('button', { name: 'Add a pin' }));
 
   const result = await form.mock.calls[0][0].onSave({ id: 'p' });
 
   expect(createPinAction).toHaveBeenCalledWith({ id: 'p' });
-  expect(result).toEqual({ ok: true });
-  expect(onSaved).toHaveBeenCalledTimes(1);
+  expect(result).toEqual(answer);
+  expect(writePin).toHaveBeenCalledExactlyOnceWith(MAP_PIN);
 });
 
-it('calls onSaved for a save that finishes after the panel closed, and not for a failed save', async () => {
+it('writes for a save that finishes after the panel closed, and not for a failed save', async () => {
   let finish!: (value: never) => void;
 
   vi.mocked(createPinAction).mockReturnValueOnce(
@@ -184,12 +189,12 @@ it('calls onSaved for a save that finishes after the panel closed, and not for a
 
   fireEvent.click(screen.getByRole('button', { name: 'Cancel form' }));
   expect(slot('panel').textContent).toBe('');
-  finish({ ok: true } as never);
+  finish({ ok: true, value: MAP_PIN } as never);
   await pending;
-  expect(onSaved).toHaveBeenCalledTimes(1);
+  expect(writePin).toHaveBeenCalledExactlyOnceWith(MAP_PIN);
 
   await form.mock.calls[0][0].onSave({});
-  expect(onSaved).toHaveBeenCalledTimes(1);
+  expect(writePin).toHaveBeenCalledTimes(1);
 });
 
 // PIN-01
@@ -450,26 +455,28 @@ it('closes the edit panel on cancel, and gives the button again', () => {
   expect(screen.getByRole('button', { name: 'Add a pin' })).toBeInstanceOf(
     HTMLElement
   );
-  expect(onEdited).not.toHaveBeenCalled();
+  expect(writePin).not.toHaveBeenCalled();
 });
 
 // PIN-02
-it('saves an edit with updatePinAction, and calls onEdited for a saved Pin only', async () => {
-  vi.mocked(updatePinAction).mockResolvedValueOnce({ ok: true } as never);
+it('saves an edit with updatePinAction, and writes the MapPin of a saved Pin only', async () => {
+  vi.mocked(updatePinAction).mockResolvedValueOnce({
+    ok: true,
+    value: MAP_PIN,
+  } as never);
   vi.mocked(updatePinAction).mockResolvedValueOnce({ ok: false } as never);
   render(<Probe />);
   fireEvent.click(screen.getByRole('button', { name: 'Edit 1' }));
 
   const { onSave } = form.mock.calls[0][0];
 
-  expect(await onSave({ id: 'p' })).toEqual({ ok: true });
+  expect(await onSave({ id: 'p' })).toEqual({ ok: true, value: MAP_PIN });
   expect(updatePinAction).toHaveBeenCalledWith({ id: 'p' });
   expect(createPinAction).not.toHaveBeenCalled();
-  expect(onEdited).toHaveBeenCalledTimes(1);
-  expect(onSaved).not.toHaveBeenCalled();
+  expect(writePin).toHaveBeenCalledExactlyOnceWith(MAP_PIN);
 
   await onSave({ id: 'p' });
-  expect(onEdited).toHaveBeenCalledTimes(1);
+  expect(writePin).toHaveBeenCalledTimes(1);
 });
 
 // PIN-02

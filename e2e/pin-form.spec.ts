@@ -88,6 +88,24 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   await page.getByLabel('Event type').selectOption('residence');
   await page.getByLabel('Date', { exact: true }).fill('FROM 1840 TO 1855');
   await page.getByLabel('Coordinates').fill('-33.93, 18.42');
+
+  // The reload after the save waits until the test releases it. The save writes its Pin to the cache
+  // first, so the caption counts it before the reload answers. No timer decides this, so a slow
+  // runner cannot end the wait early. `page.request` does not use this route.
+  let reloadAnswered = false;
+  let release!: () => void;
+  const held = new Promise<void>(resolve => {
+    release = resolve;
+  });
+
+  await page.route(
+    url => url.pathname === '/data/pins',
+    async route => {
+      await held;
+      reloadAnswered = true;
+      await route.continue();
+    }
+  );
   await page.getByRole('button', { name: 'Save' }).click();
   await expect(page.getByRole('form', { name: 'Add a pin' })).toHaveCount(0);
 
@@ -102,7 +120,11 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   await expect
     .poll(async () => (await counts(page)).shown)
     .toBe(before.shown + 1);
+  expect(reloadAnswered).toBe(false);
 
+  // The route stays on so that the handler's `route.continue()` runs after `release()`. A
+  // `page.unroute` here makes it throw "Route is already handled!".
+  release();
   await page.reload();
   await goTo(page, '1850');
   await expect

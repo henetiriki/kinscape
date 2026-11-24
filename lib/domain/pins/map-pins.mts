@@ -2,6 +2,15 @@ import type { MapPin, SpannedPin } from '#ks/lib/domain/pins/types.ts';
 import type { Place } from '#ks/lib/domain/places/types.ts';
 
 /**
+ * The list with the Pin in place of the entry with the same id, or at the end if none has it. The
+ * input list stays as it is (PIN-01, PIN-02).
+ */
+export const withMapPin = (pins: MapPin[], pin: MapPin): MapPin[] =>
+  pins.some(({ id }) => id === pin.id)
+    ? pins.map(entry => (entry.id === pin.id ? pin : entry))
+    : [...pins, pin];
+
+/**
  * What the map needs of each Pin: the position of its Place, joined by `placeId`, with the span and
  * the event type and the parts of the date (PIN-02, NFR-03). The Places go in a `Map`, so the join is one pass over each list.
  * A Pin whose Place is not in the list has no position, so the function omits it.

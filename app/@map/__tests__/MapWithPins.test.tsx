@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
 import {
   act,
   fireEvent,
@@ -52,6 +51,7 @@ vi.mock('@ks/app/@map/useAddPin', () => ({ useAddPin: addPin }));
 
 import { MapWithPins } from '@ks/app/@map/MapWithPins';
 import { QueryProvider } from '@ks/app/QueryProvider';
+import { useWritePin } from '@ks/features/pins';
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 
 // PIN-03, NFR-01. Data is synthetic.
@@ -120,7 +120,7 @@ describe('MapWithPins', () => {
   });
 
   // PIN-01
-  it('passes the action and the panel of the add-pin hook, and loads the Pins again after a save', async () => {
+  it('passes the action and the panel of the add-pin hook', async () => {
     fetchStub.mockResolvedValue(Response.json(PINS));
     addPin.mockReturnValue({ action: 'ACTION', panel: 'PANEL' });
     renderMap();
@@ -133,13 +133,6 @@ describe('MapWithPins', () => {
       expect(captions()).toBe(LOADED);
     });
     expect(fetchStub).toHaveBeenCalledTimes(1);
-
-    await act(async () => {
-      addPin.mock.calls.at(-1)![0].onSaved();
-    });
-    await waitFor(() => {
-      expect(fetchStub).toHaveBeenCalledTimes(2);
-    });
   });
 
   it('shows "0 of 0" before the Pins load and counts them for the Map date after', async () => {
@@ -445,58 +438,60 @@ describe('the Pin popup', () => {
     ).toHaveLength(0);
   });
 
-  // PIN-02
-  it('invalidates the Pins after a saved edit, so the Pins load again', async () => {
-    fetchStub.mockImplementation(answer);
-    addPin.mockReturnValue({});
-    renderMap();
-    await waitFor(() => {
-      expect(captions()).toBe(LOADED);
-    });
-    expect(fetchStub).toHaveBeenCalledTimes(1);
+  // PIN-01, PIN-02, NFR-03
+  describe('after a write', () => {
+    const NEW_PIN = pinOf(4, '1845-01-01', '1855-01-01');
+    const Writer = () => {
+      const write = useWritePin();
 
-    await act(async () => {
-      addPin.mock.calls.at(-1)![0].onEdited();
-    });
-    await waitFor(() => {
-      expect(fetchStub).toHaveBeenCalledTimes(2);
-    });
-    expect(fetchStub).toHaveBeenLastCalledWith('/data/pins');
-  });
-
-  // NFR-10
-  it('does not ask again for the fields of the open edit panel after a saved edit', async () => {
-    const editFields = vi.fn(() => Promise.resolve({ version: 1 }));
-    const Probe = () => {
-      useQuery({
-        queryFn: editFields,
-        queryKey: ['pins', FIRST.id, 'edit'],
-        staleTime: Infinity,
-      });
-
-      return null;
+      return (
+        <button onClick={() => write(NEW_PIN as never)} type='button'>
+          write
+        </button>
+      );
     };
+    const renderWithWriter = () =>
+      render(
+        <QueryProvider>
+          <Writer />
+          <MapWithPins {...props} />
+        </QueryProvider>
+      );
 
-    fetchStub.mockImplementation(answer);
-    addPin.mockReturnValue({});
-    render(
-      <QueryProvider>
-        <Probe />
-        <MapWithPins {...props} />
-      </QueryProvider>
-    );
-    await waitFor(() => {
-      expect(captions()).toBe(LOADED);
+    it('counts the written Pin while the reload of /data/pins has not answered', async () => {
+      fetchStub.mockResolvedValueOnce(Response.json(PINS));
+      renderWithWriter();
+      await waitFor(() => {
+        expect(captions()).toBe(LOADED);
+      });
+      fetchStub.mockImplementation(() => new Promise(() => {}));
+
+      fireEvent.click(screen.getByText('write'));
+
+      await waitFor(() => {
+        expect(captions()).toBe(
+          '2 of 4 true on this date | 0 of 4 true on this date'
+        );
+      });
     });
 
-    await act(async () => {
-      addPin.mock.calls.at(-1)![0].onEdited();
-    });
-    await waitFor(() => {
-      expect(fetchStub).toHaveBeenCalledTimes(2);
-    });
+    it('shows the toast of a failed reload and keeps the written Pin', async () => {
+      fetchStub.mockResolvedValueOnce(Response.json(PINS));
+      renderWithWriter();
+      await waitFor(() => {
+        expect(captions()).toBe(LOADED);
+      });
+      fetchStub.mockResolvedValue(new Response(null, { status: 401 }));
 
-    expect(editFields).toHaveBeenCalledOnce();
+      fireEvent.click(screen.getByText('write'));
+
+      expect((await screen.findByRole('alert')).textContent).toContain(
+        'Your pins did not load.'
+      );
+      expect(captions()).toBe(
+        '2 of 4 true on this date | 0 of 4 true on this date'
+      );
+    });
   });
 
   // NFR-05

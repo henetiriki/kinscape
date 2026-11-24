@@ -2,7 +2,6 @@
 
 import type { ComponentProps } from 'react';
 
-import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 
 import type { FixedPlace } from '@ks/features/people';
@@ -120,17 +119,7 @@ export const MapWithPins = (
 ) => {
   const { data, errorUpdatedAt, isError, refetch } = usePins();
   const phone = usePhone();
-  const queryClient = useQueryClient();
-  // A save of an edit marks each held query of the Pins as stale, the details of the popup too.
-  // The query of the edit fields stays out: it is still mounted, and a reload would ask again.
-  const add = useAddPin({
-    onEdited: () =>
-      void queryClient.invalidateQueries({
-        predicate: ({ queryKey }) => queryKey[2] !== 'edit',
-        queryKey: ['pins'],
-      }),
-    onSaved: () => void refetch(),
-  });
+  const add = useAddPin();
   // The toast of one failure stays hidden once dismissed; a new failure has a new time.
   const [dismissedAt, setDismissedAt] = useState(0);
   const [openId, setOpenId] = useState<string>();

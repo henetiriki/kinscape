@@ -112,7 +112,7 @@ The done checks: steps 2 to 6 are done on the branch. Every file under `canvas/p
 - Big: `app/__tests__/layout.test.tsx` and `app/components/layout/__tests__/ColumnLayout.test.tsx` import the module in place of `design/tokens.json`. The tech lead asked for this. The plan left them to SC.4.2 (#1196).
 - The format and its tests came in one commit, so the tests did not fail first.
 - The chunk-size comparison ran in a local session: 2,004,455 bytes on the branch, 2,037,003 on `main`.
-- Three boards on the canvas differ from the repo: `Map`, `Map-phone-states` and `Map-credits-narrow`. Four `layer` values say "Polity borders" there and "Polities" in `data/sources.json`. The refresh did not copy them, as the Spec says to edit no board.
+- The canvas held old copies of `Map`, `Map-phone-states` and `Map-credits-narrow`: four `layer` values said "Polity borders", not "Polities" (DL.28.3 D5). The session published the three repo boards unchanged. Their sha256 now matches the repo.
 
 ## Out of scope
 

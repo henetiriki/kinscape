@@ -259,11 +259,15 @@ test('with the panel open, a click on a Pin keeps the coordinates', async ({
 test('"Add a pin here" saves a Pin at the Place of the Pin', async ({
   page,
 }) => {
+  // Each repeat has its own year (1950 to 1959). The Pin that a copy saves shows only in its year,
+  // so the next repeat does not find the Place of that Pin turned into a count marker.
+  const year = String(1950 + test.info().repeatEachIndex);
+
   await page.goto('/');
-  await goTo(page, '1950');
+  await goTo(page, year);
 
   // The slot-th free Pin from the end: the Place of this Pin becomes a count marker, so the other
-  // tests and the other copies of this test keep their Pins.
+  // tests and the copies of this test side by side keep their Pins.
   const pin = await pickPin(page, slot());
 
   await page.mouse.click(pin.x, pin.y);
@@ -300,7 +304,7 @@ test('"Add a pin here" saves a Pin at the Place of the Pin', async ({
     .first()
     .click();
   await page.getByLabel('Event type').selectOption('residence');
-  await page.getByLabel('Date', { exact: true }).fill('1950');
+  await page.getByLabel('Date', { exact: true }).fill(year);
   await page.getByRole('button', { name: 'Save' }).click();
   await expect(page.getByRole('form', { name: 'Add a pin' })).toBeHidden();
   // The Pin joins the Place, so the save adds no Place for it.

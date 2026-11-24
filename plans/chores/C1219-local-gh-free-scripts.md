@@ -1,7 +1,7 @@
 # Plan: C1219: Local gh-free scripts, failed checks in fix-review, rename plan:approve
 
 - **Spec:** #1219
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The `Gh` type in `scripts/types.ts` returns a string, and `fetch` returns a prom
 - **C.** Make `Gh` return a promise, and make both `run` functions and `ghList` async. Cost: `hand-back.mts`, `pr-checks.mts` and the other `ghList` callers change too, with each of their tests. CI runs that code.
 - **Other:** your own.
 
-Recommended: A, because a failure reaches `plan-new.mts` in the same form as a `gh` failure (`stderr` holds `(HTTP 404)`), with no change to code that CI runs.
+**Answer: A** (@henetiriki)
 
 **D2 · Where the `:local` scripts pick the adapter** · Decides: Tech lead
 
@@ -26,7 +26,7 @@ Recommended: A, because a failure reaches `plan-new.mts` in the same form as a `
 - **B.** The main block of each existing script picks the fetch `Gh` when `KINSCAPE_GH=fetch` is set. The npm script sets it. Cost: the files that CI runs change, in code that `v8 ignore` hides from the tests.
 - **Other:** your own.
 
-Recommended: A, because the files that CI runs stay the same, which the first Constraint asks for.
+**Answer: A** (@henetiriki)
 
 **D3 · The word budget of `fix-review.md`** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ Recommended: A, because the files that CI runs stay the same, which the first Co
 - **B.** Keep 460 and cut about 70 words from the other text of the file. Cost: a rewrite of rules that the tests in `load-agent-files.test.ts` pin.
 - **Other:** your own.
 
-Recommended: A, because item 4 is new behaviour and the other rules still apply.
+**Answer: A** (@henetiriki)
 
 **D4 · The run's own pending checks** · Decides: Tech lead
 
@@ -46,7 +46,7 @@ Recommended: A, because item 4 is new behaviour and the other rules still apply.
 - **B.** Add one sentence: "Skip the checks named `Fix review`: they are this run." Cost: the build rewords "Skip a pending check" in #1219.
 - **Other:** your own.
 
-Recommended: B, because a line that each comment repeats tells a person nothing.
+**Answer: B** (@henetiriki)
 
 ## Alternatives considered
 

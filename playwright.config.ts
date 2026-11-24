@@ -99,19 +99,7 @@ export default defineConfig({
         'fixture-*.spec.ts',
         'fixture.setup.ts',
         ...seededOnly,
-        // TEMPORARY (#1223): the `pins-repeat` project runs these.
-        'pin-edit.spec.ts',
-        'pin-form.spec.ts',
       ],
-      use: { ...use, ...failures, storageState: signedIn },
-    },
-    // TEMPORARY (#1223): the three Pin specs, 10 times each.
-    {
-      dependencies: ['setup'],
-      grepInvert: /@perf/,
-      name: 'pins-repeat',
-      repeatEach: 10,
-      testMatch: ['pins.spec.ts', 'pin-edit.spec.ts', 'pin-form.spec.ts'],
       use: { ...use, ...failures, storageState: signedIn },
     },
     // The design check: only design-check.spec.ts, which compares each built screen

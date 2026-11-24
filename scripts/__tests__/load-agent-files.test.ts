@@ -2070,6 +2070,20 @@ describe('the fix-review workflow', () => {
     expect(text).not.toContain('--undo');
   });
 
+  // A sandboxed local session cannot run `gh`, so the skill uses the fetch scripts
+  // (plans/chores/C1219-local-gh-free-scripts.md).
+  it('uses the fetch-based thread script and no gh call, in the fix-review-local skill', () => {
+    const text = readFileSync(
+      join(root, '.claude/skills/fix-review-local/SKILL.md'),
+      'utf8'
+    );
+
+    expect(text).toContain('`npm run review:threads:local`');
+    expect(text).toContain('It needs `GH_TOKEN`');
+    expect(text).not.toContain('GH_REPO=');
+    expect(text).not.toContain('gh api graphql');
+  });
+
   it('opens a review with the findings that no thread shows, and posts the others inline, in review.md', () => {
     const text = agent('review.md');
 

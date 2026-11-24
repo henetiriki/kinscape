@@ -15,7 +15,7 @@ import { ClickPopup } from '@ks/app/components/overlays/ClickPopup';
 import { useDismiss } from '@ks/app/components/overlays/useDismiss';
 import { AddPinButton } from '@ks/features/map';
 import { PinForm } from '@ks/features/people';
-import { usePinEdit } from '@ks/features/pins';
+import { usePinEdit, useWritePin } from '@ks/features/pins';
 
 /**
  * The flow: closed, the click popup at a point, the add panel with an optional point or an
@@ -50,20 +50,24 @@ type Result = {
   panel?: ReactNode;
 };
 
-const useSave = (
-  onDone: () => void,
-  action: typeof createPinAction | typeof updatePinAction
-) =>
-  useCallback(
+/**
+ * The save of both flows. An ok answer writes its `MapPin` to the cached Pins. It does not depend
+ * on the open panel, so a save that ends after Cancel or Esc still writes.
+ */
+const useSave = (action: typeof createPinAction | typeof updatePinAction) => {
+  const write = useWritePin();
+
+  return useCallback(
     async (input: unknown) => {
       const result = await action(input);
 
-      if (result.ok) onDone();
+      if (result.ok) write(result.value);
 
       return result;
     },
-    [action, onDone]
+    [action, write]
   );
+};
 
 const clickPopup = (
   point: ClickPoint,
@@ -191,16 +195,10 @@ const panelOf = (
  * on empty map. One panel slot holds one form: a new `addHere` or `edit` replaces the open form and drops its
  * typed values. A click on empty map with the add panel open sets its point and opens no popup. A
  * click with the edit panel open changes nothing. A phone gets none of these. A saved Pin closes the
- * panel and calls `onSaved` (add) or `onEdited` (edit), so the caller loads the Pins again. A save
- * that ends after Cancel or Esc closed the panel also calls them, because the server saved the Pin.
+ * panel and goes into the cached Pins, which then load again (`useWritePin`). A save that ends
+ * after Cancel or Esc closed the panel also writes, because the server saved the Pin.
  */
-export const useAddPin = ({
-  onEdited,
-  onSaved,
-}: {
-  onEdited: () => void;
-  onSaved: () => void;
-}): Result => {
+export const useAddPin = (): Result => {
   const phone = usePhone();
   const [flow, setFlow] = useState<Flow>(CLOSED);
   const {
@@ -212,8 +210,8 @@ export const useAddPin = ({
     onEmptyClick,
     openPanel,
   } = useFlowActions(setFlow);
-  const save = useSave(onSaved, createPinAction);
-  const saveEdit = useSave(onEdited, updatePinAction);
+  const save = useSave(createPinAction);
+  const saveEdit = useSave(updatePinAction);
 
   // Esc closes the popup when nothing else owns it; Esc inside the popup closes it too.
   useDismiss(flow.kind === 'click', close, { escape: true });

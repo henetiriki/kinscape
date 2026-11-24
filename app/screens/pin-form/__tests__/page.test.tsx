@@ -24,8 +24,7 @@ it('puts the button of the add-pin hook in the action slot of the map frame', as
 
   expect(screen.getByTestId('action-slot').textContent).toBe('Add a pin');
   screen.getByRole('complementary', { name: 'Layers and filters' });
-  expect(addPin.mock.calls[0][0].onSaved).toBeInstanceOf(Function);
-  addPin.mock.calls[0][0].onSaved();
+  expect(addPin).toHaveBeenCalledWith();
 });
 
 it('puts the panel of the hook in the place of the tabbed panel', async () => {
@@ -73,7 +72,6 @@ it('opens the edit panel for a synthetic Pin on the edit page', async () => {
     '01900000-0000-7000-b000-0000000000d1'
   );
   expect(editMetadata.title).toBe('Edit a pin');
-  addPin.mock.calls[0][0].onEdited();
 });
 
 // NFR-05

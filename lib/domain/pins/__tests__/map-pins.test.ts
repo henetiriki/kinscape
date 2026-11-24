@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { SpannedPin } from '@ks/lib/domain/pins/types.ts';
+import type { MapPin, SpannedPin } from '@ks/lib/domain/pins/types.ts';
 import type { Place } from '@ks/lib/domain/places/types.ts';
 
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
@@ -10,7 +10,7 @@ import {
   parsePinId,
   parsePlaceId,
 } from '@ks/lib/domain/ids/ids.mts';
-import { mapPins } from '@ks/lib/domain/pins/map-pins.mts';
+import { mapPins, withMapPin } from '@ks/lib/domain/pins/map-pins.mts';
 
 // PIN-02, NFR-03.
 const id = (last: string) => `01900000-0000-7000-8000-0000000000${last}`;
@@ -126,5 +126,33 @@ describe('mapPins', () => {
   it('gives no Pin for an empty Tree', () => {
     expect(mapPins([], [])).toEqual([]);
     expect(mapPins([], [place('b1', -33.9, 18.4)])).toEqual([]);
+  });
+});
+
+describe('withMapPin', () => {
+  const places = [place('b1', -33.9, 18.4), place('b2', -26.2, 28.0)];
+  const list = mapPins([pin('a1', 'b1'), pin('a2', 'b1')], places);
+  const [first, second] = list as [MapPin, MapPin];
+
+  it('replaces the entry with the same id, in place', () => {
+    const edited = mapPins([pin('a1', 'b2')], places)[0]!;
+    const next = withMapPin(list, edited);
+
+    expect(next).toEqual([edited, second]);
+  });
+
+  it('adds a Pin with a new id at the end', () => {
+    const added = mapPins([pin('a3', 'b2')], places)[0]!;
+
+    expect(withMapPin(list, added)).toEqual([first, second, added]);
+  });
+
+  it('does not change its input', () => {
+    const added = mapPins([pin('a3', 'b2')], places)[0]!;
+    const before = structuredClone(list);
+
+    withMapPin(list, added);
+
+    expect(list).toEqual(before);
   });
 });

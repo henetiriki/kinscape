@@ -8,11 +8,12 @@ vi.mock('@ks/server/adapters.mts', () => ({
   appAdapters: () => adapters.current,
 }));
 
-import type { PinId, PlaceId } from '@ks/lib/domain/ids/types.ts';
+import type { PersonId, PinId, PlaceId } from '@ks/lib/domain/ids/types.ts';
 
 import { createPinAction, updatePinAction } from '@ks/app/@map/actions';
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 import { personInputSchema } from '@ks/lib/domain/persons/schemas.mts';
+import { mapPins } from '@ks/lib/domain/pins/map-pins.mts';
 import { pinInputSchema } from '@ks/lib/domain/pins/schemas.mts';
 import { placeInputSchema } from '@ks/lib/domain/places/schemas.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
@@ -120,8 +121,10 @@ describe('createPinAction', () => {
     expect(saved.ok && saved.value).toMatchObject({
       eventType: 'residence',
       id: PIN,
-      personId: PERSON,
       placeId: NEW_PLACE,
+    });
+    expect(await a.pins.get(PIN as PinId)).toMatchObject({
+      personId: PERSON,
       version: 1,
     });
     expect(await a.places.get(NEW_PLACE as PlaceId)).toMatchObject({
@@ -330,6 +333,61 @@ describe('createPinAction', () => {
     expect(await a.pins.list()).toEqual([]);
   });
 
+  it('answers the entry that /data/pins sends, with the keys of MapPin only', async () => {
+    const { a } = await setup();
+    const saved = await createPinAction(valid);
+    const [listed] = mapPins(await a.pins.list(), await a.places.list());
+
+    expect(saved).toEqual({ ok: true, value: listed });
+    expect(Object.keys(saved.ok ? saved.value : {}).sort()).toEqual(
+      Object.keys(listed!).sort()
+    );
+    expect(saved.ok && saved.value).not.toHaveProperty('notes');
+    expect(saved.ok && saved.value).not.toHaveProperty('personId');
+  });
+
+  it('clips the span by the birth and the death of the Person', async () => {
+    const { a } = await setup();
+    const person = await a.persons.get(PERSON as PersonId);
+
+    await a.persons.update(
+      personInputSchema.parse({
+        birth: '1845',
+        death: '1848',
+        givenNames: 'Ana',
+        id: PERSON,
+        surname: 'Smit',
+      }),
+      person!.version
+    );
+
+    const saved = await createPinAction({
+      ...valid,
+      date: 'FROM 1840 TO 1855',
+    });
+
+    expect(saved.ok && saved.value.span).toEqual({
+      validFrom: toDay('1845-01-01'),
+      validTo: toDay('1849-01-01'),
+    });
+  });
+
+  it('gives not-found when the store answers no Place', async () => {
+    await setup();
+
+    const held = adapters.current as { store: object };
+
+    adapters.current = {
+      ...held,
+      store: { ...held.store, findPlace: async () => undefined },
+    };
+
+    expect(await createPinAction(valid)).toEqual({
+      error: 'not-found',
+      ok: false,
+    });
+  });
+
   it('returns a Pin that the day query finds inside its date', async () => {
     const { a } = await setup();
 
@@ -379,7 +437,8 @@ describe('updatePinAction', () => {
       date: 'FROM 1840 TO 1845',
     });
 
-    expect(saved.ok && saved.value.version).toBe(2);
+    expect(saved.ok).toBe(true);
+    expect((await a.pins.get(PIN as PinId))?.version).toBe(2);
     expect(await a.pins.listOn(toDay('1842-06-01'))).toHaveLength(1);
     expect(await a.pins.listOn(toDay('1850-06-01'))).toHaveLength(0);
   });
@@ -402,6 +461,7 @@ describe('updatePinAction', () => {
     const saved = await updatePinAction(stays);
 
     expect(saved.ok && saved.value.placeId).toBe(PLACE);
+    expect(saved.ok && saved.value).toMatchObject({ latitude: -26.2 });
     expect(await a.places.get(PLACE as PlaceId)).toEqual(before);
     expect(await a.places.list()).toHaveLength(1);
   });

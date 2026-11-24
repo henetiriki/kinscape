@@ -1,7 +1,10 @@
+import { execFileSync } from 'node:child_process';
+
 import type { Gh, GhFetchDeps } from '#ks/scripts/types.ts';
 
-// Serves the three `gh` call shapes that review-threads.mts and plan-new.mts make, with `fetch` and
-// GH_TOKEN, for a sandboxed local session where `gh` cannot read its config (plans/chores/C1219).
+// This file serves the three `gh` call shapes of review-threads.mts and plan-new.mts.
+// It uses `fetch` and GH_TOKEN, for a sandboxed local session where `gh` cannot read its config
+// (plans/chores/C1219).
 //   api graphql -f query=… [-f|-F key=value]…
 //   api [--paginate] <path> [--jq '.[] | @json']
 //   issue view <n> --json <fields>
@@ -13,7 +16,7 @@ const API = 'https://api.github.com';
 const JQ_LINES = '.[] | @json';
 const NEXT = /<([^>]+)>;\s*rel="next"/;
 const REMOTE =
-  /^(?:https:\/\/github\.com\/|git@github\.com:)([\w.-]+\/[\w.-]+?)(?:\.git)?$/;
+  /^(?:https:\/\/github\.com\/|ssh:\/\/git@github\.com\/|git@github\.com:)([\w.-]+\/[\w.-]+?)(?:\.git)?$/;
 const UNSUPPORTED = 'gh: this call is not supported';
 
 const fail = (message: string, status: number) =>
@@ -44,9 +47,22 @@ const request = async (
   return response;
 };
 
-// `-F` makes a number, as `gh api -F` does for an integer; `-f` keeps a string.
+// `-F` gives `true`, `false`, `null` and an integer their own types, as `gh api -F` does. Other text
+// stays text. `-f` always keeps a string.
+const typed = (value: string): boolean | null | number | string => {
+  if (value === 'true' || value === 'false') {
+    return value === 'true';
+  }
+
+  if (value === 'null') {
+    return null;
+  }
+
+  return /^-?\d+$/.test(value) ? Number(value) : value;
+};
+
 const graphql = async (args: string[], deps: GhFetchDeps): Promise<string> => {
-  const variables: Record<string, number | string> = {};
+  const variables: Record<string, boolean | null | number | string> = {};
   let query = '';
 
   for (let at = 2; at < args.length; at += 2) {
@@ -63,7 +79,7 @@ const graphql = async (args: string[], deps: GhFetchDeps): Promise<string> => {
     if (key === 'query') {
       query = value;
     } else {
-      variables[key] = flag === '-F' ? Number(value) : value;
+      variables[key] = flag === '-F' ? typed(value) : value;
     }
   }
 
@@ -117,13 +133,18 @@ const rest = async (args: string[], deps: GhFetchDeps): Promise<string> => {
       );
     }
 
-    url = NEXT.exec(response.headers.get('Link') ?? '')?.[1] ?? null;
+    // Only a `--paginate` call follows `Link`. A single call returns its first page, as `gh` does.
+    url =
+      jq === undefined
+        ? null
+        : (NEXT.exec(response.headers.get('Link') ?? '')?.[1] ?? null);
   }
 
   return jq === undefined ? single : lines.join('\n');
 };
 
-// The REST issue, under the names `gh issue view --json` uses.
+// The REST issue, under the names `gh issue view --json` uses. An empty body is `null` in REST and
+// `""` in `gh`.
 const issue = async (args: string[], deps: GhFetchDeps): Promise<string> => {
   const [, , number, flag, fields] = args;
 
@@ -138,6 +159,7 @@ const issue = async (args: string[], deps: GhFetchDeps): Promise<string> => {
   ) as Record<string, unknown>;
   const mapped: Record<string, unknown> = {
     ...data,
+    body: data.body ?? '',
     issueType: data.type ?? null,
     url: data.html_url,
   };
@@ -167,9 +189,29 @@ export const ghFetch = (
   return Promise.reject(new Error(UNSUPPORTED));
 };
 
-/** `<owner>/<repo>` from an `origin` URL, in the `https://` or the `git@` form. */
+/** `<owner>/<repo>` from an `origin` URL, in the `https://`, `ssh://git@` or `git@` form. */
 export const repoOf = (url: string): string | undefined =>
   REMOTE.exec(url.trim())?.[1];
+
+/**
+ * Runs a command and returns its stdout. With `pipeStderr`, stderr stays off the terminal, and a
+ * failed call holds it as `stderr`.
+ */
+export const execText = (
+  command: string,
+  args: string[],
+  input?: string,
+  env?: Record<string, string | undefined>,
+  pipeStderr = false
+): string =>
+  execFileSync(command, args, {
+    encoding: 'utf8',
+    // Next's typings make NODE_ENV required in ProcessEnv. A child needs no such key.
+    env: env as NodeJS.ProcessEnv | undefined,
+    input,
+    maxBuffer: 16 * 1024 * 1024,
+    ...(pipeStderr && { stdio: ['pipe', 'pipe', 'pipe'] as const }),
+  });
 
 /**
  * A `Gh` that runs this file in a child process, and the repo; or the message to print
@@ -186,13 +228,22 @@ export const localGh = (
   ) => string
 ): { gh: Gh; repo: string } | string => {
   if (!env.GH_TOKEN) {
-    return 'Set GH_TOKEN to a GitHub token, then run this again.';
+    return 'Set GH_TOKEN to a GitHub token.';
   }
 
-  const repo = repoOf(git(['remote', 'get-url', 'origin']));
+  // `git remote get-url` throws when there is no `origin`. The message below covers that case too.
+  let url = '';
+
+  try {
+    url = git(['remote', 'get-url', 'origin']);
+  } catch {
+    // `url` stays empty, so `repoOf` finds no repo.
+  }
+
+  const repo = repoOf(url);
 
   if (repo === undefined) {
-    return 'The origin remote is not a github.com repository.';
+    return 'The origin remote is missing or is not a github.com repository.';
   }
 
   return {

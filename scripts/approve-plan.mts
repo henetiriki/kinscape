@@ -144,7 +144,7 @@ export const run = (root: string, args: string[]): number => {
 
   if (!file || !login || !LOGIN.test(login)) {
     console.error(
-      'Usage: plan:approve<plan file> <reviewer login> [D<n>=<letter> | "D<n>=other: <text>"]...'
+      'Usage: plan:approve <plan file> <reviewer login> [D<n>=<letter> | "D<n>=other: <text>"]...'
     );
 
     return 1;

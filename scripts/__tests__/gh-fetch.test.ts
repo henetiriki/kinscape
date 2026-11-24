@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ghFetch, localGh, repoOf } from '@ks/scripts/gh-fetch.mts';
+import { execText, ghFetch, localGh, repoOf } from '@ks/scripts/gh-fetch.mts';
 
 type Call = { init: RequestInit | undefined; url: string };
 
@@ -43,6 +43,42 @@ describe('ghFetch', () => {
     });
   });
 
+  it('gives -F the type that gh gives it: boolean, null, integer or text', async () => {
+    const { calls, deps } = fake(json({ data: {} }));
+
+    await ghFetch(
+      [
+        'api',
+        'graphql',
+        '-f',
+        'query=q',
+        '-F',
+        'a=true',
+        '-F',
+        'b=false',
+        '-F',
+        'c=null',
+        '-F',
+        'd=-4',
+        '-F',
+        'e=abc',
+        '-f',
+        'f=7',
+      ],
+      undefined,
+      deps
+    );
+
+    expect(JSON.parse(calls[0].init?.body as string).variables).toEqual({
+      a: true,
+      b: false,
+      c: null,
+      d: -4,
+      e: 'abc',
+      f: '7',
+    });
+  });
+
   it('throws the GraphQL error messages', async () => {
     const { deps } = fake(
       json({ errors: [{ message: 'A' }, { message: 'B' }] })
@@ -65,6 +101,19 @@ describe('ghFetch', () => {
     expect(calls[0].url).toBe(
       'https://api.github.com/repos/o/r/issues/3/parent'
     );
+  });
+
+  it('returns the first page of a call with no --paginate, as gh does', async () => {
+    const { calls, deps } = fake(
+      json(
+        { page: 1 },
+        { headers: { Link: '<https://x/y?page=2>; rel="next"' } }
+      )
+    );
+    const text = await ghFetch(['api', 'repos/o/r/x'], undefined, deps);
+
+    expect(JSON.parse(text)).toEqual({ page: 1 });
+    expect(calls).toHaveLength(1);
   });
 
   it('follows each next page and prints one JSON value per line', async () => {
@@ -134,6 +183,17 @@ describe('ghFetch', () => {
     expect(calls[0].url).toBe('https://api.github.com/repos/o/r/issues/5');
   });
 
+  it('prints a null issue body as an empty string, as gh does', async () => {
+    const { deps } = fake(json({ body: null, number: 8 }));
+    const text = await ghFetch(
+      ['issue', 'view', '8', '--json', 'body'],
+      undefined,
+      deps
+    );
+
+    expect(JSON.parse(text)).toEqual({ body: '' });
+  });
+
   it('throws a 404 in the shape that plan-new reads, with the API message', async () => {
     const { deps } = fake(json({ message: 'Not Found' }, { status: 404 }));
 
@@ -142,7 +202,7 @@ describe('ghFetch', () => {
     ).rejects.toThrow('gh: Not Found (HTTP 404)');
   });
 
-  it('falls back to the status text when the error body is not JSON', async () => {
+  it('uses the status text when the error body is not JSON', async () => {
     const { deps } = fake(
       new Response('<html>', { status: 502, statusText: 'Bad Gateway' })
     );
@@ -185,6 +245,8 @@ describe('repoOf', () => {
     ['https://github.com/o/r', 'o/r'],
     ['git@github.com:o/r.git', 'o/r'],
     ['git@github.com:my-org/re.po', 'my-org/re.po'],
+    ['ssh://git@github.com/o/r.git', 'o/r'],
+    ['ssh://git@github.com/o/r', 'o/r'],
   ])('reads %s', (url, repo) => {
     expect(repoOf(url)).toBe(repo);
   });
@@ -210,6 +272,19 @@ describe('localGh', () => {
         () => ''
       )
     ).toContain('origin');
+  });
+
+  it('says so, with no stack trace, when git has no origin remote', () => {
+    const message = localGh(
+      { GH_TOKEN: 't' },
+      () => {
+        throw new Error('error: No such remote origin');
+      },
+      () => ''
+    );
+
+    expect(message).toContain('origin');
+    expect(typeof message).toBe('string');
   });
 
   it('returns the repo and a gh that runs the fetch child', () => {
@@ -240,5 +315,29 @@ describe('localGh', () => {
     expect(args.slice(1)).toEqual(['api', 'x']);
     expect(input).toBe('in');
     expect(env).toMatchObject({ GH_REPO: 'o/r', GH_TOKEN: 't', PATH: 'p' });
+  });
+});
+
+describe('execText', () => {
+  it('returns stdout, and gives the child its input and env', () => {
+    const script =
+      "process.stdout.write(require('fs').readFileSync(0, 'utf8') + process.env.KS_X)";
+
+    expect(
+      execText('node', ['-e', script], 'in', { ...process.env, KS_X: '!' })
+    ).toBe('in!');
+  });
+
+  it('keeps stderr in the error, and off the terminal, when pipeStderr is set', () => {
+    const script = "console.error('boom'); process.exit(1)";
+    let error: { stderr?: string } = {};
+
+    try {
+      execText('node', ['-e', script], undefined, undefined, true);
+    } catch (caught) {
+      error = caught as { stderr?: string };
+    }
+
+    expect(error.stderr).toContain('boom');
   });
 });

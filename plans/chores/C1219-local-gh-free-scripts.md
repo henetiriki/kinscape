@@ -5,7 +5,7 @@
 
 ## Approach
 
-A new module, `scripts/gh-fetch.mts`, serves the three `gh` call shapes that `review-threads.mts` and `plan-new.mts` make, with `fetch` and `GH_TOKEN`. The `Gh` port is synchronous and `fetch` is not, so each call runs `node scripts/gh-fetch.mts <gh args>` as a child process (D1). That child prints what `gh` prints and fails as `gh` fails, so the two `run` functions and their tests do not change. Two thin entry files pass this `Gh` to the existing `run` functions (D2). The CI scripts keep their `gh` adapter. The prompt and skill edits, the rename and the word budget (D3) are text changes with `load-agent-files.test.ts` lines. No row edits a hand-back path, so the CI agent builds every row.
+A new module, `scripts/gh-fetch.mts`, serves the three `gh` call shapes that `review-threads.mts` and `plan-new.mts` make, with `fetch` and `GH_TOKEN`. The `Gh` port is synchronous and `fetch` is not, so each call runs `node scripts/gh-fetch.mts <gh args>` as a child process (D1). That child prints what `gh` prints and fails as `gh` fails, so the two `run` functions and their tests do not change. Two thin entry files pass this `Gh` to the existing `run` functions (D2). The CI scripts keep their `gh` adapter. The prompt and skill edits, the rename and the word budget (D3) are text changes with `load-agent-files.test.ts` lines. One row, `.claude/skills/fix-review-local/SKILL.md`, is a hand-back path. The tech lead builds that row, and the CI agent builds the others.
 
 ## Decisions
 
@@ -107,4 +107,7 @@ The `Gh` type in `scripts/types.ts` returns a string, and `fetch` returns a prom
 
 ## Deviations
 
-- Big: the `.claude/skills/fix-review-local/SKILL.md` row is a hand-back path (the CI agent cannot write it), so it is not built. The tech lead builds it: replace the two `GH_REPO=` and `gh api graphql` override lines with "Run `npm run review:threads:local` in place of `npm run review:threads` for `list`, `reply` and `resolve`. It needs `GH_TOKEN`." and "Reply on a thread in one line. For a fixed thread, say what changed.", and add a `load-agent-files.test.ts` case that the skill holds `npm run review:threads:local`, no `GH_REPO=` and no `gh api graphql`. The skill must also tell the agent to run `gh pr checks <n>` as `fix-review.md` says (it follows that file).
+- The tech lead built the hand-back row `.claude/skills/fix-review-local/SKILL.md` in eec2192.
+- Step 6 of `fix-review.md` is unchanged. The new bullets under _The findings_ tell the agent to name each pending check and each failure for a person in the final comment.
+- `scripts/gh-fetch.mts` also exports `execText`. Both entry files share this child-process wrapper.
+- The review added four unlikely cases to `gh-fetch.mts`: a null issue body, a call with no `--paginate`, a `-F` value that is not a number, and an `ssh://` or missing `origin`.

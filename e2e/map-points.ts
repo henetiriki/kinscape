@@ -40,10 +40,11 @@ export const afterPaint = (page: Page) =>
 export const FIRST_DRAW = 20_000;
 
 /**
- * The worker slot of the running test, 0 to 2 in CI. Copies of a save test run side by side on one
- * Tree, so each takes its own point, Pin or date window by slot.
+ * The worker slot of the running test, 0 to 2. CI runs 3 workers; a local run can have more, and
+ * a higher slot would move a date window before 1652 or a start point off the map. Copies of a
+ * save test run side by side on one Tree, so each takes its own point, Pin or date window by slot.
  */
-export const slot = () => test.info().parallelIndex;
+export const slot = () => test.info().parallelIndex % 3;
 
 /** The event type of each Pin symbol that the map draws now. */
 export const shownTypes = async (page: Page) => {

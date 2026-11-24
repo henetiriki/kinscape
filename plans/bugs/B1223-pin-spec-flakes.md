@@ -2,7 +2,7 @@
 
 - **Spec:** #1223
 - **Requirement IDs:** [PIN-01](../../docs/requirements.md#pin-01), [PIN-02](../../docs/requirements.md#pin-02), [PIN-03](../../docs/requirements.md#pin-03), [MAP-02](../../docs/requirements.md#map-02), [NFR-01](../../docs/requirements.md#nfr-01)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -26,7 +26,7 @@ Acceptance check 1 needs the seeded Postgres of the CI `e2e` job. `npm run e2e` 
 - **C.** The tech lead runs the specs on a laptop with `scripts/ci-postgres.sh`. Cost: a manual run on a computer that is not the CI runner.
 - **Other:** your own.
 
-Recommended: A, because the check needs the load of the CI runner, and the build can push and read it alone.
+**Answer: A** (@henetiriki)
 
 **D4 · The time limit of the two long save tests** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ Recommended: A, because the check needs the load of the CI runner, and the build
 - **B.** Split `pin-edit.spec.ts:94` into three tests, one each for the date, the Person and the point. Each saves its own Pin. Cost: a run of acceptance check 1 saves about 60 Pins, so D1 of #1223 changes to 9,900 seeded Pins.
 - **Other:** your own.
 
-Recommended: A, because it keeps each assertion and the D1 values. B gives shorter tests, but it changes an answered decision.
+**Answer: A** (@henetiriki)
 
 **D5 · The wait for the first draw of about 10,000 Pins** · Decides: Tech lead
 
@@ -46,7 +46,7 @@ Recommended: A, because it keeps each assertion and the D1 values. B gives short
 - **B.** Run `pins.spec.ts` in serial mode, so fewer browsers draw at once. Cost: about 3 minutes more on each `e2e` job, and acceptance check 1 loses the load of 3 workers.
 - **Other:** your own.
 
-Recommended: A, because it waits longer only for the one slow step and keeps the load.
+**Answer: A** (@henetiriki)
 
 **D6 · How copies of a save test stay apart** · Decides: Tech lead
 
@@ -56,7 +56,7 @@ Must not break 2 keeps each assertion. With `--repeat-each=10`, three copies of 
 - **B.** Each check counts only the Pin that its own test saved, by id. Cost: about 30 lines. "No Pin at the old point" becomes "not this Pin at the old point", which loosens a check.
 - **Other:** your own.
 
-Recommended: A, because each check stays exact.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

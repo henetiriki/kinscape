@@ -4,7 +4,13 @@ import { expect, test } from '@playwright/test';
 
 import type { TestWindow } from '@ks/e2e/types';
 
-import { clickPopup, coordinates, emptyPoint, goTo } from '@ks/e2e/map-points';
+import {
+  clickPopup,
+  coordinates,
+  emptyPoint,
+  goTo,
+  slot,
+} from '@ks/e2e/map-points';
 
 // PIN-01, PIN-02: the test saves its own Pin, then edits its date, its Person and its point. The
 // Pin is on the empty map at the Map date 1950, as `map-click.spec.ts` does.
@@ -94,6 +100,10 @@ const saveEdit = async (page: Page) => {
 test('edits the date, the Person and the point of a saved Pin', async ({
   page,
 }) => {
+  // Two Person saves, a Pin save, three edits and a reload, with 10,000 Pins in software WebGL,
+  // take about 30 s.
+  test.slow();
+
   const family = surname();
   const other = surname();
 
@@ -105,7 +115,8 @@ test('edits the date, the Person and the point of a saved Pin', async ({
 
   // `map-click.spec.ts` and `pins.spec.ts` start at 800 px from the corner, and their Pins show at
   // 1950. A nearer start gives this test another point, so a Pin of a parallel test is not on it.
-  const first = await emptyPoint(page, { x: 0, y: 0 }, 300);
+  // Each slot starts 60 px nearer, so copies of this test side by side use other points.
+  const first = await emptyPoint(page, { x: 0, y: 0 }, 300 - 60 * slot());
 
   await addPin(page, family, first);
 

@@ -8,22 +8,24 @@ import {
   clickPopup,
   coordinates,
   emptyPoint,
+  FIRST_DRAW,
   goTo,
   pickPin,
   pinPoint,
   shownTypes,
+  slot,
 } from '@ks/e2e/map-points';
 import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
 
-// The seed (scripts/seed-ci.mts) adds 9,995 Pins to the SYNTHETIC Tree of the Postgres that the
+// The seed (scripts/seed-ci.mts) adds 9,950 Pins to the SYNTHETIC Tree of the Postgres that the
 // CI `e2e` job uses. The memory adapters hold none, so playwright.config.ts leaves this file out
 // there.
 
-const SEEDED = 9_995;
+const SEEDED = 9_950;
 // The save tests of pin-form.spec.ts, pin-edit.spec.ts, map-click.spec.ts and this file add one Pin
-// each to the same Tree. After they run, a count reads up to four more. The seed leaves room for
-// five more Pins.
-const ALL = `(?:${SEEDED}|${SEEDED + 1}|${SEEDED + 2}|${SEEDED + 3}|${SEEDED + 4})`;
+// each to the same Tree, and a repeat run adds one for each copy. After they run, a count reads up
+// to 49 more. The seed leaves room for 50 more Pins.
+const ALL = `(?:${Array.from({ length: 50 }, (_, n) => SEEDED + n).join('|')})`;
 
 const hasImage = (page: Page, eventType: string) =>
   page.evaluate(
@@ -42,7 +44,7 @@ test('draws the Pins of the Map date, each with the glyph of its event type', as
   await page.goto('/');
   await goTo(page, '1950');
   await expect
-    .poll(async () => (await shownTypes(page)).length)
+    .poll(async () => (await shownTypes(page)).length, { timeout: FIRST_DRAW })
     .toBeGreaterThan(0);
 
   const types = new Set(await shownTypes(page));
@@ -79,7 +81,7 @@ test('switching the Pins row off hides every Pin, and on shows them again', asyn
   await page.goto('/');
   await goTo(page, '1950');
   await expect
-    .poll(async () => (await shownTypes(page)).length)
+    .poll(async () => (await shownTypes(page)).length, { timeout: FIRST_DRAW })
     .toBeGreaterThan(0);
 
   const row = page.getByRole('checkbox', { name: 'Pins' });
@@ -260,7 +262,9 @@ test('"Add a pin here" saves a Pin at the Place of the Pin', async ({
   await page.goto('/');
   await goTo(page, '1950');
 
-  const pin = await pickPin(page);
+  // The slot-th free Pin from the end: the Place of this Pin becomes a count marker, so the other
+  // tests and the other copies of this test keep their Pins.
+  const pin = await pickPin(page, slot());
 
   await page.mouse.click(pin.x, pin.y);
   await popup(page).getByRole('heading', { level: 3 }).waitFor();
@@ -355,7 +359,9 @@ test('a Map date that hides the Pin closes its popup', async ({ page }) => {
  * each Place, so some Places show two or more on a Map date.
  */
 const pickMarker = async (page: Page) => {
-  await expect(page.locator('.maplibregl-marker').first()).toBeAttached();
+  await expect(page.locator('.maplibregl-marker').first()).toBeAttached({
+    timeout: FIRST_DRAW,
+  });
 
   return page.evaluate(() => {
     for (const marker of document.querySelectorAll('.maplibregl-marker')) {
@@ -472,7 +478,9 @@ test.describe('on a phone', () => {
         throw new Error('No count marker is in the free area');
       });
 
-    await expect(page.locator('.maplibregl-marker').first()).toBeAttached();
+    await expect(page.locator('.maplibregl-marker').first()).toBeAttached({
+      timeout: FIRST_DRAW,
+    });
 
     const marker = await pickPhoneMarker();
 
@@ -509,7 +517,9 @@ test(
     await page.getByRole('radio', { name: 'Day' }).click();
     await goTo(page, '1950-01-01');
     await expect
-      .poll(async () => (await shownTypes(page)).length)
+      .poll(async () => (await shownTypes(page)).length, {
+        timeout: FIRST_DRAW,
+      })
       .toBeGreaterThan(0);
 
     const input = page.getByRole('slider', { name: 'Map date' });

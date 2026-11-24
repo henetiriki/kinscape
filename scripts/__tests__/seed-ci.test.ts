@@ -89,8 +89,8 @@ describe('seed-ci run', () => {
     };
 
     it('sets the size that the perf check needs, and leaves five places under the Pins list cap', () => {
-      expect(SEED).toEqual({ persons: 10, pins: 9_995, places: 500 });
-      expect(MAX_PINS - SEED.pins).toBe(5);
+      expect(SEED).toEqual({ persons: 10, pins: 9_950, places: 500 });
+      expect(MAX_PINS - SEED.pins).toBe(50);
     });
 
     it('adds the counts that it is given, with no birth or death on a Person', async () => {

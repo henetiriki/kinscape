@@ -359,10 +359,14 @@ const fileOf = (
     ...EXTENSIONS.map(extension => `${target}/index${extension}`),
   ].find(candidate => candidate in files);
 
+/** What `readsTree` takes from one file: whether it calls the Tree, and the `app/` or `features/` files it imports. */
+type TreeFacts = { calls: boolean; imports: string[] };
+
 /** Whether a file calls `treeAction` or `openTree`, or takes a value from an `app/` or `features/` file that does. */
 const readsTree = (
   files: Record<string, string>,
   path: string,
+  facts: Map<string, TreeFacts>,
   seen: Set<string> = new Set()
 ): boolean => {
   if (seen.has(path)) {
@@ -371,21 +375,31 @@ const readsTree = (
 
   seen.add(path);
 
-  return (
-    calls(TREE_CALL, path, files[path]) ||
-    specifiersOf(path, files[path])
-      .filter(({ typeOnly }) => !typeOnly)
-      .flatMap(({ specifier }) => {
-        const target = targetOf(path, specifier);
-        const file = target === undefined ? undefined : fileOf(files, target);
+  // One parse of each file in each `noStoreBreaks` call, however many pages import it.
+  let known = facts.get(path);
 
-        return file !== undefined &&
-          /^(?:app|features)\//.test(file) &&
-          !TEST_FILE.test(file)
-          ? [file]
-          : [];
-      })
-      .some(file => readsTree(files, file, seen))
+  if (known === undefined) {
+    known = {
+      calls: calls(TREE_CALL, path, files[path]),
+      imports: specifiersOf(path, files[path])
+        .filter(({ typeOnly }) => !typeOnly)
+        .flatMap(({ specifier }) => {
+          const target = targetOf(path, specifier);
+          const file = target === undefined ? undefined : fileOf(files, target);
+
+          return file !== undefined &&
+            /^(?:app|features)\//.test(file) &&
+            !TEST_FILE.test(file)
+            ? [file]
+            : [];
+        }),
+    };
+    facts.set(path, known);
+  }
+
+  return (
+    known.calls ||
+    known.imports.some(file => readsTree(files, file, facts, seen))
   );
 };
 
@@ -423,12 +437,14 @@ export const noStoreBreaks = (
       )
   );
 
+  const facts = new Map<string, TreeFacts>();
+
   return appRoutes(Object.keys(files))
     .filter(
       ({ file }) =>
         /\/page\.[jt]sx?$/.test(file) &&
         !TEST_FILE.test(file) &&
-        readsTree(files, file)
+        readsTree(files, file, facts)
     )
     .filter(({ path }) => !global.some(rule => covers(rule.source, path)))
     .map(

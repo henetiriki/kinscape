@@ -2,6 +2,8 @@ import type { Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
+import { slot } from '@ks/e2e/map-points';
+
 // A name no other test uses, so the Person field lists one row for it.
 const surname = () => `Synth${crypto.randomUUID().slice(0, 8)}`;
 
@@ -39,7 +41,11 @@ type ListedPin = {
 };
 
 /** The Pins that this test saved: the ids that the first load did not list, with its dates. */
-const savedPins = async (page: Page, known: Set<string>) => {
+const savedPins = async (
+  page: Page,
+  known: Set<string>,
+  window: { from: number; to: number }
+) => {
   const response = await page.request.get('/data/pins');
   const pins = (await response.json()) as ListedPin[];
 
@@ -47,16 +53,24 @@ const savedPins = async (page: Page, known: Set<string>) => {
     pin =>
       !known.has(pin.id) &&
       pin.qualifier === 'FROM' &&
-      pin.date1 === '1840' &&
-      pin.date2 === '1855'
+      pin.date1 === String(window.from) &&
+      pin.date2 === String(window.to)
   ).length;
 };
 
 // PIN-01, PIN-02: a new Person shows in the Person field, and a residence FROM 1840 TO 1855 shows at
-// 1850, hides at 1860 and stays after a reload.
+// 1850, hides at 1860 and stays after a reload. Each slot shifts the dates 30 years earlier, so
+// copies of this test side by side do not count each other's Pins.
 test('saves a Pin for a new Person that shows inside its dates', async ({
   page,
 }) => {
+  // Two Person saves, a Pin save and a reload, with 10,000 Pins in software WebGL, take about 21 s.
+  test.slow();
+
+  const shift = 30 * slot();
+  const window = { from: 1840 - shift, to: 1855 - shift };
+  const inside = String(1850 - shift);
+  const outside = String(1860 - shift);
   const family = surname();
 
   await createPerson(page, family);
@@ -74,11 +88,11 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
 
   await page.waitForFunction(() => 'kinscapeMap' in window);
   await expect.poll(async () => (await counts(page)).all).toBe(loaded);
-  await goTo(page, '1850');
+  await goTo(page, inside);
 
   const before = await counts(page);
 
-  await goTo(page, '1860');
+  await goTo(page, outside);
 
   const beforeLater = await counts(page);
 
@@ -86,7 +100,9 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   await page.getByRole('combobox', { name: 'Person' }).fill(family);
   await page.getByRole('option').filter({ hasText: family }).click();
   await page.getByLabel('Event type').selectOption('residence');
-  await page.getByLabel('Date', { exact: true }).fill('FROM 1840 TO 1855');
+  await page
+    .getByLabel('Date', { exact: true })
+    .fill(`FROM ${window.from} TO ${window.to}`);
   await page.getByLabel('Coordinates').fill('-33.93, 18.42');
 
   // The reload after the save waits until the test releases it. The save writes its Pin to the cache
@@ -109,14 +125,14 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   await page.getByRole('button', { name: 'Save' }).click();
   await expect(page.getByRole('form', { name: 'Add a pin' })).toHaveCount(0);
 
-  // The Pins list holds 10,000 Pins at most. The seed leaves room for five more Pins. The save tests
+  // The Pins list holds 10,000 Pins at most. The seed leaves room for 50 more Pins. The save tests
   // of other specs add Pins to the same Tree while this test runs, so the total is not exact. The
-  // saved Pins of this test are exact, and the Pins of the other specs do not show at 1850 or 1860.
-  await expect.poll(async () => savedPins(page, known)).toBe(1);
+  // saved Pins of this test are exact, and the Pins of the other specs do not show in its window.
+  await expect.poll(async () => savedPins(page, known, window)).toBe(1);
   await expect
     .poll(async () => (await counts(page)).shown)
     .toBe(beforeLater.shown);
-  await goTo(page, '1850');
+  await goTo(page, inside);
   await expect
     .poll(async () => (await counts(page)).shown)
     .toBe(before.shown + 1);
@@ -126,9 +142,9 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   // `page.unroute` here makes it throw "Route is already handled!".
   release();
   await page.reload();
-  await goTo(page, '1850');
+  await goTo(page, inside);
   await expect
     .poll(async () => (await counts(page)).shown)
     .toBe(before.shown + 1);
-  expect(await savedPins(page, known)).toBe(1);
+  expect(await savedPins(page, known, window)).toBe(1);
 });

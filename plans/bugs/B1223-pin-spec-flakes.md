@@ -67,7 +67,7 @@ Must not break 2 keeps each assertion. With `--repeat-each=10`, three copies of 
 | `scripts/__tests__/seed-ci.test.ts` | changed                | Expects 9,950 Pins and `MAX_PINS - SEED.pins` of 50 (D1)                                                                  |
 | `e2e/map-points.ts`                 | changed                | `FIRST_DRAW` (D5); a slot helper; `pickPin` takes a slot from the end (D6)                                                |
 | `e2e/pins.spec.ts`                  | changed                | `SEEDED` is 9,950 and `ALL` takes `SEEDED` to `SEEDED + 49` (D1); first-draw waits (D5); the save test uses its slot (D6) |
-| `e2e/pin-edit.spec.ts`              | changed                | The start of `emptyPoint` per slot (D6); `test.slow()` on line 94 (D4)                                                    |
+| `e2e/pin-edit.spec.ts`              | changed                | The start of `emptyPoint` per slot in both tests (D6); `test.slow()` on line 94 (D4)                                      |
 | `e2e/pin-form.spec.ts`              | changed                | The date window per slot (D6); `test.slow()` (D4); the comment on the room for Pins (D1)                                  |
 | `playwright.config.ts`              | changed, then reverted | The temporary `pins-repeat` project (D3)                                                                                  |
 
@@ -86,6 +86,12 @@ Must not break 2 keeps each assertion. With `--repeat-each=10`, three copies of 
 - **Acceptance check 3** needs 20 `main` runs after the merge. The build cannot prove it. The tech lead reads `gh run list --workflow ci.yml --branch main` after 20 runs, and reopens #1223 on a Pin or `no-store.test.ts` failure.
 - **Two slots on one point.** `emptyPoint` skips a point that has a Pin, so two starts 60 px apart can end on one point. Likelihood: low, because a Pin must block each grid point between the two starts. Cost of a fix: a check of the distance between slots, about 5 lines.
 
+The `pins-repeat` run 45430643922 (attempt 2) had three more failures. The `e2e-failures` artifact was not read, so no cause is confirmed.
+
+- **No free Pin after 10 copies.** `pins.spec.ts:345`, repeat 9: "No Pin is in the free area". Each copy of "Add a pin here" turns one free Pin into a count marker, and `pickPin` also skips each Pin within 24 px of a marker. It failed in the 10th copy, as the 10th "Add a pin here" ended. In attempt 1, the same order passed, so the log does not prove this cause. Likelihood: only a run with about 10 copies on one seed. Cost of a fix: about 5 lines, for example a pick area for "Add a pin here" that the other tests do not use.
+- **A reset socket.** `pin-form.spec.ts:64`, repeat 9: `ECONNRESET` on the last `page.request.get('/data/pins')`. A probable cause is the keep-alive race: Node closes an idle socket after 5 s, and `page.request` sends on it at that moment. Likelihood: low, 1 of 20 copies. Cost of a fix: about 2 lines, for example a `Connection: close` header.
+- **No count marker after 20 s.** `pins.spec.ts:460` (phone), repeat 5: no `.maplibregl-marker` after `FIRST_DRAW`. The log shows no server error and no cause. Likelihood: low, 1 of 20 copies. Cost of a fix: unknown until the screenshot shows if the map drew Pins.
+
 ## Proof
 
 | Acceptance check                                 | Proven by                                                                         |
@@ -101,3 +107,8 @@ Must not break 2 keeps each assertion. With `--repeat-each=10`, three copies of 
 
 - `map-click.spec.ts`, which saves one Pin and did not fail.
 - The branch failures that the issue does not count, and the strict-mode `Edit` failure of `spec/M2.15.2`. On `main`, the locator is inside the popup.
+
+## Deviations
+
+- Step 1 did not occur: the build pushed the `pins-repeat` project and the fix together, so no failed run before the fix is linked.
+- The second test of `pin-edit.spec.ts` also starts `emptyPoint` per slot (`500 - 60 * slot()`). In run 45430643922 its copies saved on one Place. The tech lead approved this change.

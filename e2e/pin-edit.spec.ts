@@ -177,8 +177,9 @@ test('sends no request for the fields of a Pin or the Persons before "Edit"', as
   await goTo(page, '1950');
   await page.waitForFunction(() => 'kinscapeMap' in window);
 
-  // A start that differs from the other tests of this file, so each one gets its own point.
-  const at = await emptyPoint(page, { x: 0, y: 0 }, 500);
+  // A start that differs from the other tests of this file, so each one gets its own point. Each
+  // slot starts 60 px nearer, so copies of this test side by side do not save on one Place.
+  const at = await emptyPoint(page, { x: 0, y: 0 }, 500 - 60 * slot());
 
   await addPin(page, family, at);
 

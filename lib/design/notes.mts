@@ -4,11 +4,7 @@ import type { DtcgTree } from '#ks/lib/design/types.ts';
 
 import { isTree } from '#ks/design/tokens.mts';
 import { coloursIn } from '#ks/lib/design/css.mts';
-import {
-  descriptions,
-  resolvedText,
-  tokenLeaves,
-} from '#ks/lib/design/dtcg.mts';
+import { notesOf, resolvedText, tokenLeaves } from '#ks/lib/design/dtcg.mts';
 
 /** Groups where every token needs a note. `type` needs one per style, `map` one per colour. */
 const GROUPS = new Set([
@@ -58,9 +54,7 @@ const needed = (tokens: DtcgTree): Entry<string | undefined>[] =>
 
 /** One message per problem: a missing, empty or value-repeating note, or a note for no token that needs one. */
 export const noteProblems = (tokens: DtcgTree): string[] => {
-  const written = new Map(
-    descriptions(tokens).map(([path, note]) => [path.join('.'), note])
-  );
+  const written = notesOf(tokens);
   const wanted = needed(tokens);
   const paths = new Set(wanted.map(([path]) => path));
 

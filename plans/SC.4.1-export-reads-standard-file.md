@@ -6,15 +6,28 @@
 
 ## Approach
 
-`scripts/design-system.mts` parses `design/kinscape.tokens.json` and gives the DTCG tree to `systemFonts`, `systemTokens`, `roleSentences`, `ratioOf` and `noteProblems`. A small set of DTCG readers in `lib/design/dtcg.mts` (D1) gives each module the same text that `design/tokens.json` holds today: a reference stays `{path}`, and any other value is its `cssText`. Thus the design system files stay byte-identical. The usage note of a `type` style is the `$description` of its style group, because no single token holds the style. `fontNames` gets the font stacks from the export's own `type.families` (D2). The export does not read `design/tokens.generated.ts`: lint stops a `.mts` value import of a `.ts` file (`MTS_TS_PATTERN` in `eslint.config.mjs`).
+`scripts/design-system.mts` parses `design/kinscape.tokens.json`. It gives the DTCG tree to these functions:
+
+- `systemFonts`
+- `systemTokens`
+- `roleSentences`
+- `ratioOf`
+- `noteProblems`
+
+A small set of DTCG readers in `lib/design/dtcg.mts` (D1) gives each module the text that `design/tokens.json` holds today. A reference stays `{path}`. Any other value is its `cssText`. Thus the design system files stay byte-identical. The usage note of a `type` style is the `$description` of its style group, because no single token holds the style. `fontNames` gets the font stacks from the export's own `type.families` (D2). The export does not read `design/tokens.generated.ts`: lint stops a `.mts` value import of a `.ts` file (`MTS_TS_PATTERN` in `eslint.config.mjs`).
 
 ## Decisions
 
 **D1 · Where the DTCG reads live** · Decides: Tech lead
 
-Four modules need the same reads: the leaves, the text of a value, a resolved value and each `$description`. `collectNotes` in `lib/design/style-dictionary.mts` already walks each `$description`.
+Four modules need the same reads:
 
-- **A.** `lib/design/dtcg.mts` exports `tokenLeaves`, `tokenText`, `resolvedText` and `descriptions`. The four modules use them, and `collectNotes` uses `descriptions`. Cost: about 60 lines with tests.
+- the leaves
+- the text of a value
+- a resolved value
+- each `$description` `collectNotes` in `lib/design/style-dictionary.mts` already walks each `$description`.
+
+- **A.** `lib/design/dtcg.mts` exports these readers: `tokenLeaves`, `tokenText`, `resolvedText`, `descriptions` and `notesOf`. The four modules use them. `collectNotes` uses `descriptions`. Cost: about 60 lines with tests.
 - **B.** Each module walks the DTCG tree itself. Cost: about the same lines, with three copies of the walk.
 - **Other:** your own.
 
@@ -50,7 +63,7 @@ On `main`, `noteProblems` writes `notes.<path> names no token that needs a note`
 | File                                    | New / changed | What                                                                                                                                                                        |
 | --------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `lib/design/types.ts`                   | changed       | `DtcgTree`: a group of tokens and groups, with an optional `$description`. `Rule` keeps `Tree`.                                                                             |
-| `lib/design/dtcg.mts`                   | changed       | `tokenLeaves`, `tokenText`, `resolvedText` and `descriptions` (D1). Each walks in file order.                                                                               |
+| `lib/design/dtcg.mts`                   | changed       | `tokenLeaves`, `tokenText`, `resolvedText`, `descriptions` and `notesOf` (D1). Each walks in file order.                                                                    |
 | `lib/design/__tests__/dtcg.test.ts`     | changed       | A test for each new reader: a reference, a chain of references, a colour with alpha, a group `$description`.                                                                |
 | `lib/design/style-dictionary.mts`       | changed       | `collectNotes` uses `descriptions` (D1). Its comment drops the claim that the bundle embeds `design/tokens.json`.                                                           |
 | `lib/design/contrast.mts`               | changed       | `valueAt` and `ratioOf` take a `DtcgTree`. `valueAt` returns `resolvedText`.                                                                                                |
@@ -95,7 +108,11 @@ No design system input changes, so the steps of `design/CANVAS.md` › Changing 
 
 ## Out of scope
 
-- `Rule`, `groups.mts`, `literals.mts`, the other scripts, the checks, the e2e specs and the deletion of `design/tokens.json` and `design/tokens.mts`: SC.4.2 (#1196).
+SC.4.2 (#1196) does these:
+
+- Change `Rule`, `groups.mts` and `literals.mts`.
+- Change the other scripts, the checks and the e2e specs.
+- Delete `design/tokens.json` and `design/tokens.mts`.
 - The `design/tokens.json` comment in `dtcg.mts` and `dtcg.test.ts`: SC.4.2.
 
 ## Deviations

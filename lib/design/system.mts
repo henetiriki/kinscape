@@ -14,7 +14,7 @@ import { REFERENCE } from '#ks/design/tokens.mts';
 import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '#ks/lib/design/bundle.mts';
 import { familyName, systemName } from '#ks/lib/design/css.mts';
 import {
-  descriptions,
+  notesOf,
   resolvedText,
   tokenLeaves,
   tokenText,
@@ -49,10 +49,6 @@ export const README_SECTIONS = [
 
 const LINK = /(!?)\[([^\]]*)\]\(([^)]*)\)/g;
 const FILE = /path:\s*'([^']+)',\s*style:\s*'([^']+)',\s*weight:\s*'([^']+)'/g;
-
-/** The `$description` of each group or token, by dotted path. */
-const notesOf = (tree: DtcgTree): Map<string, string> =>
-  new Map(descriptions(tree).map(([path, note]) => [path.join('.'), note]));
 
 const alias = (value: string): string => {
   const reference = REFERENCE.exec(value)?.[1];

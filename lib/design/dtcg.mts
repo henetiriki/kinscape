@@ -174,6 +174,10 @@ export const descriptions = (
       : descriptions(child as DtcgTree, [...path, key]);
   });
 
+/** The `$description` of each group or token, by dotted path. */
+export const notesOf = (tree: DtcgTree): Map<string, string> =>
+  new Map(descriptions(tree).map(([path, note]) => [path.join('.'), note]));
+
 type Leaf = { path: string[]; token: Record<string, unknown> };
 
 /** The tokens that a walk found, and the problems on its way. */

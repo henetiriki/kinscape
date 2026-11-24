@@ -10,6 +10,7 @@ import {
   descriptions,
   dtcgProblems,
   fontStackOf,
+  notesOf,
   resolvedText,
   tokenLeaves,
   tokenText,
@@ -315,5 +316,16 @@ describe('descriptions', () => {
       [['colour', 'brand'], 'Primary buttons.'],
       [['type', 'body'], 'Panels.'],
     ]);
+  });
+});
+
+describe('notesOf', () => {
+  it('maps each dotted path to its $description', () => {
+    expect(notesOf(sample)).toEqual(
+      new Map([
+        ['colour.brand', 'Primary buttons.'],
+        ['type.body', 'Panels.'],
+      ])
+    );
   });
 });

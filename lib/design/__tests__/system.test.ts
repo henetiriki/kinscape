@@ -5,11 +5,7 @@ import type { DtcgTree, SystemTokens } from '@ks/lib/design/types.ts';
 
 import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '@ks/lib/design/bundle.mts';
 import { cssName } from '@ks/lib/design/css.mts';
-import {
-  descriptions,
-  resolvedText,
-  tokenLeaves,
-} from '@ks/lib/design/dtcg.mts';
+import { notesOf, resolvedText, tokenLeaves } from '@ks/lib/design/dtcg.mts';
 import { formatProblems } from '@ks/lib/design/format.mts';
 import { roleSentences } from '@ks/lib/design/roles.mts';
 import {
@@ -53,9 +49,7 @@ const all = (tokens: SystemTokens) =>
 
 describe('systemTokens', () => {
   it('carries every token that has a note, resolved to its value, with its note', () => {
-    const notes = new Map(
-      descriptions(raw).map(([path, note]) => [path.join('.'), note])
-    );
+    const notes = notesOf(raw);
     const byName = new Map(all(system).map(({ name, value }) => [name, value]));
     const follow = (value: string): string => {
       const target = /^\{(.+)\}$/.exec(value)?.[1];

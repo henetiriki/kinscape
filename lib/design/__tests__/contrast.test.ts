@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import type { DtcgTree } from '@ks/lib/design/types.ts';
+
+import tokens from '@ks/design/kinscape.tokens.json';
 import {
   contrastRatio,
   formatRatio,
@@ -45,18 +46,26 @@ describe('formatRatio', () => {
 
 describe('valueAt', () => {
   it('resolves a colour token and a map token by its path', () => {
-    const tokens = resolveTokens(rawTokens);
-
-    expect(valueAt(tokens, 'colour.surface')).toBe(tokens.colour.surface);
+    expect(valueAt(tokens, 'colour.surface')).toBe('#ffffff');
     expect(valueAt(tokens, 'map.hatch.colour')).toBe('#8b4a1c');
   });
 });
 
 describe('ratioOf', () => {
-  const tokens = { colour: { a: '#000000', b: '#ffffff', surface: '#ffffff' } };
+  const colour = (hex: string) => ({
+    $type: 'color',
+    $value: { colorSpace: 'srgb', components: [0, 0, 0], hex },
+  });
+  const fixture: DtcgTree = {
+    colour: {
+      a: colour('#000000'),
+      b: colour('#ffffff'),
+      surface: colour('#ffffff'),
+    },
+  };
 
   it('measures on surface unless told otherwise', () => {
-    expect(ratioOf(tokens, 'colour.a')).toBeCloseTo(21, 5);
-    expect(ratioOf(tokens, 'colour.b', 'colour.a')).toBeCloseTo(21, 5);
+    expect(ratioOf(fixture, 'colour.a')).toBeCloseTo(21, 5);
+    expect(ratioOf(fixture, 'colour.b', 'colour.a')).toBeCloseTo(21, 5);
   });
 });

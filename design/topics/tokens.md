@@ -67,7 +67,7 @@ Each module outside tests that imports `design/tokens.generated.ts` or reads `de
 
 ## The design system and the canvas
 
-See [Changing the design system](../CANVAS.md#changing-the-design-system). This page does not repeat those steps.
+`npm run design-system` reads `design/kinscape.tokens.json`. See [Changing the design system](../CANVAS.md#changing-the-design-system).
 
 ## The checks
 

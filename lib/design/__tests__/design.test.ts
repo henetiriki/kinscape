@@ -231,7 +231,9 @@ const SMALL_TYPE: Record<string, { reason: string; size: number }> = {
 
 describe('tokens.json', () => {
   it('has a note for every token that needs one, and none for any other', () => {
-    expect(noteProblems(tokens)).toEqual([]);
+    expect(
+      noteProblems(JSON.parse(read('design/kinscape.tokens.json')))
+    ).toEqual([]);
   });
 
   // NFR-06

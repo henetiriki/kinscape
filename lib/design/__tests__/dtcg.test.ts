@@ -7,8 +7,12 @@ import {
   cssText,
   cssTracking,
   cssTransition,
+  descriptions,
   dtcgProblems,
   fontStackOf,
+  resolvedText,
+  tokenLeaves,
+  tokenText,
 } from '@ks/lib/design/dtcg.mts';
 
 const px = (value: number) => ({ unit: 'px' as const, value });
@@ -229,6 +233,87 @@ describe('dtcgProblems', () => {
     ).toEqual([
       '(root): a note at the root',
       'type.body: a group note and a token note under it',
+    ]);
+  });
+});
+
+const sample = {
+  colour: {
+    brand: {
+      $description: 'Primary buttons.',
+      $type: 'color',
+      $value: ink,
+    },
+    focus: { $type: 'color', $value: '{colour.brand}' },
+    glass: {
+      $type: 'color',
+      $value: { ...ink, alpha: 0.5 },
+    },
+    link: { $type: 'color', $value: '{colour.focus}' },
+  },
+  type: {
+    body: {
+      $description: 'Panels.',
+      size: { $type: 'dimension', $value: px(15) },
+    },
+  },
+};
+
+describe('tokenLeaves', () => {
+  it('lists each token with its path and $type, in file order', () => {
+    expect(
+      tokenLeaves(sample).map(({ $type, path }) => [path.join('.'), $type])
+    ).toEqual([
+      ['colour.brand', 'color'],
+      ['colour.focus', 'color'],
+      ['colour.glass', 'color'],
+      ['colour.link', 'color'],
+      ['type.body.size', 'dimension'],
+    ]);
+  });
+
+  it('starts at the path it is given', () => {
+    expect(tokenLeaves(sample.type, ['type']).map(({ path }) => path)).toEqual([
+      ['type', 'body', 'size'],
+    ]);
+  });
+});
+
+describe('tokenText', () => {
+  it('keeps a reference as {path} and writes any other value as CSS', () => {
+    const [brand, focus, glass] = tokenLeaves(sample);
+
+    expect(tokenText(brand)).toBe('#18211b');
+    expect(tokenText(focus)).toBe('{colour.brand}');
+    expect(tokenText(glass)).toBe('rgb(24 33 27 / 0.5)');
+  });
+});
+
+describe('resolvedText', () => {
+  it('writes a value, and follows a chain of references', () => {
+    expect(resolvedText(sample, 'colour.brand')).toBe('#18211b');
+    expect(resolvedText(sample, 'colour.link')).toBe('#18211b');
+    expect(resolvedText(sample, 'colour.glass')).toBe('rgb(24 33 27 / 0.5)');
+  });
+
+  it('names a path that holds no token', () => {
+    expect(() => resolvedText(sample, 'colour.nothing')).toThrow(
+      'Unknown token reference {colour.nothing}'
+    );
+    expect(() => resolvedText(sample, 'colour.nothing.deeper')).toThrow(
+      'Unknown token reference {colour.nothing.deeper}'
+    );
+    expect(() => resolvedText(sample, 'colour')).toThrow(
+      'Unknown token reference {colour}'
+    );
+  });
+});
+
+describe('descriptions', () => {
+  it('lists each $description of a group or a token, with its path', () => {
+    expect(descriptions(sample)).toEqual([
+      [['colour', 'brand'], 'Primary buttons.'],
+      [['type', 'body'], 'Panels.'],
     ]);
   });
 });

@@ -9,6 +9,7 @@ import type {
 import StyleDictionary from 'style-dictionary';
 
 import type { Tree } from '#ks/design/types.ts';
+import type { DtcgTree } from '#ks/lib/design/types.ts';
 
 import { referenceIn, resolveTokens } from '#ks/design/tokens.mts';
 import {
@@ -17,7 +18,7 @@ import {
   MAP_SHARED,
   systemName,
 } from '#ks/lib/design/css.mts';
-import { cssText, fontStackOf } from '#ks/lib/design/dtcg.mts';
+import { cssText, descriptions, fontStackOf } from '#ks/lib/design/dtcg.mts';
 
 const HEADER =
   '/* Generated from design/kinscape.tokens.json by `npm run tokens`. Do not edit. */';
@@ -82,19 +83,10 @@ const oldValue = (token: TransformedToken): number | string => {
     : String(token.$value);
 };
 
-/** Each `$description` of a group or a token, in file order. The design system bundle embeds `design/tokens.json`, so its key order must not change. */
-const collectNotes = (
-  node: Record<string, unknown>,
-  path: string[],
-  notes: Tree
-): void => {
-  for (const [key, child] of Object.entries(node)) {
-    if (key === '$description') {
-      put(notes, path, String(child));
-    } else if (!key.startsWith('$')) {
-      // `dtcgProblems` ran first and found no member that is not a group or a token.
-      collectNotes(child as Record<string, unknown>, [...path, key], notes);
-    }
+/** Each `$description` of a group or a token, in file order, as a tree of notes. */
+const collectNotes = (source: DtcgTree, notes: Tree): void => {
+  for (const [path, note] of descriptions(source)) {
+    put(notes, path, note);
   }
 };
 
@@ -111,11 +103,11 @@ const oldTree = ({ allTokens }: FormatFnArguments['dictionary']): Tree => {
 
 /** `design/tokens.json` for its direct readers: the tokens, then `notes` from each `$description`. */
 const tokensJson =
-  (source: Record<string, unknown>) =>
+  (source: DtcgTree) =>
   ({ dictionary }: FormatFnArguments): string => {
     const notes: Tree = {};
 
-    collectNotes(source, [], notes);
+    collectNotes(source, notes);
 
     return `${JSON.stringify({ ...oldTree(dictionary), notes }, null, 2)}\n`;
   };

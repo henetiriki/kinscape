@@ -11,8 +11,7 @@ import { basename, dirname, join, resolve } from 'node:path';
 import ts from 'typescript';
 import { build } from 'vite';
 
-import type { Tree } from '#ks/design/types.ts';
-import type { Control, Docs } from '#ks/lib/design/types.ts';
+import type { Control, Docs, DtcgTree } from '#ks/lib/design/types.ts';
 
 import {
   BUNDLE_CSS,
@@ -472,8 +471,8 @@ const writeCopies = (
 
 export const run = async (root: string, out: string): Promise<string[]> => {
   const raw = JSON.parse(
-    readFileSync(join(root, 'design/tokens.json'), 'utf8')
-  ) as Tree;
+    readFileSync(join(root, 'design/kinscape.tokens.json'), 'utf8')
+  ) as DtcgTree;
   const files = fontFiles(readFileSync(join(root, 'app/layout.tsx'), 'utf8'));
   const fonts = systemFonts(files, raw);
   const system = systemTokens(raw, fonts);
@@ -489,7 +488,7 @@ export const run = async (root: string, out: string): Promise<string[]> => {
   const ranges = fontRanges(root, files, fonts);
   const controls = await buildControls(root);
   const script = `${bundleHeader(CONTROLS.map(({ name }) => name))}\n${logoInline(controls.js, readFileSync(join(root, 'app/icon0.svg')))}`;
-  const styles = `${readFileSync(join(root, 'app/tokens.css'), 'utf8')}\n${fontNames(raw)}\n${controls.css}`;
+  const styles = `${readFileSync(join(root, 'app/tokens.css'), 'utf8')}\n${fontNames({ font: system.type.families })}\n${controls.css}`;
 
   checkScript(script);
   checkStyle(styles);

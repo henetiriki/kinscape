@@ -7,6 +7,7 @@ import type {
   DtcgShadowLayer,
   DtcgToken,
   DtcgTransition,
+  DtcgTree,
 } from '#ks/lib/design/types.ts';
 
 import { hexChannels, isTree, referenceIn } from '#ks/design/tokens.mts';
@@ -116,6 +117,62 @@ export const cssText = ({ $type, $value, path }: DtcgToken): string => {
       throw new Error(`${path.join('.')}: no CSS for $type ${$type}`);
   }
 };
+
+/** Each token under `node`, in file order. `path` is the path of `node`. */
+export const tokenLeaves = (node: DtcgTree, path: string[] = []): DtcgToken[] =>
+  Object.entries(node).flatMap(([key, child]) => {
+    if (key.startsWith('$')) {
+      return [];
+    }
+
+    const at = [...path, key];
+    const group = child as DtcgTree;
+
+    return '$value' in group
+      ? [{ ...group, path: at } as DtcgToken]
+      : tokenLeaves(group, at);
+  });
+
+/** A reference as `{path}`, as `design/tokens.json` held it; any other value as its CSS text. */
+export const tokenText = (token: DtcgToken): string => {
+  const reference = referenceIn(token.$value);
+
+  return reference === undefined ? cssText(token) : `{${reference}}`;
+};
+
+/** The CSS text of the token at `path` (`colour.brand`), after each reference it names. */
+export const resolvedText = (tree: DtcgTree, path: string): string => {
+  const keys = path.split('.');
+  const node = keys.reduce<unknown>(
+    (at, key) => (isTree(at) ? at[key] : undefined),
+    tree
+  );
+
+  if (!isTree(node) || !('$value' in node)) {
+    throw new Error(`Unknown token reference {${path}}`);
+  }
+
+  const reference = referenceIn(node.$value);
+
+  return reference === undefined
+    ? cssText({ ...node, path: keys } as DtcgToken)
+    : resolvedText(tree, reference);
+};
+
+/** Each `$description` of a group or a token, with the path it sits at, in file order. */
+export const descriptions = (
+  node: DtcgTree,
+  path: string[] = []
+): [string[], string][] =>
+  Object.entries(node).flatMap(([key, child]): [string[], string][] => {
+    if (key === '$description') {
+      return [[path, String(child)]];
+    }
+
+    return key.startsWith('$')
+      ? []
+      : descriptions(child as DtcgTree, [...path, key]);
+  });
 
 type Leaf = { path: string[]; token: Record<string, unknown> };
 

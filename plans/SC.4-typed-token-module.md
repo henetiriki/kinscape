@@ -60,6 +60,7 @@ The "Tokens are the one source" row of `docs/architecture.md` says that MapLibre
 | `lib/ui/hatch.ts`                                                   | changed       | Imports `map` from the module. Keeps `hexChannels` from `design/tokens.mts`.                                                                                                     |
 | `app/components/auth/__tests__/SignInHero.test.tsx`                 | changed       | Imports the module.                                                                                                                                                              |
 | `app/components/layout/__tests__/SignInLayout.test.tsx`             | changed       | Same.                                                                                                                                                                            |
+| `app/__tests__/layout.test.tsx`, `ColumnLayout.test.tsx`            | changed       | Same (Big: see Deviations).                                                                                                                                                      |
 | `features/map/components/__tests__/Legend.test.tsx`                 | changed       | Same.                                                                                                                                                                            |
 | `features/map/__tests__/style.test.ts`                              | changed       | Same. The reference test compares the module's `map.selected.colour` with its `colour.brand`.                                                                                    |
 | `lib/ui/__tests__/hatch.test.ts`                                    | changed       | Same.                                                                                                                                                                            |
@@ -108,6 +109,7 @@ The done checks: steps 2 to 6 are done on the branch. Every file under `canvas/p
 ## Deviations
 
 - `app/components/layout/MapLayout.tsx` gives `freeArea` an explicit return type. Without it, the `as const` numbers change `components/index.d.ts` (Acceptance check 8).
+- Big: `app/__tests__/layout.test.tsx` and `app/components/layout/__tests__/ColumnLayout.test.tsx` import the module in place of `design/tokens.json`. The tech lead asked for this. The plan left them to SC.4.2 (#1196).
 - The format and its tests came in one commit, so the tests did not fail first.
 - The build did not run: `KINSCAPE_MEMORY_ADAPTERS` is not set in CI, so the chunk-size comparison is open.
 

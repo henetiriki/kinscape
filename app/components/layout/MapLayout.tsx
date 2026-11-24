@@ -6,7 +6,9 @@ import { layoutPx, sizePx } from '@ks/design/tokens.generated.ts';
 import styles from '@ks/app/components/layout/MapLayout.module.css';
 
 /** The free map area as map padding: what the `overlay` slot leaves, from the same tokens. */
-export const freeArea = (phone: boolean) =>
+export const freeArea = (
+  phone: boolean
+): { bottom: number; left: number; right: number; top: number } =>
   phone
     ? {
         bottom: layoutPx.phone['sheet-collapsed'],

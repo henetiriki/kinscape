@@ -105,6 +105,12 @@ The done checks: steps 2 to 6 are done on the branch. Every file under `canvas/p
 | 11. Steps 2 to 6 are done                                             | The commits of steps 3 to 6 on the branch                                                      |
 | 12. The canvas copy has the same sha256 as `.design-system/project/`  | Step 5.5 of the refresh, in the PR Evidence                                                    |
 
+## Deviations
+
+- `app/components/layout/MapLayout.tsx` gives `freeArea` an explicit return type. Without it, the `as const` numbers change `components/index.d.ts` (Acceptance check 8).
+- The format and its tests came in one commit, so the tests did not fail first.
+- The build did not run: `KINSCAPE_MEMORY_ADAPTERS` is not set in CI, so the chunk-size comparison is open.
+
 ## Out of scope
 
 - The design-system export: SC.4.1 (#1195).

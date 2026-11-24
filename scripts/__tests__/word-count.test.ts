@@ -82,7 +82,7 @@ describe('budgetFor', () => {
     ['plans/chores/C1-x.md', 1500],
     ['.github/agent/rules.md', 300],
     ['.github/agent/build.md', 600],
-    ['.github/agent/fix-review.md', 460],
+    ['.github/agent/fix-review.md', 540],
     ['.github/agent/review.md', 550],
     ['.github/agent/review-code.md', 750],
     ['.claude/skills/refine/SKILL.md', 1020],

@@ -88,7 +88,7 @@ describe('seed-ci run', () => {
       treeId: SYNTHETIC.treeId,
     };
 
-    it('sets the size that the perf check needs, and leaves five places under the Pins list cap', () => {
+    it('sets the size that the perf check needs, and leaves fifty places under the Pins list cap', () => {
       expect(SEED).toEqual({ persons: 10, pins: 9_950, places: 500 });
       expect(MAX_PINS - SEED.pins).toBe(50);
     });

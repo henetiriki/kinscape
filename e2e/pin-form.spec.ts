@@ -44,7 +44,7 @@ type ListedPin = {
 const savedPins = async (
   page: Page,
   known: Set<string>,
-  window: { from: number; to: number }
+  dates: { from: number; to: number }
 ) => {
   // The server can close a connection while it is idle, and the last call comes after a reload.
   // `maxRetries` makes Playwright retry a reset connection (`ECONNRESET`).
@@ -55,8 +55,8 @@ const savedPins = async (
     pin =>
       !known.has(pin.id) &&
       pin.qualifier === 'FROM' &&
-      pin.date1 === String(window.from) &&
-      pin.date2 === String(window.to)
+      pin.date1 === String(dates.from) &&
+      pin.date2 === String(dates.to)
   ).length;
 };
 
@@ -70,7 +70,7 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   test.slow();
 
   const shift = 30 * slot();
-  const window = { from: 1840 - shift, to: 1855 - shift };
+  const dates = { from: 1840 - shift, to: 1855 - shift };
   const inside = String(1850 - shift);
   const outside = String(1860 - shift);
   const family = surname();
@@ -104,7 +104,7 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   await page.getByLabel('Event type').selectOption('residence');
   await page
     .getByLabel('Date', { exact: true })
-    .fill(`FROM ${window.from} TO ${window.to}`);
+    .fill(`FROM ${dates.from} TO ${dates.to}`);
   await page.getByLabel('Coordinates').fill('-33.93, 18.42');
 
   // The reload after the save waits until the test releases it. The save writes its Pin to the cache
@@ -130,7 +130,7 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   // The Pins list holds 10,000 Pins at most. The seed leaves room for 50 more Pins. The save tests
   // of other specs add Pins to the same Tree while this test runs, so the total is not exact. The
   // saved Pins of this test are exact, and the Pins of the other specs do not show in its window.
-  await expect.poll(async () => savedPins(page, known, window)).toBe(1);
+  await expect.poll(async () => savedPins(page, known, dates)).toBe(1);
   await expect
     .poll(async () => (await counts(page)).shown)
     .toBe(beforeLater.shown);
@@ -148,5 +148,5 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   await expect
     .poll(async () => (await counts(page)).shown)
     .toBe(before.shown + 1);
-  expect(await savedPins(page, known, window)).toBe(1);
+  expect(await savedPins(page, known, dates)).toBe(1);
 });

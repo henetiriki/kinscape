@@ -88,15 +88,15 @@ Must not break 2 keeps each assertion. With `--repeat-each=10`, three copies of 
 
 The `pins-repeat` run 45430643922 (attempt 2) had three more failures. The `e2e-failures` artifact was not read, so no cause is confirmed.
 
-- **No free Pin after 10 copies.** `pins.spec.ts:345`, repeat 9: "No Pin is in the free area". A probable cause: each copy of "Add a pin here" turns one free Pin into a count marker, and `pickPin` also skips each Pin within 24 px of a marker. The log does not prove this cause. The build fixes it (see Deviations); the `pins-repeat` run shows if it holds.
-- **Dates may not be enough.** If the run still fails, a Pin of another spec is at the same point and date. A fix needs a change to `emptyPoint`.
+- **No free Pin after 10 copies.** `pins.spec.ts:345`, repeat 9: "No Pin is in the free area". A probable cause: each copy of "Add a pin here" turns one free Pin into a count marker, and `pickPin` also skips each Pin within 24 px of a marker. The log does not prove this cause. The build fixes it (see Deviations). The `pins-repeat` run 45456883366 passed.
+- **Dates may not be enough.** If a later run fails, a Pin of another spec is at the same point and date. A fix needs a change to `emptyPoint`.
 - **No count marker after 20 s.** `pins.spec.ts:460` (phone), repeat 5: no `.maplibregl-marker` after `FIRST_DRAW`. The log shows no server error and no cause. Likelihood: low, 1 of 20 copies. Cost of a fix: unknown until the screenshot shows if the map drew Pins.
 
 ## Proof
 
 | Acceptance check                                 | Proven by                                                                         |
 | ------------------------------------------------ | --------------------------------------------------------------------------------- |
-| 1. 10 repeats with 3 workers pass                | The `pins-repeat` run of step 5, linked in the PR                                 |
+| 1. 10 repeats with 3 workers pass                | The `pins-repeat` run 45456883366 (all 418 tests passed), linked in the PR        |
 | 2. `no-store.test.ts` under 2.5 s                | The file time in the `test` job log of the PR                                     |
 | 3. 20 `main` runs pass                           | The tech lead's check after the merge (Risks)                                     |
 | Must not break 1: #1025 limits                   | `scripts/__tests__/playwright-failures.test.ts`, unchanged                        |

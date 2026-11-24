@@ -58,12 +58,8 @@ export type Layer = {
 /** A group of the Layers panel: the id of a `PANEL_GROUPS` entry. */
 export type LayerGroupId = 'boundaries' | 'pins';
 
-/** A layer's key: in the `visible` record and, with `-help`, in its panel row's DOM ids. */
+/** A layer's key: in the `visible` record and as the React key of its panel row. */
 export type LayerId = string;
-
-/** A row of the `Legend`: the line of a recorded border, the dashed line, the hatch, the halo and the Event glyphs. */
-export type LegendRow =
-  'approximate' | 'border' | 'contested' | 'events' | 'uncertain';
 
 /** What `MapShell` calls to drive the map from the zoom card. */
 export type MapHandle = {

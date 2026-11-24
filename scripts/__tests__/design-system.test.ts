@@ -5,9 +5,11 @@ import {
   readdirSync,
   readFileSync,
   rmSync,
+  writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import ts from 'typescript';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import type { SystemTokens } from '@ks/lib/design/types.ts';
@@ -26,7 +28,7 @@ import {
   VENDOR,
 } from '@ks/lib/design/cards.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
-import { logoInline, run } from '@ks/scripts/design-system.mts';
+import { logoInline, propsParameter, run } from '@ks/scripts/design-system.mts';
 
 let first: string;
 let second: string;
@@ -415,5 +417,42 @@ describe('the output folder', () => {
         encoding: 'utf8',
       }).trim()
     ).toBe('');
+  });
+});
+
+describe('propsParameter', () => {
+  const signatureOf = (code: string): ts.Signature => {
+    const dir = mkdtempSync(join(tmpdir(), 'props-parameter-'));
+    const file = join(dir, 'Control.ts');
+
+    writeFileSync(file, code);
+
+    const program = ts.createProgram([file], { strict: true });
+    const checker = program.getTypeChecker();
+    const source = program.getSourceFile(file)!;
+    const control = checker
+      .getExportsOfModule(checker.getSymbolAtLocation(source)!)
+      .find(each => each.name === 'Control')!;
+
+    rmSync(dir, { force: true, recursive: true });
+
+    return checker
+      .getTypeOfSymbolAtLocation(control, source)
+      .getCallSignatures()[0];
+  };
+
+  it('gives the props parameter of a control', () => {
+    const parameter = propsParameter(
+      signatureOf('export const Control = (props: { a: string }) => props.a;'),
+      'Control'
+    );
+
+    expect(parameter.name).toBe('props');
+  });
+
+  it('names a control that takes no props', () => {
+    expect(() =>
+      propsParameter(signatureOf("export const Control = () => 'x';"), 'Legend')
+    ).toThrow('Legend takes no props: its card needs a props table');
   });
 });

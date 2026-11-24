@@ -29,7 +29,7 @@ describe('polityLayer', () => {
     expect(filters['polity-labels']).toEqual(dateFilter(day, 'label'));
   });
 
-  it('names its panel row and keeps the ids the row has always had', () => {
+  it('names and describes its panel row, and keeps its layer id', () => {
     expect(polityLayer.label).toBe('Polities');
     expect(polityLayer.description).toBe(
       'Fills, borders and names of the Polities on the Map date.'

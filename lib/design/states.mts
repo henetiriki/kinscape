@@ -34,6 +34,7 @@ import {
   TWELVE_PINS,
 } from '#ks/lib/design/samples.mts';
 import { EVENT_TYPES } from '#ks/lib/domain/pins/schemas.mts';
+import { DRAWN_LEGEND_ROWS } from '#ks/lib/ui/legend.mts';
 
 const FOCUS = ['active', 'focus', 'hover'] as const;
 const TABS = [
@@ -1002,9 +1003,7 @@ export const CARDS: Card[] = [
     pad: 0,
     states: [
       one('Legend · default', {}),
-      one('Legend · drawn marks', {
-        rows: ['border', 'approximate', 'events'],
-      }),
+      one('Legend · drawn marks', { rows: DRAWN_LEGEND_ROWS }),
     ],
   },
   {

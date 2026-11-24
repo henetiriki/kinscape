@@ -140,10 +140,8 @@ export type Layer = {
 };
 /** A group of the Layers panel: the id of a `PANEL_GROUPS` entry. */
 export type LayerGroupId = 'boundaries' | 'pins';
-/** A layer's key: in the `visible` record and, with `-help`, in its panel row's DOM ids. */
+/** A layer's key: in the `visible` record and as the React key of its panel row. */
 export type LayerId = string;
-/** A row of the `Legend`: the line of a recorded border, the dashed line, the hatch, the halo and the Event glyphs. */
-export type LegendRow = 'approximate' | 'border' | 'contested' | 'events' | 'uncertain';
 /** What `MapShell` calls to drive the map from the zoom card. */
 export type MapHandle = {
     fit: () => void;
@@ -366,6 +364,11 @@ export type Validity = {
     validTo: Day | null;
 };
 
+/** The rows of the Legend, in the order it draws them. */
+declare const LEGEND_ROWS: readonly ["border", "approximate", "contested", "uncertain", "events"];
+/** The rows for the marks the live map draws. BND-04 and EXP-02 add `contested` and `uncertain`. */
+declare const DRAWN_LEGEND_ROWS: LegendRow[];
+
 export type ContestedYears = {
     from: number;
     to: number;
@@ -375,6 +378,8 @@ export type Epoch = {
     year: number;
 };
 export type EventType = keyof typeof EVENT_PATHS;
+/** A row of the Legend: the recorded border, the dashed border, the hatch, the halo or the Event glyphs. */
+export type LegendRow = (typeof LEGEND_ROWS)[number];
 
 type Base = {
     /** Fills the width of its container. */
@@ -837,8 +842,8 @@ export type DateDockProps = Parameters<typeof DateDock>[0];
  * swatches are decoration. `rows` lists the rows to draw, and the default is all of them. The live
  * map lists only the marks it draws.
  */
-export declare const Legend: ({ rows }: {
-    rows?: LegendRow[];
+export declare const Legend: ({ rows, }: {
+    rows?: readonly LegendRow[];
 }) => import("react").JSX.Element;
 export type LegendProps = Parameters<typeof Legend>[0];
 

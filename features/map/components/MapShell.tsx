@@ -31,6 +31,7 @@ import { Credits } from '@ks/features/map/components/Credits';
 import { DateDock } from '@ks/features/map/components/DateDock';
 import { LayersBody } from '@ks/features/map/components/LayersBody';
 import { LayersButton } from '@ks/features/map/components/LayersButton';
+import { Legend } from '@ks/features/map/components/Legend';
 import { MapView } from '@ks/features/map/components/MapView';
 import { Panel } from '@ks/features/map/components/Panel';
 import { SourcesDialog } from '@ks/features/map/components/SourcesDialog';
@@ -40,6 +41,7 @@ import { polityLayer } from '@ks/features/map/layers/polities';
 import { hasBorders } from '@ks/lib/domain/map/coverage.mts';
 import { todayDay, yearOf } from '@ks/lib/domain/map/map-date.mts';
 import { isCurrentOn } from '@ks/lib/domain/validity/validity.mts';
+import { DRAWN_LEGEND_ROWS } from '@ks/lib/ui/legend.mts';
 
 import styles from '@ks/features/map/components/MapShell.module.css';
 
@@ -286,10 +288,14 @@ const Account = ({ phone, props, state }: PartArgs) => (
   />
 );
 
-/** The desktop panel: one tab, "Layers", over the groups and the legend. */
+/** The legend of the marks that the map draws. */
+const DrawnLegend = () => <Legend rows={DRAWN_LEGEND_ROWS} />;
+
+/** The desktop panel: one tab, "Layers", over the groups, and the legend at the end. */
 const LayersTab = (props: LayerProps) => (
   <Panel
     bodyId={LAYERS_BODY_ID}
+    end={<DrawnLegend />}
     label='Layers'
     selected='layers'
     tabs={LAYERS_TABS}>
@@ -383,6 +389,7 @@ export const MapShell = (props: ShellProps) => {
           open={state.showLayers}
           title='Layers'>
           <LayersBody {...layerProps} />
+          <DrawnLegend />
         </Sheet>
       )}
       <SourcesDialog

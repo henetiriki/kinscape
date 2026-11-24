@@ -32,7 +32,7 @@ const headings = () =>
 it('draws the group Boundaries with "Polities", then the group Pins with "Pins"', () => {
   renderBody();
 
-  expect(headings()).toEqual(['Boundaries', 'Pins', 'Reading the map']);
+  expect(headings()).toEqual(['Boundaries', 'Pins']);
   within(screen.getByRole('group', { name: 'Boundaries' })).getByRole(
     'checkbox',
     { name: 'Polities' }
@@ -47,7 +47,7 @@ it('draws the group Boundaries with "Polities", then the group Pins with "Pins"'
 it('puts the groups in the order of the panel, not the order of the layers', () => {
   renderBody({ layers: [pinsLayer([]), polityLayer] });
 
-  expect(headings()).toEqual(['Boundaries', 'Pins', 'Reading the map']);
+  expect(headings()).toEqual(['Boundaries', 'Pins']);
 });
 
 it('leaves out a group that holds no layer', () => {
@@ -112,19 +112,4 @@ it('describes a row with the text a layer gives for the Map date, and again when
     description: 'Day 9 is on the map',
     name: 'Test layer',
   });
-});
-
-// MAP-05
-it('ends with the legend of the marks the map draws', () => {
-  renderBody();
-
-  screen.getByRole('heading', { level: 3, name: 'Reading the map' });
-  screen.getByText('Border as recorded');
-  screen.getByText('Approximate border');
-  for (const name of ['Birth', 'Residence', 'Marriage', 'Death']) {
-    screen.getByText(name);
-  }
-
-  expect(screen.queryByText('Contested claim')).toBeNull();
-  expect(screen.queryByText(/Uncertain date/)).toBeNull();
 });

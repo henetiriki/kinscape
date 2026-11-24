@@ -6,7 +6,7 @@
 
 ## Approach
 
-A new `LayersBody` draws the two `LayerGroup` groups and the short `Legend`. `MapShell` mounts it in `Panel` on a desktop and in the Layers `Sheet` on a phone. Each `Layer` gets a `group` id. A `PANEL_GROUPS` constant gives each group its heading and row size, in panel order. `Legend` gets a `rows` prop; the live map passes the rows that it draws. `LayersPanel` goes. The polity layer name becomes "Polities" in code, data and tests (#1057 D3, D12).
+A new `LayersBody` draws the two `LayerGroup` groups. `MapShell` mounts it in `Panel` on a desktop, with the short `Legend` in the `end` slot, and in the Layers `Sheet` on a phone, with the `Legend` below it. Each `Layer` gets a `group` id. A `PANEL_GROUPS` constant gives each group its heading and row size, in panel order. `Legend` gets a `rows` prop; the live map passes the rows that it draws. `LayersPanel` goes. The polity layer name becomes "Polities" in code, data and tests (#1057 D3, D12).
 
 ## Components
 
@@ -14,7 +14,7 @@ A new `LayersBody` draws the two `LayerGroup` groups and the short `Legend`. `Ma
 | --------------------------- | ------------------------------------------------------------------------------ |
 | Side panel, tab head        | `Panel` (`features/map/components/`), with `Tabs`                              |
 | Group heading and rows      | `LayerGroup` (`features/map/components/`)                                      |
-| Legend                      | `Legend` (`features/map/components/`), new `rows` prop                         |
+| Legend                      | `Legend` (`features/map/components/`), new `rows` prop, in `Panel` `end`       |
 | Phone Layers sheet          | `Sheet` (`app/components/overlays/`)                                           |
 | Body of the panel and sheet | `LayersBody` (`features/map/components/`), new: app composition, not a control |
 
@@ -70,9 +70,27 @@ A new `LayersBody` draws the two `LayerGroup` groups and the short `Legend`. `Ma
 
 `Legend` takes a prop, so `scripts/__tests__/design-system.test.ts` ("`Legend` takes no prop") fails. The no-props branch of `scripts/design-system.mts` is dead, so coverage falls under 100%.
 
-- **A.** Change the test to expect a props table for each control. Remove the dead branch. Cost: a small change to a script.
+- **A.** Change the test to expect a props table for each control. Remove the dead branch. Add `propsParameter`, which fails by name for a control with no props (the tech lead chose to build this unlikely-case guard). Cost: a small change to a script.
 - ~~**B.** Change the test. Keep the branch under `v8 ignore`. Cost: an ignore comment.~~
 - ~~**C.** Leave both red. Cost: CI fails.~~
+- ~~**Other:** your own.~~
+
+**Answer: A** (Tech lead)
+
+**D7 · The row ids of the Layers panel (reverses [AR.13 D1](AR.13-layer-visibility.md))** · Decides: Tech lead
+
+AR.13 D1 kept the DOM ids `polity-borders` and `polity-borders-help`. `LayerGroup` and `CheckboxField` make their ids with `useId()`, so the ids go. No code or test reads them. AR.13 and item 3 of `docs/architecture-target.md` also give each layer a `legendRow`. D2 of this plan gives the live map a list of rows instead.
+
+- **A.** Drop the ids. Delete item 3 of `docs/architecture-target.md`. Cost: none known.
+- ~~**B.** Keep the ids: pass an `id` through `LayerGroup` to `CheckboxField`. Cost: a change to two shared controls and a new design system cycle.~~
+- ~~**Other:** your own.~~
+
+**Answer: A** (Tech lead)
+
+**D8 · Where the list of legend rows lives** · Decides: Tech lead
+
+- **A.** `lib/ui/legend.mts` holds `LEGEND_ROWS` and `DRAWN_LEGEND_ROWS`. `LegendRow` is in `lib/ui/types.ts`. `Legend`, `MapShell`, `states.mts` and the React 18 case import them. Cost: one new file.
+- ~~**B.** `groups.ts` holds the drawn rows, and the card keeps its own list. Cost: the card can drift from the live map.~~
 - ~~**Other:** your own.~~
 
 **Answer: A** (Tech lead)
@@ -84,37 +102,41 @@ A new `LayersBody` draws the two `LayerGroup` groups and the short `Legend`. `Ma
 
 ## Files that change
 
-| File                                                                                                                                 | New / changed | What                                                                                                                                |
-| ------------------------------------------------------------------------------------------------------------------------------------ | ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `features/map/types.ts`                                                                                                              | changed       | `LayerGroupId`, `group` on `Layer`, `LegendRow`                                                                                     |
-| `features/map/groups.ts`                                                                                                             | new           | `PANEL_GROUPS`: id, heading, row size                                                                                               |
-| `features/map/layers/polities.ts`                                                                                                    | changed       | `group: 'boundaries'`, `label: 'Polities'`, doc comment                                                                             |
-| `features/map/layers/pins.ts`                                                                                                        | changed       | `group: 'pins'`                                                                                                                     |
-| `features/map/components/LayersBody.tsx`                                                                                             | new           | Groups the layers by `PANEL_GROUPS`; one `LayerGroup` each with rows; `Legend` with the drawn rows                                  |
-| `features/map/components/MapShell.tsx`                                                                                               | changed       | Desktop: `Panel` (label "Layers", one tab, `bodyId`) around `LayersBody`; phone `Sheet` holds `LayersBody`; `panel` prop still wins |
-| `features/map/components/Legend.tsx`                                                                                                 | changed       | `rows` prop; each row draws only if listed                                                                                          |
-| `features/map/components/Credits.tsx`                                                                                                | changed       | `POLITY_LAYER = 'Polities'`                                                                                                         |
-| `data/sources.json`                                                                                                                  | changed       | Each `"layer": "Polity borders"` → `"Polities"`                                                                                     |
-| `features/map/components/LayersPanel.tsx`, `.module.css`                                                                             | removed       | No user left                                                                                                                        |
-| `features/map/components/__tests__/LayersPanel.test.tsx`                                                                             | removed       | Its cases move to `LayersBody.test.tsx`                                                                                             |
-| `features/map/components/__tests__/LayersBody.test.tsx`                                                                              | new           | Group order, headings, rows, help text for the Map date, toggles, the short legend (MAP-05)                                         |
-| `features/map/components/__tests__/Legend.test.tsx`                                                                                  | changed       | `rows` hides unlisted rows; the default shows all                                                                                   |
-| `features/map/components/__tests__/MapShell.test.tsx`                                                                                | changed       | "Polities" names; panel has one tab "Layers"; phone sheet has groups and no tab list; `panel` prop replaces `Panel`                 |
-| `features/map/components/__tests__/Credits.test.tsx`                                                                                 | changed       | "Polities"                                                                                                                          |
-| `features/map/__tests__/style.test.ts`, `features/map/__tests__/test-layer.ts`, `features/map/components/__tests__/MapView.test.tsx` | changed       | Each test `Layer` has a `group`                                                                                                     |
-| `features/map/__tests__/layers.test.ts`                                                                                              | changed       | Label "Polities", `group` of each layer                                                                                             |
-| `app/@map/__tests__/MapWithPins.test.tsx`                                                                                            | changed       | Test name and label "Polities"                                                                                                      |
-| `app/components/__tests__/onSurface.test.tsx`                                                                                        | changed       | Row for `LayersPanel.module.css` → `Panel.module.css` `.panel`                                                                      |
-| `lib/design/__tests__/design.test.ts`                                                                                                | changed       | Drop the `LayersPanel.module.css` literal row                                                                                       |
-| `lib/design/off-token-sizes.json`                                                                                                    | changed       | Drop the `LayersPanel.module.css` entry                                                                                             |
-| `lib/design/states.mts`                                                                                                              | changed       | State `Legend · drawn marks` with `rows`                                                                                            |
-| `lib/design/__tests__/react-18-cases.tsx`                                                                                            | changed       | Case for the new state                                                                                                              |
-| `e2e/smoke.spec.ts`, `e2e/date-dock.spec.ts`, `e2e/design.spec.ts`, `e2e/map-desktop.spec.ts`, `e2e/map-phone.spec.ts`               | changed       | Checkbox name "Polities"; desktop panel structure; phone sheet groups                                                               |
-| `e2e/fixture-pins.spec.ts`                                                                                                           | changed       | Pins row off hides the Pins, on shows them                                                                                          |
-| `e2e/gallery-looks.spec.ts`                                                                                                          | changed       | The new Legend state draws no hatch and no halo                                                                                     |
-| `design/canvas/project/{Map,Map-phone-states,Map-credits-narrow}.dc.html`                                                            | changed       | `SOURCES` rows: layer "Polities" (D5)                                                                                               |
-| `scripts/__tests__/design-system.test.ts`, `scripts/design-system.mts`                                                               | changed       | Each control has a props table; the no-props branch goes (D6)                                                                       |
-| `design/canvas/project/ds/**`                                                                                                        | changed       | Steps 2 to 5 of Changing the design system (generated)                                                                              |
+| File                                                                                                                                 | New / changed | What                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `features/map/types.ts`                                                                                                              | changed       | `LayerGroupId`, `group` on `Layer`                                                                                                                                          |
+| `features/map/groups.ts`                                                                                                             | new           | `PANEL_GROUPS`: id, heading, row size                                                                                                                                       |
+| `features/map/layers/polities.ts`                                                                                                    | changed       | `group: 'boundaries'`, `label: 'Polities'`, doc comment                                                                                                                     |
+| `features/map/layers/pins.ts`                                                                                                        | changed       | `group: 'pins'`                                                                                                                                                             |
+| `features/map/components/LayersBody.tsx`                                                                                             | new           | Groups the layers by `PANEL_GROUPS`; one `LayerGroup` each with rows                                                                                                        |
+| `features/map/components/MapShell.tsx`                                                                                               | changed       | Desktop: `Panel` (label "Layers", one tab, `bodyId`, the `Legend` in `end`) around `LayersBody`; phone `Sheet` holds `LayersBody` and the `Legend`; `panel` prop still wins |
+| `features/map/components/Legend.tsx`                                                                                                 | changed       | `rows` prop; each row draws only if listed                                                                                                                                  |
+| `features/map/components/Credits.tsx`                                                                                                | changed       | `POLITY_LAYER = 'Polities'`                                                                                                                                                 |
+| `data/sources.json`                                                                                                                  | changed       | Each `"layer": "Polity borders"` → `"Polities"`                                                                                                                             |
+| `features/map/components/LayersPanel.tsx`, `.module.css`                                                                             | removed       | No user left                                                                                                                                                                |
+| `features/map/components/__tests__/LayersPanel.test.tsx`                                                                             | removed       | Its cases move to `LayersBody.test.tsx`                                                                                                                                     |
+| `features/map/components/__tests__/LayersBody.test.tsx`                                                                              | new           | Group order, headings, rows, help text for the Map date, toggles (MAP-05)                                                                                                   |
+| `features/map/components/__tests__/Legend.test.tsx`                                                                                  | changed       | `rows` hides unlisted rows; the default shows all                                                                                                                           |
+| `features/map/components/__tests__/MapShell.test.tsx`                                                                                | changed       | "Polities" names; panel has one tab "Layers"; phone sheet has groups and no tab list; `panel` prop replaces `Panel`                                                         |
+| `features/map/components/__tests__/Credits.test.tsx`                                                                                 | changed       | "Polities"                                                                                                                                                                  |
+| `features/map/__tests__/style.test.ts`, `features/map/__tests__/test-layer.ts`, `features/map/components/__tests__/MapView.test.tsx` | changed       | Each test `Layer` has a `group`                                                                                                                                             |
+| `features/map/__tests__/layers.test.ts`                                                                                              | changed       | Label "Polities", `group` of each layer                                                                                                                                     |
+| `app/@map/__tests__/MapWithPins.test.tsx`                                                                                            | changed       | Test name and label "Polities"                                                                                                                                              |
+| `app/components/__tests__/onSurface.test.tsx`                                                                                        | changed       | Row for `LayersPanel.module.css` → `Panel.module.css` `.panel`                                                                                                              |
+| `lib/design/__tests__/design.test.ts`                                                                                                | changed       | Drop the `LayersPanel.module.css` literal row                                                                                                                               |
+| `lib/design/off-token-sizes.json`                                                                                                    | changed       | Drop the `LayersPanel.module.css` entry                                                                                                                                     |
+| `lib/ui/legend.mts`                                                                                                                  | new           | `LEGEND_ROWS`, `DRAWN_LEGEND_ROWS` (D8)                                                                                                                                     |
+| `lib/ui/types.ts`                                                                                                                    | changed       | `LegendRow` (D8)                                                                                                                                                            |
+| `app/components/__tests__/hover.test.ts`                                                                                             | changed       | Stylesheet count 77 → 76: `LayersPanel.module.css` goes and no new one comes                                                                                                |
+| `docs/architecture-target.md`                                                                                                        | changed       | Delete item 3, `legendRow` (D7)                                                                                                                                             |
+| `lib/design/states.mts`                                                                                                              | changed       | State `Legend · drawn marks` with `rows`                                                                                                                                    |
+| `lib/design/__tests__/react-18-cases.tsx`                                                                                            | changed       | Case for the new state                                                                                                                                                      |
+| `e2e/smoke.spec.ts`, `e2e/date-dock.spec.ts`, `e2e/design.spec.ts`, `e2e/map-desktop.spec.ts`, `e2e/map-phone.spec.ts`               | changed       | Checkbox name "Polities"; desktop panel structure; phone sheet groups                                                                                                       |
+| `e2e/fixture-pins.spec.ts`                                                                                                           | changed       | Pins row off hides the Pins, on shows them                                                                                                                                  |
+| `e2e/gallery-looks.spec.ts`                                                                                                          | changed       | The new Legend state draws no hatch and no halo                                                                                                                             |
+| `design/canvas/project/{Map,Map-phone-states,Map-credits-narrow}.dc.html`                                                            | changed       | `SOURCES` rows: layer "Polities" (D5)                                                                                                                                       |
+| `scripts/__tests__/design-system.test.ts`, `scripts/design-system.mts`                                                               | changed       | Each control has a props table; the no-props branch goes; `propsParameter` and its test (D6)                                                                                |
+| `design/canvas/project/ds/**`                                                                                                        | changed       | Steps 2 to 5 of Changing the design system (generated)                                                                                                                      |
 
 ## Order of work
 
@@ -167,4 +189,5 @@ A new `LayersBody` draws the two `LayerGroup` groups and the short `Legend`. `Ma
 - Big: D6 edits `scripts/__tests__/design-system.test.ts` and `scripts/design-system.mts`, which the plan did not list.
 - `app/screens/map-frame.tsx`: its local `LayersPanel` is now `BoardPanel`, so no file names `LayersPanel` (check 10).
 - `features/map/__tests__/style.test.ts` and `MapView.test.tsx`: each test `Layer` has a `group`.
-- `LayersBody` leaves out a group that has no layer. `LayersBody.module.css` puts the legend at the bottom edge, as the `end` slot of `Panel` does.
+- `LayersBody` leaves out a group that has no layer.
+- Review of #1220: the legend moves out of `LayersBody` into `Panel` `end` and below the groups in the sheet, so no stylesheet copies the `end` rule. The row list moves to `lib/ui/legend.mts` (D8). The row DOM ids go (D7).

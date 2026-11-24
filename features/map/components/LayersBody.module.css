@@ -1,4 +1,0 @@
-/* In the panel body the legend sits at the bottom edge, as the `end` slot of Panel places it. */
-.legend {
-  margin-top: auto;
-}

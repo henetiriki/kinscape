@@ -4,4 +4,4 @@
 
 | Prop | Type | Required | Description |
 | --- | --- | --- | --- |
-| `rows` | `LegendRow[]` | no |  |
+| `rows` | `readonly ("border" \| "approximate" \| "contested" \| "uncertain" \| "events")[]` | no |  |

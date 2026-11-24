@@ -148,6 +148,20 @@ const typeText = (
         .replace(/ \| undefined$/, '');
 };
 
+/** The props parameter of a control. A control with no props has no card props table, so it fails by name. */
+export const propsParameter = (
+  signature: ts.Signature,
+  name: string
+): ts.Symbol => {
+  const [parameter] = signature.getParameters();
+
+  if (!parameter) {
+    throw new Error(`${name} takes no props: its card needs a props table`);
+  }
+
+  return parameter;
+};
+
 /**
  * A control's JSDoc summary and the props its source declares. Props it takes from its HTML
  * element (declared under `node_modules`) are left out, and `rest` says there were some.
@@ -165,7 +179,7 @@ const describeControl = (
   const [signature] = checker
     .getTypeOfSymbolAtLocation(symbol, file)
     .getCallSignatures();
-  const [parameter] = signature.getParameters();
+  const parameter = propsParameter(signature, name);
   const parameterType = checker.getTypeOfSymbolAtLocation(parameter, file);
   const all = checker.getPropertiesOfType(parameterType);
   const isOwn = (prop: ts.Symbol): boolean =>

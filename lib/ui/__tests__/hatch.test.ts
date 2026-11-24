@@ -1,10 +1,7 @@
 import { expect, it } from 'vitest';
 
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { map } from '@ks/design/tokens.generated.ts';
 import { hatchStyle } from '@ks/lib/ui/hatch';
-
-const { map } = resolveTokens(rawTokens);
 
 // BND-04
 it('writes the hatch stripe as an rgba() colour built from map.hatch', () => {

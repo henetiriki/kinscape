@@ -3,11 +3,11 @@
 import { useEffect } from 'react';
 
 import { Icon } from '@ks/app/components/foundation/Icon';
-import rawTokens from '@ks/design/tokens.json';
+import { motionMs } from '@ks/design/tokens.generated.ts';
 
 import styles from '@ks/app/components/feedback/Toast.module.css';
 
-const SUCCESS_MS = Number.parseInt(rawTokens.motion.toast, 10);
+const SUCCESS_MS = motionMs.toast;
 
 /**
  * The result of an action. A success toast asks to be removed after 4 seconds; an error stays until Esc,

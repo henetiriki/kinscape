@@ -11,8 +11,7 @@ import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { MapPin } from '@ks/lib/domain/pins/types.ts';
 import type { Validity } from '@ks/lib/domain/validity/types.ts';
 
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { map } from '@ks/design/tokens.generated.ts';
 import { PlaceMarker } from '@ks/features/map/components/PlaceMarker';
 import { spanFilter } from '@ks/features/map/filter';
 import { readFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date-text.mts';
@@ -24,9 +23,7 @@ import {
 import { isCurrentOn } from '@ks/lib/domain/validity/validity.mts';
 import { EVENT_ORDER, EVENT_PATHS } from '@ks/lib/ui/EventGlyph';
 
-// Every colour and width comes from the `map` section of design/tokens.json.
-const { map } = resolveTokens(rawTokens);
-
+// Every colour and width comes from the `map` export of design/tokens.generated.ts.
 /** A Pin draws at 22 px, as the glyphs of `map-pin-fan`; an icon image is 24 px wide. */
 const ICON_SIZE = 22 / 24;
 

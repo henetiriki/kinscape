@@ -1,12 +1,9 @@
 import type { CSSProperties, ReactNode } from 'react';
 
 import { Wordmark } from '@ks/app/components/foundation/Wordmark';
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { map } from '@ks/design/tokens.generated.ts';
 
 import styles from '@ks/app/components/layout/SignInLayout.module.css';
-
-const { map } = resolveTokens(rawTokens);
 
 const SEA = { '--auth-sea': map.sea } as CSSProperties;
 

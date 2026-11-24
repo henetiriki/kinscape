@@ -2,10 +2,10 @@
 
 import { useSyncExternalStore } from 'react';
 
-import rawTokens from '@ks/design/tokens.json';
+import { breakpoint } from '@ks/design/tokens.generated.ts';
 
 // Below 640 wide or below 500 tall is a phone (Intent 104).
-const { 'phone-height': height, 'phone-width': width } = rawTokens.breakpoint;
+const { 'phone-height': height, 'phone-width': width } = breakpoint;
 
 export const PHONE = `(max-width: ${width}), (max-height: ${height})`;
 

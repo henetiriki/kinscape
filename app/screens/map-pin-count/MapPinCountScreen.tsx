@@ -4,11 +4,8 @@ import type { ControlState } from '@ks/app/components/foundation/types';
 
 import { Text } from '@ks/app/components/foundation/Text';
 import { AtPoint, FARM, MapFrame } from '@ks/app/screens/map-frame';
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { map } from '@ks/design/tokens.generated.ts';
 import { CountMarker } from '@ks/features/map/components/CountMarker';
-
-const { map } = resolveTokens(rawTokens);
 
 /** The looks of the board's card, by caption. */
 const LOOKS: [string, { selected?: boolean; state?: ControlState }][] = [

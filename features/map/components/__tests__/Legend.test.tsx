@@ -1,12 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { map } from '@ks/design/tokens.generated.ts';
 import { Legend } from '@ks/features/map/components/Legend';
 import { HATCH_LINE } from '@ks/lib/ui/hatch';
-
-const { map } = resolveTokens(rawTokens);
 
 // MAP-05
 it('names its heading and the four meanings, then the four Event glyphs', () => {

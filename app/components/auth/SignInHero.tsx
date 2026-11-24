@@ -4,14 +4,11 @@ import { useId } from 'react';
 
 import { BORDERS, LAND, RIVERS } from '@ks/app/components/auth/signInHeroPaths';
 import { Text } from '@ks/app/components/foundation/Text';
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { colour, map } from '@ks/design/tokens.generated.ts';
 
 import styles from '@ks/app/components/auth/SignInHero.module.css';
 
-const { colour, map } = resolveTokens(rawTokens);
-
-/** The drawing's values, as the map draws them; the hero follows `map.*` in `tokens.json`. */
+/** The drawing's values, as the map draws them; the hero follows `map.*` in `tokens.generated.ts`. */
 export const HERO_VARS = {
   '--hero-border': map.border.colour,
   '--hero-border-width': `${map.border.width}px`,

@@ -24,8 +24,7 @@ it.each([OUTPUTS.css, OUTPUTS.json, OUTPUTS.ts])(
 );
 
 describe('design/tokens.generated.ts', () => {
-  const { notes: _notes, ...rest } = tokens;
-  const resolved = resolveTokens(rest);
+  const resolved = resolveTokens(tokens);
 
   it.each(Object.keys(resolved))(
     'holds the resolved value of each %s token',

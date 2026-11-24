@@ -1,27 +1,24 @@
 import type { ReactNode } from 'react';
 
 import { SLOTS } from '@ks/app/components/layout/slots.mts';
-import rawTokens from '@ks/design/tokens.json';
+import { layoutPx, sizePx } from '@ks/design/tokens.generated.ts';
 
 import styles from '@ks/app/components/layout/MapLayout.module.css';
-
-const { layout, size } = rawTokens;
-const px = (value: string) => Number.parseFloat(value);
 
 /** The free map area as map padding: what the `overlay` slot leaves, from the same tokens. */
 export const freeArea = (phone: boolean) =>
   phone
     ? {
-        bottom: px(layout.phone['sheet-collapsed']),
-        left: px(size['gutter-phone']),
-        right: px(size['gutter-phone']),
-        top: px(layout.phone['overlay-top']),
+        bottom: layoutPx.phone['sheet-collapsed'],
+        left: sizePx['gutter-phone'],
+        right: sizePx['gutter-phone'],
+        top: layoutPx.phone['overlay-top'],
       }
     : {
-        bottom: px(layout['furniture-bottom']) + px(layout['dock-height']),
-        left: px(layout['dock-left']),
-        right: px(size.gutter),
-        top: px(layout['furniture-top']),
+        bottom: layoutPx['furniture-bottom'] + layoutPx['dock-height'],
+        left: layoutPx['dock-left'],
+        right: sizePx.gutter,
+        top: layoutPx['furniture-top'],
       };
 
 /** The interface declares each slot and does not map `SLOTS`: the design system reads the props from their declarations. */

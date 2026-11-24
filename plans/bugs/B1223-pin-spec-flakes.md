@@ -67,7 +67,7 @@ Must not break 2 keeps each assertion. With `--repeat-each=10`, three copies of 
 | `scripts/__tests__/seed-ci.test.ts` | changed                | Expects 9,950 Pins and `MAX_PINS - SEED.pins` of 50 (D1)                                                                  |
 | `e2e/map-points.ts`                 | changed                | `FIRST_DRAW` (D5); a slot helper; `pickPin` takes a slot from the end (D6)                                                |
 | `e2e/pins.spec.ts`                  | changed                | `SEEDED` is 9,950 and `ALL` takes `SEEDED` to `SEEDED + 49` (D1); first-draw waits (D5); the save test uses its slot (D6) |
-| `e2e/pin-edit.spec.ts`              | changed                | The start of `emptyPoint` per slot in both tests (D6); `test.slow()` on line 94 (D4)                                      |
+| `e2e/pin-edit.spec.ts`              | changed                | The start of `emptyPoint` per slot, and the dates per repeat, in both tests (D6); `test.slow()` on line 94 (D4)           |
 | `e2e/pin-form.spec.ts`              | changed                | The date window per slot (D6); `test.slow()` (D4); the comment on the room for Pins (D1)                                  |
 | `playwright.config.ts`              | changed, then reverted | The temporary `pins-repeat` project (D3)                                                                                  |
 
@@ -89,6 +89,7 @@ Must not break 2 keeps each assertion. With `--repeat-each=10`, three copies of 
 The `pins-repeat` run 45430643922 (attempt 2) had three more failures. The `e2e-failures` artifact was not read, so no cause is confirmed.
 
 - **No free Pin after 10 copies.** `pins.spec.ts:345`, repeat 9: "No Pin is in the free area". A probable cause: each copy of "Add a pin here" turns one free Pin into a count marker, and `pickPin` also skips each Pin within 24 px of a marker. The log does not prove this cause. The build fixes it (see Deviations); the `pins-repeat` run shows if it holds.
+- **Dates may not be enough.** If the run still fails, a Pin of another spec is at the same point and date. A fix needs a change to `emptyPoint`.
 - **A reset socket.** `pin-form.spec.ts:64`, repeat 9: `ECONNRESET` on the last `page.request.get('/data/pins')`. A probable cause is the keep-alive race: Node closes an idle socket after 5 s, and `page.request` sends on it at that moment. Likelihood: low, 1 of 20 copies. Cost of a fix: about 2 lines, for example a `Connection: close` header.
 - **No count marker after 20 s.** `pins.spec.ts:460` (phone), repeat 5: no `.maplibregl-marker` after `FIRST_DRAW`. The log shows no server error and no cause. Likelihood: low, 1 of 20 copies. Cost of a fix: unknown until the screenshot shows if the map drew Pins.
 
@@ -113,3 +114,4 @@ The `pins-repeat` run 45430643922 (attempt 2) had three more failures. The `e2e-
 - Step 1 did not occur: the build pushed the `pins-repeat` project and the fix together, so no failed run before the fix is linked.
 - The second test of `pin-edit.spec.ts` also starts `emptyPoint` per slot (`500 - 60 * slot()`). In run 45430643922 its copies saved on one Place. The tech lead approved this change.
 - The "Add a pin here" test takes its year from `repeatEachIndex` (1950 to 1959), for the Map date and the Pin date. A Pin that one repeat saves then does not show in the next repeat, so the free list does not run out. The tech lead asked for this fix in the PR comment.
+- Both tests of `pin-edit.spec.ts` take their dates from `repeatEachIndex`. In run 45445888818 a start per slot did not stop the stacking: `emptyPoint` can run before the map draws the Pins of earlier copies. The first test uses five years for each repeat (1960 to 2009), the second one year (1920 to 1929). The Boundary data starts in 1910, so no "No borders are mapped" card shows. `pins.spec.ts` uses 1950 to 1959 and `pin-form.spec.ts` 1780 to 1855. The tech lead approved this change. `emptyPoint` does not change.

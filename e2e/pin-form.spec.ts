@@ -89,18 +89,21 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
   await page.getByLabel('Date', { exact: true }).fill('FROM 1840 TO 1855');
   await page.getByLabel('Coordinates').fill('-33.93, 18.42');
 
-  // The reload after the save waits 3 s. The save writes its Pin to the cache first, so the caption
-  // counts it before the reload answers. `page.request` does not use this route.
+  // The reload after the save waits until the test releases it. The save writes its Pin to the cache
+  // first, so the caption counts it before the reload answers. No timer decides this, so a slow
+  // runner cannot end the wait early. `page.request` does not use this route.
+  const isPins = (url: URL) => url.pathname === '/data/pins';
   let reloadAnswered = false;
+  let release!: () => void;
+  const held = new Promise<void>(resolve => {
+    release = resolve;
+  });
 
-  await page.route(
-    url => url.pathname === '/data/pins',
-    async route => {
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      reloadAnswered = true;
-      await route.continue();
-    }
-  );
+  await page.route(isPins, async route => {
+    await held;
+    reloadAnswered = true;
+    await route.continue();
+  });
   await page.getByRole('button', { name: 'Save' }).click();
   await expect(page.getByRole('form', { name: 'Add a pin' })).toHaveCount(0);
 
@@ -117,6 +120,8 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
     .toBe(before.shown + 1);
   expect(reloadAnswered).toBe(false);
 
+  release();
+  await page.unroute(isPins);
   await page.reload();
   await goTo(page, '1850');
   await expect

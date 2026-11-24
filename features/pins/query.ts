@@ -38,8 +38,8 @@ export const usePins = () =>
 /**
  * A function that puts a saved Pin in the cached Pins, then loads the Pins again in the
  * background (PIN-01, PIN-02). With no cached Pins it writes nothing, so the cache never holds a
- * partial list. The reload marks each held `['pins', id]` query as stale. The query of the edit
- * fields stays out: its panel is still mounted, and a reload would ask again (NFR-10).
+ * partial list. The reload marks each held `['pins', id]` query as stale. The reload excludes the
+ * query of the edit fields: its panel is still mounted, and a reload asks again (NFR-10).
  */
 export const useWritePin = () => {
   const client = useQueryClient();
@@ -80,8 +80,8 @@ export const fetchPinDetails = (id: MapPin['id']): Promise<PinDetails> =>
   fetchPinsJson<PinDetails>(`/data/pins/${id}`);
 
 /**
- * The details of one Pin. The key starts with `['pins']`, so a reload of the Pins also marks each
- * held details query as stale. The answer stays in memory only (NFR-03).
+ * The details of one Pin. The key starts with `['pins']`, so a save marks each held details query
+ * as stale (`useWritePin`). The answer stays in memory only (NFR-03).
  */
 export const usePinDetails = (id: MapPin['id']) =>
   useQuery({

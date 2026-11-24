@@ -13,8 +13,8 @@ import { err, ok } from '@ks/lib/domain/result/result.mts';
 import { treeAction } from '@ks/server/action.mts';
 
 /**
- * The saved Pin as the map holds it. It reads the Person and the Place by id and builds the entry
- * with `spanOf` and `mapPins`, as `/data/pins` does, so the answer and the list cannot differ. A
+ * The saved Pin as the map holds it. It reads the Person and the Place by id. It builds the entry
+ * with `spanOf` and `mapPins`, as `/data/pins` does, so the answer and the list are equal. A
  * missing Person or Place gives `not-found`.
  */
 const mapPinOf = async (

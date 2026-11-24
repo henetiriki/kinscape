@@ -134,6 +134,6 @@ describe('run', () => {
     [['plan.md', '-x']],
   ])('prints usage for %j', args => {
     expect(run(root, args)).toBe(1);
-    expect(errors[0]).toMatch(/^Usage/);
+    expect(errors[0]).toMatch(/^Usage: plan:approve <plan file> /);
   });
 });

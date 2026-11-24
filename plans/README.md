@@ -59,7 +59,7 @@ After the tech lead approves the plan, the build agent does these steps:
 
 The title and the body describe the work that the PR merges now. Evidence is the exception ([test-first rule](BUILD.md#test-first)).
 
-**In a local session**, a plan that `agent-approve.mts` does not commit has `Status: approved` and the same commit text. A local Claude Code session hands the user `! npm run plan:new -- <n> <slug>`. A `gh` that a script starts fails in the sandbox.
+**In a local session**, a plan that `agent-approve.mts` does not commit has `Status: approved` and the same commit text. A local Claude Code session runs `npm run plan:new:local -- <n> <slug>` itself.
 
 ## Who builds
 

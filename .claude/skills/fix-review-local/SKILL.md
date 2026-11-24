@@ -18,8 +18,8 @@ Run the [shared steps](../build-local/SKILL.md#shared-steps) of `build-local`, w
 ## Overrides
 
 - Edit the file that a finding names, including the plan. Record a small departure under `## Deviations`.
-- Prefix each `npm run review:threads` command with `GH_REPO=<owner>/<repo>`. Get the value from `gh repo view --json nameWithOwner`.
-- Reply on a thread in one line. For a fixed thread, say what changed. Use `gh api graphql` with the `addPullRequestReviewThreadReply` mutation and the thread `id` that `list` prints.
+- Run `npm run review:threads:local` in place of `npm run review:threads` for `list`, `reply` and `resolve`. It needs `GH_TOKEN`.
+- Reply on a thread in one line. For a fixed thread, say what changed.
 - List the findings before you change a file.
 - Ask the tech lead about each finding of these kinds:
   - a finding that you would judge wrong;

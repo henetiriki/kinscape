@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 
 import type { Approval } from '#ks/scripts/types.ts';
 
-// Usage: npm run plan-approve -- <plan file> <reviewer login> D1=A "D2=other: <text>"
+// Usage: npm run plan:approve -- <plan file> <reviewer login> D1=A "D2=other: <text>"
 const LOGIN = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
 
 type Answer = { id: string; text: string };
@@ -144,7 +144,7 @@ export const run = (root: string, args: string[]): number => {
 
   if (!file || !login || !LOGIN.test(login)) {
     console.error(
-      'Usage: plan-approve <plan file> <reviewer login> [D<n>=<letter> | "D<n>=other: <text>"]...'
+      'Usage: plan:approve <plan file> <reviewer login> [D<n>=<letter> | "D<n>=other: <text>"]...'
     );
 
     return 1;

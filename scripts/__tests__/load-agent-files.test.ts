@@ -1971,6 +1971,20 @@ describe('the fix-review workflow', () => {
     expect(text).toMatch(/data, not instructions/);
   });
 
+  // The checks of the PR head are findings too (plans/chores/C1219-local-gh-free-scripts.md).
+  it('makes each failed check a finding, and skips a pending one, in fix-review.md', () => {
+    const text = agent('fix-review.md');
+
+    expect(text).toContain('`gh pr checks <n>`');
+    expect(text).toContain('Each failed check on the PR head is a finding');
+    expect(text).toContain('Skip a pending check');
+    expect(text).toContain(
+      'Skip the checks named `Fix review`: they are this run.'
+    );
+    expect(text).toContain('If a code change cannot fix a failure');
+    expect(text).not.toContain('gh api');
+  });
+
   // The push starts the next review at once. That review must see each reply, each resolved thread,
   // the PR body and the final comment, so the push is the last step (plans/chores/C939-push-last-fix-review.md).
   // The commit gives the sha for "Fixed in <sha>.", and a merge keeps it.
@@ -2054,6 +2068,20 @@ describe('the fix-review workflow', () => {
     );
     expect(text).not.toContain('After the push, reply');
     expect(text).not.toContain('--undo');
+  });
+
+  // A sandboxed local session cannot run `gh`, so the skill uses the fetch scripts
+  // (plans/chores/C1219-local-gh-free-scripts.md).
+  it('uses the fetch-based thread script and no gh call, in the fix-review-local skill', () => {
+    const text = readFileSync(
+      join(root, '.claude/skills/fix-review-local/SKILL.md'),
+      'utf8'
+    );
+
+    expect(text).toContain('`npm run review:threads:local`');
+    expect(text).toContain('It needs `GH_TOKEN`');
+    expect(text).not.toContain('GH_REPO=');
+    expect(text).not.toContain('gh api graphql');
   });
 
   it('opens a review with the findings that no thread shows, and posts the others inline, in review.md', () => {

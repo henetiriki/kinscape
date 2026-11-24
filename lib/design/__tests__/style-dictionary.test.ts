@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import { buildTokens } from '@ks/lib/design/style-dictionary.mts';
 
-const OUT = { css: 'out/tokens.css', json: 'out/tokens.json' };
+const OUT = {
+  css: 'out/tokens.css',
+  json: 'out/tokens.json',
+  ts: 'out/tokens.generated.ts',
+};
 const px = (value: number) => ({ unit: 'px', value });
 const colour = (hex: string, alpha?: number) => ({
   colorSpace: 'srgb',
@@ -116,6 +120,60 @@ describe('buildTokens', () => {
     const { notes } = JSON.parse((await buildTokens(tokens, OUT))[OUT.json]);
 
     expect(Object.keys(notes)).toEqual(['colour', 'map', 'type']);
+  });
+
+  describe('the TypeScript module', () => {
+    const build = async () => (await buildTokens(tokens, OUT))[OUT.ts];
+
+    it('starts with one header line', async () => {
+      expect((await build()).split('\n')[0]).toBe(
+        '// Generated from design/kinscape.tokens.json by `npm run tokens`. Do not edit.'
+      );
+    });
+
+    it('exports one `as const` object for each group, in file order, with no notes', async () => {
+      const names = [...(await build()).matchAll(/^export const (\w+) = /gm)];
+
+      expect(names.map(([, name]) => name)).toEqual([
+        'colour',
+        'font',
+        'map',
+        'type',
+        'typePx',
+        'z',
+      ]);
+      expect(await build()).not.toContain('notes');
+      expect(await build()).toContain('} as const;');
+    });
+
+    it('holds resolved values in the shape of the token tree', async () => {
+      const text = await build();
+
+      expect(text).toContain('"focus": "#264f29"');
+      expect(text).toContain('"colour": "#9a3b12"');
+      expect(text).toContain('"font": "\'Public Sans\', system-ui"');
+      expect(text).toContain('"blur": 0.8');
+      expect(text).toContain('"weight": "400"');
+      expect(text).toContain('"menu": "10"');
+      expect(text).not.toContain('{colour');
+    });
+
+    it('holds each px length as a number in a second export, and each ms duration in motionMs', async () => {
+      const withMotion = {
+        ...tokens,
+        motion: {
+          press: { $type: 'duration', $value: { unit: 'ms', value: 120 } },
+        },
+      };
+      const text = (await buildTokens(withMotion, OUT))[OUT.ts];
+
+      expect(text).toContain(
+        'export const typePx = {\n  "body": {\n    "size": 15\n  }\n} as const;'
+      );
+      expect(text).toContain(
+        'export const motionMs = {\n  "press": 120\n} as const;'
+      );
+    });
   });
 
   it('ends the JSON with a newline, in two-space indent', async () => {

@@ -7,7 +7,11 @@ import { buildTokens } from '#ks/lib/design/style-dictionary.mts';
 const SOURCE = 'design/kinscape.tokens.json';
 
 /** The files that `npm run tokens` writes. `design/tokens.json` stays until its readers move (#1196). */
-export const OUTPUTS = { css: 'app/tokens.css', json: 'design/tokens.json' };
+export const OUTPUTS = {
+  css: 'app/tokens.css',
+  json: 'design/tokens.json',
+  ts: 'design/tokens.generated.ts',
+};
 
 /** Reads the DTCG token file under `root` and returns the text of each output, keyed by its path. */
 export const generate = async (

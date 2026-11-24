@@ -45,12 +45,12 @@ it('generates the CSS and the old token tree from design/kinscape.tokens.json', 
   });
 });
 
-it('writes app/tokens.css and design/tokens.json', async () => {
+it('writes app/tokens.css, design/tokens.json and design/tokens.generated.ts', async () => {
   expect(await run(root)).toBe(0);
 
   const outputs = await generate(root);
 
-  for (const path of [OUTPUTS.css, OUTPUTS.json]) {
+  for (const path of [OUTPUTS.css, OUTPUTS.json, OUTPUTS.ts]) {
     expect(readFileSync(join(root, path), 'utf8')).toBe(outputs[path]);
   }
 });

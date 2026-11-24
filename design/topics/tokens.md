@@ -41,7 +41,7 @@ A value can refer to another with `{group.name}`. A `$description` holds the usa
 
 ## Direct readers
 
-Each module outside tests that reads a token module. `tokens-page.test.ts` names a missing reader.
+Each module outside tests that imports `design/tokens.generated.ts` or reads `design/tokens.json`. `tokens-page.test.ts` names a missing reader of `design/tokens.json`.
 
 - **MapLibre paint and the drawings that copy the map.** MapLibre takes values, not `var()`.
   - `features/map/style.ts`

@@ -98,20 +98,26 @@ const collectNotes = (
   }
 };
 
+/** The tokens in the shape of `design/tokens.json`, before the references resolve. Both direct-reader outputs take their key order from it. */
+const oldTree = ({ allTokens }: FormatFnArguments['dictionary']): Tree => {
+  const tree: Tree = {};
+
+  for (const token of allTokens) {
+    put(tree, token.path, oldValue(token));
+  }
+
+  return tree;
+};
+
 /** `design/tokens.json` for its direct readers: the tokens, then `notes` from each `$description`. */
 const tokensJson =
   (source: Record<string, unknown>) =>
   ({ dictionary }: FormatFnArguments): string => {
-    const tree: Tree = {};
     const notes: Tree = {};
 
     collectNotes(source, [], notes);
 
-    for (const token of dictionary.allTokens) {
-      put(tree, token.path, oldValue(token));
-    }
-
-    return `${JSON.stringify({ ...tree, notes }, null, 2)}\n`;
+    return `${JSON.stringify({ ...oldTree(dictionary), notes }, null, 2)}\n`;
   };
 
 const TS_HEADER =
@@ -148,13 +154,7 @@ const constant = (name: string, value: Tree): string =>
 
 /** `design/tokens.generated.ts`: one `as const` export for each group, then its `px` lengths and `ms` durations as numbers. */
 const typescript = ({ dictionary }: FormatFnArguments): string => {
-  const tree: Tree = {};
-
-  for (const token of dictionary.allTokens) {
-    put(tree, token.path, oldValue(token));
-  }
-
-  const resolved = resolveTokens(tree);
+  const resolved = resolveTokens(oldTree(dictionary));
 
   const exports = Object.entries(resolved).flatMap(([group, value]) => {
     const node = value as Tree;

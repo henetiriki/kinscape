@@ -122,8 +122,8 @@ test('saves a Pin for a new Person that shows inside its dates', async ({
     .toBe(before.shown + 1);
   expect(reloadAnswered).toBe(false);
 
-  // The route stays on. Its handler lets each later request through at once. A `page.unroute` right
-  // after `release()` made the handler's `route.continue()` throw "Route is already handled!".
+  // The route stays on so that the handler's `route.continue()` runs after `release()`. A
+  // `page.unroute` here makes it throw "Route is already handled!".
   release();
   await page.reload();
   await goTo(page, '1850');

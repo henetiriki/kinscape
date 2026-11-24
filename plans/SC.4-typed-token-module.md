@@ -111,7 +111,8 @@ The done checks: steps 2 to 6 are done on the branch. Every file under `canvas/p
 - `app/components/layout/MapLayout.tsx` gives `freeArea` an explicit return type. Without it, the `as const` numbers change `components/index.d.ts` (Acceptance check 8).
 - Big: `app/__tests__/layout.test.tsx` and `app/components/layout/__tests__/ColumnLayout.test.tsx` import the module in place of `design/tokens.json`. The tech lead asked for this. The plan left them to SC.4.2 (#1196).
 - The format and its tests came in one commit, so the tests did not fail first.
-- The build did not run: `KINSCAPE_MEMORY_ADAPTERS` is not set in CI, so the chunk-size comparison is open.
+- The chunk-size comparison ran in a local session: 2,004,455 bytes on the branch, 2,037,003 on `main`.
+- Three boards on the canvas differ from the repo: `Map`, `Map-phone-states` and `Map-credits-narrow`. Four `layer` values say "Polity borders" there and "Polities" in `data/sources.json`. The refresh did not copy them, as the Spec says to edit no board.
 
 ## Out of scope
 

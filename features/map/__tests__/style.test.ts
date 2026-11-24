@@ -69,6 +69,7 @@ describe('buildStyle', () => {
     const extra = (id: string, before?: string): Layer => ({
       description: 'd',
       filters: () => ({}),
+      group: 'boundaries',
       id,
       label: id,
       layers: [{ before, id, source: 'x', type: 'fill' }],

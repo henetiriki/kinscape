@@ -262,7 +262,7 @@ test('keyboard: Space on the checkbox, Tab order, arrows in Precision', async ({
 }) => {
   await page.goto('/');
 
-  const polities = page.getByRole('checkbox', { name: 'Polity borders' });
+  const polities = page.getByRole('checkbox', { name: 'Polities' });
 
   await polities.focus();
   await page.keyboard.press('Space');

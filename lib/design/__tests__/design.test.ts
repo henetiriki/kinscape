@@ -147,7 +147,6 @@ describe('layout tokens', () => {
     'app/components/overlays/Dialog.module.css': ['760px', '56px'],
     'app/components/overlays/Menu.module.css': ['296px', 'z-index: 10'],
     'app/components/overlays/Popup.module.css': ['304px'],
-    'features/map/components/LayersPanel.module.css': ['z-index: 1;'],
     'features/map/components/MapShell.module.css': ['z-index: 1;'],
     'features/map/components/SearchBar.module.css': ['340px'],
     'features/map/components/ZoomControls.module.css': ['z-index: 1;'],

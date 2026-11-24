@@ -1000,7 +1000,12 @@ export const CARDS: Card[] = [
     height: 280,
     name: 'Legend',
     pad: 0,
-    states: [one('Legend · default', {})],
+    states: [
+      one('Legend · default', {}),
+      one('Legend · drawn marks', {
+        rows: ['border', 'approximate', 'events'],
+      }),
+    ],
   },
   {
     design: ['Count marker'],

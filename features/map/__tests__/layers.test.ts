@@ -30,11 +30,15 @@ describe('polityLayer', () => {
   });
 
   it('names its panel row and keeps the ids the row has always had', () => {
-    expect(polityLayer.label).toBe('Polity borders');
+    expect(polityLayer.label).toBe('Polities');
     expect(polityLayer.description).toBe(
       'Fills, borders and names of the Polities on the Map date.'
     );
     expect(polityLayer.id).toBe('polity-borders');
+  });
+
+  it('belongs to the group Boundaries', () => {
+    expect(polityLayer.group).toBe('boundaries');
   });
 
   it('splits solid and dashed borders by confidence', () => {
@@ -152,6 +156,7 @@ describe('pinsLayer', () => {
 
   it('names its panel row and the filter of each drawing layer', () => {
     expect(layer.label).toBe('Pins');
+    expect(layer.group).toBe('pins');
     expect(layer.id).toBe('pins');
     expect(Object.keys(layer.filters(toDay('1850-01-01'))).toSorted()).toEqual(
       layer.layers.map(({ id }) => id).toSorted()

@@ -961,6 +961,10 @@ export const CASES: [string, ReactElement][] = [
     </PinFan>,
   ],
   ['Legend · default', <Legend key='legend' />],
+  [
+    'Legend · drawn marks',
+    <Legend key='drawn' rows={['border', 'approximate', 'events']} />,
+  ],
   ...EVENT_TYPES.map((event): [string, ReactElement] => [
     `EventGlyph · ${event}`,
     <EventGlyph event={event} key={event} />,

@@ -4,6 +4,7 @@ import type { Layer } from '@ks/features/map/types';
 export const testLayer: Layer = {
   description: 'A layer that only the tests draw.',
   filters: () => ({}),
+  group: 'pins',
   id: 'test-layer',
   label: 'Test layer',
   layers: [

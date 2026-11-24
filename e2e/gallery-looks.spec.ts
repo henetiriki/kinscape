@@ -1167,6 +1167,18 @@ test.describe('at 1440px', () => {
     );
   });
 
+  // MAP-05
+  test('the drawn marks state draws no hatch and no halo', async ({ page }) => {
+    await open(page, 'Legend');
+
+    const legend = state(page, 'Legend · drawn marks');
+
+    await expect(legend.locator('circle')).toHaveCount(0);
+    await expect(legend.locator('span[aria-hidden="true"]')).toHaveCount(0);
+    await expect(legend.locator('path')).toHaveCount(2);
+    await expect(legend.getByText('Contested claim')).toHaveCount(0);
+  });
+
   // NFR-06
   test('an SVG with role img stays out of the accessibility tree', async ({
     page,

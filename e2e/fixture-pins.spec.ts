@@ -53,6 +53,33 @@ test.describe('the researcher Tree with a Pin of each Event type', () => {
       ).toBe(true);
     }
   });
+
+  // MAP-02, PIN-03: the Pins row hides and shows the Pins.
+  test('the Pins row hides the Pins when off and shows them when on', async ({
+    page,
+  }) => {
+    await page.route('**/data/pins', route =>
+      route.fulfill({ json: EACH_TYPE })
+    );
+    await page.goto('/');
+    await expect(page.getByText('10 of 10 true on this date')).toBeVisible();
+
+    const drawn = () =>
+      page.evaluate(
+        () =>
+          (window as unknown as TestWindow).kinscapeMap.queryRenderedFeatures(
+            undefined,
+            { layers: ['pins'] }
+          ).length
+      );
+    const row = page.getByRole('checkbox', { name: 'Pins' });
+
+    await expect.poll(drawn).toBe(EVENT_TYPES.length);
+    await row.uncheck();
+    await expect.poll(drawn).toBe(0);
+    await row.check();
+    await expect.poll(drawn).toBe(EVENT_TYPES.length);
+  });
 });
 
 test.describe('the Account whose Pins fail to load', () => {

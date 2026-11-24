@@ -287,11 +287,7 @@ describe('the control cards', () => {
 
       expect(() => checkReadme(name, text)).not.toThrow();
       expect(text.split('\n')[0]).not.toMatch(/^#/);
-
-      // `Legend` takes no prop, so its README has no props table.
-      expect(text.includes('| Prop | Type | Required | Description |')).toBe(
-        name !== 'Legend'
-      );
+      expect(text).toContain('| Prop | Type | Required | Description |');
     }
   );
 

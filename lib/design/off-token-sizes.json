@@ -673,12 +673,6 @@
   },
   {
     "count": 1,
-    "file": "features/map/components/LayersPanel.module.css",
-    "property": "margin-top",
-    "value": "2px"
-  },
-  {
-    "count": 1,
     "file": "features/map/components/Legend.module.css",
     "property": "border",
     "value": "1px"

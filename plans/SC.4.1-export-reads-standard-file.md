@@ -2,7 +2,7 @@
 
 - **Spec:** #1195
 - **Requirement IDs:** None. This Spec changes tooling only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Four modules need the same reads: the leaves, the text of a value, a resolved va
 - **B.** Each module walks the DTCG tree itself. Cost: about the same lines, with three copies of the walk.
 - **Other:** your own.
 
-Recommended: A, because `docs/code-rules.md` keeps logic in one place.
+**Answer: A** (@henetiriki)
 
 **D2 · What `fontNames` reads** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ Recommended: A, because `docs/code-rules.md` keeps logic in one place.
 - **B.** `fontNames` takes the DTCG tree. Cost: `bundle.mts` and the fixtures in `bundle.test.ts`, about 30 lines, and a Deviations line.
 - **Other:** your own.
 
-Recommended: A, because the export already holds the stacks, and the Spec keeps `bundle.mts` out.
+**Answer: A** (@henetiriki)
 
 **D3 · The message for a note that no token needs** · Decides: Tech lead
 
@@ -38,7 +38,7 @@ On `main`, `noteProblems` writes `notes.<path> names no token that needs a note`
 - **B.** Keep the `notes.` text.
 - **Other:** your own.
 
-Recommended: A, because a reader looks for a `notes` group that does not exist. B loses only that clarity.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

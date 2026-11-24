@@ -4,10 +4,7 @@ import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
 import { SignInLayout } from '@ks/app/components/layout/SignInLayout';
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
-
-const { breakpoint, layout } = resolveTokens(rawTokens);
+import { breakpoint, layout } from '@ks/design/tokens.generated.ts';
 
 const css = readFileSync(
   join(import.meta.dirname, '../SignInLayout.module.css'),

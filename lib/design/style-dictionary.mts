@@ -10,7 +10,7 @@ import StyleDictionary from 'style-dictionary';
 
 import type { Tree } from '#ks/design/types.ts';
 
-import { referenceIn } from '#ks/design/tokens.mts';
+import { referenceIn, resolveTokens } from '#ks/design/tokens.mts';
 import {
   cssName,
   fontStack,
@@ -98,32 +98,92 @@ const collectNotes = (
   }
 };
 
+/** The tokens in the shape of `design/tokens.json`, before the references resolve. Both direct-reader outputs take their key order from it. */
+const oldTree = ({ allTokens }: FormatFnArguments['dictionary']): Tree => {
+  const tree: Tree = {};
+
+  for (const token of allTokens) {
+    put(tree, token.path, oldValue(token));
+  }
+
+  return tree;
+};
+
 /** `design/tokens.json` for its direct readers: the tokens, then `notes` from each `$description`. */
 const tokensJson =
   (source: Record<string, unknown>) =>
   ({ dictionary }: FormatFnArguments): string => {
-    const tree: Tree = {};
     const notes: Tree = {};
 
     collectNotes(source, [], notes);
 
-    for (const token of dictionary.allTokens) {
-      put(tree, token.path, oldValue(token));
-    }
-
-    return `${JSON.stringify({ ...tree, notes }, null, 2)}\n`;
+    return `${JSON.stringify({ ...oldTree(dictionary), notes }, null, 2)}\n`;
   };
 
-/** `app/tokens.css` and `design/tokens.json` from the DTCG `tokens`, keyed by the destinations in `out`. */
+const TS_HEADER =
+  '// Generated from design/kinscape.tokens.json by `npm run tokens`. Do not edit.';
+
+const PX = /^(-?\d+(?:\.\d+)?)px$/;
+const MS = /^(\d+(?:\.\d+)?)ms\b/;
+
+/** The leaves of `node` that `pattern` reads, as numbers, in the shape of `node`. Empty groups go. */
+const numbersIn = (node: Tree, pattern: RegExp): Tree => {
+  const out: Tree = {};
+
+  for (const [key, child] of Object.entries(node)) {
+    if (typeof child === 'string') {
+      const match = pattern.exec(child);
+
+      if (match) {
+        out[key] = Number(match[1]);
+      }
+    } else if (typeof child === 'object') {
+      const inner = numbersIn(child, pattern);
+
+      if (Object.keys(inner).length > 0) {
+        out[key] = inner;
+      }
+    }
+  }
+
+  return out;
+};
+
+const constant = (name: string, value: Tree): string =>
+  `export const ${name} = ${JSON.stringify(value, null, 2)} as const;`;
+
+/** `design/tokens.generated.ts`: one `as const` export for each group, then its `px` lengths and `ms` durations as numbers. */
+const typescript = ({ dictionary }: FormatFnArguments): string => {
+  const resolved = resolveTokens(oldTree(dictionary));
+
+  const exports = Object.entries(resolved).flatMap(([group, value]) => {
+    const node = value as Tree;
+    const unit = group === 'motion' ? MS : PX;
+    const numbers = numbersIn(node, unit);
+    const suffix = group === 'motion' ? 'Ms' : 'Px';
+
+    return [
+      constant(group, node),
+      ...(Object.keys(numbers).length > 0
+        ? [constant(`${group}${suffix}`, numbers)]
+        : []),
+    ];
+  });
+
+  return `${[TS_HEADER, ...exports].join('\n\n')}\n`;
+};
+
+/** `app/tokens.css`, `design/tokens.json` and `design/tokens.generated.ts` from the DTCG `tokens`, keyed by the destinations in `out`. */
 export const buildTokens = async (
   tokens: DesignTokens,
-  out: { css: string; json: string }
+  out: { css: string; json: string; ts: string }
 ): Promise<Record<string, string>> => {
   const dictionary = new StyleDictionary({
     hooks: {
       formats: {
         'kinscape/css': css,
         'kinscape/tokens-json': tokensJson(tokens),
+        'kinscape/typescript': typescript,
       },
       transforms: {
         'kinscape/css-text': {
@@ -147,6 +207,7 @@ export const buildTokens = async (
         files: [
           { destination: out.css, format: 'kinscape/css' },
           { destination: out.json, format: 'kinscape/tokens-json' },
+          { destination: out.ts, format: 'kinscape/typescript' },
         ],
         transforms: ['kinscape/name', 'kinscape/css-text'],
       },

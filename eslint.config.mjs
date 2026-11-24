@@ -139,6 +139,7 @@ export default defineConfig([
     '.next/**',
     'coverage/**',
     'design/canvas/project/**',
+    'design/tokens.generated.ts',
     'node_modules/**',
     'next-env.d.ts',
     'playwright-report/**',

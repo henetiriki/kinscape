@@ -5,8 +5,7 @@ import type { ReactNode } from 'react';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
 import { MapLayout } from '@ks/app/components/layout/MapLayout';
 import { SAMPLE_ACCOUNT } from '@ks/app/screens/account';
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { map } from '@ks/design/tokens.generated.ts';
 import { AccountMenu, accountSlots, LayersButton } from '@ks/features/map';
 import { DateDock } from '@ks/features/map/components/DateDock';
 import { LayerGroup } from '@ks/features/map/components/LayerGroup';
@@ -23,8 +22,6 @@ import {
   panelTabs,
   TODAY,
 } from '@ks/lib/design/samples.mts';
-
-const { map } = resolveTokens(rawTokens);
 
 const noop = () => {};
 

@@ -2,8 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { Layer } from '@ks/features/map/types';
 
-import tokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { colour, map } from '@ks/design/tokens.generated.ts';
 import { polityLayer } from '@ks/features/map/layers/polities';
 import { buildStyle } from '@ks/features/map/style';
 import { asDay } from '@ks/lib/domain/boundaries/model.mts';
@@ -108,10 +107,10 @@ describe('buildStyle', () => {
     const built = layers(0, true);
 
     expect(built.get('land')).toMatchObject({
-      paint: { 'fill-color': tokens.map.land },
+      paint: { 'fill-color': map.land },
     });
     expect(built.get('polity-labels')).toMatchObject({
-      paint: { 'text-halo-color': tokens.map.land },
+      paint: { 'text-halo-color': map.land },
     });
   });
 
@@ -119,17 +118,17 @@ describe('buildStyle', () => {
     const built = layers(0, true);
 
     expect(built.get('background')).toMatchObject({
-      paint: { 'background-color': tokens.map.sea },
+      paint: { 'background-color': map.sea },
     });
     expect(built.get('coastline')).toMatchObject({
-      paint: { 'line-color': tokens.map.coastline.colour },
+      paint: { 'line-color': map.coastline.colour },
     });
     expect(built.get('rivers')).toMatchObject({
-      paint: { 'line-color': tokens.map.river.colour },
+      paint: { 'line-color': map.river.colour },
     });
     expect(built.get('polity-borders-low')).toMatchObject({
       paint: {
-        'line-color': tokens.map.border.colour,
+        'line-color': map.border.colour,
         'line-dasharray': [4, 2.6],
       },
     });
@@ -139,7 +138,7 @@ describe('buildStyle', () => {
     const { paint } = layers(0, true).get('polity-fills') as unknown as {
       paint: { 'fill-color': unknown[] };
     };
-    const { default: fallback, ...tints } = tokens.map.polity;
+    const { default: fallback, ...tints } = map.polity;
 
     expect(paint['fill-color']).toEqual([
       'match',
@@ -153,9 +152,7 @@ describe('buildStyle', () => {
 describe('map tokens', () => {
   // The selected point and the changed border follow the brand colour.
   it('resolves map.selected to the brand colour', () => {
-    const { map } = resolveTokens(tokens);
-
-    expect(map.selected.colour).toBe(tokens.colour.brand);
-    expect(map.changed.colour).toBe(tokens.colour.brand);
+    expect(map.selected.colour).toBe(colour.brand);
+    expect(map.changed.colour).toBe(colour.brand);
   });
 });

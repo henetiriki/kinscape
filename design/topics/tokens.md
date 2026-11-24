@@ -4,6 +4,7 @@ paths:
   - 'design/tokens.json'
   - 'design/tokens.mts'
   - 'app/tokens.css'
+  - 'design/tokens.generated.ts'
   - 'scripts/tokens.mts'
   - 'lib/design/**'
 ---
@@ -34,11 +35,13 @@ A value can refer to another with `{group.name}`. A `$description` holds the usa
 
 ## The CSS
 
-`npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css` and `design/tokens.json`. Edit neither. `lib/design/__tests__/design.test.ts` fails if either is stale or the source breaks DTCG.
+`npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css`, `design/tokens.json` and `design/tokens.generated.ts`. Edit none. `design.test.ts` fails if one is stale or the source breaks DTCG.
+
+`design/tokens.generated.ts` has an export for each group, plus `*Px` and `motionMs` numbers.
 
 ## Direct readers
 
-Each module outside tests that imports or reads `design/tokens.json`. `lib/design/__tests__/tokens-page.test.ts` fails and names a module that this list lacks. Each reads the file, not the CSS, for the reason given.
+Each module outside tests that imports `design/tokens.generated.ts` or reads `design/tokens.json`. `tokens-page.test.ts` names a missing reader of `design/tokens.json`.
 
 - **MapLibre paint and the drawings that copy the map.** MapLibre takes values, not `var()`.
   - `features/map/style.ts`

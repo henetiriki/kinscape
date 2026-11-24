@@ -2,6 +2,8 @@ import { existsSync, globSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
+import * as generatedTokens from '@ks/design/tokens.generated.ts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 import { strayColours } from '@ks/lib/design/css.mts';
 import { dtcgProblems } from '@ks/lib/design/dtcg.mts';
 import { noteProblems } from '@ks/lib/design/notes.mts';
@@ -12,7 +14,7 @@ const read = (path: string) => readFileSync(join(root, path), 'utf8');
 const tokens = JSON.parse(read('design/tokens.json'));
 
 // Fails locally and in CI's test job when an output lags design/kinscape.tokens.json.
-it.each([OUTPUTS.css, OUTPUTS.json])(
+it.each([OUTPUTS.css, OUTPUTS.json, OUTPUTS.ts])(
   'has %s up to date with design/kinscape.tokens.json',
   async path => {
     expect(read(path), `${path} is out of date: run \`npm run tokens\``).toBe(
@@ -20,6 +22,28 @@ it.each([OUTPUTS.css, OUTPUTS.json])(
     );
   }
 );
+
+describe('design/tokens.generated.ts', () => {
+  const resolved = resolveTokens(tokens);
+
+  it.each(Object.keys(resolved))(
+    'holds the resolved value of each %s token',
+    group => {
+      expect(
+        generatedTokens[group as keyof typeof generatedTokens]
+      ).toStrictEqual(resolved[group]);
+    }
+  );
+
+  it('holds no notes', () => {
+    expect('notes' in generatedTokens).toBe(false);
+  });
+
+  it('fails the type check on a token that does not exist', () => {
+    // @ts-expect-error `nope` is not a token
+    expect(generatedTokens.colour.nope).toBeUndefined();
+  });
+});
 
 // The CSS leaves out most map tokens, so a reference to one would name no variable.
 it('defines each var() of app/tokens.css there, or as a next/font variable', () => {

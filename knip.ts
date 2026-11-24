@@ -10,7 +10,11 @@ const config: KnipConfig = {
     'server/db/migrate.mts!',
     ...CONTROLS.map(({ path }) => `${path}!`),
   ],
-  ignore: ['design/canvas/**', '.claude/skills/**'],
+  ignore: [
+    'design/canvas/**',
+    'design/tokens.generated.ts',
+    '.claude/skills/**',
+  ],
   ignoreDependencies: [
     '@fontsource-variable/bricolage-grotesque',
     '@fontsource-variable/public-sans',

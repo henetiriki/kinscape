@@ -3,17 +3,14 @@ import type { CSSProperties } from 'react';
 import type { EventType, LegendRow } from '@ks/lib/ui/types';
 
 import { Text } from '@ks/app/components/foundation/Text';
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { map } from '@ks/design/tokens.generated.ts';
 import { EventGlyph } from '@ks/lib/ui/EventGlyph';
 import { HATCH_LINE } from '@ks/lib/ui/hatch';
 import { LEGEND_ROWS } from '@ks/lib/ui/legend.mts';
 
 import styles from '@ks/features/map/components/Legend.module.css';
 
-const { map } = resolveTokens(rawTokens);
-
-/** The swatch values, as the map draws them; the Legend follows `map.*` in `tokens.json`. */
+/** The swatch values, as the map draws them; the Legend follows `map.*` in `tokens.generated.ts`. */
 const LEGEND_VARS = {
   '--legend-border': map.border.colour,
   '--legend-border-width': `${map.border.width}px`,

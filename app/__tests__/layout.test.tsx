@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, it, vi } from 'vitest';
 
 import RootLayout, { metadata } from '@ks/app/layout';
-import tokens from '@ks/design/tokens.json';
+import { font } from '@ks/design/tokens.generated.ts';
 import { fontVariable } from '@ks/lib/design/css.mts';
 
 interface FontOptions {
@@ -47,7 +47,7 @@ it('asks search engines not to index or follow', () => {
 // NFR-03: the fonts are served by KinScape, under the names tokens.css expects.
 it('loads each font token with the next/font variable its stack starts with', () => {
   const variables = withVariable().map(options => options.variable);
-  const expected = Object.values(tokens.font).map(stack =>
+  const expected = Object.values(font).map(stack =>
     fontVariable(stack.split(',')[0].replaceAll("'", ''))
   );
 

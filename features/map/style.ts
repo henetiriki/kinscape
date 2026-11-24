@@ -3,11 +3,9 @@ import type { LayerSpecification, StyleSpecification } from 'maplibre-gl';
 import type { Layer, LayerId } from '@ks/features/map/types';
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { map } from '@ks/design/tokens.generated.ts';
 
-// Every colour and width comes from the `map` section of design/tokens.json.
-const { map } = resolveTokens(rawTokens);
+// Every colour and width comes from the `map` export of design/tokens.generated.ts.
 
 const BASEMAP: LayerSpecification[] = [
   {

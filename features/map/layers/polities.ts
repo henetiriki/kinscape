@@ -5,12 +5,10 @@ import type { ExpressionSpecification } from 'maplibre-gl';
 
 import type { Layer } from '@ks/features/map/types';
 
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { map } from '@ks/design/tokens.generated.ts';
 import { dateFilter } from '@ks/features/map/filter';
 
-// Every colour and width comes from the `map` section of design/tokens.json.
-const { map } = resolveTokens(rawTokens);
+// Every colour and width comes from the `map` export of design/tokens.generated.ts.
 const { default: FALLBACK_FILL, ...FILLS } = map.polity;
 
 const LOW_CONFIDENCE: ExpressionSpecification = [

@@ -2,7 +2,7 @@
 
 - **Spec:** #1196
 - **Requirement IDs:** None. This Spec changes tooling and docs only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -23,7 +23,7 @@ The literal and size checks read token text with `tokenText`, so a reference sta
 - **B.** `dtcg.mts` adds `textTree`, which writes the DTCG tree in the old shape. Each caller converts once, and the checks and fixtures keep `Tree`. Cost: about 25 lines, and a Deviations line, because `Rule` then reads the standard file only through the converter.
 - **Other:** your own.
 
-Recommended: A, because each token reader then takes one shape, as the Spec's reader list says. B is cheaper, but SC.5 would then keep a second shape in step.
+**Answer: A** (@henetiriki)
 
 **D2 · Tool settings that name the generated module** · Decides: Tech lead
 
@@ -33,7 +33,7 @@ The page test matches a quoted string that ends in the token file. `eslint.confi
 - **B.** The test skips the files at the repo root. Cost: 5 lines and a test case. A new root script that reads the file is then not caught.
 - **Other:** your own.
 
-Recommended: A, because the test then has no exception, and the page says what each file does.
+**Answer: A** (@henetiriki)
 
 **D3 · The line cap** · Decides: Tech lead
 
@@ -43,7 +43,7 @@ The cap in `scripts/pr-checks.mts` is 660 lines. The deletion of the generated `
 - **B.** Split the Spec. SC.4.2 moves the readers. A new Spec deletes the JSON writer, the two files and the test. Cost: a new Spec and a second plan.
 - **Other:** your own.
 
-Recommended: A, because the deletion is generated text, and Spec D1 already keeps the work in one Spec.
+**Answer: A** (@henetiriki)
 
 **D4 · The group-note rule of `dtcgProblems`** · Decides: Tech lead
 
@@ -53,7 +53,7 @@ Recommended: A, because the deletion is generated text, and Spec D1 already keep
 - **B.** Delete the rule and its test. Cost: about 15 lines. `noteProblems` still names a group note where none is needed.
 - **Other:** your own.
 
-Recommended: A, because a removed rule changes the DTCG check, and the Spec does not ask for that.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

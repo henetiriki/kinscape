@@ -57,6 +57,6 @@ Draft each Spec as [Draft the boxes](spec.md#draft-the-boxes) says. Put the Inte
 
 File each Spec with form `2-spec.yml`, as [filing.md](filing.md) says. A workflow links it to the Intent. Otherwise, add the link by hand.
 
-After you replace a Spec's body, check the blocker links and the status label of each Spec the change touched. Add `Superseded: the earlier decisions are in <comment link>` under Out of scope.
+To replace a Spec's body, add `Superseded: the earlier decisions are in <comment link>` under Out of scope in the new body. Then follow Write steps 2 to 5 of [Editing a filed issue](filing.md#editing-a-filed-issue). After you replace it, check the blocker links and the status label of each Spec the change touched.
 
 The tech lead sets the status label, as [Roles and labels](../../../docs/how-we-work.md#roles-and-labels-whose-turn-is-it) says. Stop there.

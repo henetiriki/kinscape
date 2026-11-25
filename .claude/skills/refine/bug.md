@@ -37,9 +37,9 @@ Show the four sections as `###` headings, in the order above, as the form shows 
 
 A Bug is already filed, so give no form link.
 
-Follow [Editing a filed issue](filing.md#editing-a-filed-issue), from Read step 3. For a Bug, these two rules replace a step:
+Follow [Editing a filed issue](filing.md#editing-a-filed-issue), from Read step 3. For a Bug, these two rules replace a step or part of a step:
 
 - The new body is the exact body up to any `<!-- refine bug -->` line, unchanged. Then comes that line, then the four sections. So a later run replaces only its own sections. This replaces filing step 5 in Write step 3.
-- If `gh` is missing, signed out or fails, say why. Then print only the `<!-- refine bug -->` line and the four sections. The tech lead adds them at the end of the body, in the issue's Edit box. Print the comment text under the four sections. This replaces the first rule of Write step 5.
+- If `gh` is missing or signed out, or the body edit fails, say why. Then print only the `<!-- refine bug -->` line and the four sections. The tech lead adds them at the end of the body, in the issue's Edit box. Print the comment text under the four sections. This replaces the first rule of Write step 5.
 
 Stop there.

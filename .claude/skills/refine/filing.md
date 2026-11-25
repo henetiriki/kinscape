@@ -55,9 +55,9 @@ If `gh` failed, the user pastes the body. Skip each `gh` call here and Write ste
 Start after step 8 in `SKILL.md`.
 
 1. Show the current `blockedBy` and `relatesTo` links (_Links_ steps 1 and 2). Ask the question of filing step 1. To remove a link, the user uses the issue sidebar.
-2. Ask "Edit #<n> now?" as a question of its own. Show the comment text of step 4 under it. A yes covers the new links and the comment. If the answer is not yes, edit nothing.
+2. Ask "Edit #<n> now, and post the comment below?" as a question of its own. Show the comment text of step 4 under it. A yes covers the new links and the comment. If the answer is not yes, edit nothing.
 3. Write the new body to a new file outside the repo, as filing steps 4 and 5 say. Run one `gh issue edit <n> --body-file <file>`.
-4. If the edit worked, write the comment to a new file outside the repo. Start it with "The body changed:". List each box or section that changed, and what changed in it. List each decision that was added or answered. End it with "No other box changed." Run one `gh issue comment <n> --body-file <file>`.
+4. If the edit worked, write the comment to a new file outside the repo. Start it with "The body changed:". List each box or section that changed, and what changed in it. List each decision that the round added or answered. End it with "No other box changed." Run one `gh issue comment <n> --body-file <file>`.
 5. If the edit fails, say why. Post no comment. Print the whole new body and the comment text. The tech lead pastes the body into the issue's Edit box. If the comment fails, say why. Print the comment text.
 6. Set the new links as _Links_ says.
 7. Run `gh issue view <n> --json labels`. If the issue has a plan file or an open plan PR, name it:

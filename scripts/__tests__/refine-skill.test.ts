@@ -66,7 +66,7 @@ describe('/refine edit comment', () => {
     const text = step(4);
 
     expect(text).toContain('gh issue comment <n> --body-file');
-    expect(text).toContain('each decision');
+    expect(text).toContain('each decision that the round added or answered');
     expect(text).toContain('No other box changed.');
     expect(text).toContain('The body changed:');
   });
@@ -74,6 +74,7 @@ describe('/refine edit comment', () => {
   it('shows the comment text under the question, and one yes covers it', () => {
     const text = step(2);
 
+    expect(text).toContain('Edit #<n> now, and post the comment below?');
     expect(text).toContain('Show the comment text');
     expect(text).toContain('A yes covers the new links and the comment.');
   });
@@ -105,6 +106,10 @@ describe('/refine edit comment', () => {
     const text = handOver('slice-intent.md');
 
     expect(text).toContain('Write steps 2 to 5');
+    expect(text.indexOf('Superseded:')).toBeGreaterThan(-1);
+    expect(text.indexOf('Superseded:')).toBeLessThan(
+      text.indexOf('Write steps 2 to 5')
+    );
     expect(text).toContain('filing.md#editing-a-filed-issue');
   });
 
@@ -113,6 +118,8 @@ describe('/refine edit comment', () => {
 
     expect(text).toContain('comment text');
     expect(text).toContain('This replaces the first rule of Write step 5.');
+    expect(text).toContain('or the body edit fails');
+    expect(text).toContain('a step or part of a step');
     expect(text).not.toContain('Write step 4');
   });
 });

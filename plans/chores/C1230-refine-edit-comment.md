@@ -49,7 +49,7 @@ The Chore names the list and the last line of the comment, but not its first lin
 | Acceptance check                                                                                                        | Proven by                                                                                                                                                |
 | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1. After a yes and a good body edit, the skill posts one comment with the changed boxes, the decisions and the end line | `refine-skill.test.ts`: Write step 4 contains `gh issue comment <n> --body-file`, "each decision" and "No other box changed."                            |
-| 2. "Edit #<n> now?" names the comment and shows its text                                                                | `refine-skill.test.ts`: Write step 2 names the comment and says to show its text                                                                         |
+| 2. "Edit #<n> now?" names the comment and shows its text                                                                | `refine-skill.test.ts`: Write step 2 asks "Edit #<n> now, and post the comment below?" and says to show the text                                         |
 | 3. `/refine intent <n>` follows Write steps 2 to 5 for a replaced Spec                                                  | `refine-skill.test.ts`: `slice-intent.md` › _Hand-over_ contains "Write steps 2 to 5" and the link to `filing.md#editing-a-filed-issue`                  |
 | 4. A failed body edit posts no comment and prints the body and the comment text                                         | `refine-skill.test.ts`: Write step 5 contains "post no comment" and says to print the comment text                                                       |
 | 5. A failed comment gives the reason and prints the comment text                                                        | `refine-skill.test.ts`: Write step 5 has the rule for a failed comment                                                                                   |
@@ -66,3 +66,4 @@ The Chore names the list and the last line of the comment, but not its first lin
 
 - The `slice-intent.md` link is `filing.md#editing-a-filed-issue`, a relative link that works from that folder.
 - Write step 4 starts "If the edit worked,", so a failed edit posts no comment.
+- Write step 2 asks "Edit #<n> now, and post the comment below?", so the question names the comment.

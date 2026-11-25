@@ -22,14 +22,14 @@ List the differences, biggest first. For each one, give:
 
 - where it is (component and area),
 - what differs (built against design),
-- the exact value from `design/source/<screen>.html`, and the token in `design/tokens.json` it matches.
+- the exact value from `design/source/<screen>.html`, and the token in `design/kinscape.tokens.json` it matches.
 
 Then fix the code with tokens (`var(--…)` from `app/tokens.css`), never with new literal values. Run step 3 again after each round. Stop when the screen is under the threshold or what remains has a reason.
 
 ## Rules
 
-- **Never change the design to pass.** Don't edit `design/tokens.json` to make a screen match. For other design files, and for a design that looks wrong, follow [AGENTS.md](../../../AGENTS.md#source-of-truth).
-- **A token that seems wrong is a question, not a fix.** Ask before you edit `tokens.json`.
+- **Never change the design to pass.** Don't edit `design/kinscape.tokens.json` to make a screen match. For other design files, and for a design that looks wrong, follow [AGENTS.md](../../../AGENTS.md#source-of-truth).
+- **A token that seems wrong is a question, not a fix.** Ask before you edit `design/kinscape.tokens.json`.
 - **Don't widen the check.** `sweepProblems` rejects each `ignore` area and each threshold other than 0.5. Propose either under Flagged concerns. A tech-lead decision must change the sweep first.
 - **Do not change `mode`** unless the screen's Spec says it is done. Then set it to `blocking`.
 

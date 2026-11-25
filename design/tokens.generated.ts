@@ -681,3 +681,5 @@ export const map = {
     }
   }
 } as const;
+
+export const hatchLine = "rgba(139, 74, 28, 0.34)";

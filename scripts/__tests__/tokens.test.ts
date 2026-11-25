@@ -35,22 +35,24 @@ beforeEach(() => {
 
 afterEach(() => rmSync(root, { force: true, recursive: true }));
 
-it('generates the CSS and the old token tree from design/kinscape.tokens.json', async () => {
+it('generates the CSS and the TypeScript module from design/kinscape.tokens.json', async () => {
   const outputs = await generate(root);
 
   expect(outputs[OUTPUTS.css]).toContain('--brand: #264f29;');
-  expect(JSON.parse(outputs[OUTPUTS.json])).toEqual({
-    colour: { brand: '#264f29' },
-    notes: {},
-  });
+  expect(outputs[OUTPUTS.ts]).toContain('"brand": "#264f29"');
 });
 
-it('writes app/tokens.css, design/tokens.json and design/tokens.generated.ts', async () => {
+it('writes app/tokens.css and design/tokens.generated.ts, and no other token file', async () => {
+  expect(Object.keys(OUTPUTS)).toEqual(['css', 'ts']);
   expect(await run(root)).toBe(0);
 
   const outputs = await generate(root);
 
-  for (const path of [OUTPUTS.css, OUTPUTS.json, OUTPUTS.ts]) {
+  expect(Object.keys(outputs).toSorted()).toEqual(
+    [OUTPUTS.css, OUTPUTS.ts].toSorted()
+  );
+
+  for (const path of [OUTPUTS.css, OUTPUTS.ts]) {
     expect(readFileSync(join(root, path), 'utf8')).toBe(outputs[path]);
   }
 });

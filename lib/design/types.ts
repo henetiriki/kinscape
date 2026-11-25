@@ -1,5 +1,3 @@
-import type { Tree } from '@ks/design/types.ts';
-
 /** What a control's design system card shows (Spec #450). */
 export type Card = {
   /** The CSS width of each state's box, for a control that fills its parent. A state has no box of its own. */
@@ -112,10 +110,10 @@ export type Role =
   | 'overlay'
   | 'text';
 
-/** How a property reads its tokens: `pick` takes the tokens of the property's group from the token tree. */
+/** How a property reads its tokens: `pick` takes the text of each token of the property's group from the DTCG tree. */
 export type Rule = {
   kind: 'colour' | 'duration' | 'number' | 'shadow';
-  pick: (tokens: Tree) => unknown[];
+  pick: (tokens: DtcgTree) => string[];
 };
 
 export type Shot = {

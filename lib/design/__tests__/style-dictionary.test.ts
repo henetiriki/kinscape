@@ -4,7 +4,6 @@ import { buildTokens } from '@ks/lib/design/style-dictionary.mts';
 
 const OUT = {
   css: 'out/tokens.css',
-  json: 'out/tokens.json',
   ts: 'out/tokens.generated.ts',
 };
 const px = (value: number) => ({ unit: 'px', value });
@@ -84,44 +83,6 @@ describe('buildTokens', () => {
     );
   });
 
-  it('writes the old token tree, with each description in notes', async () => {
-    expect(JSON.parse((await buildTokens(tokens, OUT))[OUT.json])).toEqual({
-      colour: {
-        brand: '#264f29',
-        focus: '{colour.brand}',
-        pin: '#9a3b12',
-        scrim: 'rgb(24 33 27 / 0.45)',
-      },
-      font: { body: "'Public Sans', system-ui" },
-      map: {
-        land: '#e9ebe2',
-        'pin-halo': { blur: 0.8, colour: '{colour.pin}', opacity: 0.24 },
-        selected: { halo: { opacity: 0.8 }, width: 2.5 },
-      },
-      notes: {
-        colour: { brand: 'Primary buttons.' },
-        map: { 'pin-halo': { colour: 'Uncertainty halo.' } },
-        type: { body: 'Panels and popups.' },
-      },
-      type: {
-        body: {
-          font: '{font.body}',
-          size: '15px',
-          tracking: '0',
-          weight: '400',
-        },
-      },
-      z: { menu: '10' },
-    });
-  });
-
-  // The design system bundle embeds the file, so a new key order changes its bytes.
-  it('writes notes in file order, a group note among the token notes', async () => {
-    const { notes } = JSON.parse((await buildTokens(tokens, OUT))[OUT.json]);
-
-    expect(Object.keys(notes)).toEqual(['colour', 'map', 'type']);
-  });
-
   describe('the TypeScript module', () => {
     const build = async () => (await buildTokens(tokens, OUT))[OUT.ts];
 
@@ -158,6 +119,38 @@ describe('buildTokens', () => {
       expect(text).not.toContain('{colour');
     });
 
+    it('resolves a reference that Style Dictionary resolves, and keeps a map number a number', async () => {
+      const text = await build();
+
+      expect(text).toContain('"font": "\'Public Sans\', system-ui"');
+      expect(text).toContain('"halo": {\n      "opacity": 0.8\n    }');
+      expect(text).toContain('"colour": "#9a3b12"');
+    });
+
+    it('exports the hatch stripe as rgba() text when map.hatch exists', async () => {
+      const withHatch = {
+        ...tokens,
+        map: {
+          ...tokens.map,
+          hatch: {
+            colour: { $type: 'color', $value: colour('#8b4a1c') },
+            opacity: { $type: 'number', $value: 0.34 },
+          },
+        },
+      };
+      const text = (await buildTokens(withHatch, OUT))[OUT.ts];
+
+      expect(
+        text
+          .trimEnd()
+          .endsWith('export const hatchLine = "rgba(139, 74, 28, 0.34)";')
+      ).toBe(true);
+    });
+
+    it('exports no hatchLine when map.hatch is missing', async () => {
+      expect(await build()).not.toContain('hatchLine');
+    });
+
     it('holds each px length as a number in a second export, and each ms duration in motionMs', async () => {
       const withMotion = {
         ...tokens,
@@ -174,12 +167,5 @@ describe('buildTokens', () => {
         'export const motionMs = {\n  "press": 120\n} as const;'
       );
     });
-  });
-
-  it('ends the JSON with a newline, in two-space indent', async () => {
-    const json = (await buildTokens(tokens, OUT))[OUT.json];
-
-    expect(json.startsWith('{\n  "colour": {\n')).toBe(true);
-    expect(json.endsWith('}\n')).toBe(true);
   });
 });

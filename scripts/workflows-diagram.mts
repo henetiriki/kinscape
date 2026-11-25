@@ -2,6 +2,8 @@ import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
 
+import { resolvedText } from '#ks/lib/design/dtcg.mts';
+
 type Trigger = {
   cron?: string;
 } & Partial<Record<(typeof FILTERS)[number], string[]>>;
@@ -37,7 +39,7 @@ const FAMILIES: [string, string[]][] = [
   ['Push, schedule and manual runs', ['push', 'schedule', 'workflow_dispatch']],
 ];
 
-// Fill and stroke per name prefix, as `design/tokens.json` colour names; a prefix outside them fails the generator.
+// Fill and stroke per name prefix, as `design/kinscape.tokens.json` colour names; a prefix outside them fails the generator.
 const FILLS: Record<string, [string, string]> = {
   Actions: ['error-bg', 'error-border'],
   Backlog: ['warning-bg', 'warning-border'],
@@ -55,9 +57,14 @@ const FRONTMATTER = [
   '---',
 ];
 
-const colours: Record<string, string> = JSON.parse(
-  readFileSync(join(import.meta.dirname, '../design/tokens.json'), 'utf8')
-).colour;
+const tokens = JSON.parse(
+  readFileSync(
+    join(import.meta.dirname, '../design/kinscape.tokens.json'),
+    'utf8'
+  )
+);
+
+const colour = (name: string) => resolvedText(tokens, `colour.${name}`);
 
 const id = (text: string) => text.replace(/\.ya?ml$/, '').replace(/\W/g, '_');
 
@@ -218,7 +225,7 @@ const styles = (groups: string[], nodes: Workflow[]): string[] => [
   ...groups.map(group => {
     const [fill, stroke] = FILLS[group];
 
-    return `  classDef ${id(group).toLowerCase()} fill:${colours[fill]},stroke:${colours[stroke]}`;
+    return `  classDef ${id(group).toLowerCase()} fill:${colour(fill)},stroke:${colour(stroke)}`;
   }),
   ...groups.map(
     group =>

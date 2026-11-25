@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import tokens from '@ks/design/tokens.json' with { type: 'json' };
+import { colour } from '@ks/design/tokens.generated.ts';
 
 // NFR-03: fonts are fetched at build time, so no browser request leaves KinScape.
 test('no request goes to a Google domain, and text renders in Public Sans', async ({
@@ -105,7 +105,7 @@ test('keyboard focus shows a 2px brand outline offset 2px', async ({
 test('the checkbox uses the brand colour', async ({ page }) => {
   await page.goto('/');
 
-  const brand = tokens.colour.brand;
+  const brand = colour.brand;
   const [r, g, b] = [1, 3, 5].map(i =>
     Number.parseInt(brand.slice(i, i + 2), 16)
   );

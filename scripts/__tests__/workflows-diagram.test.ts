@@ -10,13 +10,17 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { resolvedText } from '@ks/lib/design/dtcg.mts';
 import { generate, run } from '@ks/scripts/workflows-diagram.mts';
 
 const repo = join(import.meta.dirname, '../..');
 
-const tokens = JSON.parse(
-  readFileSync(join(repo, 'design/tokens.json'), 'utf8')
-).colour;
+const source = JSON.parse(
+  readFileSync(join(repo, 'design/kinscape.tokens.json'), 'utf8')
+);
+const tokens = new Proxy({} as Record<string, string>, {
+  get: (_target, name: string) => resolvedText(source, `colour.${name}`),
+});
 
 let root: string;
 

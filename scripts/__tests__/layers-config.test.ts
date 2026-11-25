@@ -169,7 +169,7 @@ describe('the real lint config', () => {
     ['lib/map/a.ts', "import { a } from '#ks/lib/map/b';"],
     [
       'app/components/forms/X.tsx',
-      "import { a } from '#ks/design/tokens.mts';",
+      "import { a } from '#ks/design/tokens.generated.ts';",
     ],
     ['lib/map/a.js', "import { a } from '#ks/lib/map/b';"],
   ])('fails a #ks/ import in %s: %s', async (path, code) => {

@@ -61,7 +61,7 @@ const BOARD = board(
 );
 
 const tokens = tokenColours(
-  readFileSync(join(root, 'design/tokens.json'), 'utf8')
+  readFileSync(join(root, 'design/kinscape.tokens.json'), 'utf8')
 );
 
 /** The snapshot of a board, made by the steps of the exporter. */

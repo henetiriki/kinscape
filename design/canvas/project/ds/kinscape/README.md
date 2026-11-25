@@ -49,7 +49,7 @@ Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 
 
 ## Colours
 
-`tokens.json` holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). The app reads the tokens as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. The usage text of a colour token in the design system gives its role and its contrast ratio. The `notes` group of `tokens.json` says where each token is used.
+`design/kinscape.tokens.json` holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). The app reads the tokens as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. The usage text of a colour token in the design system gives its role and its contrast ratio. The `$description` of each token says where it is used.
 
 Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, the map hatches contested claims and dashes approximate borders (NFR-06).
 
@@ -58,7 +58,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 - Desktop first. The map fills the window and everything else floats on it with a 24px gutter.
 - Desktop: search bar top left. The Layers / Filters panel sits below it, 320px wide. The date dock runs along the bottom, right of the panel. Account and zoom controls are top right. The credits line sits under the dock.
 - Phone: search pill on top, a layers button under it, and a bottom sheet. When collapsed, the sheet holds only the date stepper and Play. When the user taps the map, the sheet opens with the look-up result. A user cannot edit on a phone.
-- Sizes, offsets and stacking come from the `layout`, `breakpoint` and `z` tokens in `tokens.json`.
+- Sizes, offsets and stacking come from the `layout`, `breakpoint` and `z` tokens in `design/kinscape.tokens.json`.
 - `MapLayout` places the search, action, account, zoom, panel, dock, credits and overlay slots from those tokens. On a phone only, it also places a Layers button. Its overlay area runs from `dock-left` to the gutter and from `furniture-top` to the dock's top. A popup sits left of its map point (`popup-gap`, `popup-point-y`), with the pointer on its right edge.
 - A notice centres in the free map area, not the window.
 - `SignInLayout` places the sign-in hero and form from `layout.sign-in`. On desktop the hero is left, and the form pane is at least 440 wide with a form of at most 360. On a phone, a 188px hero with the wordmark over it comes first, then the form. `SignInHero`'s coast and border lines are a hand-drawn sketch, traced from no dataset (NFR-08).
@@ -67,7 +67,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 
 ## Shape and depth
 
-The `radius` and `shadow` notes in `tokens.json` say where each value goes.
+The `$description` of each `radius` and `shadow` token says where it goes.
 
 | Token   | Value                                                                                                                                                     |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -78,7 +78,7 @@ The `radius` and `shadow` notes in `tokens.json` say where each value goes.
 
 ## Motion
 
-`tokens.json` holds the durations. Each token is a `motion` token.
+`design/kinscape.tokens.json` holds the durations. Each token is a `motion` token.
 
 | Token            | Use                                                        |
 | ---------------- | ---------------------------------------------------------- |

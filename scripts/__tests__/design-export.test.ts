@@ -82,7 +82,9 @@ describe('the real canvas export', () => {
   });
 
   it('matches committed snapshots that pass the checks', () => {
-    const tokens = tokenColours(readFileSync('design/tokens.json', 'utf8'));
+    const tokens = tokenColours(
+      readFileSync('design/kinscape.tokens.json', 'utf8')
+    );
 
     expect(
       names.flatMap(name =>
@@ -220,8 +222,8 @@ describe('tokenColours and snapshotProblems', () => {
         tokens
       )
     ).toEqual([
-      '#123456 is not in design/tokens.json',
-      'rgb(1, 2, 3) is not in design/tokens.json',
+      '#123456 is not in design/kinscape.tokens.json',
+      'rgb(1, 2, 3) is not in design/kinscape.tokens.json',
     ]);
   });
 
@@ -232,8 +234,8 @@ describe('tokenColours and snapshotProblems', () => {
         tokens
       )
     ).toEqual([
-      '#12345678 is not in design/tokens.json',
-      '#1234 is not in design/tokens.json',
+      '#12345678 is not in design/kinscape.tokens.json',
+      '#1234 is not in design/kinscape.tokens.json',
     ]);
   });
 
@@ -256,17 +258,17 @@ describe('tokenColours and snapshotProblems', () => {
         tokens
       )
     ).toEqual([
-      'green is not in design/tokens.json',
-      'red is not in design/tokens.json',
-      'white is not in design/tokens.json',
-      'gold is not in design/tokens.json',
-      'navy is not in design/tokens.json',
-      'tan is not in design/tokens.json',
-      'pink is not in design/tokens.json',
-      'plum is not in design/tokens.json',
-      'Ivory is not in design/tokens.json',
-      'snow is not in design/tokens.json',
-      'peru is not in design/tokens.json',
+      'green is not in design/kinscape.tokens.json',
+      'red is not in design/kinscape.tokens.json',
+      'white is not in design/kinscape.tokens.json',
+      'gold is not in design/kinscape.tokens.json',
+      'navy is not in design/kinscape.tokens.json',
+      'tan is not in design/kinscape.tokens.json',
+      'pink is not in design/kinscape.tokens.json',
+      'plum is not in design/kinscape.tokens.json',
+      'Ivory is not in design/kinscape.tokens.json',
+      'snow is not in design/kinscape.tokens.json',
+      'peru is not in design/kinscape.tokens.json',
     ]);
   });
 
@@ -277,8 +279,8 @@ describe('tokenColours and snapshotProblems', () => {
         tokens
       )
     ).toEqual([
-      'red is not in design/tokens.json',
-      'Teal is not in design/tokens.json',
+      'red is not in design/kinscape.tokens.json',
+      'Teal is not in design/kinscape.tokens.json',
     ]);
   });
 
@@ -289,10 +291,10 @@ describe('tokenColours and snapshotProblems', () => {
         tokens
       )
     ).toEqual([
-      'CanvasText is not in design/tokens.json',
-      'Canvas is not in design/tokens.json',
-      'LinkText is not in design/tokens.json',
-      'Highlight is not in design/tokens.json',
+      'CanvasText is not in design/kinscape.tokens.json',
+      'Canvas is not in design/kinscape.tokens.json',
+      'LinkText is not in design/kinscape.tokens.json',
+      'Highlight is not in design/kinscape.tokens.json',
     ]);
   });
 
@@ -318,10 +320,10 @@ describe('tokenColours and snapshotProblems', () => {
         tokens
       )
     ).toEqual([
-      'red is not in design/tokens.json',
-      'White is not in design/tokens.json',
+      'red is not in design/kinscape.tokens.json',
+      'White is not in design/kinscape.tokens.json',
       'uses url(), which the colour check cannot read',
-      'Teal is not in design/tokens.json',
+      'Teal is not in design/kinscape.tokens.json',
     ]);
   });
 
@@ -362,7 +364,7 @@ describe('tokenColours and snapshotProblems', () => {
       'text="chucknorris" cannot be read as a colour',
       'link="ff0000" cannot be read as a colour',
       'bordercolor="#12345" cannot be read as a colour',
-      'Navy is not in design/tokens.json',
+      'Navy is not in design/kinscape.tokens.json',
     ]);
   });
 
@@ -373,11 +375,11 @@ describe('tokenColours and snapshotProblems', () => {
         tokens
       )
     ).toEqual([
-      'red is not in design/tokens.json',
-      'blue is not in design/tokens.json',
-      'Background is not in design/tokens.json',
-      '-webkit-link is not in design/tokens.json',
-      'Menu is not in design/tokens.json',
+      'red is not in design/kinscape.tokens.json',
+      'blue is not in design/kinscape.tokens.json',
+      'Background is not in design/kinscape.tokens.json',
+      '-webkit-link is not in design/kinscape.tokens.json',
+      'Menu is not in design/kinscape.tokens.json',
     ]);
   });
 
@@ -402,7 +404,7 @@ describe('tokenColours and snapshotProblems', () => {
       )
     ).toEqual([
       'contains @import',
-      'red is not in design/tokens.json',
+      'red is not in design/kinscape.tokens.json',
       'uses translate3d(), which the colour check cannot read',
     ]);
   });
@@ -415,8 +417,8 @@ describe('tokenColours and snapshotProblems', () => {
       )
     ).toEqual([
       "bgcolor='none' cannot be read as a colour",
-      'red is not in design/tokens.json',
-      'teal is not in design/tokens.json',
+      'red is not in design/kinscape.tokens.json',
+      'teal is not in design/kinscape.tokens.json',
     ]);
   });
 
@@ -427,7 +429,7 @@ describe('tokenColours and snapshotProblems', () => {
         tokens
       )
     ).toEqual([
-      'red is not in design/tokens.json',
+      'red is not in design/kinscape.tokens.json',
       'uses oklch(), which the colour check cannot read',
     ]);
   });
@@ -1201,7 +1203,7 @@ describe('exportSnapshots', () => {
     );
     put('design/canvas/project/A.dc.html', `<img src="/_blob/i">${a}`);
     put('design/canvas/project/B.dc.html', '<a href="A.dc.html">A</a>');
-    put('design/tokens.json', '{ "ink": "#18211b" }');
+    put('design/kinscape.tokens.json', '{ "ink": "#18211b" }');
     put('.prettierrc.json', '{ "useTabs": true }');
   };
 
@@ -1259,7 +1261,7 @@ describe('exportSnapshots', () => {
     setup('<p style="color: #123456">A</p>');
 
     await expect(exportSnapshots(root, [], { render })).rejects.toThrow(
-      'A.dc.html → a.html: #123456 is not in design/tokens.json'
+      'A.dc.html → a.html: #123456 is not in design/kinscape.tokens.json'
     );
     expect(existsSync(join(root, 'design/source'))).toBe(false);
   });

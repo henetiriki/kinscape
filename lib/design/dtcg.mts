@@ -10,7 +10,17 @@ import type {
   DtcgTree,
 } from '#ks/lib/design/types.ts';
 
-import { hexChannels, isTree, referenceIn } from '#ks/design/tokens.mts';
+import { hexChannels } from '#ks/lib/design/css.mts';
+
+/** A reference value: `{group.name}`. */
+export const REFERENCE = /^\{([^{}]+)\}$/;
+
+/** The token path that a `{group.name}` value refers to, or `undefined` for any other value. */
+export const referenceIn = (value: unknown): string | undefined =>
+  typeof value === 'string' ? REFERENCE.exec(value)?.[1] : undefined;
+
+export const isTree = (value: unknown): value is DtcgTree =>
+  typeof value === 'object' && value !== null;
 
 /** A see-through colour is `rgb(r g b / a)`, the form the design export reads. */
 export const cssColour = (colour: DtcgColour): string => {
@@ -210,7 +220,7 @@ const walk = (node: Record<string, unknown>, path: string[]): Walk =>
 
       const inner = walk(child, at);
 
-      // The notes of design/tokens.json hold one text at each path, so a group note hides the notes under it.
+      // `noteProblems` reads one note for each token or `type` style, so a group note hides the notes under it.
       if (hasNote(child) && inner.leaves.some(({ token }) => hasNote(token))) {
         found.problems.push(
           `${at.join('.')}: a group note and a token note under it`

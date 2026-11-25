@@ -422,7 +422,7 @@ describe('plan-new', () => {
       const { out } = go(
         ['7', 'x'],
         setup({
-          body: 'Change `design/tokens.json`.',
+          body: 'Change `design/kinscape.tokens.json`.',
           title: 'Chore: A',
           type: 'Chore',
         }).deps

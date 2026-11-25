@@ -1,11 +1,29 @@
 import { describe, expect, it } from 'vitest';
 
+import { colour } from '@ks/lib/design/__tests__/dtcg-fixtures';
 import {
   coloursIn,
   cssName,
   fontVariable,
+  hexChannels,
   strayColours,
 } from '@ks/lib/design/css.mts';
+
+describe('hexChannels', () => {
+  it('gives the red, green and blue of a #rrggbb colour, in either case', () => {
+    expect(hexChannels('#8b4a1c')).toEqual([139, 74, 28]);
+    expect(hexChannels('#8B4A1C')).toEqual([139, 74, 28]);
+  });
+
+  it.each(['#8b4', 'rgb(139 74 28)', 'brown', ''])(
+    'throws on %j, which is not #rrggbb',
+    value => {
+      expect(() => hexChannels(value)).toThrow(
+        `Not a #rrggbb colour: ${value}`
+      );
+    }
+  );
+});
 
 describe('cssName', () => {
   it('leaves colours unprefixed and prefixes every other group', () => {
@@ -41,7 +59,9 @@ describe('coloursIn', () => {
 
 describe('strayColours', () => {
   it('lists each colour without a token once', () => {
-    const tokens = { colour: { brand: '#264f29', shade: 'rgb(0 0 0 / 0.1)' } };
+    const tokens = {
+      colour: { brand: colour('#264f29'), shade: colour('#000000', 0.1) },
+    };
 
     expect(
       strayColours(

@@ -3,18 +3,21 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import * as generatedTokens from '@ks/design/tokens.generated.ts';
-import { resolveTokens } from '@ks/design/tokens.mts';
 import { strayColours } from '@ks/lib/design/css.mts';
-import { dtcgProblems } from '@ks/lib/design/dtcg.mts';
+import {
+  dtcgProblems,
+  resolvedText,
+  tokenLeaves,
+} from '@ks/lib/design/dtcg.mts';
 import { noteProblems } from '@ks/lib/design/notes.mts';
 import { generate, OUTPUTS } from '@ks/scripts/tokens.mts';
 
 const root = join(import.meta.dirname, '../../..');
 const read = (path: string) => readFileSync(join(root, path), 'utf8');
-const tokens = JSON.parse(read('design/tokens.json'));
+const source = JSON.parse(read('design/kinscape.tokens.json'));
 
 // Fails locally and in CI's test job when an output lags design/kinscape.tokens.json.
-it.each([OUTPUTS.css, OUTPUTS.json, OUTPUTS.ts])(
+it.each([OUTPUTS.css, OUTPUTS.ts])(
   'has %s up to date with design/kinscape.tokens.json',
   async path => {
     expect(read(path), `${path} is out of date: run \`npm run tokens\``).toBe(
@@ -24,16 +27,28 @@ it.each([OUTPUTS.css, OUTPUTS.json, OUTPUTS.ts])(
 );
 
 describe('design/tokens.generated.ts', () => {
-  const resolved = resolveTokens(tokens);
+  const groups = Object.keys(source).filter(key => !key.startsWith('$'));
 
-  it.each(Object.keys(resolved))(
-    'holds the resolved value of each %s token',
-    group => {
-      expect(
-        generatedTokens[group as keyof typeof generatedTokens]
-      ).toStrictEqual(resolved[group]);
+  it.each(groups)('holds the resolved value of each %s token', group => {
+    const generated: Record<string, unknown> = generatedTokens;
+
+    for (const { $type, path } of tokenLeaves(source[group], [group])) {
+      const text = resolvedText(source, path.join('.'));
+      const held = path.reduce<unknown>(
+        (at, key) => (at as Record<string, unknown>)[key],
+        generated
+      );
+
+      // A `map` number stays a number; each other value is its CSS text.
+      expect(held, path.join('.')).toBe(
+        group === 'map' && $type === 'number' ? Number(text) : text
+      );
     }
-  );
+  });
+
+  it('holds the hatch stripe as rgba() text of its tokens', () => {
+    expect(generatedTokens.hatchLine).toBe('rgba(139, 74, 28, 0.34)');
+  });
 
   it('holds no notes', () => {
     expect('notes' in generatedTokens).toBe(false);
@@ -76,7 +91,7 @@ describe('the design snapshots', () => {
   });
 
   it.each(snapshots)('%s uses only token colours', name => {
-    expect(strayColours(read(`design/source/${name}`), tokens)).toEqual([]);
+    expect(strayColours(read(`design/source/${name}`), source)).toEqual([]);
   });
 });
 
@@ -140,7 +155,7 @@ describe('layout tokens', () => {
   const px = (value: string) => Number.parseFloat(value);
 
   it('puts the dock left of the gutter, the panel and a gutter', () => {
-    const { layout, size } = tokens;
+    const { layout, size } = generatedTokens;
 
     expect(px(layout['dock-left'])).toBe(
       px(size.gutter) + px(size.panel) + px(size.gutter)
@@ -189,7 +204,7 @@ describe('layout tokens', () => {
 
   // A media query can't read var(), so each one must match breakpoint (the desktop side is + 0.02px).
   it('writes every media query size from breakpoint', () => {
-    const { breakpoint } = tokens;
+    const { breakpoint } = generatedTokens;
     const allowed = new Map([
       ['max-height', [px(breakpoint['phone-height'])]],
       ['max-width', [px(breakpoint['phone-width'])]],
@@ -229,7 +244,7 @@ const SMALL_TYPE: Record<string, { reason: string; size: number }> = {
   'overline-tight': { reason: 'Layer group headings', size: 11 },
 };
 
-describe('tokens.json', () => {
+describe('design/kinscape.tokens.json and design/tokens.generated.ts', () => {
   it('has a note for every token that needs one, and none for any other', () => {
     expect(
       noteProblems(JSON.parse(read('design/kinscape.tokens.json')))
@@ -238,7 +253,7 @@ describe('tokens.json', () => {
 
   // NFR-06
   it('sets each type style to 12.5px or more, except the styles in SMALL_TYPE', () => {
-    const sizes = Object.entries<{ size: string }>(tokens.type).map(
+    const sizes = Object.entries<{ size: string }>(generatedTokens.type).map(
       ([name, style]) => [name, Number.parseFloat(style.size)] as const
     );
     const small = Object.fromEntries(sizes.filter(([, size]) => size < 12.5));
@@ -255,7 +270,9 @@ describe('tokens.json', () => {
 
   // NFR-06
   it('sets each map label to 11px or more', () => {
-    const labels = Object.entries<{ size?: number }>(tokens.map).filter(
+    const labels = Object.entries<{ size?: number }>(
+      generatedTokens.map as unknown as Record<string, { size?: number }>
+    ).filter(
       ([name, value]) =>
         name.endsWith('-label') && typeof value === 'object' && 'size' in value
     );
@@ -278,7 +295,7 @@ describe('tokens.json', () => {
       (entry: { polity: string }) => entry.polity
     );
 
-    expect(Object.keys(tokens.map.polity).toSorted()).toEqual(
+    expect(Object.keys(generatedTokens.map.polity).toSorted()).toEqual(
       [...new Set<string>(ids), 'default'].toSorted()
     );
   });

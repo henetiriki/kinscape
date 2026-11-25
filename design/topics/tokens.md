@@ -1,8 +1,6 @@
 ---
 paths:
   - 'design/kinscape.tokens.json'
-  - 'design/tokens.json'
-  - 'design/tokens.mts'
   - 'app/tokens.css'
   - 'design/tokens.generated.ts'
   - 'scripts/tokens.mts'
@@ -11,7 +9,7 @@ paths:
 
 # Tokens
 
-How a token value travels today. A Spec that changes the path updates this page.
+How a token value travels.
 
 ## The source
 
@@ -35,13 +33,13 @@ A value can refer to another with `{group.name}`. A `$description` holds the usa
 
 ## The CSS
 
-`npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css`, `design/tokens.json` and `design/tokens.generated.ts`. Edit none. `design.test.ts` fails if one is stale or the source breaks DTCG.
+`npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css` and `design/tokens.generated.ts`. Edit neither. `design.test.ts` fails if one is stale or the source breaks DTCG.
 
-`design/tokens.generated.ts` has an export for each group, plus `*Px` and `motionMs` numbers.
+`design/tokens.generated.ts` has an export for each group, plus `*Px` and `motionMs` numbers. It also has `hatchLine`, the hatch stripe as `rgba()` text.
 
 ## Direct readers
 
-Each module outside tests that imports `design/tokens.generated.ts` or reads `design/tokens.json`. `tokens-page.test.ts` names a missing reader of `design/tokens.json`.
+Each module outside tests that imports `design/tokens.generated.ts` or reads `design/kinscape.tokens.json`. `tokens-page.test.ts` names a missing reader of either file.
 
 - **MapLibre paint and the drawings that copy the map.** MapLibre takes values, not `var()`.
   - `features/map/style.ts`
@@ -61,8 +59,12 @@ Each module outside tests that imports `design/tokens.generated.ts` or reads `de
 - **Scripts that build files.**
   - `scripts/tokens.mts` writes the file ([The CSS](#the-css)).
   - `scripts/design-export.mts`
+  - `scripts/design-system.mts`
   - `scripts/sizes.mts`
-- **The workflow diagram.** `scripts/workflows-diagram.mts` colours the diagram from the colour tokens.
+- `scripts/workflows-diagram.mts` colours the workflow diagram.
+- **Tool settings that skip the generated file.**
+  - `eslint.config.mjs`
+  - `knip.ts`
 
 ## The design system and the canvas
 

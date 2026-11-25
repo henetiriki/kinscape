@@ -114,7 +114,7 @@ describe('violations', () => {
     expect(
       violations({
         'app/a.tsx': [
-          "import tokens from '@ks/design/tokens.json';",
+          "import tokens from '@ks/design/tokens.generated.ts';",
           "import { s } from '../lib/map/style';",
           "import { useState } from 'react';",
           "import { readFileSync } from 'node:fs';",

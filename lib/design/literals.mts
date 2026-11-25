@@ -1,12 +1,10 @@
 /** The stray-literal check: a `.module.css` value that equals a token of its property's group. */
 
-import type { Tree } from '#ks/design/types.ts';
-import type { LiteralProblem, Rule } from '#ks/lib/design/types.ts';
+import type { DtcgTree, LiteralProblem, Rule } from '#ks/lib/design/types.ts';
 
 import { coloursIn } from '#ks/lib/design/css.mts';
 import {
   declarations,
-  leaves,
   numbers,
   OWN,
   rulesFor,
@@ -19,7 +17,7 @@ const literalsIn = (
   value: string,
   first: number,
   rule: Rule,
-  tokens: Tree
+  tokens: DtcgTree
 ): LiteralProblem[] => {
   const known = rule.pick(tokens);
   const at = (offset: number) =>
@@ -33,15 +31,12 @@ const literalsIn = (
     const flat = (text: string) =>
       text.trim().replaceAll(/\s+/g, ' ').toLowerCase();
     const shown = flat(withoutVars(value));
-    const tokenValues = leaves(known).map(flat);
 
-    return tokenValues.includes(shown) ? [hit(shown, first)] : [];
+    return known.map(flat).includes(shown) ? [hit(shown, first)] : [];
   }
 
   if (rule.kind === 'colour') {
-    const colours = new Set(
-      known.flatMap(group => coloursIn(JSON.stringify(group)))
-    );
+    const colours = new Set(known.flatMap(coloursIn));
 
     return withoutVars(value)
       .split('\n')
@@ -54,9 +49,7 @@ const literalsIn = (
 
   const durations = rule.kind === 'duration';
   const keys = new Set(
-    leaves(known).flatMap(token =>
-      numbers(token, durations).map(number => number.key)
-    )
+    known.flatMap(token => numbers(token, durations).map(number => number.key))
   );
 
   return numbers(withoutVars(value), durations)
@@ -65,7 +58,10 @@ const literalsIn = (
 };
 
 /** The problems of one `.module.css` file: a token literal with no `own:` comment, and a bad `own:` comment. */
-export const tokenLiterals = (css: string, tokens: Tree): LiteralProblem[] => {
+export const tokenLiterals = (
+  css: string,
+  tokens: DtcgTree
+): LiteralProblem[] => {
   const literals = declarations(css).flatMap(({ first, property, value }) =>
     rulesFor(property).flatMap(rule =>
       literalsIn(property, value, first, rule, tokens)

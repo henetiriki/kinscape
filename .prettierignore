@@ -12,7 +12,6 @@ design/canvas/project
 
 # Written by npm run tokens
 app/tokens.css
-design/tokens.json
 design/tokens.generated.ts
 
 # Written by npm run workflows:diagram

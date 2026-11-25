@@ -13,7 +13,7 @@ Scratch files go in `.design-system/published/`, which git ignores. Never run an
 
 A change to one of these:
 
-- `design/tokens.json`
+- `design/kinscape.tokens.json`
 - `design/DESIGN.md`
 - a topic file that `DESIGN_FILES` in `lib/design/system.mts` lists
 - a font

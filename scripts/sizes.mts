@@ -9,7 +9,7 @@ export const LIST = 'lib/design/off-token-sizes.json';
 /** Reads each size file of `files` under `root` and writes the list of the off-token sizes. */
 export const run = (root: string, files: string[]): number => {
   const tokens = JSON.parse(
-    readFileSync(join(root, 'design/tokens.json'), 'utf8')
+    readFileSync(join(root, 'design/kinscape.tokens.json'), 'utf8')
   );
   const sizes = files
     .filter(isSizeFile)

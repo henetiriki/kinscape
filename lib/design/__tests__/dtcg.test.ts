@@ -10,7 +10,9 @@ import {
   descriptions,
   dtcgProblems,
   fontStackOf,
+  isTree,
   notesOf,
+  referenceIn,
   resolvedText,
   tokenLeaves,
   tokenText,
@@ -23,6 +25,31 @@ const ink = {
   components: [0.0941, 0.1294, 0.1059],
   hex: '#18211b',
 };
+
+describe('referenceIn', () => {
+  it('gives the path of a {group.name} value', () => {
+    expect(referenceIn('{colour.brand}')).toBe('colour.brand');
+  });
+
+  it.each(['#264f29', '{a}{b}', '', 4, null, { a: '{b}' }])(
+    'gives nothing for %j',
+    value => {
+      expect(referenceIn(value)).toBeUndefined();
+    }
+  );
+});
+
+describe('isTree', () => {
+  it('takes an object, and no string, number or null', () => {
+    expect([{}, 'a', 4, null, undefined].map(isTree)).toEqual([
+      true,
+      false,
+      false,
+      false,
+      false,
+    ]);
+  });
+});
 
 describe('cssColour', () => {
   it('writes the hex of an opaque colour', () => {
@@ -215,7 +242,7 @@ describe('dtcgProblems', () => {
     ).toEqual(['shadow.thumb: {colour.ink} is inside a composite value']);
   });
 
-  // design/tokens.json holds one note at each path.
+  // `noteProblems` reads one note for each token or `type` style.
   it('names a note at the root, and a group note over a token note', () => {
     expect(
       dtcgProblems({

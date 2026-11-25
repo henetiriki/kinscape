@@ -1,6 +1,6 @@
 ---
 paths:
-  - 'design/tokens.json'
+  - 'design/kinscape.tokens.json'
   - 'app/tokens.css'
   - 'app/layout.tsx'
   - 'app/components/**'
@@ -59,13 +59,13 @@ Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 
 
 ## Colours
 
-[`tokens.json`](../tokens.json) holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). The app reads the tokens as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. The usage text of a colour token in the design system gives its role and its contrast ratio. The `notes` group of `tokens.json` says where each token is used.
+[`design/kinscape.tokens.json`](../kinscape.tokens.json) holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). The app reads the tokens as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. The usage text of a colour token in the design system gives its role and its contrast ratio. The `$description` of each token says where it is used.
 
 Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, the map hatches contested claims and dashes approximate borders (NFR-06).
 
 ## Shape and depth
 
-The `radius` and `shadow` notes in `tokens.json` say where each value goes.
+The `$description` of each `radius` and `shadow` token says where it goes.
 
 | Token   | Value                                                                                                                                                     |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -76,7 +76,7 @@ The `radius` and `shadow` notes in `tokens.json` say where each value goes.
 
 ## Motion
 
-`tokens.json` holds the durations. Each token is a `motion` token.
+`design/kinscape.tokens.json` holds the durations. Each token is a `motion` token.
 
 | Token            | Use                                                        |
 | ---------------- | ---------------------------------------------------------- |

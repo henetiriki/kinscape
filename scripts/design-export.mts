@@ -225,7 +225,7 @@ const colours = (text: string) =>
     return { rgb: rgb.join(','), text: match };
   });
 
-/** Every colour in `design/tokens.json`, as `r,g,b`. */
+/** Every colour in `design/kinscape.tokens.json`, as `r,g,b`. */
 export const tokenColours = (tokensJson: string): Set<string> =>
   new Set(colours(tokensJson).map(({ rgb }) => rgb));
 
@@ -245,7 +245,7 @@ export const snapshotProblems = (
     ...unreadableColours(html),
     ...colours(html)
       .filter(({ rgb }) => !tokens.has(rgb))
-      .map(({ text }) => `${text} is not in design/tokens.json`),
+      .map(({ text }) => `${text} is not in design/kinscape.tokens.json`),
     ...markupValues(html).flatMap(value => [
       ...[...value.matchAll(FUNCTION_CALL)]
         .map(([, run]) => run?.replace(/^[\d_]+/, ''))
@@ -260,7 +260,7 @@ export const snapshotProblems = (
       ...[...value.matchAll(/(?<![\w#.%-])-?[a-z][\w-]*(?![\w(-])/gi)]
         .map(([word]) => word)
         .filter(word => COLOUR_KEYWORDS.has(word.toLowerCase()))
-        .map(word => `${word} is not in design/tokens.json`),
+        .map(word => `${word} is not in design/kinscape.tokens.json`),
       ...(value.includes('\\')
         ? [
             `${value.trim()} uses a CSS escape, which the colour check cannot read`,
@@ -1111,7 +1111,7 @@ export const exportSnapshots = async (
 
   const links = linkMap(canvas);
   const tokens = tokenColours(
-    readFileSync(join(root, 'design/tokens.json'), 'utf8')
+    readFileSync(join(root, 'design/kinscape.tokens.json'), 'utf8')
   );
   const tokenList = [...tokens];
   const urls = {

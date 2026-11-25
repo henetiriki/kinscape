@@ -79,7 +79,7 @@ describe('invisible', () => {
     'tsconfig.json',
     'data/polities.json',
     'public/favicon.svg',
-    'design/tokens.json',
+    'design/kinscape.tokens.json',
     'design/tokens.css',
     'design/sub/map.jpg',
     'design/map.jpg.png',

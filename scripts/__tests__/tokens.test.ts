@@ -57,6 +57,44 @@ it('writes app/tokens.css and design/tokens.generated.ts, and no other token fil
   }
 });
 
+const withScale = (settings: Record<string, unknown>) => ({
+  scale: { space: { $extensions: { kinscape: settings } } },
+  space: { '4': { $type: 'dimension', $value: '{scale.space.100}' } },
+});
+
+it('writes the steps into the token file, and the outputs hold the value of a step', async () => {
+  writeSource(withScale({ grid: 4, mode: 'grid', steps: 2, unit: 'px' }));
+
+  expect(await run(root)).toBe(0);
+
+  const written = JSON.parse(
+    readFileSync(join(root, 'design/kinscape.tokens.json'), 'utf8')
+  );
+
+  expect(written.scale.space['200'].$value).toEqual({ unit: 'px', value: 8 });
+  expect(readFileSync(join(root, OUTPUTS.css), 'utf8')).toContain(
+    '--space-4: 4px;'
+  );
+});
+
+it('fails on settings that give a name below 100, and names the group', async () => {
+  writeSource(
+    withScale({
+      above: 0,
+      base: 16,
+      below: 4,
+      mode: 'ratio',
+      ratio: 1.25,
+      round: 1,
+      unit: 'px',
+    })
+  );
+
+  await expect(generate(root)).rejects.toThrow(
+    'scale.space: the settings give a step below 100'
+  );
+});
+
 it('fails on a file that breaks the DTCG rules, and names the token', async () => {
   writeSource({ colour: { brand: { $value: '#264f29' } } });
 

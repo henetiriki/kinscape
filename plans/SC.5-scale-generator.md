@@ -48,7 +48,7 @@ SC.7 (#1199) changes the unit of `scale.text`, `scale.line` and `scale.space` to
 
 ## Alternatives considered
 
-- `npm run tokens` writes the token file with `JSON.stringify` only. It writes each `timingFunction` and colour list on many lines, so `npm run format:check` fails. Prettier keeps each line that the steps do not touch.
+- `npm run tokens` writes the token file with `JSON.stringify` only. It writes each `timingFunction` and colour list on many lines, so `npm run format:check` fails. `JSON.stringify` with two-space indent, then Prettier, keeps each line that the steps do not touch.
 - `scaleProblems` in `generate`, not in a test. `generate` writes the steps first, so the check finds nothing there. The Spec puts the check in the tests.
 
 ## Files that change
@@ -122,3 +122,10 @@ SC.7 (#1199) changes the unit of `scale.text`, `scale.line` and `scale.space` to
 - The Motion part of `design/topics/foundations.md`. It is a design system input, and check 10 keeps the README byte-identical. SC.8 (#1200) changes the motion tokens.
 
 ## Deviations
+
+- Big: `scripts/__tests__/word-count.test.ts` ("design/topics/tokens.md has a budget of 500") fails, because D11 raises the budget to 640. The plan does not list this test, so I left it as it is. The tech lead changes its expected value to 640.
+
+- The `tokens.md` budget is 640 words, inside the 650 limit.
+- `scripts/tokens.mts` runs `dtcgProblems` after `withSteps`, because a reference to a step names no token before the steps exist.
+- A hand edit of a step is tested through `scaleProblems`; `generate` and `run` rewrite the step.
+- Step 2 of Changing the design system (the `npm run design-system` comparison) and steps 3 to 6 are not run in this build. See the PR comment.

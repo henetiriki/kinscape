@@ -10,6 +10,7 @@ import {
   tokenLeaves,
 } from '@ks/lib/design/dtcg.mts';
 import { noteProblems } from '@ks/lib/design/notes.mts';
+import { scaleProblems } from '@ks/lib/design/scales.mts';
 import { generate, OUTPUTS } from '@ks/scripts/tokens.mts';
 
 const root = join(import.meta.dirname, '../../..');
@@ -27,7 +28,14 @@ it.each([OUTPUTS.css, OUTPUTS.ts])(
 );
 
 describe('design/tokens.generated.ts', () => {
-  const groups = Object.keys(source).filter(key => !key.startsWith('$'));
+  // The steps of `scale` are no output (#1197 D10).
+  const groups = Object.keys(source).filter(
+    key => !key.startsWith('$') && key !== 'scale'
+  );
+
+  it('holds no scale', () => {
+    expect('scale' in generatedTokens).toBe(false);
+  });
 
   it.each(groups)('holds the resolved value of each %s token', group => {
     const generated: Record<string, unknown> = generatedTokens;
@@ -58,6 +66,10 @@ describe('design/tokens.generated.ts', () => {
     // @ts-expect-error `nope` is not a token
     expect(generatedTokens.colour.nope).toBeUndefined();
   });
+});
+
+it('has each step of design/kinscape.tokens.json as its settings give it', () => {
+  expect(scaleProblems(source), 'run `npm run tokens`').toEqual([]);
 });
 
 // The CSS leaves out most map tokens, so a reference to one would name no variable.

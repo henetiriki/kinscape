@@ -25,19 +25,23 @@ const HEADER =
 const referenceOf = (token: TransformedToken): string | undefined =>
   referenceIn(token.original.$value);
 
-/** A `map` token goes to the CSS only if HTML markers draw with it too. */
-const inCss = ({ path }: TransformedToken): boolean =>
-  path[0] !== 'map' ||
-  MAP_SHARED.some(shared => {
-    const parts = shared.split('.');
+/** A `scale` step is no output: a token that refers to one gets its value (#1197 D5, D10). */
+const isStep = ({ path }: TransformedToken): boolean => path[0] === 'scale';
 
-    return parts.every((part, at) => path[at + 1] === part);
-  });
+/** A `map` token goes to the CSS only if HTML markers draw with it too. */
+const inCss = (token: TransformedToken): boolean =>
+  !isStep(token) &&
+  (token.path[0] !== 'map' ||
+    MAP_SHARED.some(shared => {
+      const parts = shared.split('.');
+
+      return parts.every((part, at) => token.path[at + 1] === part);
+    }));
 
 const cssValue = (token: TransformedToken): string => {
   const reference = referenceOf(token);
 
-  if (reference !== undefined) {
+  if (reference !== undefined && !reference.startsWith('scale.')) {
     return `var(${cssName(reference.split('.'))})`;
   }
 
@@ -75,7 +79,7 @@ const resolvedValue = (token: TransformedToken): number | string =>
 const resolvedTree = ({ allTokens }: FormatFnArguments['dictionary']): Tree => {
   const tree: Tree = {};
 
-  for (const token of allTokens) {
+  for (const token of allTokens.filter(step => !isStep(step))) {
     put(tree, token.path, resolvedValue(token));
   }
 

@@ -14,6 +14,7 @@ import {
   notesOf,
   referenceIn,
   resolvedText,
+  stepText,
   tokenLeaves,
   tokenText,
 } from '@ks/lib/design/dtcg.mts';
@@ -342,6 +343,25 @@ describe('resolvedText', () => {
     expect(() => resolvedText(sample, 'colour')).toThrow(
       'Unknown token reference {colour}'
     );
+  });
+});
+
+describe('stepText', () => {
+  const tree = {
+    colour: { brand: sample.colour as unknown },
+    scale: { space: { '400': { $type: 'dimension', $value: px(16) } } },
+    space: { '16': { $type: 'dimension', $value: '{scale.space.400}' } },
+  };
+  const [step] = tokenLeaves({ space: tree.space }, []);
+  const [brand, focus] = tokenLeaves(sample);
+
+  it('resolves a reference to a scale step', () => {
+    expect(stepText(tree, { ...step, path: ['space', '16'] })).toBe('16px');
+  });
+
+  it('keeps any other reference and writes any other value', () => {
+    expect(stepText(sample, focus)).toBe('{colour.brand}');
+    expect(stepText(sample, brand)).toBe('#18211b');
   });
 });
 

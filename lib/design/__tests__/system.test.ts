@@ -172,6 +172,24 @@ describe('systemTokens', () => {
     ).toBe('8px');
   });
 
+  it('writes a token that refers to a scale step as the value of the step, not an alias', () => {
+    expect(raw.space).toMatchObject({
+      '16': { $value: '{scale.space.400}' },
+    });
+    expect(
+      system.spacing.tokens.find(({ name }) => name === 'space-16')?.value
+    ).toBe('16px');
+    expect(
+      system.radius.tokens.find(({ name }) => name === 'radius-panel')?.value
+    ).toBe('12px');
+    expect(
+      system.type.groups
+        .flatMap(({ styles }) => styles)
+        .find(({ name }) => name === 'body')
+    ).toMatchObject({ fontSize: '15px', lineHeight: '22px' });
+    expect(JSON.stringify(system)).not.toContain('{scale.');
+  });
+
   it('puts the map colours beside the colours, with aliases as converted names', () => {
     const colours = new Map(
       system.color.tokens.map(({ name, value }) => [name, value])

@@ -15,6 +15,7 @@ How a token value travels.
 
 `design/kinscape.tokens.json` holds the values (DTCG 2025.10) in these groups:
 
+- `scale`
 - `colour`
 - `shadow`
 - `font`
@@ -36,6 +37,25 @@ A value can refer to another with `{group.name}`. A `$description` holds the usa
 `npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css` and `design/tokens.generated.ts`. Edit neither. `design.test.ts` fails if one is stale or the source breaks DTCG.
 
 `design/tokens.generated.ts` has an export for each group, plus `*Px` and `motionMs` numbers. It also has `hatchLine`, the hatch stripe as `rgba()` text.
+
+## Scales
+
+The `scale` group holds the step groups `text`, `line`, `space`, `radius` and `duration`. A token can refer to a step: `{scale.space.400}`. The CSS and the generated module have no `scale` group.
+
+The settings of a group are in `$extensions.kinscape`: `mode`, `unit` and these inputs:
+
+- **grid:** `grid`, `steps`.
+- **ratio:** `base`, `ratio`, `below`, `above`, `round`.
+- **hybrid:** `grid`, `limit`, `ratio`, `above`.
+- **explicit:** `values`.
+
+`npm run tokens` writes the steps. `design.test.ts` fails on a step that differs from its settings.
+
+A step name is a 100-based number. Grid, hybrid and explicit mode start at 100. In ratio mode, the base is 400. A name below 100 fails.
+
+Step n is base × ratioⁿ, then rounded to the nearest multiple of the rounding unit. A halfway value goes up.
+
+To change a scale, edit its settings and run `npm run tokens`.
 
 ## Direct readers
 

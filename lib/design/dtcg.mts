@@ -220,7 +220,7 @@ const walk = (node: Record<string, unknown>, path: string[]): Walk =>
 
       const inner = walk(child, at);
 
-      // `noteProblems` reads one note for each token or `type` style, so a group note would hide the notes under it.
+      // `noteProblems` reads one note for each token or `type` style, so a group note hides the notes under it.
       if (hasNote(child) && inner.leaves.some(({ token }) => hasNote(token))) {
         found.problems.push(
           `${at.join('.')}: a group note and a token note under it`

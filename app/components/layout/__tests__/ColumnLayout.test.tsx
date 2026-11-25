@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
 import { ColumnLayout } from '@ks/app/components/layout/ColumnLayout';
-import { breakpoint, layout } from '@ks/design/tokens.generated.ts';
+import { breakpointQuery, layout } from '@ks/design/tokens.generated.ts';
 
 const css = readFileSync(
   join(import.meta.dirname, '../ColumnLayout.module.css'),
@@ -147,7 +147,7 @@ it.each(COLUMNS.filter(({ phone }) => phone.length > 0))(
 
 it('uses the phone query of the breakpoint tokens, and a surface phone background for the list', () => {
   expect(media.slice(0, media.indexOf('{'))).toBe(
-    `@media (max-width: ${breakpoint['phone-width']}), (max-height: ${breakpoint['phone-height']}) `
+    `@media ${breakpointQuery.phone} /* breakpoint: phone */ `
   );
   expect(rule(media, "[data-column='list']")).toContain(
     'background: var(--surface)'

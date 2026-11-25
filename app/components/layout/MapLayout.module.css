@@ -93,7 +93,7 @@
   pointer-events: auto;
 }
 
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .search {
     left: var(--size-gutter-phone);
     right: var(--size-gutter-phone);

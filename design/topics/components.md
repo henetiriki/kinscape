@@ -29,7 +29,7 @@ The design system also holds components from `features/map/components/`, `featur
 **Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page.
 
 - Before you build Google sign-in, file an Intent issue.
-- A media query can't read a variable, so a test checks each `layout` size against `breakpoint`.
+- A media query can't read a variable, so `npm run tokens` writes each marked `@media` condition from `breakpoint`, and `breakpoints.test.ts` checks it.
 
 ## Components
 

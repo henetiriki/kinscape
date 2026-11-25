@@ -37,7 +37,7 @@
   display: block;
 }
 
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .form {
     gap: var(--space-16);
   }

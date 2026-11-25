@@ -213,39 +213,6 @@ describe('layout tokens', () => {
       }
     }
   );
-
-  // A media query can't read var(), so each one must match breakpoint (the desktop side is + 0.02px).
-  it('writes every media query size from breakpoint', () => {
-    const { breakpoint } = generatedTokens;
-    const allowed = new Map([
-      ['max-height', [px(breakpoint['phone-height'])]],
-      ['max-width', [px(breakpoint['phone-width'])]],
-      ['min-height', [px(breakpoint['phone-height']) + 0.02]],
-      ['min-width', [px(breakpoint['phone-width']) + 0.02]],
-    ]);
-    const found: string[] = [];
-
-    for (const path of globSync(
-      ['app/**/*.css', 'features/**/*.css', 'lib/ui/**/*.css'],
-      { cwd: root }
-    )) {
-      for (const [, feature, value] of read(path)
-        .matchAll(/@media[^{]*/g)
-        .flatMap(([query]) => [
-          ...query.matchAll(/\((m(?:in|ax)-(?:width|height)):\s*([\d.]+)px\)/g),
-        ])) {
-        if (
-          !allowed
-            .get(feature)!
-            .some(size => Math.abs(Number(value) - size) <= 0.001)
-        ) {
-          found.push(`${path}: ${feature}: ${value}px`);
-        }
-      }
-    }
-
-    expect(found).toEqual([]);
-  });
 });
 
 // The only type styles under 12.5px, each with the reason it is small.

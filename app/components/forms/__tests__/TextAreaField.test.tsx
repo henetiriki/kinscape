@@ -117,8 +117,6 @@ it('joins a given aria-describedby with the helper id, and marks nothing without
 it('takes the text field box, padding 10 12, and 16 / 24 text on a phone', () => {
   expect(css).toContain("composes: box from '@ks/app/components/forms/");
   expect(css).toContain('padding: 10px var(--space-12)');
-  expect(css).toMatch(
-    /@media \(max-width: 639\.98px\), \(max-height: 499\.98px\)/
-  );
+  expect(css).toMatch(/@media[^{]*\/\* breakpoint: phone \*\//);
   expect(css).toContain('var(--type-body-l-size)');
 });

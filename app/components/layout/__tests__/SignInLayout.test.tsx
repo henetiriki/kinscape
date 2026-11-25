@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
 import { SignInLayout } from '@ks/app/components/layout/SignInLayout';
-import { breakpoint, layout } from '@ks/design/tokens.generated.ts';
+import { breakpointQuery, layout } from '@ks/design/tokens.generated.ts';
 
 const css = readFileSync(
   join(import.meta.dirname, '../SignInLayout.module.css'),
@@ -45,7 +45,7 @@ it('sizes the desktop halves and form from the sign-in tokens', () => {
 
 it('stacks a 188px hero above the form at the phone breakpoint', () => {
   expect(media.slice(0, media.indexOf('{'))).toBe(
-    `@media (max-width: ${breakpoint['phone-width']}), (max-height: ${breakpoint['phone-height']}) `
+    `@media ${breakpointQuery.phone} /* breakpoint: phone */ `
   );
   expect(media).toContain('height: var(--layout-sign-in-hero-phone)');
   expect(layout['sign-in']['hero-phone']).toBe('188px');

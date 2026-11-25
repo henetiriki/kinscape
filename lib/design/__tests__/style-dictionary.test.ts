@@ -113,6 +113,34 @@ describe('buildTokens', () => {
     });
   });
 
+  // NFR-05
+  describe('the breakpoint queries', () => {
+    const withQuery = (width: number) => ({
+      breakpoint: {
+        $extensions: {
+          kinscape: { queries: { phone: '(max-width: {breakpoint.width})' } },
+        },
+        width: { $type: 'dimension', $value: px(width) },
+      },
+    });
+
+    it('exports the resolved query, and a changed width changes it', async () => {
+      const text = async (width: number) =>
+        (await buildTokens(withQuery(width), OUT))[OUT.ts];
+
+      expect(await text(640)).toContain(
+        'export const breakpointQuery = {\n  "phone": "(max-width: 640px)"\n} as const;'
+      );
+      expect(await text(600)).toContain('"phone": "(max-width: 600px)"');
+    });
+
+    it('exports no query when the file names none', async () => {
+      expect((await buildTokens(tokens, OUT))[OUT.ts]).not.toContain(
+        'breakpointQuery'
+      );
+    });
+  });
+
   describe('the TypeScript module', () => {
     const build = async () => (await buildTokens(tokens, OUT))[OUT.ts];
 

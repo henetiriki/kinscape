@@ -27,7 +27,7 @@
 }
 
 /* 16 / 24 on phones, so the browser does not zoom in. */
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .input {
     font-size: var(--type-body-l-size);
     line-height: var(--type-body-l-line);

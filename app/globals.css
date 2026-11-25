@@ -42,7 +42,7 @@ body {
 }
 
 /* A phone zooms by pinch: MapLibre's scale (bottom left) sits under the Layers button and the sheet. */
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .map .maplibregl-ctrl-bottom-left {
     display: none;
   }

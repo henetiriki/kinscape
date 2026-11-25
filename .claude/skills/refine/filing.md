@@ -41,7 +41,7 @@ After step 8 in `SKILL.md`, follow these steps:
 
 `spec.md` and `chore.md` link here. The _filing steps_ are the numbered list at the top of this file.
 
-If `gh` failed, the user pastes the body. Skip each `gh` call here and Write steps 1 to 3, 5 and 6. Print the body as Write step 4 says. Do not use _If `gh` fails_: its link opens a new issue.
+If `gh` failed, the user pastes the body. Skip each `gh` call here and Write steps 1 to 4, 6 and 7. Print the body as Write step 5 says. Print the comment text under the body. Do not use _If `gh` fails_: its link opens a new issue.
 
 ### Read
 
@@ -55,11 +55,12 @@ If `gh` failed, the user pastes the body. Skip each `gh` call here and Write ste
 Start after step 8 in `SKILL.md`.
 
 1. Show the current `blockedBy` and `relatesTo` links (_Links_ steps 1 and 2). Ask the question of filing step 1. To remove a link, the user uses the issue sidebar.
-2. Ask "Edit #<n> now?" as a question of its own. A yes covers the new links. If the answer is not yes, edit nothing.
+2. Ask "Edit #<n> now?" as a question of its own. Show the comment text of step 4 under it. A yes covers the new links and the comment. If the answer is not yes, edit nothing.
 3. Write the new body to a new file outside the repo, as filing steps 4 and 5 say. Run one `gh issue edit <n> --body-file <file>`.
-4. If the edit fails, say why. Print the whole new body. The tech lead pastes it into the issue's Edit box.
-5. Set the new links as _Links_ says.
-6. Run `gh issue view <n> --json labels`. If the issue has a plan file or an open plan PR, name it:
+4. If the edit worked, write the comment to a new file outside the repo. Start it with "The body changed:". List each box or section that changed, and what changed in it. List each decision that was added or answered. End it with "No other box changed." Run one `gh issue comment <n> --body-file <file>`.
+5. If the edit fails, say why. Post no comment. Print the whole new body and the comment text. The tech lead pastes the body into the issue's Edit box. If the comment fails, say why. Print the comment text.
+6. Set the new links as _Links_ says.
+7. Run `gh issue view <n> --json labels`. If the issue has a plan file or an open plan PR, name it:
    - If the issue has `status: blocked`, say that the label stays. Offer nothing.
    - If not, ask "Set `status: draft`?" as a question of its own. After a yes, swap the status label.
 

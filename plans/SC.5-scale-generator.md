@@ -2,7 +2,7 @@
 
 - **Spec:** #1197
 - **Requirement IDs:** none (tooling only)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -44,7 +44,7 @@ SC.7 (#1199) changes the unit of `scale.text`, `scale.line` and `scale.space` to
 - **B.** No `unit` key. The unit comes from `$type`: `dimension` gives px, `duration` gives ms. SC.7 adds the key. Cost: #1199 gets a line that adds `unit`.
 - **Other:** your own.
 
-Recommended: A, because the unit is a setting of the scale, and the unit and the inputs then sit in one place. B loses little now, but SC.7 must change the generator as well as the settings.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

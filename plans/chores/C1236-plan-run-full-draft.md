@@ -95,5 +95,5 @@ Step 3 of the Chore says "Add each gap that the draft finds as a drift item". Re
 ## Deviations
 
 - The build adds three tests, not two. The third checks that the closing line comes after the Spec-check lines.
-- The build raises the `refresh.md` budget to 524, not 506, for the added step references and the wording of step 2.
+- The build raises the `refresh.md` budget to 530, not 506. The count is 524. The tech lead chose to round up to the next 10, which the plan allowed only within the added words, so the budget is 6 words above the added count.
 - Step 2 starts a dependent item "If D<k> is the recommended option", not "If D<k> is A" as #1236 says. A drift item can recommend B. The tech lead chose this wording, and #1236 is reworded to match.

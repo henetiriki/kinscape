@@ -75,6 +75,7 @@ SC.7 (#1199) changes the unit of `scale.text`, `scale.line` and `scale.space` to
 | `lib/design/__tests__/tokens-page.test.ts`      | changed       | The page has the part "Scales".                                                                                                                                                                                                                                                                              |
 | `design/topics/tokens.md`                       | changed       | `scale` in the group list. The generated module has no `scale` export. A new part "Scales": the modes, the step names, the rounding rule, and how to change a scale.                                                                                                                                         |
 | `scripts/word-count.mts`                        | changed       | The `tokens.md` budget goes up by the words that the part adds, to 650 at most (D11).                                                                                                                                                                                                                        |
+| `scripts/__tests__/word-count.test.ts`          | changed       | The expected budget of `design/topics/tokens.md` is 640.                                                                                                                                                                                                                                                     |
 | `docs/architecture.md`                          | changed       | The "Tokens are the one source" row adds `lib/design/scales.mts`, and says that `design.test.ts` fails on a step that differs from its settings.                                                                                                                                                             |
 
 ## Order of work
@@ -123,9 +124,8 @@ SC.7 (#1199) changes the unit of `scale.text`, `scale.line` and `scale.space` to
 
 ## Deviations
 
-- Big: `scripts/__tests__/word-count.test.ts` ("design/topics/tokens.md has a budget of 500") fails, because D11 raises the budget to 640. The plan does not list this test, so I left it as it is. The tech lead changes its expected value to 640.
-
+- `scripts/__tests__/word-count.test.ts` expected 500 for `tokens.md`, and D11 sets 640. The tech lead chose to change the expected value to 640 in the local build session. The plan now lists the test.
 - The `tokens.md` budget is 640 words, inside the 650 limit.
 - `scripts/tokens.mts` runs `dtcgProblems` after `withSteps`, because a reference to a step names no token before the steps exist.
 - A hand edit of a step is tested through `scaleProblems`; `generate` and `run` rewrite the step.
-- Step 2 of Changing the design system (the `npm run design-system` comparison) and steps 3 to 6 are not run in this build. See the PR comment.
+- The local build session ran step 2 of Changing the design system. Only the `lastChange` and `createdOnFiles` stamps of `design-system.json` differ. The PR Evidence shows the diff.

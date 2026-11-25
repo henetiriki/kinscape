@@ -18,8 +18,15 @@ beforeEach(() => {
   mkdirSync(join(root, 'design'));
   mkdirSync(join(root, 'lib/design'), { recursive: true });
   writeFileSync(
-    join(root, 'design/tokens.json'),
-    JSON.stringify({ space: { '8': '8px' } })
+    join(root, 'design/kinscape.tokens.json'),
+    JSON.stringify({
+      space: {
+        '8': {
+          $type: 'dimension',
+          $value: { unit: 'px', value: 8 },
+        },
+      },
+    })
   );
   writeFileSync(
     join(root, 'a.module.css'),

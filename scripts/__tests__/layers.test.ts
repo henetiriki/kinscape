@@ -89,7 +89,7 @@ describe('problems', () => {
       problems({
         'app/components/forms/X.tsx': [
           'import Y = Z.Y;',
-          "type T = import('@ks/design/tokens.json').T;",
+          "type T = import('@ks/design/tokens.generated.ts').T;",
           'type U = typeof import(name);',
           'const a = require();',
           'const b = other();',
@@ -162,9 +162,9 @@ describe('isBuiltin', () => {
 
 describe('layerOf', () => {
   it.each([
-    ['design/tokens.json', 'design'],
-    ['design/tokens.mts', 'design'],
-    ['lib/design/tokens.mts', undefined],
+    ['design/kinscape.tokens.json', 'design'],
+    ['design/tokens.generated.ts', 'design'],
+    ['lib/design/dtcg.mts', undefined],
     ['lib/domain/map/map-date.ts', 'domain'],
     ['lib/domain/boundaries/model.mts', 'domain'],
     ['lib/domain', 'domain'],
@@ -300,7 +300,7 @@ describe('layerBreak', () => {
     [
       'lib/domain',
       'lib/domain/a.ts',
-      '@ks/design/tokens.mts',
+      '@ks/design/tokens.generated.ts',
       'lib/domain may not import design',
     ],
     [
@@ -396,8 +396,16 @@ describe('layerBreak', () => {
     ['lib/domain', 'lib/domain/a.ts', '../boundaries/model.mts'],
     ['lib/domain', 'lib/domain/a.ts', 'react'],
     ['server', 'server/a.ts', '@ks/lib/domain/a'],
-    ['app/components', 'app/components/forms/X.tsx', '@ks/design/tokens.json'],
-    ['app/components', 'app/components/forms/X.tsx', '@ks/design/tokens.mts'],
+    [
+      'app/components',
+      'app/components/forms/X.tsx',
+      '@ks/design/tokens.generated.ts',
+    ],
+    [
+      'app/components',
+      'app/components/forms/Y.tsx',
+      '@ks/design/kinscape.tokens.json',
+    ],
     [
       'app/components',
       'app/components/forms/X.tsx',
@@ -408,7 +416,11 @@ describe('layerBreak', () => {
       'app/components/a/X.tsx',
       '@ks/lib/ui/types',
     ],
-    ['lib/ui importing design', 'lib/ui/hatch.ts', '@ks/design/tokens.json'],
+    [
+      'lib/ui importing design',
+      'lib/ui/hatch.ts',
+      '@ks/design/tokens.generated.ts',
+    ],
     ['lib/ui importing itself', 'lib/ui/a.ts', '@ks/lib/ui/types'],
     ['features importing lib/ui', 'features/map/a.ts', '@ks/lib/ui/types'],
     ['app/ routes importing lib/ui', 'app/page.tsx', '@ks/lib/ui/types'],

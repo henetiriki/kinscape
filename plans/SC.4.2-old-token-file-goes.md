@@ -124,3 +124,8 @@ The cap in `scripts/pr-checks.mts` is 660 lines. The deletion of the generated `
 - Scale settings: SC.5. Breakpoints as a list: SC.6.
 
 ## Deviations
+
+- `lib/design/__tests__/dtcg-fixtures.ts` gains builders (`num`, `weight`, `press`, `ms`, `layer`, `shadowOf`) for the DTCG fixtures of D1.
+- `design.test.ts` also compares `hatchLine` with `rgba(139, 74, 28, 0.34)`.
+- The runner denied edits to `.claude/skills/*/SKILL.md`. The two skill rows are not built: a person edits them.
+- Steps 3 to 5 of the design system steps need a signed-in session. They are not done.

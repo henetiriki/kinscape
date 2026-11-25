@@ -1,21 +1,33 @@
 /** What the literals check and the size check share: the property-to-group table and the CSS scan. */
 
-import type { Tree } from '#ks/design/types.ts';
-import type { Rule } from '#ks/lib/design/types.ts';
+import type { DtcgTree, Rule } from '#ks/lib/design/types.ts';
 
-import { isTree } from '#ks/design/tokens.mts';
+import { isTree, tokenLeaves, tokenText } from '#ks/lib/design/dtcg.mts';
 
 /** A number with its unit. The key drops its sign, so `-8px` equals `8px`. */
 const NUMBER =
   /(?<![\w.#])(?<!\w-)-?(?<digits>\d*\.\d+|\d+)(?<unit>px|em|rem|ms|s)?(?![\w%.])/g;
 
-export const leaves = (node: unknown): string[] =>
-  isTree(node) ? Object.values(node).flatMap(leaves) : [String(node)];
+/** The text of each token of `group`, or of the tokens that `keep` takes by path. */
+const texts = (
+  tokens: DtcgTree,
+  group: string,
+  keep: (path: string[]) => boolean = () => true
+): string[] => {
+  const node = tokens[group];
 
-const field = (group: string, key: string) => (tokens: Tree) =>
-  Object.values(tokens[group] as Tree).map(token => (token as Tree)[key]);
+  return isTree(node)
+    ? tokenLeaves(node, [group])
+        .filter(({ path }) => keep(path))
+        .map(tokenText)
+    : [];
+};
 
-const whole = (group: string) => (tokens: Tree) => [tokens[group]];
+/** The `key` token of each `type` style: `type.<style>.<key>`. */
+const field = (group: string, key: string) => (tokens: DtcgTree) =>
+  texts(tokens, group, path => path.length === 3 && path[2] === key);
+
+const whole = (group: string) => (tokens: DtcgTree) => texts(tokens, group);
 
 const RULES: [RegExp, Rule][] = [
   [/^border(-[a-z]+)*-radius$/, { kind: 'number', pick: whole('radius') }],
@@ -38,7 +50,10 @@ const RULES: [RegExp, Rule][] = [
   [/^@media$/, { kind: 'number', pick: whole('breakpoint') }],
   [
     /^(color|background|border|outline|fill|stroke)(-|$)/,
-    { kind: 'colour', pick: tokens => [tokens.colour, tokens.map] },
+    {
+      kind: 'colour',
+      pick: tokens => [...texts(tokens, 'colour'), ...texts(tokens, 'map')],
+    },
   ],
 ];
 

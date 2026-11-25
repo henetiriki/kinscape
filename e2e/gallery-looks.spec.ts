@@ -4,15 +4,12 @@ import { expect, test } from '@playwright/test';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { map } from '@ks/design/tokens.generated.ts';
 import { hitsControl } from '@ks/e2e/hits';
 import { GALLERY, OUTPUT, PREVIEW_PAD } from '@ks/lib/design/cards.mts';
 import { PLACED_X, PLACED_Y } from '@ks/lib/design/samples.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
 import { HATCH_LINE } from '@ks/lib/ui/hatch';
-
-const { map } = resolveTokens(rawTokens);
 
 // NFR-05, NFR-06: the look of the shared controls, read from the gallery files in
 // .design-system/gallery/. Like e2e/design-gallery.spec.ts, each test opens files from disk, with no app.

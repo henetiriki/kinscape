@@ -1,6 +1,24 @@
 /** Token names in CSS, the font stack, the map tokens that CSS shares, and the stray-colour check. */
 
-import type { Tree } from '#ks/design/types.ts';
+import type { DtcgTree } from '#ks/lib/design/types.ts';
+
+/** A colour token as `#rrggbb`. */
+export const HEX_COLOUR = /^#([0-9a-f]{6})$/i;
+
+/** The red, green and blue of a `#rrggbb` colour. */
+export const hexChannels = (value: string): [number, number, number] => {
+  const hex = HEX_COLOUR.exec(value)?.[1];
+
+  if (hex === undefined) {
+    throw new Error(`Not a #rrggbb colour: ${value}`);
+  }
+
+  return [0, 2, 4].map(at => Number.parseInt(hex.slice(at, at + 2), 16)) as [
+    number,
+    number,
+    number,
+  ];
+};
 
 /** The custom property for a token: colours are unprefixed, other groups keep their group. */
 export const cssName = (path: string[]): string =>
@@ -68,7 +86,7 @@ export const coloursIn = (text: string): string[] => {
 };
 
 /** The colours in `text` that no token has, each listed once. */
-export const strayColours = (text: string, tokens: Tree): string[] => {
+export const strayColours = (text: string, tokens: DtcgTree): string[] => {
   const known = new Set(coloursIn(JSON.stringify(tokens)));
 
   return [...new Set(coloursIn(text))].filter(colour => !known.has(colour));

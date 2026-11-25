@@ -2,9 +2,13 @@
 
 import type { DtcgTree } from '#ks/lib/design/types.ts';
 
-import { isTree } from '#ks/design/tokens.mts';
 import { coloursIn } from '#ks/lib/design/css.mts';
-import { notesOf, resolvedText, tokenLeaves } from '#ks/lib/design/dtcg.mts';
+import {
+  isTree,
+  notesOf,
+  resolvedText,
+  tokenLeaves,
+} from '#ks/lib/design/dtcg.mts';
 
 /** Groups where every token needs a note. `type` needs one per style, `map` one per colour. */
 const GROUPS = new Set([

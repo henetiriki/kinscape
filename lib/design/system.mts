@@ -10,11 +10,11 @@ import type {
   SystemTokens,
 } from '#ks/lib/design/types.ts';
 
-import { REFERENCE } from '#ks/design/tokens.mts';
 import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '#ks/lib/design/bundle.mts';
 import { familyName, systemName } from '#ks/lib/design/css.mts';
 import {
   notesOf,
+  REFERENCE,
   resolvedText,
   tokenLeaves,
   tokenText,

@@ -5,6 +5,15 @@ import { describe, expect, it } from 'vitest';
 import type { SizeEntry } from '@ks/lib/design/types.ts';
 
 import {
+  colour,
+  layer,
+  num,
+  press,
+  px,
+  shadowOf,
+  weight,
+} from '@ks/lib/design/__tests__/dtcg-fixtures';
+import {
   isSizeFile,
   listOf,
   listProblems,
@@ -13,21 +22,30 @@ import {
 import { trackedFiles } from '@ks/scripts/__tests__/tracked';
 
 const root = join(import.meta.dirname, '../../..');
-const real = JSON.parse(readFileSync(join(root, 'design/tokens.json'), 'utf8'));
+const real = JSON.parse(
+  readFileSync(join(root, 'design/kinscape.tokens.json'), 'utf8')
+);
 
 const tokens = {
-  breakpoint: { 'phone-width': '639.98px' },
-  colour: { brand: '#264f29' },
-  focus: { offset: '2px', width: '2px' },
-  motion: { press: '120ms ease-out' },
-  radius: { link: '2px' },
-  shadow: { modal: '0 10px 40px rgb(24 33 27 / 0.3)' },
-  size: { chip: '36px' },
-  space: { '8': '8px' },
-  type: {
-    caption: { line: '18px', size: '12.5px', tracking: '0.1em', weight: '600' },
+  breakpoint: { 'phone-width': px(639.98) },
+  colour: { brand: colour('#264f29') },
+  focus: { offset: px(2), width: px(2) },
+  motion: { press: press(120) },
+  radius: { link: px(2) },
+  shadow: {
+    modal: shadowOf(layer(10, 40, { ...colour('#18211b').$value, alpha: 0.3 })),
   },
-  z: { furniture: '1' },
+  size: { chip: px(36) },
+  space: { '8': px(8) },
+  type: {
+    caption: {
+      line: px(18),
+      size: px(12.5),
+      tracking: num(0.1),
+      weight: weight(600),
+    },
+  },
+  z: { furniture: num(1) },
 };
 
 const lines = (...rows: string[]) => `.a {\n${rows.join('\n')}\n}\n`;

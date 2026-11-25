@@ -2,7 +2,7 @@
 
 import type { DtcgTree } from '#ks/lib/design/types.ts';
 
-import { HEX_COLOUR, hexChannels } from '#ks/design/tokens.mts';
+import { HEX_COLOUR, hexChannels } from '#ks/lib/design/css.mts';
 import { resolvedText } from '#ks/lib/design/dtcg.mts';
 
 type Rgb = [number, number, number];

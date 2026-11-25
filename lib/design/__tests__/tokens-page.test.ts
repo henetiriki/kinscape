@@ -9,10 +9,11 @@ type Source = { path: string; text: string };
 const PAGE = 'design/topics/tokens.md';
 const SOURCE = /\.(?:ts|tsx|mts|mjs)$/;
 const TEST_FOLDER = /(?:^|\/)(?:__tests__|e2e)\//;
-// A quoted string that ends in the token file: an import specifier or a path to read.
-const TOKEN_FILE = /(['"])[^'"\n]*design\/tokens\.json\1/;
+// A quoted string that ends in a token file: an import specifier or a path to read.
+const TOKEN_FILE =
+  /(['"])[^'"\n]*design\/(?:kinscape\.tokens\.json|tokens\.generated\.ts)\1/;
 
-/** The files outside tests that import or read `design/tokens.json`. */
+/** The files outside tests that import or read `design/kinscape.tokens.json` or `design/tokens.generated.ts`. */
 const readersOf = (files: Source[]) =>
   files
     .filter(
@@ -31,44 +32,48 @@ describe('readersOf', () => {
       readersOf([
         {
           path: 'a/import.ts',
-          text: "import t from '@ks/design/tokens.json';",
+          text: "import { colour } from '@ks/design/tokens.generated.ts';",
         },
         {
           path: 'a/read.mts',
-          text: "readFileSync(join(root, 'design/tokens.json'))",
+          text: "readFileSync(join(root, 'design/kinscape.tokens.json'))",
         },
       ])
     ).toEqual(['a/import.ts', 'a/read.mts']);
   });
 
   it('skips a test, an e2e spec, a comment and a file of another kind', () => {
-    const text = "import t from '@ks/design/tokens.json';";
+    const text = "import t from '@ks/design/tokens.generated.ts';";
 
     expect(
       readersOf([
         { path: 'a/__tests__/x.test.ts', text },
         { path: 'e2e/x.spec.ts', text },
         { path: 'a/doc.md', text },
-        { path: 'a/comment.ts', text: '/** Reads `design/tokens.json`. */' },
+        {
+          path: 'a/comment.ts',
+          text: '/** Reads `design/kinscape.tokens.json`. */',
+        },
       ])
     ).toEqual([]);
   });
 });
 
 describe('unnamed', () => {
-  it('fails for a reader that the page does not name, and names it', () => {
-    const readers = readersOf([
-      {
-        path: 'synthetic/reader.ts',
-        text: "import t from '@ks/design/tokens.json';",
-      },
-    ]);
+  it.each([
+    "import t from '@ks/design/tokens.generated.ts';",
+    "readFileSync('design/kinscape.tokens.json')",
+  ])(
+    'fails for a reader that the page does not name, and names it: %s',
+    text => {
+      const readers = readersOf([{ path: 'synthetic/reader.ts', text }]);
 
-    expect(unnamed(readers, 'Page names `other/file.ts`.')).toEqual([
-      'synthetic/reader.ts',
-    ]);
-    expect(unnamed(readers, 'Page names `synthetic/reader.ts`.')).toEqual([]);
-  });
+      expect(unnamed(readers, 'Page names `other/file.ts`.')).toEqual([
+        'synthetic/reader.ts',
+      ]);
+      expect(unnamed(readers, 'Page names `synthetic/reader.ts`.')).toEqual([]);
+    }
+  );
 });
 
 describe('the token page', () => {
@@ -86,7 +91,7 @@ describe('the token page', () => {
     expect(readFileSync(PAGE, 'utf8')).toMatch(/^## The size check$/m);
   });
 
-  it('names each module outside tests that reads design/tokens.json', () => {
+  it('names each module outside tests that reads a token file', () => {
     expect(unnamed(readers, readFileSync(PAGE, 'utf8'))).toEqual([]);
   });
 });

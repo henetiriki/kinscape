@@ -2,14 +2,12 @@
 
 import ts from 'typescript';
 
-import type { Tree } from '#ks/design/types.ts';
-import type { Size, SizeEntry } from '#ks/lib/design/types.ts';
+import type { DtcgTree, Size, SizeEntry } from '#ks/lib/design/types.ts';
 
 import {
   blank,
   declarations,
   keyOf,
-  leaves,
   numbers,
   OWN,
   rulesFor,
@@ -93,32 +91,32 @@ const lengthsIn = (property: string, value: string): Found[] => {
 };
 
 /** The keys of the tokens of a property's groups. */
-const tokenKeys = (property: string, tokens: Tree): Set<string> =>
+const tokenKeys = (property: string, tokens: DtcgTree): Set<string> =>
   new Set(
     rulesFor(property)
       .filter(rule => rule.kind !== 'colour' && rule.kind !== 'shadow')
       .flatMap(rule =>
-        leaves(rule.pick(tokens)).flatMap(token =>
-          numbers(token, rule.kind === 'duration').map(number => number.key)
-        )
+        rule
+          .pick(tokens)
+          .flatMap(token =>
+            numbers(token, rule.kind === 'duration').map(number => number.key)
+          )
       )
   );
 
 const flat = (text: string) =>
   text.trim().replaceAll(/\s+/g, ' ').toLowerCase();
 
-const isShadowToken = (property: string, value: string, tokens: Tree) =>
+const isShadowToken = (property: string, value: string, tokens: DtcgTree) =>
   SHADOW.test(property) &&
   rulesFor(property).some(rule =>
-    leaves(rule.pick(tokens)).some(
-      token => flat(token) === flat(withoutVars(value))
-    )
+    rule.pick(tokens).some(token => flat(token) === flat(withoutVars(value)))
   );
 
 type Part = { at: number; property: string; token: boolean; value: string };
 
 /** The sizes of one value with their offset in it. `token`: the size equals a token of its group. */
-const partsOf = (property: string, value: string, tokens: Tree): Part[] => {
+const partsOf = (property: string, value: string, tokens: DtcgTree): Part[] => {
   if (!isRead(property)) return [];
 
   const keys = tokenKeys(property, tokens);
@@ -139,7 +137,7 @@ const ownOf = (row: string, line = false) =>
 const lineAt = (text: string, offset: number) =>
   text.slice(0, offset).split('\n').length;
 
-const cssSizes = (file: string, text: string, tokens: Tree): Size[] => {
+const cssSizes = (file: string, text: string, tokens: DtcgTree): Size[] => {
   const rows = text.split('\n');
   const clean = uncommented(text);
   const make = (part: Part, line: number): Size => ({
@@ -226,7 +224,7 @@ const styleObjects = (root: ts.Node): ts.ObjectLiteralExpression[] => {
   return found;
 };
 
-const tsxSizes = (file: string, text: string, tokens: Tree): Size[] => {
+const tsxSizes = (file: string, text: string, tokens: DtcgTree): Size[] => {
   if (!text.includes('style=')) return [];
 
   const source = ts.createSourceFile(
@@ -283,7 +281,11 @@ export const isSizeFile = (path: string): boolean =>
     !/\.(test|spec)\.tsx$/.test(path));
 
 /** Each size of a file that is not a pass form, with its status. `.css` is CSS, `.tsx` is a `style` prop. */
-export const sizesIn = (file: string, text: string, tokens: Tree): Size[] =>
+export const sizesIn = (
+  file: string,
+  text: string,
+  tokens: DtcgTree
+): Size[] =>
   file.endsWith('.css')
     ? cssSizes(file, text, tokens)
     : tsxSizes(file, text, tokens);

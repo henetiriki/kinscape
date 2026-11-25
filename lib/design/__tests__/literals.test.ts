@@ -3,34 +3,49 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
+import {
+  colour,
+  layer,
+  ms,
+  num,
+  press,
+  px,
+  shadowOf,
+  weight,
+} from '@ks/lib/design/__tests__/dtcg-fixtures';
 import { tokenLiterals } from '@ks/lib/design/literals.mts';
 
 const root = join(import.meta.dirname, '../../..');
-const real = JSON.parse(readFileSync(join(root, 'design/tokens.json'), 'utf8'));
+const real = JSON.parse(
+  readFileSync(join(root, 'design/kinscape.tokens.json'), 'utf8')
+);
+
+const ink = colour('#18211b').$value;
+const brand = colour('#264f29').$value;
 
 const tokens = {
-  colour: { brand: '#264f29', ink: '#18211b' },
-  focus: { offset: '2px', width: '2px' },
-  layout: { 'popup-width': '304px' },
-  map: { sea: '#c9d5d2' },
-  motion: { press: '120ms ease-out', toast: '4000ms' },
-  radius: { full: '999px', link: '2px' },
+  colour: { brand: colour('#264f29'), ink: colour('#18211b') },
+  focus: { offset: px(2), width: px(2) },
+  layout: { 'popup-width': px(304) },
+  map: { sea: colour('#c9d5d2') },
+  motion: { press: press(120), toast: ms(4000) },
+  radius: { full: px(999), link: px(2) },
   shadow: {
-    modal: '0 10px 40px rgb(24 33 27 / 0.3)',
-    thumb: '0 0 0 1px #264f29, 0 2px 6px rgb(24 33 27 / 0.3)',
+    modal: shadowOf(layer(10, 40, { ...ink, alpha: 0.3 })),
+    thumb: shadowOf(layer(0, 0, brand, 1), layer(2, 6, { ...ink, alpha: 0.3 })),
   },
-  size: { chip: '36px' },
-  space: { '12': '12px', '8': '8px' },
+  size: { chip: px(36) },
+  space: { '12': px(12), '8': px(8) },
   type: {
     caption: {
-      font: '{font.body}',
-      line: '18px',
-      size: '12.5px',
-      tracking: '0.1em',
-      weight: '600',
+      font: { $type: 'fontFamily', $value: '{font.body}' },
+      line: px(18),
+      size: px(12.5),
+      tracking: num(0.1),
+      weight: weight(600),
     },
   },
-  z: { furniture: '1' },
+  z: { furniture: num(1) },
 };
 
 const lines = (...rows: string[]) => `.a {\n${rows.join('\n')}\n}\n`;
@@ -104,6 +119,12 @@ describe('a literal that equals a token of its group', () => {
       problems('.a:hover {\n  gap: 8px;\n}\n.b[data-x] { margin: 8px; }')
     ).toMatchObject([{ line: 2 }, { line: 4 }]);
   });
+});
+
+it('passes each literal when the token file has no group for it', () => {
+  expect(tokenLiterals(lines('  gap: 8px;', '  color: #18211b;'), {})).toEqual(
+    []
+  );
 });
 
 describe('a form that the test skips', () => {

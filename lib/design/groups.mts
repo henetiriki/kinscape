@@ -2,7 +2,7 @@
 
 import type { DtcgTree, Rule } from '#ks/lib/design/types.ts';
 
-import { isTree, tokenLeaves, tokenText } from '#ks/lib/design/dtcg.mts';
+import { isTree, stepText, tokenLeaves } from '#ks/lib/design/dtcg.mts';
 
 /** A number with its unit. The key drops its sign, so `-8px` equals `8px`. */
 const NUMBER =
@@ -19,7 +19,7 @@ const texts = (
   return isTree(node)
     ? tokenLeaves(node, [group])
         .filter(({ path }) => keep(path))
-        .map(tokenText)
+        .map(token => stepText(tokens, token))
     : [];
 };
 

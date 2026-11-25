@@ -83,6 +83,36 @@ describe('buildTokens', () => {
     );
   });
 
+  describe('a scale group', () => {
+    const withScale = {
+      ...tokens,
+      scale: {
+        space: {
+          $extensions: {
+            kinscape: { grid: 4, mode: 'grid', steps: 1, unit: 'px' },
+          },
+          '100': { $type: 'dimension', $value: px(4) },
+        },
+      },
+      space: { '4': { $type: 'dimension', $value: '{scale.space.100}' } },
+    };
+
+    it('writes no step and no var(--scale-…), and a token that refers to a step gets its value', async () => {
+      const css = (await buildTokens(withScale, OUT))[OUT.css];
+
+      expect(css).toContain('  --space-4: 4px;');
+      expect(css).not.toContain('scale');
+    });
+
+    it('writes no scale export, and settings make no token', async () => {
+      const text = (await buildTokens(withScale, OUT))[OUT.ts];
+
+      expect(text).not.toContain('scale');
+      expect(text).not.toContain('"grid"');
+      expect(text).toContain('"4": "4px"');
+    });
+  });
+
   describe('the TypeScript module', () => {
     const build = async () => (await buildTokens(tokens, OUT))[OUT.ts];
 

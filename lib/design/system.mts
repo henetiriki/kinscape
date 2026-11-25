@@ -16,6 +16,7 @@ import {
   notesOf,
   REFERENCE,
   resolvedText,
+  stepText,
   tokenLeaves,
   tokenText,
 } from '#ks/lib/design/dtcg.mts';
@@ -101,7 +102,7 @@ const groupFor = (
       const text = Object.fromEntries(
         tokenLeaves(style, ['type', name]).map(token => [
           token.path[2],
-          tokenText(token),
+          stepText(tree, token),
         ])
       );
 
@@ -162,7 +163,8 @@ export const systemTokens = (
   const notes = notesOf(tree);
   const font = tokenLeaves(tree.font as DtcgTree, ['font']);
   const keys = font.map(({ path }) => path[1]);
-  const list = (...groups: string[]) => noted(tree, notes, groups, tokenText);
+  const list = (...groups: string[]) =>
+    noted(tree, notes, groups, token => stepText(tree, token));
   /** The format rules allow an alias only in `color`, so these families hold values. */
   const valued = (group: string) => ({
     tokens: noted(tree, notes, [group], ({ path }) =>

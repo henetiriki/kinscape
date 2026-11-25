@@ -168,6 +168,15 @@ export const resolvedText = (tree: DtcgTree, path: string): string => {
     : resolvedText(tree, reference);
 };
 
+/** `tokenText`, except that a reference to a `scale` step gives the CSS text of the step: no reader outside the token file knows a step (#1197). */
+export const stepText = (tree: DtcgTree, token: DtcgToken): string => {
+  const reference = referenceIn(token.$value);
+
+  return reference?.startsWith('scale.')
+    ? resolvedText(tree, reference)
+    : tokenText(token);
+};
+
 /** Each `$description` of a group or a token, with the path it sits at, in file order. A member that is not a group or a token has none. */
 export const descriptions = (
   node: DtcgTree,

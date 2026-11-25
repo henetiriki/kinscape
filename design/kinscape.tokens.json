@@ -1,4 +1,411 @@
 {
+  "scale": {
+    "text": {
+      "100": {
+        "$description": "Explicit list, value 1.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 11
+        }
+      },
+      "200": {
+        "$description": "Explicit list, value 2.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 12
+        }
+      },
+      "300": {
+        "$description": "Explicit list, value 3.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 12.5
+        }
+      },
+      "400": {
+        "$description": "Explicit list, value 4.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 13
+        }
+      },
+      "500": {
+        "$description": "Explicit list, value 5.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 13.5
+        }
+      },
+      "600": {
+        "$description": "Explicit list, value 6.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 14
+        }
+      },
+      "700": {
+        "$description": "Explicit list, value 7.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 15
+        }
+      },
+      "800": {
+        "$description": "Explicit list, value 8.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 16
+        }
+      },
+      "900": {
+        "$description": "Explicit list, value 9.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 22
+        }
+      },
+      "1000": {
+        "$description": "Explicit list, value 10.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 24
+        }
+      },
+      "1100": {
+        "$description": "Explicit list, value 11.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 28
+        }
+      },
+      "1200": {
+        "$description": "Explicit list, value 12.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 32
+        }
+      },
+      "1300": {
+        "$description": "Explicit list, value 13.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 52
+        }
+      },
+      "$extensions": {
+        "kinscape": {
+          "mode": "explicit",
+          "unit": "px",
+          "values": [11, 12, 12.5, 13, 13.5, 14, 15, 16, 22, 24, 28, 32, 52]
+        }
+      }
+    },
+    "line": {
+      "100": {
+        "$description": "Explicit list, value 1.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 12
+        }
+      },
+      "200": {
+        "$description": "Explicit list, value 2.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 16
+        }
+      },
+      "300": {
+        "$description": "Explicit list, value 3.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 18
+        }
+      },
+      "400": {
+        "$description": "Explicit list, value 4.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 20
+        }
+      },
+      "500": {
+        "$description": "Explicit list, value 5.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 22
+        }
+      },
+      "600": {
+        "$description": "Explicit list, value 6.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 24
+        }
+      },
+      "700": {
+        "$description": "Explicit list, value 7.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 28
+        }
+      },
+      "800": {
+        "$description": "Explicit list, value 8.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 32
+        }
+      },
+      "900": {
+        "$description": "Explicit list, value 9.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 40
+        }
+      },
+      "1000": {
+        "$description": "Explicit list, value 10.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 56
+        }
+      },
+      "$extensions": {
+        "kinscape": {
+          "mode": "explicit",
+          "unit": "px",
+          "values": [12, 16, 18, 20, 22, 24, 28, 32, 40, 56]
+        }
+      }
+    },
+    "space": {
+      "100": {
+        "$description": "Explicit list, value 1.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 4
+        }
+      },
+      "200": {
+        "$description": "Explicit list, value 2.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 8
+        }
+      },
+      "300": {
+        "$description": "Explicit list, value 3.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 12
+        }
+      },
+      "400": {
+        "$description": "Explicit list, value 4.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 16
+        }
+      },
+      "500": {
+        "$description": "Explicit list, value 5.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 20
+        }
+      },
+      "600": {
+        "$description": "Explicit list, value 6.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 24
+        }
+      },
+      "700": {
+        "$description": "Explicit list, value 7.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 32
+        }
+      },
+      "800": {
+        "$description": "Explicit list, value 8.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 40
+        }
+      },
+      "900": {
+        "$description": "Explicit list, value 9.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 48
+        }
+      },
+      "1000": {
+        "$description": "Explicit list, value 10.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 64
+        }
+      },
+      "$extensions": {
+        "kinscape": {
+          "mode": "explicit",
+          "unit": "px",
+          "values": [4, 8, 12, 16, 20, 24, 32, 40, 48, 64]
+        }
+      }
+    },
+    "radius": {
+      "100": {
+        "$description": "Explicit list, value 1.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 2
+        }
+      },
+      "200": {
+        "$description": "Explicit list, value 2.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 4
+        }
+      },
+      "300": {
+        "$description": "Explicit list, value 3.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 7
+        }
+      },
+      "400": {
+        "$description": "Explicit list, value 4.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 8
+        }
+      },
+      "500": {
+        "$description": "Explicit list, value 5.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 9
+        }
+      },
+      "600": {
+        "$description": "Explicit list, value 6.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 12
+        }
+      },
+      "700": {
+        "$description": "Explicit list, value 7.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 18
+        }
+      },
+      "$extensions": {
+        "kinscape": {
+          "mode": "explicit",
+          "unit": "px",
+          "values": [2, 4, 7, 8, 9, 12, 18]
+        }
+      }
+    },
+    "duration": {
+      "100": {
+        "$description": "Explicit list, value 1.",
+        "$type": "duration",
+        "$value": {
+          "unit": "ms",
+          "value": 120
+        }
+      },
+      "200": {
+        "$description": "Explicit list, value 2.",
+        "$type": "duration",
+        "$value": {
+          "unit": "ms",
+          "value": 160
+        }
+      },
+      "300": {
+        "$description": "Explicit list, value 3.",
+        "$type": "duration",
+        "$value": {
+          "unit": "ms",
+          "value": 240
+        }
+      },
+      "400": {
+        "$description": "Explicit list, value 4.",
+        "$type": "duration",
+        "$value": {
+          "unit": "ms",
+          "value": 600
+        }
+      },
+      "500": {
+        "$description": "Explicit list, value 5.",
+        "$type": "duration",
+        "$value": {
+          "unit": "ms",
+          "value": 4000
+        }
+      },
+      "$extensions": {
+        "kinscape": {
+          "mode": "explicit",
+          "unit": "ms",
+          "values": [120, 160, 240, 600, 4000]
+        }
+      }
+    }
+  },
   "colour": {
     "brand": {
       "$type": "color",
@@ -647,17 +1054,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 52,
-          "unit": "px"
-        }
+        "$value": "{scale.text.1300}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 56,
-          "unit": "px"
-        }
+        "$value": "{scale.line.1000}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -676,17 +1077,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 32,
-          "unit": "px"
-        }
+        "$value": "{scale.text.1200}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 40,
-          "unit": "px"
-        }
+        "$value": "{scale.line.900}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -705,17 +1100,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 28,
-          "unit": "px"
-        }
+        "$value": "{scale.text.1100}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 32,
-          "unit": "px"
-        }
+        "$value": "{scale.line.800}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -734,17 +1123,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 24,
-          "unit": "px"
-        }
+        "$value": "{scale.text.1000}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 32,
-          "unit": "px"
-        }
+        "$value": "{scale.line.800}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -763,17 +1146,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 22,
-          "unit": "px"
-        }
+        "$value": "{scale.text.900}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 28,
-          "unit": "px"
-        }
+        "$value": "{scale.line.700}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -792,17 +1169,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 15,
-          "unit": "px"
-        }
+        "$value": "{scale.text.700}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 22,
-          "unit": "px"
-        }
+        "$value": "{scale.line.500}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -821,17 +1192,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 16,
-          "unit": "px"
-        }
+        "$value": "{scale.text.800}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 24,
-          "unit": "px"
-        }
+        "$value": "{scale.line.600}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -850,17 +1215,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 15,
-          "unit": "px"
-        }
+        "$value": "{scale.text.700}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 22,
-          "unit": "px"
-        }
+        "$value": "{scale.line.500}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -879,17 +1238,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 14,
-          "unit": "px"
-        }
+        "$value": "{scale.text.600}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 20,
-          "unit": "px"
-        }
+        "$value": "{scale.line.400}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -908,17 +1261,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 13,
-          "unit": "px"
-        }
+        "$value": "{scale.text.400}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 20,
-          "unit": "px"
-        }
+        "$value": "{scale.line.400}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -937,17 +1284,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 12.5,
-          "unit": "px"
-        }
+        "$value": "{scale.text.300}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 18,
-          "unit": "px"
-        }
+        "$value": "{scale.line.300}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -966,17 +1307,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 11,
-          "unit": "px"
-        }
+        "$value": "{scale.text.100}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 16,
-          "unit": "px"
-        }
+        "$value": "{scale.line.200}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -995,17 +1330,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 11,
-          "unit": "px"
-        }
+        "$value": "{scale.text.100}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 16,
-          "unit": "px"
-        }
+        "$value": "{scale.line.200}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1024,17 +1353,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 11,
-          "unit": "px"
-        }
+        "$value": "{scale.text.100}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 12,
-          "unit": "px"
-        }
+        "$value": "{scale.line.100}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1053,17 +1376,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 16,
-          "unit": "px"
-        }
+        "$value": "{scale.text.800}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 24,
-          "unit": "px"
-        }
+        "$value": "{scale.line.600}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1082,17 +1399,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 15,
-          "unit": "px"
-        }
+        "$value": "{scale.text.700}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 22,
-          "unit": "px"
-        }
+        "$value": "{scale.line.500}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1111,17 +1422,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 13.5,
-          "unit": "px"
-        }
+        "$value": "{scale.text.500}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 20,
-          "unit": "px"
-        }
+        "$value": "{scale.line.400}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1140,17 +1445,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 13.5,
-          "unit": "px"
-        }
+        "$value": "{scale.text.500}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 20,
-          "unit": "px"
-        }
+        "$value": "{scale.line.400}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1169,17 +1468,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 14,
-          "unit": "px"
-        }
+        "$value": "{scale.text.600}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 20,
-          "unit": "px"
-        }
+        "$value": "{scale.line.400}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1198,17 +1491,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 15,
-          "unit": "px"
-        }
+        "$value": "{scale.text.700}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 22,
-          "unit": "px"
-        }
+        "$value": "{scale.line.500}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1227,17 +1514,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 13,
-          "unit": "px"
-        }
+        "$value": "{scale.text.400}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 20,
-          "unit": "px"
-        }
+        "$value": "{scale.line.400}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1256,17 +1537,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 22,
-          "unit": "px"
-        }
+        "$value": "{scale.text.900}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 28,
-          "unit": "px"
-        }
+        "$value": "{scale.line.700}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1285,17 +1560,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 15,
-          "unit": "px"
-        }
+        "$value": "{scale.text.700}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 22,
-          "unit": "px"
-        }
+        "$value": "{scale.line.500}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1314,17 +1583,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": {
-          "value": 12,
-          "unit": "px"
-        }
+        "$value": "{scale.text.200}"
       },
       "line": {
         "$type": "dimension",
-        "$value": {
-          "value": 16,
-          "unit": "px"
-        }
+        "$value": "{scale.line.200}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1339,148 +1602,94 @@
   "space": {
     "4": {
       "$type": "dimension",
-      "$value": {
-        "value": 4,
-        "unit": "px"
-      },
+      "$value": "{scale.space.100}",
       "$description": "Gaps inside a control, icon to text, and between tight rows."
     },
     "8": {
       "$type": "dimension",
-      "$value": {
-        "value": 8,
-        "unit": "px"
-      },
+      "$value": "{scale.space.200}",
       "$description": "Small gaps between related items, inside controls and between chips."
     },
     "12": {
       "$type": "dimension",
-      "$value": {
-        "value": 12,
-        "unit": "px"
-      },
+      "$value": "{scale.space.300}",
       "$description": "Padding inside chips, rows and menu items, and icon gaps."
     },
     "16": {
       "$type": "dimension",
-      "$value": {
-        "value": 16,
-        "unit": "px"
-      },
+      "$value": "{scale.space.400}",
       "$description": "Padding inside panels and between sections."
     },
     "20": {
       "$type": "dimension",
-      "$value": {
-        "value": 20,
-        "unit": "px"
-      },
+      "$value": "{scale.space.500}",
       "$description": "Roomy padding inside panels and the dock."
     },
     "24": {
       "$type": "dimension",
-      "$value": {
-        "value": 24,
-        "unit": "px"
-      },
+      "$value": "{scale.space.600}",
       "$description": "Between floating elements on desktop."
     },
     "32": {
       "$type": "dimension",
-      "$value": {
-        "value": 32,
-        "unit": "px"
-      },
+      "$value": "{scale.space.700}",
       "$description": "Between groups on a page."
     },
     "40": {
       "$type": "dimension",
-      "$value": {
-        "value": 40,
-        "unit": "px"
-      },
+      "$value": "{scale.space.800}",
       "$description": "Large gaps on a page and the sign-in hero."
     },
     "48": {
       "$type": "dimension",
-      "$value": {
-        "value": 48,
-        "unit": "px"
-      },
+      "$value": "{scale.space.900}",
       "$description": "Sign-in pane padding and page edges."
     },
     "64": {
       "$type": "dimension",
-      "$value": {
-        "value": 64,
-        "unit": "px"
-      },
+      "$value": "{scale.space.1000}",
       "$description": "Page padding of ColumnLayout, and the gap above the empty People list."
     }
   },
   "radius": {
     "link": {
       "$type": "dimension",
-      "$value": {
-        "value": 2,
-        "unit": "px"
-      },
+      "$value": "{scale.radius.100}",
       "$description": "Focus outline of a link."
     },
     "bar": {
       "$type": "dimension",
-      "$value": {
-        "value": 2,
-        "unit": "px"
-      },
+      "$value": "{scale.radius.100}",
       "$description": "Round ends of a 4px bar: a sheet handle and the date slider track."
     },
     "small": {
       "$type": "dimension",
-      "$value": {
-        "value": 4,
-        "unit": "px"
-      },
+      "$value": "{scale.radius.200}",
       "$description": "Checkboxes, key hints and small tags."
     },
     "segment-item": {
       "$type": "dimension",
-      "$value": {
-        "value": 7,
-        "unit": "px"
-      },
+      "$value": "{scale.radius.300}",
       "$description": "Selected segment inside a segmented control."
     },
     "segment": {
       "$type": "dimension",
-      "$value": {
-        "value": 9,
-        "unit": "px"
-      },
+      "$value": "{scale.radius.500}",
       "$description": "Segmented control track."
     },
     "control": {
       "$type": "dimension",
-      "$value": {
-        "value": 8,
-        "unit": "px"
-      },
+      "$value": "{scale.radius.400}",
       "$description": "Buttons, fields, alerts, toasts and menu rows."
     },
     "panel": {
       "$type": "dimension",
-      "$value": {
-        "value": 12,
-        "unit": "px"
-      },
+      "$value": "{scale.radius.600}",
       "$description": "Panels, dock, popup and desktop dialogs."
     },
     "sheet": {
       "$type": "dimension",
-      "$value": {
-        "value": 18,
-        "unit": "px"
-      },
+      "$value": "{scale.radius.700}",
       "$description": "Top corners of a phone sheet and dialog."
     },
     "full": {
@@ -1723,10 +1932,7 @@
     },
     "toast": {
       "$type": "duration",
-      "$value": {
-        "value": 4000,
-        "unit": "ms"
-      }
+      "$value": "{scale.duration.500}"
     }
   },
   "layout": {

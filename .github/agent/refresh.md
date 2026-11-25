@@ -4,7 +4,7 @@ Do this first, to the Spec, Bug or Chore the prompt names ("Spec" below means al
 
 1. Read the issue with `gh issue view <n>`. Read each issue that blocked it (the prompt names them), and its merged PRs, with `gh issue view`, `gh pr view` and `gh pr diff`.
 2. Check each reference in the body against `main`: a path (Read it), a file or symbol name (`git grep`), a Spec or requirement ID (`docs/requirements.md`), a count.
-3. **Fix** a reference from step 2 that no longer matches `main`. Change only those words, in one call: `gh issue edit <n> --body-file - <<'EOF'`, the whole body, then a line `EOF`, and nothing else. Never edit Behaviour, Acceptance checks, Decisions, the title or the labels.
+3. **Fix** a reference from step 2 that no longer matches `main`. Change only those words. Write the whole body to `/tmp/agent-body.md` with Write. Then run `gh issue edit <n> --body-file /tmp/agent-body.md`, and nothing else in the call. Never edit Behaviour, Acceptance checks, Decisions, the title or the labels.
 4. **Drift** is anything else that `main` or a blocker's merged result puts in doubt: Behaviour, Acceptance checks, scope, Decisions. Edit nothing for it. Do these steps:
    - List each item as a decision in the format in `docs/how-we-work.md` › Decisions.
    - Number each item after the highest `D<n>` in the body and in any earlier Drift comment.

@@ -116,6 +116,33 @@ export type Rule = {
   pick: (tokens: DtcgTree) => string[];
 };
 
+/**
+ * The settings of a step group, in `$extensions.kinscape` (#1238 plan D13). `unit` is the DTCG unit of
+ * each step. `grid` counts steps of one `grid`; `ratio` and `hybrid` multiply by `ratio`.
+ */
+export type ScaleSettings = (
+  | {
+      above: number;
+      base: number;
+      below: number;
+      mode: 'ratio';
+      ratio: number;
+      round: number;
+    }
+  | {
+      above: number;
+      grid: number;
+      limit: number;
+      mode: 'hybrid';
+      ratio: number;
+    }
+  | { grid: number; mode: 'grid'; steps: number }
+  | { mode: 'explicit'; values: number[] }
+) & { unit: ScaleUnit };
+
+/** A DTCG unit that a scale step has. */
+export type ScaleUnit = DtcgDimension['unit'] | DtcgDuration['unit'];
+
 export type Shot = {
   fullPage: boolean;
   height: number;

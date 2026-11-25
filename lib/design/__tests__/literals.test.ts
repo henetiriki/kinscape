@@ -121,6 +121,17 @@ describe('a literal that equals a token of its group', () => {
   });
 });
 
+it('fails a radius literal that equals a token that refers to a scale step', () => {
+  const withStep = {
+    radius: { link: { $type: 'dimension', $value: '{scale.radius.100}' } },
+    scale: { radius: { '100': px(2) } },
+  };
+
+  expect(tokenLiterals(lines('  border-radius: 2px;'), withStep)).toMatchObject(
+    [{ line: 2 }]
+  );
+});
+
 it('passes each literal when the token file has no group for it', () => {
   expect(tokenLiterals(lines('  gap: 8px;', '  color: #18211b;'), {})).toEqual(
     []

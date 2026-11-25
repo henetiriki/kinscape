@@ -126,6 +126,20 @@ describe('noteProblems', () => {
     expect(noteProblems(tokens)).toContain('colour.brand has no note');
   });
 
+  it('gives no problem for a step with a note, or a step with none, and needs a note on a token that refers to a step', () => {
+    const tree = withNotes({ ...notes, 'scale.space.100': 'Four.' });
+
+    (tree.scale as DtcgTree) = {
+      space: { '100': { ...px(4), $description: 'Four.' }, '200': px(8) },
+    };
+    (tree.space as DtcgTree)['4'] = {
+      ...ref('dimension', 'scale.space.100'),
+      $description: 'The smallest step.',
+    };
+
+    expect(noteProblems(tree)).toEqual([]);
+  });
+
   it('names a note that is not text as no note', () => {
     const tree = withNotes(without('font.body'));
 

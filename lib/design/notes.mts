@@ -82,7 +82,8 @@ export const noteProblems = (tokens: DtcgTree): string[] => {
         : [];
     }),
     ...[...written.keys()]
-      .filter(path => !paths.has(path))
+      // The generator writes a note on each `scale` step (#1197 D7).
+      .filter(path => !paths.has(path) && !path.startsWith('scale.'))
       .map(path => `${path}: a note where none is needed`),
   ];
 };

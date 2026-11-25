@@ -61,3 +61,7 @@ The Chore names the list and the last line of the comment, but not its first lin
 
 - A comment after `/refine` files a new issue. The Chore covers an edit only.
 - A change to `spec.md` or `chore.md`. Each links to _Write_ and gets the new step from it.
+
+## Deviations
+
+- The `slice-intent.md` link is `filing.md#editing-a-filed-issue`, a relative link that works from that folder. Write step 4 starts "If the edit worked,", so a failed edit posts no comment.

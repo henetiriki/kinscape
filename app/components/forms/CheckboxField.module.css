@@ -28,7 +28,7 @@
 }
 
 /* 13 / 20 on a phone. */
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .description {
     font-size: var(--type-small-size);
     line-height: var(--type-small-line);

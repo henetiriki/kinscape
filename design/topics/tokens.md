@@ -36,7 +36,7 @@ A value can refer to another with `{group.name}`. A `$description` holds the usa
 
 `npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css` and `design/tokens.generated.ts`. Edit neither. `design.test.ts` fails if one is stale or the source breaks DTCG.
 
-`design/tokens.generated.ts` has an export for each group except `scale`, plus `*Px` and `motionMs` numbers. It also has `hatchLine`, the hatch stripe as `rgba()` text.
+`design/tokens.generated.ts` has an export for each group except `scale`, plus `*Px` and `motionMs` numbers. It also has `hatchLine`, the hatch stripe as `rgba()` text, and `breakpointQuery` ([Breakpoints](#breakpoints)).
 
 ## Scales
 
@@ -54,6 +54,16 @@ A step name is a 100-based number. Grid, hybrid and explicit mode start at 100. 
 
 Step n is base × ratioⁿ, then rounded to the nearest multiple of the rounding unit. A halfway value rounds to the larger multiple.
 
+## Breakpoints
+
+`breakpoint.$extensions.kinscape.queries` names each media query. A query refers to width and height tokens.
+
+- **Use a query.** Write `/* breakpoint: phone */` before the `{` of the `@media`. `npm run tokens` writes the condition.
+- **Change a width.** Edit the token and run `npm run tokens`.
+- **Add a query.** Add it under `queries`.
+
+`breakpoints.test.ts` fails on an unmarked width or height `@media`, an unknown marker or a stale condition.
+
 ## Direct readers
 
 Each module outside tests that imports `design/tokens.generated.ts` or reads `design/kinscape.tokens.json`. `tokens-page.test.ts` names a missing reader of either file.
@@ -70,7 +80,7 @@ Each module outside tests that imports `design/tokens.generated.ts` or reads `de
   - `app/screens/map-account-menu/page.tsx`
   - `app/screens/map-pin-count/MapPinCountScreen.tsx`
 - **JavaScript that needs a number.**
-  - `app/components/foundation/usePhone.ts`: the breakpoint.
+  - `app/components/foundation/usePhone.ts`: the phone query.
   - `app/components/layout/MapLayout.tsx`: the map padding.
   - `app/components/feedback/Toast.tsx`: the toast time.
 - **Scripts that build files.**

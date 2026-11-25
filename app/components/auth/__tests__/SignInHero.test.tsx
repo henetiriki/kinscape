@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
 import { HERO_VARS, SignInHero } from '@ks/app/components/auth/SignInHero';
-import { breakpoint, map } from '@ks/design/tokens.generated.ts';
+import { breakpointQuery, map } from '@ks/design/tokens.generated.ts';
 
 const css = readFileSync(
   join(import.meta.dirname, '../SignInHero.module.css'),
@@ -77,7 +77,7 @@ it('gives each hero its own filter and clip ids', () => {
 // NFR-05
 it('shows the phone crop and no text on a phone', () => {
   expect(media.slice(0, media.indexOf('{'))).toBe(
-    `@media (max-width: ${breakpoint['phone-width']}), (max-height: ${breakpoint['phone-height']}) `
+    `@media ${breakpointQuery.phone} /* breakpoint: phone */ `
   );
   expect(media).toMatch(/\.wide,\s*\.copy,\s*\.caption \{\s*display: none/);
   expect(media).toMatch(/\.phone \{\s*display: block/);

@@ -15,7 +15,7 @@ it('gives the phone callout 4px bottom padding', () => {
   );
 
   const phone =
-    /@media \(max-width: 639\.98px\)[^{]*\{\s*\.row > \.callout \{[^}]*\}/.exec(
+    /@media[^{]*\/\* breakpoint: phone \*\/\s*\{\s*\.row > \.callout \{[^}]*\}/.exec(
       css
     )![0];
 

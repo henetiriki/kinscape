@@ -1,9 +1,11 @@
 import type { DesignTokens } from 'style-dictionary/types';
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { format, resolveConfig } from 'prettier';
 
+import { queriesOf, withQueries } from '#ks/lib/design/breakpoints.mts';
 import { dtcgProblems } from '#ks/lib/design/dtcg.mts';
 import { withSteps } from '#ks/lib/design/scales.mts';
 import { buildTokens } from '#ks/lib/design/style-dictionary.mts';
@@ -37,8 +39,15 @@ const read = (root: string) => {
 export const generate = async (root: string): Promise<Record<string, string>> =>
   buildTokens(read(root) as DesignTokens, OUTPUTS);
 
-/** Writes the steps into the token file, formatted with Prettier, then each output, under `root`. */
-export const run = async (root: string): Promise<number> => {
+/** A `.module.css` file or `app/globals.css`: it can hold a marked `@media`. */
+const isStyleFile = (file: string): boolean =>
+  file.endsWith('.module.css') || file === 'app/globals.css';
+
+/** Writes the steps into the token file, formatted with Prettier, then each output, under `root`. Each marked `@media` in the style files of `files` gets its condition from the token file. */
+export const run = async (
+  root: string,
+  files: string[] = []
+): Promise<number> => {
   const target = join(root, SOURCE);
 
   writeFileSync(
@@ -53,10 +62,25 @@ export const run = async (root: string): Promise<number> => {
     writeFileSync(join(root, path), text);
   }
 
+  const queries = queriesOf(read(root));
+
+  for (const file of files.filter(isStyleFile)) {
+    const before = readFileSync(join(root, file), 'utf8');
+    const after = withQueries(before, queries);
+
+    if (after !== before) {
+      writeFileSync(join(root, file), after);
+    }
+  }
+
   return 0;
 };
 
-/* v8 ignore next 3 -- only true when run directly with node, not when imported */
+/* v8 ignore next 8 -- only true when run directly with node, not when imported */
 if (import.meta.main) {
-  process.exitCode = await run(process.cwd());
+  const files = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
+    .split('\0')
+    .filter(path => path !== '' && existsSync(path));
+
+  process.exitCode = await run(process.cwd(), files);
 }

@@ -84,7 +84,7 @@
 }
 
 /* 16px on phones, so the browser doesn't zoom in. */
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .input {
     font-size: var(--type-body-l-size);
     line-height: var(--type-body-l-line);
@@ -247,7 +247,7 @@
   line-height: var(--type-caption-line);
 }
 
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .panelHelper {
     font-size: var(--type-small-size);
     line-height: var(--type-small-line);

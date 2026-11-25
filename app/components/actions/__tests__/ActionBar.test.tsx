@@ -54,8 +54,6 @@ it('is fixed to the bottom, takes its height and stacking from tokens, and adds 
 it('uses the phone media query for the safe area', () => {
   const phone = css.slice(css.indexOf('@media'));
 
-  expect(phone).toMatch(
-    /@media \(max-width: 639\.98px\), \(max-height: 499\.98px\)/
-  );
+  expect(phone).toMatch(/@media[^{]*\/\* breakpoint: phone \*\//);
   expect(phone).toContain('env(safe-area-inset-bottom)');
 });

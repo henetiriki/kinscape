@@ -55,7 +55,7 @@
   padding: var(--space-64) var(--space-16) 0;
 }
 
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .page[data-column='list'] {
     background: var(--surface);
   }

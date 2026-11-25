@@ -683,3 +683,7 @@ export const map = {
 } as const;
 
 export const hatchLine = "rgba(139, 74, 28, 0.34)";
+
+export const breakpointQuery = {
+  "phone": "(max-width: 639.98px), (max-height: 499.98px)"
+} as const;

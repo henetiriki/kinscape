@@ -84,7 +84,7 @@
 }
 
 /* On a phone a placed Toast or Banner is fixed inside the gutters, at the offsets of the phone designs. */
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .shape[data-placed] {
     left: var(--space-16);
     position: fixed;

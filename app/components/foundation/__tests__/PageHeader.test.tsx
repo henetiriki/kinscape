@@ -59,9 +59,7 @@ it('takes its heights and the 44px link from tokens', () => {
   expect(css).toContain('height: var(--layout-page-header)');
   expect(css).toContain('height: var(--layout-page-header-phone)');
   expect(css).toContain('height: var(--size-touch)');
-  expect(css).toMatch(
-    /@media \(max-width: 639\.98px\), \(max-height: 499\.98px\)/
-  );
+  expect(css).toMatch(/@media[^{]*\/\* breakpoint: phone \*\//);
   expect(css).toContain('height: var(--layout-page-header-divider)');
   expect(css).not.toMatch(/^\s+height:\s*\d/m);
   expect(css).not.toMatch(/\b(64|60)px/);

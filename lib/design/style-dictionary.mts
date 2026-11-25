@@ -9,7 +9,9 @@ import type {
 import StyleDictionary from 'style-dictionary';
 
 import type { Tree } from '#ks/design/types.ts';
+import type { DtcgTree } from '#ks/lib/design/types.ts';
 
+import { queriesOf } from '#ks/lib/design/breakpoints.mts';
 import {
   cssName,
   fontStack,
@@ -132,25 +134,32 @@ const hatchLine = (resolved: Tree): string[] => {
 };
 
 /** `design/tokens.generated.ts`: one `as const` export for each group except `scale`, then its `px` lengths and `ms` durations as numbers, and `hatchLine`. */
-const typescript = ({ dictionary }: FormatFnArguments): string => {
-  const resolved = resolvedTree(dictionary);
+const typescript =
+  (queries: Record<string, string>) =>
+  ({ dictionary }: FormatFnArguments): string => {
+    const resolved = resolvedTree(dictionary);
 
-  const exports = Object.entries(resolved).flatMap(([group, value]) => {
-    const node = value as Tree;
-    const unit = group === 'motion' ? MS : PX;
-    const numbers = numbersIn(node, unit);
-    const suffix = group === 'motion' ? 'Ms' : 'Px';
+    const exports = Object.entries(resolved).flatMap(([group, value]) => {
+      const node = value as Tree;
+      const unit = group === 'motion' ? MS : PX;
+      const numbers = numbersIn(node, unit);
+      const suffix = group === 'motion' ? 'Ms' : 'Px';
 
-    return [
-      constant(group, node),
-      ...(Object.keys(numbers).length > 0
-        ? [constant(`${group}${suffix}`, numbers)]
-        : []),
-    ];
-  });
+      return [
+        constant(group, node),
+        ...(Object.keys(numbers).length > 0
+          ? [constant(`${group}${suffix}`, numbers)]
+          : []),
+      ];
+    });
 
-  return `${[TS_HEADER, ...exports, ...hatchLine(resolved)].join('\n\n')}\n`;
-};
+    const queryExport =
+      Object.keys(queries).length > 0
+        ? [constant('breakpointQuery', queries)]
+        : [];
+
+    return `${[TS_HEADER, ...exports, ...hatchLine(resolved), ...queryExport].join('\n\n')}\n`;
+  };
 
 /** `app/tokens.css` and `design/tokens.generated.ts` from the DTCG `tokens`, keyed by the destinations in `out`. */
 export const buildTokens = async (
@@ -161,7 +170,7 @@ export const buildTokens = async (
     hooks: {
       formats: {
         'kinscape/css': css,
-        'kinscape/typescript': typescript,
+        'kinscape/typescript': typescript(queriesOf(tokens as DtcgTree)),
       },
       transforms: {
         'kinscape/css-text': {

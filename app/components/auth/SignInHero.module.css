@@ -123,7 +123,7 @@
   margin-left: 10px;
 }
 
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .wide,
   .copy,
   .caption {

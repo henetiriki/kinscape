@@ -103,7 +103,7 @@
   line-height: var(--type-control-line);
 }
 
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .card {
     max-width: 100%;
     width: 100%;

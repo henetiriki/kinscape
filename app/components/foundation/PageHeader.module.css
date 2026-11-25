@@ -74,7 +74,7 @@
   color: var(--brand-hover);
 }
 
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .header {
     gap: var(--space-8);
     height: var(--layout-page-header-phone);

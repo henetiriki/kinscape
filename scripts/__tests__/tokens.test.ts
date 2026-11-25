@@ -7,7 +7,7 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { generate, OUTPUTS, run } from '@ks/scripts/tokens.mts';
 
@@ -93,6 +93,55 @@ it('fails on settings that give a name below 100, and names the group', async ()
   await expect(generate(root)).rejects.toThrow(
     'scale.space: the settings give a step below 100'
   );
+});
+
+describe('the marked @media conditions', () => {
+  const MARKED = '@media (max-width: 1px) /* breakpoint: phone */ {\n}\n';
+
+  const withBreakpoints = (width: number) => ({
+    breakpoint: {
+      $extensions: {
+        kinscape: { queries: { phone: '(max-width: {breakpoint.width})' } },
+      },
+      width: { $type: 'dimension', $value: { unit: 'px', value: width } },
+    },
+  });
+
+  it('rewrites the condition of a marked @media from the token file', async () => {
+    writeSource(withBreakpoints(600));
+    writeFileSync(join(root, 'app/a.module.css'), MARKED);
+
+    await run(root, ['app/a.module.css']);
+
+    expect(readFileSync(join(root, 'app/a.module.css'), 'utf8')).toBe(
+      '@media (max-width: 600px) /* breakpoint: phone */ {\n}\n'
+    );
+  });
+
+  it('leaves a file that is not a style file, and a file with no marker, as it is', async () => {
+    writeSource(withBreakpoints(600));
+    writeFileSync(join(root, 'app/b.css'), MARKED);
+    writeFileSync(join(root, 'app/c.module.css'), '.a { x: y; }\n');
+
+    await run(root, ['app/b.css', 'app/c.module.css']);
+
+    expect(readFileSync(join(root, 'app/b.css'), 'utf8')).toBe(MARKED);
+    expect(readFileSync(join(root, 'app/c.module.css'), 'utf8')).toBe(
+      '.a { x: y; }\n'
+    );
+  });
+
+  it('throws on an unknown marker, and names it', async () => {
+    writeSource(withBreakpoints(600));
+    writeFileSync(
+      join(root, 'app/d.module.css'),
+      '@media (max-width: 1px) /* breakpoint: tablet */ {\n}\n'
+    );
+
+    await expect(run(root, ['app/d.module.css'])).rejects.toThrow(
+      'unknown breakpoint marker "tablet"'
+    );
+  });
 });
 
 it('fails on a file that breaks the DTCG rules, and names the token', async () => {

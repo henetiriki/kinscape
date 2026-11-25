@@ -46,7 +46,7 @@
 }
 
 /* A phone has no Esc key: the message offers the fix instead. `.row >` outranks Callout's own `padding`, whichever stylesheet loads last. */
-@media (max-width: 639.98px), (max-height: 499.98px) {
+@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .row > .callout {
     display: flex;
     flex-direction: column;

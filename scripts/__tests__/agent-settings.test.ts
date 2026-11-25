@@ -550,7 +550,7 @@ describe('the Bash hook', () => {
     [`cd ${cwd} && git grep -O foo`, 'runs a command'],
     ['gh api repos/o/r/issues/5\t--method=PATCH', 'read only'],
     // A file as the body would post its text, the checkout credentials included. Only the one
-    // fixed file goes through.
+    // fixed file passes.
     ['gh pr comment 5 --body-file .git/config', '/tmp/agent-body.md'],
     ['gh pr comment 5 -F .git/config', '/tmp/agent-body.md'],
     ['gh pr comment 5 -F.git/config', '/tmp/agent-body.md'],
@@ -662,6 +662,7 @@ describe('the Bash hook', () => {
     'git log -n 5',
     'gh issue edit 5 --add-label x-Foo',
     'gh pr create --title x --body-file /tmp/agent-body.md',
+    'gh pr comment 5  --body-file  /tmp/agent-body.md',
     'gh api repos/o/r/pulls/5/files --paginate',
     'gh api "repos/o/r/contents/x?ref=chore/C1-from-main" --jq .sha',
     // A GraphQL read: -f query= directly after graphql, the only field, and no mutation.
@@ -756,9 +757,9 @@ describe('the Bash hook', () => {
   });
 
   // The refresh may rewrite one issue: the one its job names in ISSUE (claude-unblock.yml). A
-  // call that says `gh issue edit` or `gh issue comment` anywhere outside quotes goes through only
+  // call that says `gh issue edit` or `gh issue comment` anywhere outside quotes passes only
   // in the one form refresh.md gives, with the body file and nothing else, so a second command
-  // can't ride in the same call.
+  // can't join the same call.
   describe('in refresh-settings.json', () => {
     const file = 'refresh-settings.json';
     const edit = (issue: string) =>

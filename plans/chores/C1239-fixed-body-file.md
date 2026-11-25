@@ -8,7 +8,7 @@
 Every CI agent run (build, refresh and code review) writes each body to `/tmp/agent-body.md` with Write. Then it posts the body with `--body-file /tmp/agent-body.md`. The body no longer goes in the Bash command, so its length does not touch the command parser.
 
 - **Build and review hook** (`settings.json`, `review-settings.json`): change the last row of the deny table in both. It denies a `gh` call with `-F` in any form, or with `--body-file` whose value is not `/tmp/agent-body.md` after a space. This denies `--body-file -`, `--body-file=…`, `.git/config` and `notes.md`. The reason is "Write the whole body to /tmp/agent-body.md with Write, then give it as --body-file /tmp/agent-body.md." The heredoc step stays, so a commit message and `npm run review:threads -- reply` keep their heredoc.
-- **Refresh hook** (`refresh-settings.json`): a call that says `gh issue edit` or `gh issue comment` outside quotes goes through only if the whole call is one of these two lines. The reason names both lines.
+- **Refresh hook** (`refresh-settings.json`): a call that says `gh issue edit` or `gh issue comment` outside quotes passes only if the whole call is one of these two lines. The reason names both lines.
   - `gh issue edit $ISSUE --body-file /tmp/agent-body.md`
   - `gh issue comment $ISSUE --body-file /tmp/agent-body.md`
 - **Write in the read-only files** (`refresh-settings.json` and `review-settings.json`): as D2 says. In each file, `Edit` stays denied, and each `Read(…)` deny rule stays.
@@ -27,8 +27,8 @@ Every CI run loads its rules and settings from `main` (`load-agent-files`). Thus
 
 `refresh-settings.json` and `review-settings.json` deny Write today. The Chore allows Write to `/tmp/agent-body.md` only, with the same rule in both.
 
-- **A.** In each file, take `Write` out of the deny list, and add `Write` to the allow list. Add a second hook, matcher `Write`, that denies each `file_path` except `/tmp/agent-body.md` exactly. The hook is the same in both files. The reason names the file. Test: "the Write hook › is the same in refresh-settings.json and review-settings.json". Cost: one short hook in two files, and its tests.
-- **B.** In each file, take `Write` out of the deny list, and add `Write(//tmp/agent-body.md)` to the allow list. Add no hook. Test: "the Write rule › is the same in refresh-settings.json and review-settings.json". Cost: four lines. The deny then depends on how Claude Code matches a path rule for Write, and on how a CI run handles a call that no rule allows.
+- **A.** In each file, remove `Write` from the deny list, and add `Write` to the allow list. Add a second hook, matcher `Write`, that denies each `file_path` except `/tmp/agent-body.md` exactly. The hook is the same in both files. The reason names the file. Test: "the Write hook › is the same in refresh-settings.json and review-settings.json". Cost: one short hook in two files, and its tests.
+- **B.** In each file, remove `Write` from the deny list, and add `Write(//tmp/agent-body.md)` to the allow list. Add no hook. Test: "the Write rule › is the same in refresh-settings.json and review-settings.json". Cost: four lines. The deny then depends on how Claude Code matches a path rule for Write, and on how a CI run handles a call that no rule allows.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
@@ -82,16 +82,16 @@ Tests whose behaviour changes, in `agent-settings.test.ts`:
 ## Risks
 
 - **A Bash redirect into the file.** An agent could run `<command> > /tmp/agent-body.md` and post the output. This adds no new reach: the agent can put any output in a heredoc today. A fix is one more hook row that denies `/tmp/agent-body.md` elsewhere in a Bash call. Likelihood: low. The tech lead decides whether to build it.
-- **The bare `Edit` deny can also cover Write.** If Claude Code reads the `Edit` deny rule as a rule for all tools that edit a file, the refresh and the review post nothing. The tests cannot show this. The tech lead checks the transcripts of the first refresh and the first review after the merge. If Write is denied, a follow-up Chore moves the `Edit` deny into the hook of D2.
+- **The bare `Edit` deny can also cover Write.** If Claude Code reads the `Edit` deny rule as a rule for all tools that edit a file, the refresh and the review post nothing. The tests cannot show this. The tech lead checks the transcripts of the first refresh and the first review after the merge. If Claude Code denies Write, a follow-up Chore moves the `Edit` deny into the hook of D2.
 - **An old file.** If the agent skips the Write, a second call posts the old body. The three rule files say to write the body right before each call.
 
 ## Proof
 
 | Acceptance check                                                                      | Proven by                                                                                                              |
 | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| A body of 20,000 characters is allowed                                                | The new 20,000-character Edit\|Write row, and the "leaves … to the allowlist" row of the file form                     |
-| Another path is denied and the reason names the file                                  | The `.git/config`, `-F` and `notes.md` rows of "denies …, naming the alternative"                                      |
-| `--body-file -` with a heredoc is denied and the reason names the file                | The new heredoc rows of "denies …, naming the alternative"                                                             |
+| The hook allows a body of 20,000 characters                                           | The new 20,000-character Edit\|Write row, and the "leaves … to the allowlist" row of the file form                     |
+| The hook denies another path and the reason names the file                            | The `.git/config`, `-F` and `notes.md` rows of "denies …, naming the alternative"                                      |
+| The hook denies `--body-file -` with a heredoc and the reason names the file          | The new heredoc rows of "denies …, naming the alternative"                                                             |
 | A commit message heredoc stays allowed                                                | The commit-message rows of "leaves … to the allowlist"                                                                 |
 | The refresh hook allows edit and comment on its own issue only, and the file only     | The refresh hook tests for `edit()` and `comment()`                                                                    |
 | The refresh settings deny Write on any other path                                     | The Write rows of D2                                                                                                   |

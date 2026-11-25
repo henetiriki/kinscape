@@ -229,7 +229,7 @@ describe('settings.json', () => {
     'git add -A',
     'gh pr view 5',
     'gh pr ready 5',
-    "gh pr comment 5 --body-file - <<'EOF'\ntext\nEOF",
+    'gh pr comment 5 --body-file /tmp/agent-body.md',
     'gh issue edit 5 --add-blocked-by 6',
     'gh issue edit 5 --remove-label "status: ready-for-agent" --add-label "status: blocked"',
     'gh api repos/o/r/issues/5/dependencies/blocked_by',
@@ -252,12 +252,15 @@ describe('review-settings.json', () => {
   const allowed = allowedBy(allow);
   const denied = deniedBy(deny);
 
-  // The review gets no Edit|Write hook (plan C1134): it may not edit at all.
-  it('denies Edit and Write', () => {
-    expect(deny).toEqual(expect.arrayContaining(['Edit', 'Write']));
+  // The review gets no Edit|Write hook (plan C1134): it may not edit. It writes /tmp/agent-body.md
+  // only, which the Write hook below checks (plan C1239).
+  it('denies Edit', () => {
+    expect(deny).toContain('Edit');
+    expect(deny).not.toContain('Write');
   });
 
   it.each([
+    'gh pr comment 5 --body-file /tmp/agent-body.md',
     'git grep -n foo -- src',
     'git show HEAD~1:x.ts',
     'git diff origin/main...HEAD',
@@ -344,6 +347,7 @@ describe('refresh-settings.json', () => {
   it('allows reading the repo and issues, and editing and commenting on an issue', () => {
     expect(allow).toEqual([
       'Read',
+      'Write',
       'Bash(git grep:*)',
       'Bash(git ls-files:*)',
       'Bash(gh issue view:*)',
@@ -352,9 +356,8 @@ describe('refresh-settings.json', () => {
       'Bash(gh pr view:*)',
       'Bash(gh pr diff:*)',
     ]);
-    expect(deny).toEqual(
-      expect.arrayContaining(['Edit', 'Write', 'Agent', 'WebFetch'])
-    );
+    expect(deny).toEqual(expect.arrayContaining(['Edit', 'Agent', 'WebFetch']));
+    expect(deny).not.toContain('Write');
   });
 
   // The unblock run must not set a label: only the tech lead starts a plan. Nor may it change an
@@ -422,8 +425,8 @@ describe('refresh-settings.json', () => {
     "git grep 'OWNER' -- ':!plans'",
     'git grep -n -A30 "## NOTE" -- docs',
     'git ls-files -co --exclude-standard docs',
-    "gh issue edit 5 --body-file - <<'EOF'\nthe body\nEOF",
-    'gh issue comment 5 --body-file -',
+    'gh issue edit 5 --body-file /tmp/agent-body.md',
+    'gh issue comment 5 --body-file /tmp/agent-body.md',
     'gh issue view 5',
   ])('does not deny: %s', command => {
     expect(denied(command)).toBe(false);
@@ -465,8 +468,8 @@ describe('the Bash hook', () => {
     [`cd ${cwd} && gh pr view 1`, 'gh pr view 1'],
     [`  cd "${cwd}"  ;git status`, 'git status'],
     [
-      `cd ${cwd} && gh issue comment 5 --body-file - <<'EOF'\ncat x\ncd /y\nEOF`,
-      "gh issue comment 5 --body-file - <<'EOF'\ncat x\ncd /y\nEOF",
+      `cd ${cwd} && npm run review:threads -- reply 5 PRRT_1 <<'EOF'\ncat x\ncd /y\nEOF`,
+      "npm run review:threads -- reply 5 PRRT_1 <<'EOF'\ncat x\ncd /y\nEOF",
     ],
   ])('cuts the leading cd of %j', (command, rest) => {
     const output = hook(command);
@@ -546,13 +549,36 @@ describe('the Bash hook', () => {
     ['git status; git grep -nO foo', 'runs a command'],
     [`cd ${cwd} && git grep -O foo`, 'runs a command'],
     ['gh api repos/o/r/issues/5\t--method=PATCH', 'read only'],
-    // A file as the body would post its text, the checkout credentials included.
-    ['gh pr comment 5 --body-file .git/config', 'heredoc'],
-    ['gh pr comment 5 -F .git/config', 'heredoc'],
-    ['gh pr comment 5 -F.git/config', 'heredoc'],
-    ['gh issue create --title x --body-file=notes.md', 'heredoc'],
-    ['gh pr edit 5 --body-file "notes.md"', 'heredoc'],
-    ['gh pr view 1 | gh pr comment 1 --body-file x', 'heredoc'],
+    // A file as the body would post its text, the checkout credentials included. Only the one
+    // fixed file passes.
+    ['gh pr comment 5 --body-file .git/config', '/tmp/agent-body.md'],
+    ['gh pr comment 5 -F .git/config', '/tmp/agent-body.md'],
+    ['gh pr comment 5 -F.git/config', '/tmp/agent-body.md'],
+    ['gh issue create --title x --body-file=notes.md', '/tmp/agent-body.md'],
+    ['gh pr edit 5 --body-file "notes.md"', '/tmp/agent-body.md'],
+    ['gh pr view 1 | gh pr comment 1 --body-file x', '/tmp/agent-body.md'],
+    ['gh pr comment 5 --body-file /tmp/x.md', '/tmp/agent-body.md'],
+    [
+      'gh pr comment 5 --body-file /tmp/agent-body.md.bak',
+      '/tmp/agent-body.md',
+    ],
+    [
+      'gh pr comment 5 --body-file /tmp/../tmp/agent-body.md',
+      '/tmp/agent-body.md',
+    ],
+    ['gh pr comment 5 --body-file=/tmp/agent-body.md', '/tmp/agent-body.md'],
+    // The heredoc form and every other way to read the body from input.
+    ["gh pr comment 5 --body-file - <<'EOF'\nbody\nEOF", '/tmp/agent-body.md'],
+    ["gh pr comment 5 --body-file - << 'EOF'\nbody\nEOF", '/tmp/agent-body.md'],
+    [
+      "gh pr comment 5 --body-file - <<-'EOF'\n\tbody\n\tEOF",
+      '/tmp/agent-body.md',
+    ],
+    ['gh issue comment 5 --body-file=-', '/tmp/agent-body.md'],
+    ['gh pr comment 5 -F-', '/tmp/agent-body.md'],
+    ['gh pr comment 5 -F=-', '/tmp/agent-body.md'],
+    ['gh pr comment 5 -F -', '/tmp/agent-body.md'],
+    ['gh pr comment 5 --body-file "-"', '/tmp/agent-body.md'],
     // A quoted word is still that word to bash; a line continuation is still one command.
     ["gh pr 'merge' 5", 'a person'],
     ['gh api repos/o/r/issues/5/comments "-f" body=x', 'read only'],
@@ -562,11 +588,11 @@ describe('the Bash hook', () => {
     // Only the lines between the heredoc line and its EOF are text: a command after the operator
     // on that line, or after the EOF, still runs.
     [
-      "gh pr comment 5 --body-file - <<'EOF'; git remote -v\nbody\nEOF",
+      "npm run review:threads -- reply 5 PRRT_1 <<'EOF'; git remote -v\nbody\nEOF",
       'configuration',
     ],
     [
-      "gh pr comment 5 --body-file - <<'EOF'\nbody\nEOF\ngit remote -v",
+      "npm run review:threads -- reply 5 PRRT_1 <<'EOF'\nbody\nEOF\ngit remote -v",
       'configuration',
     ],
     // A quoted <<EOF opens no heredoc, so the next line is a command.
@@ -602,7 +628,11 @@ describe('the Bash hook', () => {
     'gh pr view 1',
     "git grep -n 'cat' -- ':!plans'",
     'git commit -m "fix; cat x"',
-    "gh issue comment 5 --body-file - <<'EOF'\ncd /y\ncat x\nEOF",
+    "npm run review:threads -- reply 5 PRRT_1 <<'EOF'\ncd /y\ncat x\nEOF",
+    // The one body file, as a gh call gives it.
+    'gh issue edit 5 --body-file /tmp/agent-body.md',
+    'gh issue comment 5 --body-file /tmp/agent-body.md',
+    'gh pr comment 5 --body-file "/tmp/agent-body.md"',
     // Claude Code's usual commit form: the `cat` reads the heredoc, not a file.
     'git commit -m "$(cat <<\'EOF\'\nfix\nEOF\n)"',
     'git ls-files -co docs',
@@ -622,7 +652,7 @@ describe('the Bash hook', () => {
     // `"` with the opener's, so the `|` shows. The pipe row skips a call that holds `$(cat <<`.
     'git commit -m "$(cat <<\'EOF\'\nDeny "a | b"\nEOF\n)"',
     'git commit -m "$(cat <<\'EOF\'\nFix\n\n"x" | "y"\nEOF\n)"',
-    "gh pr comment 1 --body-file - <<'EOF'\n| a | b |\n| - | - |\nEOF",
+    "npm run review:threads -- reply 5 PRRT_1 <<'EOF'\n| a | b |\n| - | - |\nEOF",
     'node scripts/run.mts',
     'npm run format',
     'echo concatenate',
@@ -631,13 +661,8 @@ describe('the Bash hook', () => {
     'git ls-remote origin',
     'git log -n 5',
     'gh issue edit 5 --add-label x-Foo',
-    "gh pr create --title x --body-file - <<'EOF'\nbody\nEOF",
-    'gh issue comment 5 --body-file=-',
-    'gh pr comment 5 -F-',
-    'gh pr comment 5 -F=-',
-    'gh pr comment 5 --body-file "-"',
-    "gh pr comment 5 --body-file - << 'EOF'\nbody\nEOF",
-    "gh pr comment 5 --body-file - <<-'EOF'\n\tbody\n\tEOF",
+    'gh pr create --title x --body-file /tmp/agent-body.md',
+    'gh pr comment 5  --body-file  /tmp/agent-body.md',
     'gh api repos/o/r/pulls/5/files --paginate',
     'gh api "repos/o/r/contents/x?ref=chore/C1-from-main" --jq .sha',
     // A GraphQL read: -f query= directly after graphql, the only field, and no mutation.
@@ -717,46 +742,67 @@ describe('the Bash hook', () => {
     expect(hook(`cd ${cwd}; gh pr view 1`, 'review-settings.json')).toEqual(
       hook(`cd ${cwd}; gh pr view 1`)
     );
+    expect(
+      hook(
+        'gh pr comment 5 --body-file /tmp/agent-body.md',
+        'review-settings.json'
+      )
+    ).toBeUndefined();
+    expect(
+      hook(
+        "gh pr comment 5 --body-file - <<'EOF'\nbody\nEOF",
+        'review-settings.json'
+      )
+    ).toEqual(hook("gh pr comment 5 --body-file - <<'EOF'\nbody\nEOF"));
   });
 
   // The refresh may rewrite one issue: the one its job names in ISSUE (claude-unblock.yml). A
-  // call that says `gh issue edit` anywhere outside quotes goes through only in the one form
-  // refresh.md gives, with the body in a heredoc and nothing else, so a second command can't
-  // ride in the same call.
+  // call that says `gh issue edit` or `gh issue comment` anywhere outside quotes passes only
+  // in the one form refresh.md gives, with the body file and nothing else, so a second command
+  // can't join the same call.
   describe('in refresh-settings.json', () => {
     const file = 'refresh-settings.json';
-    const edit = (issue: string, body = '# Spec\n\nText.') =>
-      `gh issue edit ${issue} --body-file - <<'EOF'\n${body}\nEOF`;
+    const edit = (issue: string) =>
+      `gh issue edit ${issue} --body-file /tmp/agent-body.md`;
+    const comment = (issue: string) =>
+      `gh issue comment ${issue} --body-file /tmp/agent-body.md`;
 
-    it('is the one hook of the file', () => {
-      expect(agentHooksOf(file)).toHaveLength(1);
+    it('has the Bash hook and the Write hook of the file', () => {
+      expect(agentHooksOf(file)?.map(({ matcher }) => matcher)).toEqual([
+        'Bash',
+        'Write',
+      ]);
     });
 
     it.each([
-      [edit('5'), 'the issue the job names'],
+      [edit('5'), 'an edit of the issue the job names'],
+      [comment('5'), 'a comment on the issue the job names'],
       [`${edit('5')}\n`, 'a trailing newline'],
-      [
-        edit('5', 'A line\n\n- EOF is not a line here\n  EOF'),
-        'EOF inside text',
-      ],
     ])('leaves %j to the allowlist: %s', command => {
       expect(hook(command, file, { ISSUE: '5' })).toBeUndefined();
     });
 
     it.each([
       [edit('7'), 'another issue'],
+      [comment('7'), 'a comment on another issue'],
       [edit('5 7'), 'two issues'],
       ['gh issue edit 5 --title x', 'a flag that is not the body'],
-      ['gh issue edit 5 --body-file body.md', 'a file, not the heredoc'],
-      [`${edit('5')}\n${edit('7')}`, 'a second command after the heredoc'],
-      [`${edit('5')}\ngh issue view 7`, 'any command after the heredoc'],
+      ['gh issue edit 5 --body-file body.md', 'another file'],
+      [`${edit('5')} --title x`, 'a flag after the file'],
+      [`${edit('5')}.bak`, 'a longer file name'],
+      ['gh issue edit 5 --body-file=/tmp/agent-body.md', 'the = form'],
+      [
+        "gh issue edit 5 --body-file - <<'EOF'\n# Spec\nEOF",
+        'the heredoc form',
+      ],
+      [`${edit('5')}\n${edit('7')}`, 'a second command after the edit'],
+      [`${edit('5')}\ngh issue view 7`, 'any command after the edit'],
+      [`${comment('5')}; ${edit('7')}`, 'an edit after a comment'],
       // The allowlist would pass each part of a compound command on its own.
       [`gh issue view 5; ${edit('7')}`, 'an edit after another command'],
+      [`gh issue view 5; ${comment('7')}`, 'a comment after another command'],
       [`gh issue view 5 && ${edit('7')}`, 'an edit after &&'],
-      [
-        'gh issue view 5 | gh issue edit 7 --body-file -',
-        'an edit after a pipe',
-      ],
+      [`gh issue view 5 | ${edit('7')}`, 'an edit after a pipe'],
       ['echo $(gh issue edit 7 --title x)', 'an edit in a substitution'],
       ['echo `gh issue edit 7 --title x`', 'an edit in backticks'],
       [
@@ -769,35 +815,22 @@ describe('the Bash hook', () => {
         `git grep -n '<<' -- ':!plans'; ${edit('7')}`,
         'an edit after a quoted <<',
       ],
-      [edit('5', 'text\nEOF\ngh issue view 7'), 'an EOF line inside the body'],
-      [edit('5', ''), 'an empty body'],
       ['gh issue edit 5', 'no body'],
-      // Another heredoc first: the edit sits past its operator or its EOF.
-      [
-        "gh issue comment 5 --body-file - <<'EOF'; gh issue edit 7 --body-file - <<'X'\nbody\nEOF\nother\nX",
-        'an edit after a comment’s heredoc operator',
-      ],
-      [
-        `gh issue comment 5 --body-file - <<'EOF'\n## Refreshed\nEOF\n${edit('7')}`,
-        'an edit after a comment’s heredoc',
-      ],
-      // The words in a comment's text: the one form is the price of telling them apart.
-      [
-        "gh issue comment 5 --body-file - <<'EOF'\nRun gh issue edit later.\nEOF",
-        'the words in another command’s heredoc',
-      ],
+      ['gh issue comment 5', 'no body in a comment'],
     ])('denies %j: %s', command => {
       const output = hook(command, file, { ISSUE: '5' });
 
       expect(output.permissionDecision).toBe('deny');
-      expect(output.permissionDecisionReason).toContain('Edit only issue #5');
       expect(output.permissionDecisionReason).toContain(
-        "gh issue edit 5 --body-file - <<'EOF'"
+        'Edit or comment on only issue #5'
       );
+      expect(output.permissionDecisionReason).toContain(edit('5'));
+      expect(output.permissionDecisionReason).toContain(comment('5'));
     });
 
     it('denies every edit when the job names no issue', () => {
       expect(hook(edit('5'), file).permissionDecision).toBe('deny');
+      expect(hook(comment('5'), file).permissionDecision).toBe('deny');
       expect(hook(edit('5'), file, { ISSUE: '' }).permissionDecision).toBe(
         'deny'
       );
@@ -822,7 +855,6 @@ describe('the Bash hook', () => {
       'gh issue view 5',
       'git grep -n -A30 "## NOTE" -- docs',
       "git grep -n 'OWNER' -- ':!plans'",
-      "gh issue comment 5 --body-file - <<'EOF'\n## Refreshed\nEOF",
       // The words inside quotes are text, not a command.
       "git grep -n 'gh issue edit' -- ':!plans'",
       "git grep -n 'x' -- ':!plans'",
@@ -830,6 +862,51 @@ describe('the Bash hook', () => {
     ])('leaves %j to the allowlist', command => {
       expect(hook(command, file, { ISSUE: '5' })).toBeUndefined();
     });
+  });
+});
+
+// The refresh and the review write one file: the body of the gh call that posts it (plan C1239).
+describe('the Write hook of the refresh and the review', () => {
+  const writeHook = (file: string, path: string) =>
+    runHook(
+      `.github/agent/${file}`,
+      'Write',
+      { tool_input: { content: 'x', file_path: path }, tool_name: 'Write' },
+      {}
+    );
+  const hooksOf = (file: string) =>
+    preToolUseOf(`.github/agent/${file}`)?.filter(
+      ({ matcher }) => matcher === 'Write'
+    );
+
+  it('is the same in refresh-settings.json and review-settings.json', () => {
+    expect(hooksOf('refresh-settings.json')).toHaveLength(1);
+    expect(hooksOf('review-settings.json')).toEqual(
+      hooksOf('refresh-settings.json')
+    );
+  });
+
+  it.each(['refresh-settings.json', 'review-settings.json'])(
+    '%s allows /tmp/agent-body.md',
+    file => {
+      expect(writeHook(file, '/tmp/agent-body.md')).toBeUndefined();
+    }
+  );
+
+  it.each([
+    '/tmp/x.md',
+    'notes.md',
+    '.git/config',
+    '/tmp/agent-body.md.bak',
+    '/tmp/../tmp/agent-body.md',
+    '',
+  ])('%j is denied, and the reason names the file', path => {
+    for (const file of ['refresh-settings.json', 'review-settings.json']) {
+      const output = writeHook(file, path);
+
+      expect(output.permissionDecision).toBe('deny');
+      expect(output.permissionDecisionReason).toContain('/tmp/agent-body.md');
+    }
   });
 });
 
@@ -885,7 +962,25 @@ describe('the Edit|Write hook', () => {
       preToolUseOf(`.github/agent/${file}`)?.map(({ matcher }) => matcher);
 
     expect(matchers('settings.json')).toEqual(['Bash', 'Edit|Write']);
-    expect(matchers('review-settings.json')).toEqual(['Bash']);
+    expect(matchers('review-settings.json')).toEqual(['Bash', 'Write']);
+  });
+
+  // A 20,000-character body is a Write, not a command, so the command parser never sees it.
+  it('allows a Write of /tmp/agent-body.md with a body of 20,000 characters', () => {
+    expect(
+      runHook(
+        '.github/agent/settings.json',
+        'Edit|Write',
+        {
+          tool_input: {
+            content: 'x'.repeat(20_000),
+            file_path: '/tmp/agent-body.md',
+          },
+          tool_name: 'Write',
+        },
+        { CLAUDE_PROJECT_DIR: main, GITHUB_WORKSPACE: workspace }
+      )
+    ).toBeUndefined();
   });
 
   it.each([page, jpg, card])('the CI hook denies %s', path => {

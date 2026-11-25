@@ -29,7 +29,7 @@ Only these need no issue and no plan:
 
 Before you draft or build, check that a Bug still reproduces.
 
-If a check fails, stop. Comment each mismatch. Name who fixes each one. If the PO fixes it, swap the status label of the issue for `status: ready-for-po`. Do not edit the issue, except as the refresh does.
+If a check fails, stop. If the refresh finds drift on a plan run, first follow [`refresh.md` › _Plan run_](../.github/agent/refresh.md#plan-run). Comment each mismatch. Name who fixes each one. If the PO fixes it, swap the status label of the issue for `status: ready-for-po`. Do not edit the issue, except as the refresh does.
 
 <a id="related-issues"></a>**Related issues.** Before you draft or revise a plan, read each related issue. `npm run plan:new` lists them.
 

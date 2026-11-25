@@ -862,6 +862,48 @@ describe('the plan run', () => {
     expect(plan).toContain('dependencies/blocked_by');
   });
 
+  it('has the "Plan run" section draft the whole plan, then post one comment', () => {
+    const section = agent('refresh.md').split('## Plan run')[1];
+    const at = indexIn(section, 'the Plan run section');
+    const draft = at('1. Run `npm run plan:new`, and draft every section');
+    const past = at('Draft past each drift item with its recommended option');
+    const gaps = at('Add each gap that the draft finds as a drift item');
+    const post = at(
+      'Post all drift in the one comment of step 5, after the draft'
+    );
+    const push = at('Push nothing, and open no plan PR');
+
+    expect([draft, past, gaps, post, push]).toEqual(
+      [draft, past, gaps, post, push].sort((a, b) => a - b)
+    );
+    expect(section).toContain('start it with "If D<k> is A"');
+    expect(section).toContain(
+      'A value that Behaviour or Acceptance checks leave open'
+    );
+    expect(section).toContain('is a plan choice');
+    expect(section).toContain('With no drift, continue with the plan.');
+    expect(section).not.toContain('open no branch');
+  });
+
+  it('ends the plan-run comment with the closing line, after the Spec-check lines', () => {
+    const section = agent('refresh.md').split('## Plan run')[1];
+    const closing = section.indexOf(
+      'End the comment with the line `Drafted the whole plan, with the recommended option of D<k> to D<m>. The run pushed nothing.`'
+    );
+
+    expect(closing).toBeGreaterThan(-1);
+    expect(section.slice(closing)).toContain('after the Spec-check lines');
+  });
+
+  it('has stale-facts send a plan run with drift to refresh.md, and keep the stop', () => {
+    const readme = readFileSync(join(root, 'plans/README.md'), 'utf8');
+
+    expect(readme).toContain('If a check fails, stop.');
+    expect(readme).toContain(
+      'If the refresh finds drift on a plan run, first follow [`refresh.md` › _Plan run_](../.github/agent/refresh.md#plan-run).'
+    );
+  });
+
   // `npm run plan:new` lists the related issues (plans/README.md, related-issues rule).
   it('runs plan:new for the related issues, and keeps the comment line', () => {
     const plan = read('claude-plan.yml');

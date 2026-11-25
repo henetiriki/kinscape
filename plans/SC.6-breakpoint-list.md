@@ -84,5 +84,5 @@ The marker sits between the condition and `{`: `@media (max-width: 639.98px), (m
 - `scripts/tokens.mts`: `files` is optional in `run(root, files = [])`, so a call with only `root` rewrites no CSS.
 - `scripts/tokens.mts`: `run` computes each text before it writes, so an unknown marker writes no file.
 - `lib/design/breakpoints.mts`: it also exports `isStyleFile`, which `scripts/tokens.mts` and `breakpoints.test.ts` share. A marker name is checked with `Object.hasOwn`, so `constructor` is unknown.
-- At the tech lead's request, the old guard in `design.test.ts` goes. Its bullet in `design/topics/components.md` changes, so steps 3 to 5 of Changing the design system run again.
+- At the tech lead's request, the old guard in `design.test.ts` goes. Its bullet in `design/topics/components.md` changes. `npm run design-system` still gives the same `checksums.json`, so steps 3 to 5 send nothing new.
 - The build did not record the failing line of step 1. Evidence holds the failing line of each guard instead.

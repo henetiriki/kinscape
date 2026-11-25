@@ -2,7 +2,7 @@
 
 - **Spec:** #1230
 - **Requirement IDs:** None: the Chore changes the `/refine` skill text only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The Chore names the list and the last line of the comment, but not its first lin
 - **B.** No first line. The list starts the comment. This adds no words.
 - **Other:** your own.
 
-Recommended: A, because a reader of the issue then sees why the comment is there before the list.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

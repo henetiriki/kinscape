@@ -76,7 +76,7 @@ A **Blocking** decision stops the plan until it has an answer. Any other decisio
 Answer with `D1: B` or `D1: other, <your option>`:
 
 - On an issue, start the comment with `@claude`, or nothing records it. In a plan PR's approving review, you need no `@claude`.
-- Claude records the answer. It rewrites the issue body in its prompt with one command: `gh issue edit <n> --body-file - <<'EOF'` (no pipes, `&&` or temp files).
+- Claude records the answer. It writes the whole issue body to `/tmp/agent-body.md`. Then it runs one command: `gh issue edit <n> --body-file /tmp/agent-body.md` (no pipes or `&&`).
 - The rewrite adds `**Answer: B** (PO)` under the decision and marks each option not chosen with strikethrough (`~~…~~`). It also rewords any Summary, Behaviour or Acceptance check that the answer changes.
 - A respond run records a plan answer in the plan only. The build [rewords the issues](../.github/agent/build.md#reword).
 - Hard-to-reverse engineering choices go to the tech lead, even in a Spec the PO approves.

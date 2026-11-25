@@ -83,7 +83,7 @@ describe('budgetFor', () => {
     ['.github/agent/rules.md', 300],
     ['.github/agent/build.md', 600],
     ['.github/agent/fix-review.md', 540],
-    ['.github/agent/review.md', 550],
+    ['.github/agent/review.md', 560],
     ['.github/agent/review-code.md', 750],
     ['.claude/skills/refine/SKILL.md', 1020],
     ['.claude/skills/refine/nested/deep.md', 650],

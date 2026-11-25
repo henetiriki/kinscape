@@ -6,7 +6,7 @@
 
 - Run one command per Bash call. One denied part denies the whole call.
 - `npm` is off: a PR can hold a hostile script.
-- Post with `gh pr comment <n> --body-file - <<'EOF'`.
+- Write the whole body to `/tmp/agent-body.md` with Write. Then post it with `gh pr comment <n> --body-file /tmp/agent-body.md`.
 
 ## The plan
 

@@ -1,7 +1,7 @@
 # Plan: C1236: A plan run drafts the whole plan before it reports drift
 
 - **Spec:** #1236
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -31,7 +31,7 @@ The section starts "… there is any drift: open no branch or plan PR." The Chor
 - **B.** Keep "open no branch or plan PR". A run reads a rule that its step 1 breaks.
 - **Other:** your own.
 
-Recommended: A, because each fact then has one home, and no two lines clash.
+**Answer: A** (@henetiriki)
 
 **D2 · Which gaps of the draft become drift items** · Decides: Tech lead
 
@@ -41,7 +41,7 @@ Step 3 of the Chore says "Add each gap that the draft finds as a drift item". Re
 - **B.** Add each gap, plan choices too. The comment gets longer, and the PO sees tech-lead choices.
 - **Other:** your own.
 
-Recommended: A, because the plan PR is the place for a plan choice, and its owner answers it there.
+**Answer: Other:** A, with one addition. A value that Behaviour or Acceptance checks leave open is also drift, even if `main` did not cause it. Example: #1197 D9, where the Spec did not say which explicit value is step 400. File names, test places and the order of work stay plan choices for the plan PR. (@henetiriki)
 
 ## Alternatives considered
 

@@ -1,7 +1,7 @@
 # Plan: C1239: CI agents post a body from one fixed file
 
 - **Spec:** #1239
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -31,7 +31,7 @@ Every CI run loads its rules and settings from `main` (`load-agent-files`). Thus
 - **B.** In each file, take `Write` out of the deny list, and add `Write(//tmp/agent-body.md)` to the allow list. Add no hook. Test: "the Write rule › is the same in refresh-settings.json and review-settings.json". Cost: four lines. The deny then depends on how Claude Code matches a path rule for Write, and on how a CI run handles a call that no rule allows.
 - **Other:** your own.
 
-Recommended: A, because a test runs the hook and proves the deny of each other path.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

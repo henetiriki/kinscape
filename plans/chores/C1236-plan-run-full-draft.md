@@ -13,8 +13,8 @@ The new "Plan run" section, if D1 is A:
 >
 > 1. Run `npm run plan:new`, and draft every section of the plan locally.
 > 2. Draft past each drift item with its recommended option. If a later item exists only under that option, start it with "If D<k> is the recommended option".
-> 3. Add each gap that the draft finds as a drift item (step 4).
-> 4. Post all drift in the one comment of step 5, after the draft. End the comment with the line `Drafted the whole plan, with the recommended option of D<k> to D<m>. The run pushed nothing.`, after the Spec-check lines.
+> 3. Add each gap that the draft finds as a drift item, as refresh step 4 says. A value that Behaviour or Acceptance checks leave open is a gap, even if `main` did not cause it. A file name, a test place or the order of work is a plan choice, not a gap.
+> 4. Post all drift in the one comment of refresh step 5, after the draft. End the comment with the line `Drafted the whole plan, with the recommended option of D<k> to D<m>. The run pushed nothing.`, after the Spec-check lines.
 > 5. Delete the local branch and the plan file. Push nothing, and open no plan PR.
 >
 > For who fixes each item and which status label to set, follow the [stale-facts rule](../../plans/README.md#stale-facts). With no drift, continue with the plan.

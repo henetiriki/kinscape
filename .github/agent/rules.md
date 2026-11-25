@@ -3,9 +3,9 @@
 - The run ends when your turn ends. Never stop to wait.
 - Run one command in each Bash call. Use no `&&`, `;`, `|` or `VAR=` prefix. One denied part denies the whole command.
 - Create and change files with Write and Edit, so the format hook runs.
-- Post PR and issue text with `gh … --body-file - <<'EOF'`, the only heredoc. The settings deny `--body`.
+- Post PR and issue text from `/tmp/agent-body.md`. Right before each `gh` call that posts it, write the whole body to that file with Write. Then give `--body-file /tmp/agent-body.md`. The settings deny `--body` and every other body file.
 - Before you post a comment, check each sentence against the [STE rules](../../docs/writing.md#ste).
-- Write no scratch files. Read values from `design/source/` and compare them with `npm run design:check`.
+- Write no scratch files. The one file outside the repo that you write is `/tmp/agent-body.md`. Read values from `design/source/` and compare them with `npm run design:check`.
 - Delete or rename files with `git rm -f` and `git mv`. Run `git add` on a new file first.
 - WebSearch, WebFetch and `curl` are off. `gh api` still works, but do not use it to find sources. Ask in your comment.
 - If the run denies a command, name it in your comment.

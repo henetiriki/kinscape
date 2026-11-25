@@ -109,4 +109,4 @@ Tests whose behaviour changes, in `agent-settings.test.ts`:
 
 ## Deviations
 
-<!-- Add these during the build. One line each: what changed, why, the commit. -->
+- Only the `review.md` budget rises (550 to 560). `refresh.md` and `docs/how-we-work.md` stay within their budgets.

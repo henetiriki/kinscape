@@ -76,7 +76,7 @@ jobs:
       pull-requests: write
       issues: write
       actions: read # Required for Claude to read CI results on PRs
-    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@d93ac0263b7ce2781f3aac24e7fe1a86f9e881e4
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@76a4e958b63030bff188bfa1f1f5eb7ff9892ad1
     with:
       thread: ${{ github.event.pull_request.number || github.event.issue.number }}
       kind: respond

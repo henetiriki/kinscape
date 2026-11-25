@@ -18,7 +18,7 @@ export const OUTPUTS = {
 
 /** The token file under `root`, with the steps of each scale written from its settings. */
 const read = (root: string) => {
-  // A reference to a step resolves only after the steps are written.
+  // A reference to a step resolves only after `withSteps` writes the steps.
   const tokens = withSteps(
     JSON.parse(readFileSync(join(root, SOURCE), 'utf8'))
   );

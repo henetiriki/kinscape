@@ -1,21 +1,29 @@
 /** The steps of a scale: built from the settings in `$extensions.kinscape` of a step group (#1197). */
 
-import type {
-  DtcgDimension,
-  DtcgTree,
-  ScaleSettings,
-} from '#ks/lib/design/types.ts';
+import type { DtcgTree, ScaleSettings } from '#ks/lib/design/types.ts';
+
+import { cssText, isTree } from '#ks/lib/design/dtcg.mts';
 
 type Step = { name: string; note: string; value: number };
 
 const FIRST = 100;
 const BASE_STEP = 400;
 
-/** Rounds `value` to the nearest multiple of `unit`. A halfway value goes up. The 9-decimal round lifts a half that floating point puts just below. */
+/** Rounds `value` to the nearest multiple of `unit`. A halfway value rounds to the larger multiple. The 9-decimal round lifts a half that floating point puts just below. */
 export const roundTo = (value: number, unit: number): number =>
   Number(
     (Math.floor(Number((value / unit).toFixed(9)) + 0.5) * unit).toFixed(9)
   );
+
+const gridSteps = (
+  grid: number,
+  count: number,
+  unit: string
+): Omit<Step, 'name'>[] =>
+  Array.from({ length: count }, (_, at) => ({
+    note: `Grid of ${grid}${unit}, step ${at + 1}.`,
+    value: roundTo((at + 1) * grid, grid),
+  }));
 
 const named = (
   scale: string,
@@ -49,22 +57,12 @@ export const stepsOf = (scale: string, settings: ScaleSettings): Step[] => {
         }))
       );
     case 'grid':
-      return named(
-        scale,
-        FIRST,
-        Array.from({ length: settings.steps }, (_, at) => ({
-          note: `Grid of ${settings.grid}${px}, step ${at + 1}.`,
-          value: roundTo((at + 1) * settings.grid, settings.grid),
-        }))
-      );
+      return named(scale, FIRST, gridSteps(settings.grid, settings.steps, px));
     case 'hybrid': {
       const count = Math.round(settings.limit / settings.grid);
 
       return named(scale, FIRST, [
-        ...Array.from({ length: count }, (_, at) => ({
-          note: `Grid of ${settings.grid}${px}, step ${at + 1}.`,
-          value: roundTo((at + 1) * settings.grid, settings.grid),
-        })),
+        ...gridSteps(settings.grid, count, px),
         ...Array.from({ length: settings.above }, (_, at) => ({
           note: `Ratio ${settings.ratio} from ${settings.limit}${px}, rounded to ${settings.grid}${px}, step ${at + 1}.`,
           value: roundTo(
@@ -140,11 +138,11 @@ export const withSteps = (tree: DtcgTree): DtcgTree => {
   return 'scale' in tree ? { ...tree, scale } : tree;
 };
 
-const text = (value: unknown): string => {
-  const { unit, value: number } = value as DtcgDimension;
-
-  return `${number}${unit}`;
-};
+/** The CSS text of a step value, or its JSON when it is not a dimension or a duration. */
+const text = (type: unknown, value: unknown, path: string): string =>
+  isTree(value)
+    ? cssText({ $type: type as string, $value: value, path: path.split('.') })
+    : JSON.stringify(value);
 
 /** A step that differs from its settings, a missing or extra step, and two equal steps in one scale. Each message names its path. */
 export const scaleProblems = (tree: DtcgTree): string[] =>
@@ -165,13 +163,13 @@ export const scaleProblems = (tree: DtcgTree): string[] =>
 
       if (actual === undefined) {
         return [
-          `${path}: is missing, the settings give ${text(expected.$value)}`,
+          `${path}: is missing, the settings give ${text(expected.$type, expected.$value, path)}`,
         ];
       }
 
       if (JSON.stringify(actual.$value) !== JSON.stringify(expected.$value)) {
         return [
-          `${path}: is ${text(actual.$value)}, the settings give ${text(expected.$value)}`,
+          `${path}: is ${text(expected.$type, actual.$value, path)}, the settings give ${text(expected.$type, expected.$value, path)}`,
         ];
       }
 
@@ -185,7 +183,7 @@ export const scaleProblems = (tree: DtcgTree): string[] =>
       JSON.stringify(wanted.get(key)!.$value) ===
         JSON.stringify(wanted.get(keys[at - 1])!.$value)
         ? [
-            `scale.${name}: steps ${keys[at - 1]} and ${key} are both ${text(wanted.get(key)!.$value)}`,
+            `scale.${name}: steps ${keys[at - 1]} and ${key} are both ${text(wanted.get(key)!.$type, wanted.get(key)!.$value, `scale.${name}.${key}`)}`,
           ]
         : []
     );

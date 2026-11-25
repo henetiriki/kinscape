@@ -141,7 +141,7 @@ export type ScaleSettings = (
 ) & { unit: ScaleUnit };
 
 /** A DTCG unit that a scale step has. */
-export type ScaleUnit = 'ms' | 'px' | 'rem' | 's';
+export type ScaleUnit = DtcgDimension['unit'] | DtcgDuration['unit'];
 
 export type Shot = {
   fullPage: boolean;

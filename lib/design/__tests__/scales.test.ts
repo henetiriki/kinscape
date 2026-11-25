@@ -62,7 +62,7 @@ describe('stepsOf', () => {
     ).toEqual({ '300': 13, '400': 16, '500': 20, '600': 25 });
   });
 
-  it('builds a hybrid: the ratio part goes on from the last grid step', () => {
+  it('builds a hybrid: the ratio part continues from the last grid step', () => {
     expect(
       valuesOf({
         above: 2,
@@ -217,6 +217,19 @@ describe('scaleProblems', () => {
 
     expect(scaleProblems(tree)).toEqual([
       'scale.space.200: is 9px, the settings give 8px',
+    ]);
+  });
+
+  it('writes a value that is not a dimension as JSON', () => {
+    const tree = built({ grid: 4, mode: 'grid', steps: 1, unit: 'px' });
+
+    tree.scale.space['100'] = {
+      ...tree.scale.space['100'],
+      $value: '{scale.space.200}',
+    };
+
+    expect(scaleProblems(tree)).toEqual([
+      'scale.space.100: is "{scale.space.200}", the settings give 4px',
     ]);
   });
 

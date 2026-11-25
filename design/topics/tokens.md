@@ -36,12 +36,11 @@ A value can refer to another with `{group.name}`. A `$description` holds the usa
 
 `npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css` and `design/tokens.generated.ts`. Edit neither. `design.test.ts` fails if one is stale or the source breaks DTCG.
 
-`design/tokens.generated.ts` has an export for each group, plus `*Px` and `motionMs` numbers. It also has `hatchLine`, the hatch stripe as `rgba()` text.
+`design/tokens.generated.ts` has an export for each group except `scale`, plus `*Px` and `motionMs` numbers. It also has `hatchLine`, the hatch stripe as `rgba()` text.
 
 ## Scales
 
-The `scale` group holds the step groups `text`, `line`, `space`, `radius` and `duration`. A token can refer to a step: `{scale.space.400}`. The CSS and the generated module have no `scale` group.
-
+The `scale` group holds the step groups `text`, `line`, `space`, `radius` and `duration`. A token can refer to a step: `{scale.space.400}`.
 The settings of a group are in `$extensions.kinscape`: `mode`, `unit` and these inputs:
 
 - **grid:** `grid`, `steps`.
@@ -49,13 +48,11 @@ The settings of a group are in `$extensions.kinscape`: `mode`, `unit` and these 
 - **hybrid:** `grid`, `limit`, `ratio`, `above`.
 - **explicit:** `values`.
 
-`npm run tokens` writes the steps. `design.test.ts` fails on a step that differs from its settings.
+`npm run tokens` writes the steps. To change a scale, edit its settings. `design.test.ts` fails on a step that differs.
 
 A step name is a 100-based number. Grid, hybrid and explicit mode start at 100. In ratio mode, the base is 400. A name below 100 fails.
 
-Step n is base × ratioⁿ, then rounded to the nearest multiple of the rounding unit. A halfway value goes up.
-
-To change a scale, edit its settings and run `npm run tokens`.
+Step n is base × ratioⁿ, then rounded to the nearest multiple of the rounding unit. A halfway value rounds to the larger multiple.
 
 ## Direct readers
 
@@ -118,7 +115,7 @@ In a `style` prop, the check reads only literals. It skips an identifier, a call
 
 ## Change a value
 
-1. Edit the value in `design/kinscape.tokens.json`. Edit its `$description`.
+1. Edit the value in `design/kinscape.tokens.json`. Edit its `$description`. For a step, edit the group's settings ([Scales](#scales)).
 2. Run `npm run tokens`.
 3. Run the tests.
 

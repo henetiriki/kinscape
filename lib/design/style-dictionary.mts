@@ -131,7 +131,7 @@ const hatchLine = (resolved: Tree): string[] => {
       ];
 };
 
-/** `design/tokens.generated.ts`: one `as const` export for each group, then its `px` lengths and `ms` durations as numbers, and `hatchLine`. */
+/** `design/tokens.generated.ts`: one `as const` export for each group except `scale`, then its `px` lengths and `ms` durations as numbers, and `hatchLine`. */
 const typescript = ({ dictionary }: FormatFnArguments): string => {
   const resolved = resolvedTree(dictionary);
 

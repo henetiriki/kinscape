@@ -12,7 +12,7 @@ The new "Plan run" section, if D1 is A:
 > If the prompt says this is a plan run and there is any drift, do these steps:
 >
 > 1. Run `npm run plan:new`, and draft every section of the plan locally.
-> 2. Draft past each drift item with its recommended option. If a later item exists only under that option, start it with "If D<k> is A".
+> 2. Draft past each drift item with its recommended option. If a later item exists only under that option, start it with "If D<k> is the recommended option".
 > 3. Add each gap that the draft finds as a drift item (step 4).
 > 4. Post all drift in the one comment of step 5, after the draft. End the comment with the line `Drafted the whole plan, with the recommended option of D<k> to D<m>. The run pushed nothing.`, after the Spec-check lines.
 > 5. Delete the local branch and the plan file. Push nothing, and open no plan PR.
@@ -68,7 +68,7 @@ Step 3 of the Chore says "Add each gap that the draft finds as a drift item". Re
 ## Risks
 
 - The comment now waits for the whole draft. If a run reaches its time limit in the draft, it posts no comment, and the refresh drift is lost for that run. The safety net of `claude-run.yml` then comments and sets `status: blocked`. Likelihood: low, because a run with no drift drafts the same plan today. Fix cost: a second, early comment, which the Chore forbids. The plan builds no fix.
-- A recommended option can lose. Then an item that starts "If D<k> is A" has no use. The next plan run refreshes against the answer. The Chore accepts this cost.
+- A recommended option can lose. Then an item that starts "If D<k> is the recommended option" has no use. The next plan run refreshes against the answer. The Chore accepts this cost.
 - `plans/README.md` is close to its budget of 790, and the Chore raises no budget for it. If the new sentence breaks the budget, the build words it shorter. If that fails, the build asks in the PR.
 
 ## Proof
@@ -77,7 +77,7 @@ Step 3 of the Chore says "Add each gap that the draft finds as a drift item". Re
 | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | A plan run with drift drafts every plan section before the comment            | New test: step 1 comes before step 4, and step 4 says "after the draft"                               |
 | Draft drift and refresh drift go in one comment                               | New test: "Add each gap that the draft finds as a drift item" and "Post all drift in the one comment" |
-| A run drafts past an item with the recommended option; "If D<k> is A"         | New test: both phrases                                                                                |
+| A run drafts past an item with the recommended option; "If D<k> is …"         | New test: both phrases                                                                                |
 | The comment ends with the `Drafted the whole plan…` line; no push, no plan PR | New test: the closing line comes after "Spec-check lines", and step 5 holds "Push nothing"            |
 | A plan run with no drift opens the plan PR as today                           | New test: the section still holds "With no drift, continue with the plan."                            |
 | Stale-facts points a plan run to `refresh.md` › _Plan run_ with no clash      | New test: the link to `refresh.md#plan-run`; review for the clash                                     |
@@ -95,4 +95,5 @@ Step 3 of the Chore says "Add each gap that the draft finds as a drift item". Re
 ## Deviations
 
 - The build adds three tests, not two. The third checks that the closing line comes after the Spec-check lines.
-- The build raises the `refresh.md` budget to 522, not 506, for the added step references.
+- The build raises the `refresh.md` budget to 524, not 506, for the added step references and the wording of step 2.
+- Step 2 starts a dependent item "If D<k> is the recommended option", not "If D<k> is A" as #1236 says. A drift item can recommend B. The tech lead chose this wording, and #1236 is reworded to match.

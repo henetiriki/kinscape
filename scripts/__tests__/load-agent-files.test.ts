@@ -876,7 +876,9 @@ describe('the plan run', () => {
     expect([draft, past, gaps, post, push]).toEqual(
       [draft, past, gaps, post, push].sort((a, b) => a - b)
     );
-    expect(section).toContain('start it with "If D<k> is A"');
+    expect(section).toContain(
+      'start it with "If D<k> is the recommended option"'
+    );
     expect(section).toContain(
       'A value that Behaviour or Acceptance checks leave open'
     );

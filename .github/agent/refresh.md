@@ -19,7 +19,7 @@ Do this first, to the Spec, Bug or Chore the prompt names ("Spec" below means al
 If the prompt says this is a plan run and there is any drift, do these steps:
 
 1. Run `npm run plan:new`, and draft every section of the plan locally.
-2. Draft past each drift item with its recommended option. If a later item exists only under that option, start it with "If D<k> is A".
+2. Draft past each drift item with its recommended option. If a later item exists only under that option, start it with "If D<k> is the recommended option".
 3. Add each gap that the draft finds as a drift item, as refresh step 4 says. A value that Behaviour or Acceptance checks leave open is a gap, even if `main` did not cause it. A file name, a test place or the order of work is a plan choice, not a gap.
 4. Post all drift in the one comment of refresh step 5, after the draft. End the comment with the line `Drafted the whole plan, with the recommended option of D<k> to D<m>. The run pushed nothing.`, after the Spec-check lines.
 5. Delete the local branch and the plan file. Push nothing, and open no plan PR.

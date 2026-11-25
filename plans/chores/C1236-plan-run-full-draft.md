@@ -67,7 +67,7 @@ Step 3 of the Chore says "Add each gap that the draft finds as a drift item". Re
 
 ## Risks
 
-- The comment now waits for the whole draft. If a run times out in the draft, it posts no comment, and the refresh drift is lost for that run. The safety net of `claude-run.yml` then comments and sets `status: blocked`. Likelihood: low, because a run with no drift drafts the same plan today. Fix cost: a second, early comment, which the Chore rules out. The plan builds no fix.
+- The comment now waits for the whole draft. If a run reaches its time limit in the draft, it posts no comment, and the refresh drift is lost for that run. The safety net of `claude-run.yml` then comments and sets `status: blocked`. Likelihood: low, because a run with no drift drafts the same plan today. Fix cost: a second, early comment, which the Chore forbids. The plan builds no fix.
 - A recommended option can lose. Then an item that starts "If D<k> is A" has no use. The next plan run refreshes against the answer. The Chore accepts this cost.
 - `plans/README.md` is close to its budget of 790, and the Chore raises no budget for it. If the new sentence breaks the budget, the build words it shorter. If that fails, the build asks in the PR.
 
@@ -93,3 +93,6 @@ Step 3 of the Chore says "Add each gap that the draft finds as a drift item". Re
 - `.github/workflows/`, `.github/agent/spec-checks.md`, the "Unblock run" section and the labels.
 
 ## Deviations
+
+- The build adds three tests, not two. The third checks that the closing line comes after the Spec-check lines.
+- The build raises the `refresh.md` budget to 522, not 506, for the added step references.

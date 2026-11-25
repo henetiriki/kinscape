@@ -869,7 +869,7 @@ describe('the plan run', () => {
     const past = at('Draft past each drift item with its recommended option');
     const gaps = at('Add each gap that the draft finds as a drift item');
     const post = at(
-      'Post all drift in the one comment of step 5, after the draft'
+      'Post all drift in the one comment of refresh step 5, after the draft'
     );
     const push = at('Push nothing, and open no plan PR');
 

@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import {
+  isStyleFile,
   mediaProblems,
   queriesOf,
   withQueries,
@@ -30,6 +31,7 @@ const tokens = {
 const PHONE = '(max-width: 639.98px), (max-height: 499.98px)';
 const queries = { phone: PHONE };
 
+// NFR-05
 describe('queriesOf', () => {
   it('resolves each reference in a named query', () => {
     expect(queriesOf(tokens)).toEqual(queries);
@@ -51,6 +53,7 @@ describe('queriesOf', () => {
   });
 });
 
+// NFR-05
 describe('mediaProblems', () => {
   const problems = (text: string, list = queries) =>
     mediaProblems('a.module.css', text, list);
@@ -73,10 +76,22 @@ describe('mediaProblems', () => {
     ]);
   });
 
+  it('names an unmarked min-width, the desktop side of a query', () => {
+    expect(problems('@media (min-width: 640.02px) {\n}')).toEqual([
+      'a.module.css:1: @media on a width or height has no `/* breakpoint: name */` marker',
+    ]);
+  });
+
   it('names an unknown marker', () => {
     expect(problems(`@media ${PHONE} /* breakpoint: tablet */ {\n}`)).toEqual([
       'a.module.css:1: unknown breakpoint marker "tablet"',
     ]);
+  });
+
+  it('names a marker that is a key of Object.prototype', () => {
+    expect(
+      problems(`@media ${PHONE} /* breakpoint: constructor */ {\n}`)
+    ).toEqual(['a.module.css:1: unknown breakpoint marker "constructor"']);
   });
 
   it('names the file of a stale condition', () => {
@@ -88,6 +103,7 @@ describe('mediaProblems', () => {
   });
 });
 
+// NFR-05
 describe('withQueries', () => {
   it('rewrites only the condition of a marked @media', () => {
     const before = [
@@ -121,8 +137,27 @@ describe('withQueries', () => {
       )
     ).toThrow('unknown breakpoint marker "tablet"');
   });
+
+  it('throws on a marker that is a key of Object.prototype', () => {
+    expect(() =>
+      withQueries(
+        '@media (max-width: 1px) /* breakpoint: constructor */ {\n}',
+        queries
+      )
+    ).toThrow('unknown breakpoint marker "constructor"');
+  });
 });
 
+describe('isStyleFile', () => {
+  it('accepts a .module.css file and app/globals.css only', () => {
+    expect(isStyleFile('app/a.module.css')).toBe(true);
+    expect(isStyleFile('app/globals.css')).toBe(true);
+    expect(isStyleFile('app/tokens.css')).toBe(false);
+    expect(isStyleFile('lib/globals.css')).toBe(false);
+  });
+});
+
+// NFR-05
 describe('the tracked CSS', () => {
   it('marks each width or height @media with the list condition', () => {
     const root = process.cwd();
@@ -134,9 +169,7 @@ describe('the tracked CSS', () => {
       )
     );
     const found = trackedFiles()
-      .filter(
-        file => file.endsWith('.module.css') || file === 'app/globals.css'
-      )
+      .filter(isStyleFile)
       .flatMap(file =>
         mediaProblems(file, readFileSync(join(root, file), 'utf8'), list)
       );

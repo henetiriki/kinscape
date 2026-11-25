@@ -34,9 +34,9 @@ A value can refer to another with `{group.name}`. A `$description` holds the usa
 
 ## The CSS
 
-`npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css` and `design/tokens.generated.ts`. Edit neither. `design.test.ts` fails if one is stale or the source breaks DTCG.
+`npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css` and `design/tokens.generated.ts`. Edit neither. It also rewrites each marked `@media` ([Breakpoints](#breakpoints)). `design.test.ts` fails if one is stale or the source breaks DTCG.
 
-`design/tokens.generated.ts` has an export for each group except `scale`, plus `*Px` and `motionMs` numbers. It also has `hatchLine`, the hatch stripe as `rgba()` text, and `breakpointQuery` ([Breakpoints](#breakpoints)).
+`design/tokens.generated.ts` has an export for each group except `scale`, plus `*Px` and `motionMs` numbers. It also has `hatchLine`, the hatch stripe as `rgba()` text, and `breakpointQuery`.
 
 ## Scales
 
@@ -56,11 +56,11 @@ Step n is base × ratioⁿ, then rounded to the nearest multiple of the rounding
 
 ## Breakpoints
 
-`breakpoint.$extensions.kinscape.queries` names each media query. A query refers to width and height tokens.
+`breakpoint.$extensions.kinscape.queries` names each media query from width and height tokens.
 
-- **Use a query.** Write `/* breakpoint: phone */` before the `{` of the `@media`. `npm run tokens` writes the condition.
-- **Change a width.** Edit the token and run `npm run tokens`.
-- **Add a query.** Add it under `queries`.
+- **Use a query.** Put `/* breakpoint: phone */` before the `{`. `npm run tokens` writes the condition.
+- **Change a width.** Edit the token. Then run `npm run tokens`.
+- **Add a query.** Add it to `queries`.
 
 `breakpoints.test.ts` fails on an unmarked width or height `@media`, an unknown marker or a stale condition.
 

@@ -5,14 +5,18 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { format, resolveConfig } from 'prettier';
 
-import { queriesOf, withQueries } from '#ks/lib/design/breakpoints.mts';
+import {
+  isStyleFile,
+  queriesOf,
+  withQueries,
+} from '#ks/lib/design/breakpoints.mts';
 import { dtcgProblems } from '#ks/lib/design/dtcg.mts';
 import { withSteps } from '#ks/lib/design/scales.mts';
 import { buildTokens } from '#ks/lib/design/style-dictionary.mts';
 
 const SOURCE = 'design/kinscape.tokens.json';
 
-/** The files that `npm run tokens` writes, besides the token file. */
+/** The files that `npm run tokens` writes, besides the token file and the marked `@media` lines of the style files. */
 export const OUTPUTS = {
   css: 'app/tokens.css',
   ts: 'design/tokens.generated.ts',
@@ -39,38 +43,33 @@ const read = (root: string) => {
 export const generate = async (root: string): Promise<Record<string, string>> =>
   buildTokens(read(root) as DesignTokens, OUTPUTS);
 
-/** A `.module.css` file or `app/globals.css`: it can hold a marked `@media`. */
-const isStyleFile = (file: string): boolean =>
-  file.endsWith('.module.css') || file === 'app/globals.css';
-
-/** Writes the steps into the token file, formatted with Prettier, then each output, under `root`. Each marked `@media` in the style files of `files` gets its condition from the token file. */
+/** Writes the steps into the token file, formatted with Prettier, then each output, under `root`. Each marked `@media` in the style files of `files` gets its condition from the token file. It computes every text first, so an unknown marker writes nothing. */
 export const run = async (
   root: string,
   files: string[] = []
 ): Promise<number> => {
   const target = join(root, SOURCE);
-
-  writeFileSync(
-    target,
-    await format(JSON.stringify(read(root), null, 2), {
+  const tokens = read(root);
+  const writes: Record<string, string> = {
+    [SOURCE]: await format(JSON.stringify(tokens, null, 2), {
       ...(await resolveConfig(target, { editorconfig: true })),
       filepath: target,
-    })
-  );
-
-  for (const [path, text] of Object.entries(await generate(root))) {
-    writeFileSync(join(root, path), text);
-  }
-
-  const queries = queriesOf(read(root));
+    }),
+    ...(await generate(root)),
+  };
+  const queries = queriesOf(tokens);
 
   for (const file of files.filter(isStyleFile)) {
     const before = readFileSync(join(root, file), 'utf8');
     const after = withQueries(before, queries);
 
     if (after !== before) {
-      writeFileSync(join(root, file), after);
+      writes[file] = after;
     }
+  }
+
+  for (const [path, text] of Object.entries(writes)) {
+    writeFileSync(join(root, path), text);
   }
 
   return 0;

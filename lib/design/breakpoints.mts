@@ -9,6 +9,10 @@ const MEDIA = /@media([^{]*?)\/\* breakpoint: ([^*]*?) \*\/(\s*)\{/g;
 const REFERENCES = /\{([^{}]+)\}/g;
 const SIZED = /@media[^{]*\b(?:width|height)\b/g;
 
+/** A `.module.css` file or `app/globals.css`: it can hold a marked `@media`. */
+export const isStyleFile = (file: string): boolean =>
+  file.endsWith('.module.css') || file === 'app/globals.css';
+
 /** Each named query of `tokens`, with the width and height references resolved. */
 export const queriesOf = (tokens: DtcgTree): Record<string, string> => {
   const queries = (
@@ -44,7 +48,7 @@ export const mediaProblems = (
     const [, condition, name] = match;
     const at = `${file}:${lineOf(text, match.index)}`;
 
-    if (!(name in queries)) {
+    if (!Object.hasOwn(queries, name)) {
       problems.push(`${at}: unknown breakpoint marker "${name}"`);
     } else if (condition.trim() !== queries[name]) {
       problems.push(
@@ -70,7 +74,7 @@ export const withQueries = (
   queries: Record<string, string>
 ): string =>
   text.replace(MEDIA, (_, __, name: string, space: string) => {
-    if (!(name in queries)) {
+    if (!Object.hasOwn(queries, name)) {
       throw new Error(`unknown breakpoint marker "${name}"`);
     }
 

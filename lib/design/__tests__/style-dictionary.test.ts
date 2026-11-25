@@ -113,6 +113,7 @@ describe('buildTokens', () => {
     });
   });
 
+  // NFR-05
   describe('the breakpoint queries', () => {
     const withQuery = (width: number) => ({
       breakpoint: {

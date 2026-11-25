@@ -1,4 +1,5 @@
 import {
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -95,6 +96,7 @@ it('fails on settings that give a name below 100, and names the group', async ()
   );
 });
 
+// NFR-05
 describe('the marked @media conditions', () => {
   const MARKED = '@media (max-width: 1px) /* breakpoint: phone */ {\n}\n';
 
@@ -141,6 +143,22 @@ describe('the marked @media conditions', () => {
     await expect(run(root, ['app/d.module.css'])).rejects.toThrow(
       'unknown breakpoint marker "tablet"'
     );
+  });
+
+  it('writes no file when a later file has an unknown marker', async () => {
+    writeSource(withBreakpoints(600));
+    writeFileSync(join(root, 'app/e.module.css'), MARKED);
+    writeFileSync(
+      join(root, 'app/f.module.css'),
+      '@media (max-width: 1px) /* breakpoint: tablet */ {\n}\n'
+    );
+
+    await expect(
+      run(root, ['app/e.module.css', 'app/f.module.css'])
+    ).rejects.toThrow('unknown breakpoint marker "tablet"');
+
+    expect(readFileSync(join(root, 'app/e.module.css'), 'utf8')).toBe(MARKED);
+    expect(existsSync(join(root, OUTPUTS.css))).toBe(false);
   });
 });
 

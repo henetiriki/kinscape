@@ -287,6 +287,7 @@
   --z-action-bar: 10;
   --z-popup: 20;
   --z-menu: 30;
+  --z-modal: 40;
   --map-pin-halo-colour: var(--pin);
   --map-pin-halo-opacity: 0.24;
   --map-selected-colour: var(--brand);

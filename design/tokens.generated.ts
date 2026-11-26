@@ -483,7 +483,8 @@ export const z = {
   "furniture": "1",
   "action-bar": "10",
   "popup": "20",
-  "menu": "30"
+  "menu": "30",
+  "modal": "40"
 } as const;
 
 export const map = {

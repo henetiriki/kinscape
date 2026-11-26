@@ -276,9 +276,11 @@ describe('design/kinscape.tokens.json and design/tokens.generated.ts', () => {
 
   it('keeps the z layers in order, with the MapLibre corners (z-index 2) between furniture and the action bar', () => {
     const { z } = generatedTokens;
-    const layers = [z.furniture, z['action-bar'], z.popup, z.menu].map(Number);
+    const layers = [z.furniture, z['action-bar'], z.popup, z.menu, z.modal].map(
+      Number
+    );
 
-    expect(layers).toEqual([1, 10, 20, 30]);
+    expect(layers).toEqual([1, 10, 20, 30, 40]);
     expect(layers.toSorted((a, b) => a - b)).toEqual(layers);
     expect(layers[0]).toBeLessThan(2);
     expect(layers[1]).toBeGreaterThan(2);

@@ -98,7 +98,7 @@ describe('systemTokens', () => {
         value: follow(value),
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
-    expect(all(system).length).toBe(196);
+    expect(all(system).length).toBe(197);
   });
 
   it('shows the purpose names, the border widths and the 8 motion tokens, and no step or space-N', () => {
@@ -184,7 +184,7 @@ describe('systemTokens', () => {
       system.layout.tokens.length,
       system.breakpoint.tokens.length,
       system.z.tokens.length,
-    ]).toEqual([41, 2, 4]);
+    ]).toEqual([41, 2, 5]);
 
     for (const { name, usage, value } of [
       ...system.layout.tokens,
@@ -452,6 +452,7 @@ describe('systemCss', () => {
     expect(css).toContain('  --layout-menu-offset: 0.5rem;');
     expect(css).toContain('  --breakpoint-phone-width: 639.98px;');
     expect(css).toContain('  --z-menu: 30;');
+    expect(css).toContain('  --z-modal: 40;');
     expect(css).not.toContain('--layout-dialog-top');
   });
 

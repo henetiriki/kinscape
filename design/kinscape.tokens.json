@@ -2420,6 +2420,11 @@
       "$type": "number",
       "$value": 30,
       "$description": "A Menu, and the map slots that hang it, above other map furniture."
+    },
+    "modal": {
+      "$type": "number",
+      "$value": 40,
+      "$description": "A modal and its scrim on a board, above a Menu and the map slots. A native dialog in the app needs no value."
     }
   },
   "map": {

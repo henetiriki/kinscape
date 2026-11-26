@@ -102,8 +102,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 
   <sc-if value="{{v.sources}}" hint-placeholder-val="{{ false }}">
-    <div style="z-index: 20; position: absolute; inset: 0; background: rgba(24,33,27,0.45)"></div>
-    <div style="z-index: 20; will-change: transform; position: absolute; left: 340px; top: 40px; bottom: 40px; display: grid; grid-template-rows: minmax(0, 1fr)">
+    <div style="z-index: var(--z-modal); position: absolute; inset: 0; background: rgba(24,33,27,0.45)"></div>
+    <div style="z-index: var(--z-modal); will-change: transform; position: absolute; left: 340px; top: 40px; bottom: 40px; display: grid; grid-template-rows: minmax(0, 1fr)">
       <x-import component-from-global-scope="KinScape.DialogPanel" form="centred" title="{{sourcesDialog.title}}" subtitle="{{sourcesDialog.subtitle}}" footnote="{{sourcesDialog.footnote}}" title-id="sources-dialog-title">
         <x-import component-from-global-scope="KinScape.SourcesList" sources="{{sourcesDialog.sources}}"></x-import>
       </x-import>

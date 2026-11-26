@@ -2,7 +2,7 @@
 
 - **Spec:** #1200
 - **Requirement IDs:** None. This Spec changes no behaviour.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@ The Spec lets the plan set the sizes. `inset` uses all 10 `scale.space` steps, `
 - **C.** The step number: `space-inset-400`. A name repeats its scale step, so the size part adds no meaning.
 - **Other:** your own.
 
-Recommended: A, because a reader learns one list of suffixes for the three roles. B loses that, and C adds nothing over the step.
+**Answer: A** (@henetiriki)
 
 **D19 · Which lines set the sizes** · Decides: Tech lead
 
@@ -29,7 +29,7 @@ Recommended: A, because a reader learns one list of suffixes for the three roles
 - **B.** The sizes come from `app/components` only: 18 names. In SC.9, the `PersonForm` `column-gap` gets an `own:` reason.
 - **Other:** your own.
 
-Recommended: A, because SC.9 then has a name for each line.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

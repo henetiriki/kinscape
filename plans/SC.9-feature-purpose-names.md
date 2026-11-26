@@ -2,7 +2,7 @@
 
 - **Spec:** #1201
 - **Requirement IDs:** none. The Spec changes no behaviour.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

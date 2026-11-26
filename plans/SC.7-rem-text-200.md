@@ -6,7 +6,7 @@
 
 ## Approach
 
-`scale.text`, `scale.line` and `scale.space` get `unit: "rem"`. Their inputs stay in px. `stepsOf` in `lib/design/scales.mts` builds each step in px, as on `main`. Then `tokenOf` writes the step as px ÷ 16 in rem (D2). Each value of today ÷ 16 is an exact binary fraction, so each screen renders the same pixels at the default text size. Style Dictionary needs no change: a reference to a step gets the step's text, and `numbersIn` takes only `px` text, so `spacePx` and `typePx` go and `layoutPx` loses its three spacing references (D3, D10).
+`scale.text`, `scale.line` and `scale.space` get `unit: "rem"`. Their inputs stay in px. `stepsOf` in `lib/design/scales.mts` builds each step in px, as on `main`. Then `tokenOf` writes the step as px ÷ 16 in rem (D2). Each value of today ÷ 16 is an exact binary fraction, so each screen renders the same pixels at the default text size. Style Dictionary needs no change. A reference to a step gets the step's text. `numbersIn` takes only `px` text. Thus `spacePx` and `typePx` go, and `layoutPx` loses its three spacing references (D3, D10).
 
 `keyOf` in `lib/design/groups.mts` turns a `rem` number into its px key (× 16). The literals check and the size check both read keys through `keyOf`. Thus a `16px` literal still equals a `1rem` token, and `lib/design/off-token-sizes.json` stays byte-identical.
 

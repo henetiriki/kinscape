@@ -3,6 +3,7 @@
 import type { DtcgTree, ScaleSettings } from '#ks/lib/design/types.ts';
 
 import { cssText, isTree } from '#ks/lib/design/dtcg.mts';
+import { REM_PX } from '#ks/lib/design/groups.mts';
 
 type Step = { name: string; note: string; value: number };
 
@@ -107,7 +108,7 @@ const tokenOf = (settings: ScaleSettings, step: Step): DtcgTree => ({
       : 'duration',
   $value: {
     unit: settings.unit,
-    value: settings.unit === 'rem' ? step.value / 16 : step.value,
+    value: settings.unit === 'rem' ? step.value / REM_PX : step.value,
   },
 });
 

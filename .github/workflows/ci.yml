@@ -214,7 +214,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-  # Compares each built screen with its design snapshot, in parallel with e2e.
+  # Compares each built screen with its design snapshot, and checks it at 200% text, in parallel with e2e.
   design:
     needs: image
     runs-on: ubuntu-latest

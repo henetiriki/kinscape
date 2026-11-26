@@ -14,8 +14,11 @@ export const LARGE_TEXT = `
 `;
 
 /**
- * The elements that cut off their own text: visible, over 1 × 1px, with `overflow` of `hidden` or
- * `clip` on an axis, and a text of their own that passes their padding box on that axis by over 1px.
+ * The elements that cut off their own text. An element cuts off its text when all of these hold:
+ * - It is visible and over 1 × 1px.
+ * - Its `overflow` is `hidden` or `clip` on an axis.
+ * - A text of its own passes its padding box on that axis by over 1px.
+ *
  * Each problem names the element (tag and first class), the axis and the amount. It holds no page text.
  */
 export const cutOffNow = (page: Page) =>
@@ -38,12 +41,20 @@ export const cutOffNow = (page: Page) =>
       if (box.width <= 1 || box.height <= 1) continue;
 
       const style = getComputedStyle(node);
-      const range = document.createRange();
+      // One range for each own text node: a range across them would also hold the child elements.
+      const rects = own.map(child => {
+        const range = document.createRange();
 
-      range.setStartBefore(own[0]);
-      range.setEndAfter(own.at(-1)!);
+        range.selectNodeContents(child);
 
-      const text = range.getBoundingClientRect();
+        return range.getBoundingClientRect();
+      });
+      const text = {
+        bottom: Math.max(...rects.map(rect => rect.bottom)),
+        left: Math.min(...rects.map(rect => rect.left)),
+        right: Math.max(...rects.map(rect => rect.right)),
+        top: Math.min(...rects.map(rect => rect.top)),
+      };
       const name = `${node.tagName.toLowerCase()}.${String(node.getAttribute('class')).split(' ')[0]}`;
       const axes = [
         {

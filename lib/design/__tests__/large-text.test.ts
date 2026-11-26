@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { LargeTextEntry } from '@ks/lib/design/types.ts';
 
-import { listProblems, verdictFor } from '@ks/lib/design/large-text.mts';
+import { listProblems, SIZES, verdictFor } from '@ks/lib/design/large-text.mts';
 
 const root = join(import.meta.dirname, '../../..');
 const screens = JSON.parse(
@@ -14,9 +14,10 @@ const list = JSON.parse(
   readFileSync(join(root, 'lib/design/large-text.json'), 'utf8')
 ) as LargeTextEntry[];
 
-const WIDTHS = [1440, 390];
+const WIDTHS = SIZES.map(({ width }) => width);
 const entries: LargeTextEntry[] = [{ screen: 'people-list', width: 390 }];
 
+// NFR-05, NFR-06
 describe('verdictFor', () => {
   it('fails a screen with problems and no entry, and names the screen, the width and each problem', () => {
     const result = verdictFor('people-list', 1440, ['a', 'b'], entries);
@@ -51,6 +52,7 @@ describe('verdictFor', () => {
   });
 });
 
+// NFR-05, NFR-06
 describe('listProblems', () => {
   it('is empty for a list of known entries', () => {
     expect(listProblems(entries, ['people-list'], WIDTHS)).toEqual([]);
@@ -79,6 +81,7 @@ describe('listProblems', () => {
   });
 });
 
+// NFR-05, NFR-06
 describe('the list', () => {
   it('holds only known, single entries', () => {
     expect(listProblems(list, screens, WIDTHS)).toEqual([]);

@@ -139,6 +139,7 @@ describe('withSteps', () => {
     });
   });
 
+  // NFR-05, NFR-06
   it('writes a rem group as px ÷ 16, in each mode', () => {
     const values = (settings: Record<string, unknown>) =>
       Object.values(
@@ -190,6 +191,7 @@ describe('withSteps', () => {
     ]);
   });
 
+  // NFR-05, NFR-06
   it('names the px input in the note of a rem step', () => {
     const out = withSteps(
       treeOf({ grid: 4, mode: 'grid', steps: 1, unit: 'rem' })
@@ -279,6 +281,7 @@ describe('scaleProblems', () => {
     ]);
   });
 
+  // NFR-05, NFR-06
   it('names a rem step that differs', () => {
     const tree = built({ grid: 4, mode: 'grid', steps: 2, unit: 'rem' });
 

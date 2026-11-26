@@ -9,6 +9,7 @@ import {
   resolvedText,
   tokenLeaves,
 } from '@ks/lib/design/dtcg.mts';
+import { keyOf } from '@ks/lib/design/groups.mts';
 import { noteProblems } from '@ks/lib/design/notes.mts';
 import { scaleProblems } from '@ks/lib/design/scales.mts';
 import { generate, OUTPUTS } from '@ks/scripts/tokens.mts';
@@ -279,7 +280,12 @@ describe('design/kinscape.tokens.json and design/tokens.generated.ts', () => {
       ([name, style]) =>
         [
           name,
-          Number.parseFloat(style.size) * (style.size.endsWith('rem') ? 16 : 1),
+          Number.parseFloat(
+            keyOf(
+              String(Number.parseFloat(style.size)),
+              style.size.replace(/[\d.]+/, '')
+            )
+          ),
         ] as const
     );
     const small = Object.fromEntries(sizes.filter(([, size]) => size < 12.5));

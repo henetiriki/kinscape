@@ -2,6 +2,22 @@ import type { Page } from '@playwright/test';
 
 import { expect } from '@playwright/test';
 
+/** The screens that `DESIGN_SCREENS` names, or all of them. An unknown name throws. */
+export const wantedScreens = <T extends { name: string }>(screens: T[]) => {
+  const wanted = process.env.DESIGN_SCREENS?.split(',').filter(Boolean) ?? [];
+  const unknown = wanted.filter(
+    name => !screens.some(screen => screen.name === name)
+  );
+
+  if (unknown.length > 0) {
+    throw new Error(`DESIGN_SCREENS names no screen: ${unknown.join(', ')}`);
+  }
+
+  return screens.filter(
+    ({ name }) => wanted.length === 0 || wanted.includes(name)
+  );
+};
+
 /** Opens the route of a screen at `size` and waits until the network, the fonts and the map are idle. */
 export const openScreen = async (
   page: Page,

@@ -132,6 +132,7 @@ it('fails a radius literal that equals a token that refers to a scale step', () 
   );
 });
 
+// NFR-05, NFR-06
 it('fails a 16px padding literal that equals a 1rem space token', () => {
   const inRem = {
     space: { '400': { $type: 'dimension', $value: { unit: 'rem', value: 1 } } },

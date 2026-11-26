@@ -184,6 +184,7 @@ describe('a size that passes', () => {
     expect(off('a.module.css', css(`  ${row}`))).toEqual([]);
   });
 
+  // NFR-05, NFR-06
   it('passes a 16px padding size that equals a 1rem space token', () => {
     const inRem = {
       space: {

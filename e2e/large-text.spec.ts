@@ -2,12 +2,12 @@ import { expect, test } from '@playwright/test';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { openScreen } from '@ks/e2e/design-open';
+import { openScreen, wantedScreens } from '@ks/e2e/design-open';
 import { states } from '@ks/e2e/design-states';
 import { cutOffNow, LARGE_TEXT } from '@ks/e2e/large-text';
 import { wideNow } from '@ks/e2e/sideways';
 import { authStateFor, parseConfig } from '@ks/lib/design/check.mts';
-import { verdictFor } from '@ks/lib/design/large-text.mts';
+import { SIZES, verdictFor } from '@ks/lib/design/large-text.mts';
 import { FIXTURES } from '@ks/server/auth/fixtures.mts';
 
 // NFR-05, NFR-06: each screen holds at 200% root text size, except the entries of the list.
@@ -26,13 +26,7 @@ const list = JSON.parse(
   readFileSync(join(root, 'lib/design/large-text.json'), 'utf8')
 );
 
-// The two sizes of design/screens.json.
-const SIZES = [
-  { height: 900, width: 1440 },
-  { height: 844, width: 390 },
-];
-
-for (const screen of config.screens) {
+for (const screen of wantedScreens(config.screens)) {
   test.describe(`large text: ${screen.name}`, () => {
     test.use({ storageState: authStateFor(screen.account) });
 
@@ -93,6 +87,7 @@ test.describe('large text: the rule', () => {
           <div class="k-clip" style="width:40px;overflow:clip;white-space:nowrap">${long}</div>
           <div class="k-ellipsis" style="width:40px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${long}</div>
           <div class="k-parent" style="width:40px;overflow:hidden"><span class="k-child" style="display:inline-block;white-space:nowrap">${long}</span></div>
+          <div class="k-mixed" style="width:200px;overflow:hidden">Born <span style="display:inline-block;white-space:nowrap">${long}</span> in 1820</div>
           <div class="k-tiny" style="width:1px;height:1px;overflow:hidden;white-space:nowrap">${long}</div>
           <div class="k-gone" style="display:none;width:40px;overflow:hidden;white-space:nowrap">${long}</div>
           <div class="k-fits" style="width:900px;overflow:hidden;white-space:nowrap">Fits</div>
@@ -108,6 +103,7 @@ test.describe('large text: the rule', () => {
       expect.arrayContaining(['div.k-hidden', 'div.k-clip', 'div.k-ellipsis'])
     );
     expect(names).not.toContain('div.k-parent');
+    expect(names).not.toContain('div.k-mixed');
     expect(names).not.toContain('div.k-tiny');
     expect(names).not.toContain('div.k-gone');
     expect(names).not.toContain('div.k-fits');

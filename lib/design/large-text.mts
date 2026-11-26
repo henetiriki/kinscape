@@ -2,6 +2,12 @@
 
 import type { LargeTextEntry, LargeTextResult } from '#ks/lib/design/types.ts';
 
+/** The two sizes of design/screens.json that the 200% check opens. */
+export const SIZES = [
+  { height: 900, width: 1440 },
+  { height: 844, width: 390 },
+];
+
 const has = (list: LargeTextEntry[], screen: string, width: number) =>
   list.some(entry => entry.screen === screen && entry.width === width);
 

@@ -132,6 +132,21 @@ it('fails a radius literal that equals a token that refers to a scale step', () 
   );
 });
 
+// NFR-05, NFR-06
+it('fails a 16px padding literal that equals a 1rem space token', () => {
+  const inRem = {
+    space: { '400': { $type: 'dimension', $value: { unit: 'rem', value: 1 } } },
+  };
+
+  expect(tokenLiterals(lines('  padding: 16px;'), inRem)).toMatchObject([
+    { line: 2 },
+  ]);
+  expect(tokenLiterals(lines('  padding: 1rem;'), inRem)).toMatchObject([
+    { line: 2 },
+  ]);
+  expect(tokenLiterals(lines('  padding: 15px;'), inRem)).toEqual([]);
+});
+
 it('passes each literal when the token file has no group for it', () => {
   expect(tokenLiterals(lines('  gap: 8px;', '  color: #18211b;'), {})).toEqual(
     []

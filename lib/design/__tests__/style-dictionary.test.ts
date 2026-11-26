@@ -104,6 +104,23 @@ describe('buildTokens', () => {
       expect(css).not.toContain('scale');
     });
 
+    // NFR-05, NFR-06
+    it('writes a rem token as rem, with no Px number, and keeps the Px number of a px token', async () => {
+      const mixed = {
+        size: { icon: { $type: 'dimension', $value: px(20) } },
+        space: {
+          '4': { $type: 'dimension', $value: { unit: 'rem', value: 0.25 } },
+        },
+      };
+      const out = await buildTokens(mixed, OUT);
+
+      expect(out[OUT.css]).toContain('  --space-4: 0.25rem;');
+      expect(out[OUT.ts]).not.toContain('spacePx');
+      expect(out[OUT.ts]).toContain(
+        'export const sizePx = {\n  "icon": 20\n} as const;'
+      );
+    });
+
     it('writes no scale export, and settings make no token', async () => {
       const text = (await buildTokens(withScale, OUT))[OUT.ts];
 

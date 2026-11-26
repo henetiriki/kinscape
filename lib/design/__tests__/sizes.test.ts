@@ -184,6 +184,21 @@ describe('a size that passes', () => {
     expect(off('a.module.css', css(`  ${row}`))).toEqual([]);
   });
 
+  // NFR-05, NFR-06
+  it('passes a 16px padding size that equals a 1rem space token', () => {
+    const inRem = {
+      space: {
+        '400': { $type: 'dimension', $value: { unit: 'rem', value: 1 } },
+      },
+    };
+    const sizes = sizesIn('a.module.css', css('  padding: 16px;'), inRem);
+
+    expect(sizes).toMatchObject([{ token: true, value: '16px' }]);
+    expect(
+      sizesIn('a.module.css', css('  padding: 15px;'), inRem)
+    ).toMatchObject([{ token: false }]);
+  });
+
   it('passes a media length that equals a breakpoint token', () => {
     expect(off('a.module.css', '@media (max-width: 639.98px) {\n}')).toEqual(
       []

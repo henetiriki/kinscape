@@ -54,6 +54,12 @@ A step name is a 100-based number. Grid, hybrid and explicit mode start at 100. 
 
 Step n is base × ratioⁿ, then rounded to the nearest multiple of the rounding unit. A halfway value rounds to the larger multiple.
 
+## Units
+
+Text, line heights and spacing use rem, which follows the reader's text size. Other kinds use px. A rem group keeps px inputs. A rem token gets no `*Px` number. The checks compare px: `16px` equals `1rem`.
+
+`e2e/large-text.spec.ts` opens each screen at 200% text. `lib/design/large-text.json` lists the failures. A new failure fails. So does a passing entry.
+
 ## Breakpoints
 
 `breakpoint.$extensions.kinscape.queries` names each media query from width and height tokens.

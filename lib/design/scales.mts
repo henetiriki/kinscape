@@ -3,6 +3,7 @@
 import type { DtcgTree, ScaleSettings } from '#ks/lib/design/types.ts';
 
 import { cssText, isTree } from '#ks/lib/design/dtcg.mts';
+import { REM_PX } from '#ks/lib/design/groups.mts';
 
 type Step = { name: string; note: string; value: number };
 
@@ -44,7 +45,7 @@ const named = (
 
 /** The steps of the group `scale` under `scale.`, from its settings. It throws, naming the group, if a name falls below 100 or the mode is unknown. */
 export const stepsOf = (scale: string, settings: ScaleSettings): Step[] => {
-  const px = settings.unit;
+  const px = settings.unit === 'rem' ? 'px' : settings.unit;
 
   switch (settings.mode) {
     case 'explicit':
@@ -98,13 +99,17 @@ export const stepsOf = (scale: string, settings: ScaleSettings): Step[] => {
 const settingsOf = (group: DtcgTree): ScaleSettings | undefined =>
   (group.$extensions as { kinscape?: ScaleSettings } | undefined)?.kinscape;
 
+/** The token of a step. A rem group builds its steps in px, so the token holds px ÷ 16 (exact in binary). */
 const tokenOf = (settings: ScaleSettings, step: Step): DtcgTree => ({
   $description: step.note,
   $type:
     settings.unit === 'px' || settings.unit === 'rem'
       ? 'dimension'
       : 'duration',
-  $value: { unit: settings.unit, value: step.value },
+  $value: {
+    unit: settings.unit,
+    value: settings.unit === 'rem' ? step.value / REM_PX : step.value,
+  },
 });
 
 /** The groups of `scale` that have settings, by name. */

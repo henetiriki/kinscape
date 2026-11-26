@@ -102,7 +102,7 @@ describe('systemTokens', () => {
       /^Primary buttons, links and selection\. /
     );
     expect(byName.get('surface')?.value).toBe('#ffffff');
-    expect(byName.get('space-4')?.value).toBe('4px');
+    expect(byName.get('space-4')?.value).toBe('0.25rem');
     expect(byName.get('space-4')?.usage).toBe(
       'Gaps inside a control, icon to text, and between tight rows.'
     );
@@ -169,7 +169,7 @@ describe('systemTokens', () => {
     expect(
       system.layout.tokens.find(({ name }) => name === 'layout-menu-offset')
         ?.value
-    ).toBe('8px');
+    ).toBe('0.5rem');
   });
 
   it('writes a token that refers to a scale step as the value of the step, not an alias', () => {
@@ -178,7 +178,7 @@ describe('systemTokens', () => {
     });
     expect(
       system.spacing.tokens.find(({ name }) => name === 'space-16')?.value
-    ).toBe('16px');
+    ).toBe('1rem');
     expect(
       system.radius.tokens.find(({ name }) => name === 'radius-panel')?.value
     ).toBe('12px');
@@ -186,7 +186,7 @@ describe('systemTokens', () => {
       system.type.groups
         .flatMap(({ styles }) => styles)
         .find(({ name }) => name === 'body')
-    ).toMatchObject({ fontSize: '15px', lineHeight: '22px' });
+    ).toMatchObject({ fontSize: '0.9375rem', lineHeight: '1.375rem' });
     expect(JSON.stringify(system)).not.toContain('{scale.');
   });
 
@@ -218,11 +218,11 @@ describe('systemTokens', () => {
       ['Mono', 'mono', 3],
     ]);
     expect(system.type.groups[0].styles[1]).toEqual({
-      fontSize: '32px',
+      fontSize: '2rem',
       fontStyle: 'normal',
       fontWeight: '500',
       letterSpacing: '-0.015em',
-      lineHeight: '40px',
+      lineHeight: '2.5rem',
       name: 'h1',
       usage: 'Page title.',
     });
@@ -369,7 +369,7 @@ describe('systemCss', () => {
   });
 
   it('holds spacing, radius, sizes, focus and font stacks in :root', () => {
-    expect(css).toContain(':root {\n  --space-4: 4px;');
+    expect(css).toContain(':root {\n  --space-4: 0.25rem;');
     expect(css).toContain('  --radius-panel: 12px;');
     expect(css).toContain('  --size-touch: 44px;');
     expect(css).toContain('  --focus-width: 2px;');
@@ -379,7 +379,7 @@ describe('systemCss', () => {
   });
 
   it('holds the layout, breakpoint and z tokens in :root', () => {
-    expect(css).toContain('  --layout-menu-offset: 8px;');
+    expect(css).toContain('  --layout-menu-offset: 0.5rem;');
     expect(css).toContain('  --breakpoint-phone-width: 639.98px;');
     expect(css).toContain('  --z-menu: 10;');
     expect(css).not.toContain('--layout-dialog-top');
@@ -387,7 +387,7 @@ describe('systemCss', () => {
 
   it('has a class per style and a @font-face per font', () => {
     expect(css).toContain(
-      '.h1 {\n  font-family: var(--font-display);\n  font-size: 32px;\n  line-height: 40px;\n  font-weight: 500;\n  letter-spacing: -0.015em;\n  font-style: normal;\n}'
+      '.h1 {\n  font-family: var(--font-display);\n  font-size: 2rem;\n  line-height: 2.5rem;\n  font-weight: 500;\n  letter-spacing: -0.015em;\n  font-style: normal;\n}'
     );
     expect(css.match(/@font-face/g)).toHaveLength(8);
   });

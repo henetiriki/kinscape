@@ -101,7 +101,7 @@ Each file in `design/topics/` has `paths:` frontmatter. `npm run plan:new` lists
 
 People, pins and boundary shapes in the JPGs are illustrative, not data.
 
-`npm run design:check` renders each screen in `screens.json` beside its HTML snapshot and ignores the map. It writes the differences to `test-results/design/`. Every screen is `blocking`: CI fails above the threshold.
+`npm run design:check` renders each screen in `screens.json` beside its HTML snapshot and ignores the map. It writes the differences to `test-results/design/`. Every screen is `blocking`: CI fails above the threshold. It also opens each screen at 200% root text size, and CI fails on a failure that is not on the list: see [Units](topics/tokens.md#units).
 
 [CANVAS.md](CANVAS.md) gives the path for a design. It also says how to refresh the canvas copy and make the snapshots and JPGs.
 

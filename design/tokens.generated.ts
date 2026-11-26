@@ -63,297 +63,185 @@ export const font = {
 export const type = {
   "display": {
     "font": "'Bricolage Grotesque', sans-serif",
-    "size": "52px",
-    "line": "56px",
+    "size": "3.25rem",
+    "line": "3.5rem",
     "weight": "700",
     "tracking": "-0.02em"
   },
   "h1": {
     "font": "'Bricolage Grotesque', sans-serif",
-    "size": "32px",
-    "line": "40px",
+    "size": "2rem",
+    "line": "2.5rem",
     "weight": "500",
     "tracking": "-0.015em"
   },
   "h1-phone": {
     "font": "'Bricolage Grotesque', sans-serif",
-    "size": "28px",
-    "line": "32px",
+    "size": "1.75rem",
+    "line": "2rem",
     "weight": "500",
     "tracking": "-0.015em"
   },
   "h2": {
     "font": "'Bricolage Grotesque', sans-serif",
-    "size": "24px",
-    "line": "32px",
+    "size": "1.5rem",
+    "line": "2rem",
     "weight": "700",
     "tracking": "0"
   },
   "h3": {
     "font": "'Bricolage Grotesque', sans-serif",
-    "size": "22px",
-    "line": "28px",
+    "size": "1.375rem",
+    "line": "1.75rem",
     "weight": "700",
     "tracking": "0"
   },
   "title": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "15px",
-    "line": "22px",
+    "size": "0.9375rem",
+    "line": "1.375rem",
     "weight": "600",
     "tracking": "0"
   },
   "body-l": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "16px",
-    "line": "24px",
+    "size": "1rem",
+    "line": "1.5rem",
     "weight": "400",
     "tracking": "0"
   },
   "body": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "15px",
-    "line": "22px",
+    "size": "0.9375rem",
+    "line": "1.375rem",
     "weight": "400",
     "tracking": "0"
   },
   "label": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "14px",
-    "line": "20px",
+    "size": "0.875rem",
+    "line": "1.25rem",
     "weight": "600",
     "tracking": "0"
   },
   "small": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "13px",
-    "line": "20px",
+    "size": "0.8125rem",
+    "line": "1.25rem",
     "weight": "400",
     "tracking": "0"
   },
   "caption": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "12.5px",
-    "line": "18px",
+    "size": "0.78125rem",
+    "line": "1.125rem",
     "weight": "400",
     "tracking": "0"
   },
   "credits": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "11px",
-    "line": "16px",
+    "size": "0.6875rem",
+    "line": "1rem",
     "weight": "400",
     "tracking": "0"
   },
   "overline": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "11px",
-    "line": "16px",
+    "size": "0.6875rem",
+    "line": "1rem",
     "weight": "600",
     "tracking": "0.1em"
   },
   "overline-tight": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "11px",
-    "line": "12px",
+    "size": "0.6875rem",
+    "line": "0.75rem",
     "weight": "600",
     "tracking": "0.1em"
   },
   "button": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "16px",
-    "line": "24px",
+    "size": "1rem",
+    "line": "1.5rem",
     "weight": "600",
     "tracking": "0"
   },
   "control": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "15px",
-    "line": "22px",
+    "size": "0.9375rem",
+    "line": "1.375rem",
     "weight": "600",
     "tracking": "0"
   },
   "chip": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "13.5px",
-    "line": "20px",
+    "size": "0.84375rem",
+    "line": "1.25rem",
     "weight": "600",
     "tracking": "0"
   },
   "chip-off": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "13.5px",
-    "line": "20px",
+    "size": "0.84375rem",
+    "line": "1.25rem",
     "weight": "400",
     "tracking": "0"
   },
   "button-s": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "14px",
-    "line": "20px",
+    "size": "0.875rem",
+    "line": "1.25rem",
     "weight": "600",
     "tracking": "0"
   },
   "link": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "15px",
-    "line": "22px",
+    "size": "0.9375rem",
+    "line": "1.375rem",
     "weight": "500",
     "tracking": "0"
   },
   "link-s": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "13px",
-    "line": "20px",
+    "size": "0.8125rem",
+    "line": "1.25rem",
     "weight": "500",
     "tracking": "0"
   },
   "mono-l": {
     "font": "'JetBrains Mono', monospace",
-    "size": "22px",
-    "line": "28px",
+    "size": "1.375rem",
+    "line": "1.75rem",
     "weight": "500",
     "tracking": "0"
   },
   "mono-m": {
     "font": "'JetBrains Mono', monospace",
-    "size": "15px",
-    "line": "22px",
+    "size": "0.9375rem",
+    "line": "1.375rem",
     "weight": "400",
     "tracking": "0"
   },
   "mono": {
     "font": "'JetBrains Mono', monospace",
-    "size": "12px",
-    "line": "16px",
+    "size": "0.75rem",
+    "line": "1rem",
     "weight": "400",
     "tracking": "0"
-  }
-} as const;
-
-export const typePx = {
-  "display": {
-    "size": 52,
-    "line": 56
-  },
-  "h1": {
-    "size": 32,
-    "line": 40
-  },
-  "h1-phone": {
-    "size": 28,
-    "line": 32
-  },
-  "h2": {
-    "size": 24,
-    "line": 32
-  },
-  "h3": {
-    "size": 22,
-    "line": 28
-  },
-  "title": {
-    "size": 15,
-    "line": 22
-  },
-  "body-l": {
-    "size": 16,
-    "line": 24
-  },
-  "body": {
-    "size": 15,
-    "line": 22
-  },
-  "label": {
-    "size": 14,
-    "line": 20
-  },
-  "small": {
-    "size": 13,
-    "line": 20
-  },
-  "caption": {
-    "size": 12.5,
-    "line": 18
-  },
-  "credits": {
-    "size": 11,
-    "line": 16
-  },
-  "overline": {
-    "size": 11,
-    "line": 16
-  },
-  "overline-tight": {
-    "size": 11,
-    "line": 12
-  },
-  "button": {
-    "size": 16,
-    "line": 24
-  },
-  "control": {
-    "size": 15,
-    "line": 22
-  },
-  "chip": {
-    "size": 13.5,
-    "line": 20
-  },
-  "chip-off": {
-    "size": 13.5,
-    "line": 20
-  },
-  "button-s": {
-    "size": 14,
-    "line": 20
-  },
-  "link": {
-    "size": 15,
-    "line": 22
-  },
-  "link-s": {
-    "size": 13,
-    "line": 20
-  },
-  "mono-l": {
-    "size": 22,
-    "line": 28
-  },
-  "mono-m": {
-    "size": 15,
-    "line": 22
-  },
-  "mono": {
-    "size": 12,
-    "line": 16
   }
 } as const;
 
 export const space = {
-  "4": "4px",
-  "8": "8px",
-  "12": "12px",
-  "16": "16px",
-  "20": "20px",
-  "24": "24px",
-  "32": "32px",
-  "40": "40px",
-  "48": "48px",
-  "64": "64px"
-} as const;
-
-export const spacePx = {
-  "4": 4,
-  "8": 8,
-  "12": 12,
-  "16": 16,
-  "20": 20,
-  "24": 24,
-  "32": 32,
-  "40": 40,
-  "48": 48,
-  "64": 64
+  "4": "0.25rem",
+  "8": "0.5rem",
+  "12": "0.75rem",
+  "16": "1rem",
+  "20": "1.25rem",
+  "24": "1.5rem",
+  "32": "2rem",
+  "40": "2.5rem",
+  "48": "3rem",
+  "64": "4rem"
 } as const;
 
 export const radius = {
@@ -453,7 +341,7 @@ export const motionMs = {
 export const layout = {
   "popup-width": "304px",
   "menu-width": "296px",
-  "menu-offset": "8px",
+  "menu-offset": "0.5rem",
   "dialog-width": "760px",
   "notice-width": "360px",
   "notice-width-l": "380px",
@@ -480,8 +368,8 @@ export const layout = {
     "hero-phone": "188px",
     "pane": "440px",
     "form": "360px",
-    "pane-y": "48px",
-    "pane-x": "32px",
+    "pane-y": "3rem",
+    "pane-x": "2rem",
     "copy": "520px",
     "tagline": "380px"
   },
@@ -501,7 +389,6 @@ export const layout = {
 export const layoutPx = {
   "popup-width": 304,
   "menu-width": 296,
-  "menu-offset": 8,
   "dialog-width": 760,
   "notice-width": 360,
   "notice-width-l": 380,
@@ -528,8 +415,6 @@ export const layoutPx = {
     "hero-phone": 188,
     "pane": 440,
     "form": 360,
-    "pane-y": 48,
-    "pane-x": 32,
     "copy": 520,
     "tagline": 380
   },

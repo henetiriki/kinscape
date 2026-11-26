@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { PNG } from 'pngjs';
 
+import { openScreen, wantedScreens } from '@ks/e2e/design-open';
 import { states } from '@ks/e2e/design-states';
 import {
   authStateFor,
@@ -28,15 +29,6 @@ const config = parseConfig(
     states: Object.keys(states),
   }
 );
-
-const wanted = process.env.DESIGN_SCREENS?.split(',').filter(Boolean) ?? [];
-const unknown = wanted.filter(
-  name => !config.screens.some(screen => screen.name === name)
-);
-
-if (unknown.length > 0) {
-  throw new Error(`DESIGN_SCREENS names no screen: ${unknown.join(', ')}`);
-}
 
 // The built page draws its map on a canvas, the snapshot in an svg.
 const HIDE_MAP =
@@ -74,42 +66,17 @@ const sideBySide = (images: PNG[]) => {
   return PNG.sync.write(out);
 };
 
-for (const screen of config.screens.filter(
-  ({ name }) => wanted.length === 0 || wanted.includes(name)
-)) {
+for (const screen of wantedScreens(config.screens)) {
   test.describe(`design: ${screen.name}`, () => {
     test.use({ storageState: authStateFor(screen.account) });
 
     test('matches its snapshot', async ({ page }, testInfo) => {
       const { height, width } = screen;
 
-      // A signed-in visitor never sees the sign-in page.
-      if (screen.route.startsWith('/sign-in')) {
-        await page.context().clearCookies();
-      }
-
       const out = join(root, 'test-results/design', screen.name);
 
       mkdirSync(out, { recursive: true });
-      await page.setViewportSize({ height, width });
-
-      const response = await page.goto(screen.route);
-
-      expect(response?.status(), `${screen.name}: ${screen.route} status`).toBe(
-        200
-      );
-      await page.waitForLoadState('networkidle');
-      await page.evaluate(async () => {
-        await document.fonts.ready;
-
-        const map = (
-          window as unknown as { kinscapeMap?: { loaded(): boolean } }
-        ).kinscapeMap;
-
-        while (map && !map.loaded()) {
-          await new Promise(done => setTimeout(done, 100));
-        }
-      });
+      await openScreen(page, screen, { height, width });
 
       if (screen.state) await states[screen.state](page);
 

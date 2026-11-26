@@ -92,6 +92,7 @@ export default defineConfig({
       testIgnore: [
         'auth.setup.ts',
         'design-check.spec.ts',
+        'large-text.spec.ts',
         'design-gallery.spec.ts',
         'gallery-looks.spec.ts',
         'gallery-textlink.spec.ts',
@@ -102,13 +103,13 @@ export default defineConfig({
       ],
       use: { ...use, ...failures, storageState: signedIn },
     },
-    // The design check: only design-check.spec.ts, which compares each built screen
-    // with its design snapshot. It is separate so `npm run design:check` can run it
-    // alone with `--project=design`.
+    // The design check: design-check.spec.ts, which compares each built screen with its design
+    // snapshot, and large-text.spec.ts, which opens each screen at 200% text. It is separate so
+    // `npm run design:check` can run it alone with `--project=design`.
     {
       dependencies: ['setup'],
       name: 'design',
-      testMatch: 'design-check.spec.ts',
+      testMatch: ['design-check.spec.ts', 'large-text.spec.ts'],
       use: { ...use, ...failures, storageState: signedIn },
     },
     // The timing tests, tagged @perf. They measure how fast the map redraws, so they

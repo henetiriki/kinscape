@@ -80,6 +80,12 @@ export type DtcgTransition = {
 /** A group of `design/kinscape.tokens.json`: tokens and groups, and an optional note. */
 export type DtcgTree = { [key: string]: unknown; $description?: string };
 
+/** One screen and width that fails the 200% text check on the branch (`lib/design/large-text.json`). */
+export type LargeTextEntry = { screen: string; width: number };
+
+/** The outcome of one screen and width: `text` says why it fails, and is empty when it passes. */
+export type LargeTextResult = { ok: boolean; text: string };
+
 /** A problem that `tokenLiterals` finds in a `.module.css` file: its 1-based line and what is wrong. */
 export type LiteralProblem = { line: number; text: string };
 
@@ -118,7 +124,7 @@ export type Rule = {
 
 /**
  * The settings of a step group, in `$extensions.kinscape` (#1238 plan D13). `unit` is the DTCG unit of
- * each step. `grid` counts steps of one `grid`; `ratio` and `hybrid` multiply by `ratio`.
+ * each step. A `rem` group takes px inputs and writes each step as px ÷ 16. `grid` counts steps of one `grid`; `ratio` and `hybrid` multiply by `ratio`.
  */
 export type ScaleSettings = (
   | {

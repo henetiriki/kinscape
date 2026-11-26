@@ -59,6 +59,10 @@ const alias = (value: string): string => {
     : `{${systemName(reference.split('.'))}}`;
 };
 
+/** `$deprecated` is `true` or a message. `false` and no value both mean the token is in use. */
+const isDeprecated = (token: DtcgToken): boolean =>
+  token.$deprecated === true || typeof token.$deprecated === 'string';
+
 /** Each leaf of the given groups that has a note and no `$deprecated`, as a token: aliases point at the converted name. `extra` gives sentences that follow the note. */
 const noted = (
   tree: DtcgTree,
@@ -71,7 +75,7 @@ const noted = (
     tokenLeaves(tree[group] as DtcgTree, [group]).flatMap(token => {
       const usage = notes.get(token.path.join('.'));
 
-      return usage === undefined || token.$deprecated !== undefined
+      return usage === undefined || isDeprecated(token)
         ? []
         : [
             {
@@ -206,7 +210,7 @@ export const deprecatedTokens = (tree: DtcgTree): SystemToken[] =>
   Object.keys(tree)
     .filter(group => group !== 'scale' && typeof tree[group] === 'object')
     .flatMap(group => tokenLeaves(tree[group] as DtcgTree, [group]))
-    .filter(token => token.$deprecated !== undefined)
+    .filter(isDeprecated)
     .map(token => ({
       name: systemName(token.path),
       usage: String(token.$deprecated),
@@ -257,7 +261,7 @@ const block = (selector: string, lines: string[]): string =>
 export const systemCss = (
   system: SystemTokens,
   ranges: Record<string, string>,
-  deprecated: SystemToken[] = []
+  deprecated: SystemToken[]
 ): string =>
   [
     '/* KinScape — generated from tokens.json */',

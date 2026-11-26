@@ -67,7 +67,7 @@ The property sets the spacing role:
 
 The suffix names the step: `2xs` (4px) to `5xl` (64px). A role has only the suffixes that it uses. A `space-N` token is deprecated.
 
-If no name fits, write `/* own: <reason> */`. Do not add a name for one use.
+If no name fits, use an [`own:` reason](#the-size-check). Do not add a name for one use.
 
 ## Units
 

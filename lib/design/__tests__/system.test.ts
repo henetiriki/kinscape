@@ -401,18 +401,24 @@ describe('deprecatedTokens', () => {
     });
   });
 
-  it('names a replacement that exists and has the same value', () => {
-    for (const { name, usage, value } of deprecatedTokens(raw)) {
-      const replacements = [...usage.matchAll(/space\.[a-z]+\.[0-9a-z]+/g)].map(
-        ([path]) => path
-      );
+  it('counts `$deprecated: true` as deprecated and `$deprecated: false` as in use', () => {
+    const tree = structuredClone(raw) as {
+      border: { hairline: DtcgTree };
+      space: { inset: { m: DtcgTree } };
+    };
 
-      expect(replacements.length, name).toBeGreaterThan(0);
+    tree.space.inset.m.$deprecated = false;
+    tree.border.hairline.$deprecated = true;
 
-      for (const path of replacements) {
-        expect(resolvedText(raw, path), `${name}: ${path}`).toBe(value);
-      }
-    }
+    const listed = deprecatedTokens(tree as DtcgTree).map(({ name }) => name);
+    const shown = all(systemTokens(tree as DtcgTree, fonts)).map(
+      ({ name }) => name
+    );
+
+    expect(listed).toContain('border-hairline');
+    expect(listed).not.toContain('space-inset-m');
+    expect(shown).toContain('space-inset-m');
+    expect(shown).not.toContain('border-hairline');
   });
 });
 
@@ -459,7 +465,7 @@ describe('systemCss', () => {
   });
 
   it('writes no deprecated block when no token has $deprecated', () => {
-    const plain = systemCss(system, ranges);
+    const plain = systemCss(system, ranges, []);
 
     expect(plain).not.toContain('Deprecated');
     expect(plain).not.toContain('--space-4: ');

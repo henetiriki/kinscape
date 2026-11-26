@@ -1,12 +1,15 @@
 import type { Page } from '@playwright/test';
 
-/** Runs before each page loads, and again after a reload. A `<style>` avoids a clash with React hydration of a `style` attribute on `<html>`. */
+/**
+ * Runs before each page loads, and again after a reload. A constructed style sheet is not a DOM node,
+ * so React hydration of `<html>` cannot remove it, and it wins a tie with the page's own rules.
+ */
 export const LARGE_TEXT = `
   (() => {
-    const style = document.createElement('style');
+    const sheet = new CSSStyleSheet();
 
-    style.textContent = 'html { font-size: 200% }';
-    (document.head ?? document.documentElement).append(style);
+    sheet.replaceSync('html { font-size: 200% }');
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
   })();
 `;
 

@@ -105,4 +105,6 @@ The spec runs in the `design` Playwright project. That project has the fixture A
 
 - Big: `lib/design/__tests__/system.test.ts` checks `space`, `layout-menu-offset` and `type` values in px. The rem change makes 7 of its tests fail. The plan does not list the file, so the build left it. The tech lead must change its expected values to rem.
 - The spec sets a 10s default timeout before the `state` step. A step that cannot run at 390px then fails in 10s, not at the 30s test limit.
+- The init script adds the 200% rule as a constructed style sheet (`adoptedStyleSheets`), not as a `<style>` element. The `<style>` element did not apply: the root size stayed 16px. `large text: the rule` now checks that the root size is 32px.
+- A push by the bot starts no CI run, so the list comes from a local run of `npm run design:check`, not from the CI job. The tech lead must compare it with the first CI run.
 - Step 7.2 (steps 3 to 5 of Changing the design system) needs a signed-in session. The build did not run it.

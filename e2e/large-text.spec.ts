@@ -77,6 +77,11 @@ test.describe('large text: the rule', () => {
     await page.setViewportSize(SIZES[0]);
     await page.goto('/sign-in');
     await page.evaluate(() => document.fonts.ready);
+    expect(
+      await page.evaluate(
+        () => getComputedStyle(document.documentElement).fontSize
+      )
+    ).toBe('32px');
     await page.evaluate(() => {
       const long = 'Wide text that does not fit its small box at all';
       const add = (html: string) =>

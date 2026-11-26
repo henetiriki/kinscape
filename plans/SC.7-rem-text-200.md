@@ -58,6 +58,10 @@ The spec runs in the `design` Playwright project. That project has the fixture A
 | `design/topics/tokens.md`                       | changed       | A part "Units": text, line heights and spacing in rem, because rem follows the reader's text size. Other kinds stay in px. A rem token gets no `*Px` number. It names the 200% check and its list. |
 | `scripts/word-count.mts`                        | changed       | The `tokens.md` budget increases by the words of "Units", to 760 at most (D6).                                                                                                                     |
 | `scripts/__tests__/word-count.test.ts`          | changed       | The expected budget of `tokens.md`.                                                                                                                                                                |
+| `lib/design/__tests__/system.test.ts`           | changed       | The expected values of `space`, `layout-menu-offset` and `type` are in rem (see Deviations).                                                                                                       |
+| `design/canvas/project/ds/kinscape/`            | changed       | `tokens.css`, `tokens.json`, `components/bundle.css`, `checksums.json` and `design-system.json`. Written by the design system steps.                                                               |
+| `design/canvas/project/canvas.json`             | changed       | The `version` and `copiedAt` of the `designSystems` entry. Written by the design system steps.                                                                                                     |
+| `design/canvas/VERSION`                         | changed       | Line 2 is the canvas version after the install update. Written by the design system steps.                                                                                                         |
 
 ## Order of work
 
@@ -103,8 +107,9 @@ The spec runs in the `design` Playwright project. That project has the fixture A
 
 ## Deviations
 
-- Big: `lib/design/__tests__/system.test.ts` checks `space`, `layout-menu-offset` and `type` values in px. The rem change makes 7 of its tests fail. The plan does not list the file, so the build left it. The tech lead must change its expected values to rem.
+- Big: `lib/design/__tests__/system.test.ts` checked `space`, `layout-menu-offset` and `type` values in px. The rem change made 7 of its tests fail. The plan did not list the file. The tech lead approved the change in the local build session. The test now expects rem, and the file is in the table.
 - The spec sets a 10s default timeout before the `state` step. A step that cannot run at 390px then fails in 10s, not at the 30s test limit.
 - The init script adds the 200% rule as a constructed style sheet (`adoptedStyleSheets`), not as a `<style>` element. The `<style>` element did not apply: the root size stayed 16px. `large text: the rule` now checks that the root size is 32px.
 - A push by the bot starts no CI run, so the list comes from a local run of `npm run design:check`, not from the CI job. The tech lead must compare it with the first CI run.
-- Step 7.2 (steps 3 to 5 of Changing the design system) needs a signed-in session. The build did not run it.
+- The local build session ran steps 2 to 5 of Changing the design system. Step 3 sent 5 files to the design system and no icon. Step 4 sent the same 5 files to the canvas, and updated the `designSystems` entry. Step 5 refreshed `design/canvas/`. Step 5.4 did not run: the browser cannot start. No board changed.
+- The browser cannot start in the local session (a sandbox error). `npm run design:check` and `npm run e2e` did not run there. The CI `design` and `e2e` jobs are the check. Mark the PR ready to start them.

@@ -129,3 +129,4 @@ Recommended: C, because the boards name the layer.
 - `lib/design/css.mts`: `MAP_SHARED` gains `hero-shade.opacity` and `hero-border.opacity`, so `app/tokens.css` declares the two names that `SignInHero` uses.
 - `lib/design/types.ts`: `DtcgToken` gains `$deprecated`; `SystemTokens` gains `border` and `motion`.
 - `lib/design/system.mts`: `isDeprecated` treats only `$deprecated: true` or a message as deprecated. The tech lead chose to build the guard for `$deprecated: false`.
+- Step 7.2 of Changing the design system: `npm run design:export` fails on the Chromium launch in the sandbox. The tech lead waived it. The Render workflow is the proof of the snapshots.

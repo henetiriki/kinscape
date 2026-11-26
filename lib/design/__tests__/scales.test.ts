@@ -139,6 +139,65 @@ describe('withSteps', () => {
     });
   });
 
+  it('writes a rem group as px ÷ 16, in each mode', () => {
+    const values = (settings: Record<string, unknown>) =>
+      Object.values(
+        (
+          withSteps(treeOf(settings)) as {
+            scale: { space: Record<string, Tree> };
+          }
+        ).scale.space
+      )
+        .filter(step => '$value' in step)
+        .map(step => step.$value);
+
+    expect(values({ grid: 4, mode: 'grid', steps: 2, unit: 'rem' })).toEqual([
+      { unit: 'rem', value: 0.25 },
+      { unit: 'rem', value: 0.5 },
+    ]);
+    expect(values({ mode: 'explicit', unit: 'rem', values: [12, 14] })).toEqual(
+      [
+        { unit: 'rem', value: 0.75 },
+        { unit: 'rem', value: 0.875 },
+      ]
+    );
+    expect(
+      values({
+        above: 1,
+        grid: 4,
+        limit: 4,
+        mode: 'hybrid',
+        ratio: 4,
+        unit: 'rem',
+      })
+    ).toEqual([
+      { unit: 'rem', value: 0.25 },
+      { unit: 'rem', value: 1 },
+    ]);
+    expect(
+      values({
+        above: 1,
+        base: 16,
+        below: 0,
+        mode: 'ratio',
+        ratio: 1.5,
+        round: 1,
+        unit: 'rem',
+      })
+    ).toEqual([
+      { unit: 'rem', value: 1 },
+      { unit: 'rem', value: 1.5 },
+    ]);
+  });
+
+  it('names the px input in the note of a rem step', () => {
+    const out = withSteps(
+      treeOf({ grid: 4, mode: 'grid', steps: 1, unit: 'rem' })
+    ) as { scale: { space: Record<string, Tree> } };
+
+    expect(out.scale.space['100'].$description).toBe('Grid of 4px, step 1.');
+  });
+
   it('replaces a step that a hand edit changed', () => {
     const tree = withSteps(
       treeOf({ grid: 4, mode: 'grid', steps: 1, unit: 'px' })
@@ -217,6 +276,19 @@ describe('scaleProblems', () => {
 
     expect(scaleProblems(tree)).toEqual([
       'scale.space.200: is 9px, the settings give 8px',
+    ]);
+  });
+
+  it('names a rem step that differs', () => {
+    const tree = built({ grid: 4, mode: 'grid', steps: 2, unit: 'rem' });
+
+    tree.scale.space['200'] = {
+      ...tree.scale.space['200'],
+      $value: { unit: 'rem', value: 0.6 },
+    };
+
+    expect(scaleProblems(tree)).toEqual([
+      'scale.space.200: is 0.6rem, the settings give 0.5rem',
     ]);
   });
 

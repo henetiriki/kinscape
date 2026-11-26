@@ -95,6 +95,10 @@ describe('the token page', () => {
     expect(readFileSync(PAGE, 'utf8')).toMatch(/^## Scales$/m);
   });
 
+  it('has the part "Units"', () => {
+    expect(readFileSync(PAGE, 'utf8')).toMatch(/^## Units$/m);
+  });
+
   it('names each module outside tests that reads a token file', () => {
     expect(unnamed(readers, readFileSync(PAGE, 'utf8'))).toEqual([]);
   });

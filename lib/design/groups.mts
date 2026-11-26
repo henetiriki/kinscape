@@ -61,11 +61,13 @@ const RULES: [RegExp, Rule][] = [
 export const rulesFor = (property: string): Rule[] =>
   RULES.filter(([pattern]) => pattern.test(property)).map(([, rule]) => rule);
 
-/** The key of a number: a duration in seconds becomes milliseconds, so `0.12s` equals `120ms`. */
+/** The key of a number: a duration in seconds becomes milliseconds, so `0.12s` equals `120ms`. A rem length becomes px (1rem is 16px), so `16px` equals `1rem`. */
 export const keyOf = (digits: string, unit = '') =>
   unit === 's'
     ? `${Number((Number(digits) * 1000).toFixed(6))}ms`
-    : `${Number(digits)}${unit}`;
+    : unit === 'rem'
+      ? `${Number((Number(digits) * 16).toFixed(6))}px`
+      : `${Number(digits)}${unit}`;
 
 export const numbers = (text: string, durations: boolean) =>
   [...text.matchAll(NUMBER)]

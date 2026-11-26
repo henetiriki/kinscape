@@ -72,6 +72,49 @@ it('has each step of design/kinscape.tokens.json as its settings give it', () =>
   expect(scaleProblems(source), 'run `npm run tokens`').toEqual([]);
 });
 
+// NFR-05, NFR-06: text and spacing follow the reader's text size, so they are rem.
+describe('the units of app/tokens.css', () => {
+  const declared = [...read(OUTPUTS.css).matchAll(/^\s+(--[\w-]+): (.+);$/gm)];
+  const valuesOf = (name: RegExp) =>
+    declared
+      .filter(([, key]) => name.test(key))
+      .map(([, key, value]) => ({ key, value }));
+  const LENGTH = /^-?\d*\.?\d+(px|rem)$/;
+
+  it('writes each type size, line height and space token in rem', () => {
+    const rows = [
+      ...valuesOf(/^--type-[\w-]+-(size|line)$/),
+      ...valuesOf(/^--space-/),
+    ];
+
+    expect(rows.length).toBeGreaterThan(20);
+    expect(rows.filter(({ value }) => !/^\d*\.?\d+rem$/.test(value))).toEqual(
+      []
+    );
+  });
+
+  it('writes each size, radius and focus length in px', () => {
+    const rows = valuesOf(/^--(size|radius|focus)-/).filter(({ value }) =>
+      LENGTH.test(value)
+    );
+
+    expect(rows.length).toBeGreaterThan(10);
+    expect(rows.filter(({ value }) => !value.endsWith('px'))).toEqual([]);
+  });
+
+  it('writes each layout token in px, or as a space token', () => {
+    const rows = valuesOf(/^--layout-/);
+
+    expect(rows.length).toBeGreaterThan(5);
+    expect(
+      rows.filter(
+        ({ value }) =>
+          !/^\d*\.?\d+px$/.test(value) && !/^var\(--space-[\w-]+\)$/.test(value)
+      )
+    ).toEqual([]);
+  });
+});
+
 // The CSS leaves out most map tokens, so a reference to one would name no variable.
 it('defines each var() of app/tokens.css there, or as a next/font variable', () => {
   const css = read(OUTPUTS.css);
@@ -233,7 +276,11 @@ describe('design/kinscape.tokens.json and design/tokens.generated.ts', () => {
   // NFR-06
   it('sets each type style to 12.5px or more, except the styles in SMALL_TYPE', () => {
     const sizes = Object.entries<{ size: string }>(generatedTokens.type).map(
-      ([name, style]) => [name, Number.parseFloat(style.size)] as const
+      ([name, style]) =>
+        [
+          name,
+          Number.parseFloat(style.size) * (style.size.endsWith('rem') ? 16 : 1),
+        ] as const
     );
     const small = Object.fromEntries(sizes.filter(([, size]) => size < 12.5));
 

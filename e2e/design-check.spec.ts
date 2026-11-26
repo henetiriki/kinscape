@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { PNG } from 'pngjs';
 
+import { openScreen } from '@ks/e2e/design-open';
 import { states } from '@ks/e2e/design-states';
 import {
   authStateFor,
@@ -83,33 +84,10 @@ for (const screen of config.screens.filter(
     test('matches its snapshot', async ({ page }, testInfo) => {
       const { height, width } = screen;
 
-      // A signed-in visitor never sees the sign-in page.
-      if (screen.route.startsWith('/sign-in')) {
-        await page.context().clearCookies();
-      }
-
       const out = join(root, 'test-results/design', screen.name);
 
       mkdirSync(out, { recursive: true });
-      await page.setViewportSize({ height, width });
-
-      const response = await page.goto(screen.route);
-
-      expect(response?.status(), `${screen.name}: ${screen.route} status`).toBe(
-        200
-      );
-      await page.waitForLoadState('networkidle');
-      await page.evaluate(async () => {
-        await document.fonts.ready;
-
-        const map = (
-          window as unknown as { kinscapeMap?: { loaded(): boolean } }
-        ).kinscapeMap;
-
-        while (map && !map.loaded()) {
-          await new Promise(done => setTimeout(done, 100));
-        }
-      });
+      await openScreen(page, screen, { height, width });
 
       if (screen.state) await states[screen.state](page);
 

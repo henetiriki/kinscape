@@ -44,7 +44,7 @@ const named = (
 
 /** The steps of the group `scale` under `scale.`, from its settings. It throws, naming the group, if a name falls below 100 or the mode is unknown. */
 export const stepsOf = (scale: string, settings: ScaleSettings): Step[] => {
-  const px = settings.unit;
+  const px = settings.unit === 'rem' ? 'px' : settings.unit;
 
   switch (settings.mode) {
     case 'explicit':
@@ -98,13 +98,17 @@ export const stepsOf = (scale: string, settings: ScaleSettings): Step[] => {
 const settingsOf = (group: DtcgTree): ScaleSettings | undefined =>
   (group.$extensions as { kinscape?: ScaleSettings } | undefined)?.kinscape;
 
+/** The token of a step. A rem group builds its steps in px, so the token holds px ÷ 16 (exact in binary). */
 const tokenOf = (settings: ScaleSettings, step: Step): DtcgTree => ({
   $description: step.note,
   $type:
     settings.unit === 'px' || settings.unit === 'rem'
       ? 'dimension'
       : 'duration',
-  $value: { unit: settings.unit, value: step.value },
+  $value: {
+    unit: settings.unit,
+    value: settings.unit === 'rem' ? step.value / 16 : step.value,
+  },
 });
 
 /** The groups of `scale` that have settings, by name. */

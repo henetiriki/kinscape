@@ -16,7 +16,7 @@
 .disc {
   align-items: center;
   background: var(--pin);
-  border: 2px solid var(--white);
+  border: var(--border-emphasis) solid var(--white);
   border-radius: 50%;
   box-sizing: border-box;
   color: var(--white);

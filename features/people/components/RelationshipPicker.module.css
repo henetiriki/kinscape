@@ -1,6 +1,6 @@
 /* The rows of the picker: one bordered list, a hairline above each row. */
 .rows {
-  border: 1px solid var(--line);
+  border: var(--border-hairline) solid var(--line);
   border-radius: var(--radius-control);
   list-style: none;
   margin: 0;
@@ -9,7 +9,7 @@
 }
 
 .item + .item {
-  border-top: 1px solid var(--line);
+  border-top: var(--border-hairline) solid var(--line);
 }
 
 .notice {

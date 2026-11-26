@@ -241,7 +241,32 @@ export const space = {
   "32": "2rem",
   "40": "2.5rem",
   "48": "3rem",
-  "64": "4rem"
+  "64": "4rem",
+  "inset": {
+    "2xs": "0.25rem",
+    "xs": "0.5rem",
+    "s": "0.75rem",
+    "m": "1rem",
+    "l": "1.25rem",
+    "xl": "1.5rem",
+    "2xl": "2rem",
+    "3xl": "2.5rem",
+    "4xl": "3rem",
+    "5xl": "4rem"
+  },
+  "gap": {
+    "2xs": "0.25rem",
+    "xs": "0.5rem",
+    "s": "0.75rem",
+    "m": "1rem",
+    "l": "1.25rem",
+    "xl": "1.5rem",
+    "3xl": "2.5rem"
+  },
+  "stack": {
+    "2xs": "0.25rem",
+    "xs": "0.5rem"
+  }
 } as const;
 
 export const radius = {
@@ -312,6 +337,16 @@ export const sizePx = {
   "gutter-phone": 16
 } as const;
 
+export const border = {
+  "hairline": "1px",
+  "emphasis": "2px"
+} as const;
+
+export const borderPx = {
+  "hairline": 1,
+  "emphasis": 2
+} as const;
+
 export const focus = {
   "width": "2px",
   "offset": "2px"
@@ -323,11 +358,14 @@ export const focusPx = {
 } as const;
 
 export const motion = {
-  "press": "120ms ease-out",
-  "popup": "160ms ease-out",
-  "sheet": "240ms ease-out",
-  "changed-border": "600ms ease-out",
-  "toast": "4000ms"
+  "easing": "ease-out",
+  "press": "120ms",
+  "popup": "160ms",
+  "sheet": "240ms",
+  "changed-border": "600ms",
+  "toast": "4000ms",
+  "press-offset": "1px",
+  "rise-offset": "4px"
 } as const;
 
 export const motionMs = {
@@ -443,9 +481,9 @@ export const breakpointPx = {
 
 export const z = {
   "furniture": "1",
-  "action-bar": "5",
-  "popup": "6",
-  "menu": "10"
+  "action-bar": "10",
+  "popup": "20",
+  "menu": "30"
 } as const;
 
 export const map = {
@@ -564,6 +602,18 @@ export const map = {
       "width": 2,
       "radius": 20.5
     }
+  },
+  "hero-shade": {
+    "opacity": 0.28
+  },
+  "hero-border": {
+    "opacity": 0.42
+  },
+  "fan-line": {
+    "opacity": 0.5
+  },
+  "fan-ring": {
+    "opacity": 0.25
   }
 } as const;
 

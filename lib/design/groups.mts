@@ -29,6 +29,14 @@ const field = (group: string, key: string) => (tokens: DtcgTree) =>
 
 const whole = (group: string) => (tokens: DtcgTree) => texts(tokens, group);
 
+/** The `map` tokens that hold an opacity: `opacity` and `*-opacity`. */
+const mapOpacities = (tokens: DtcgTree) =>
+  texts(tokens, 'map', path => /(^|-)opacity$/.test(path.at(-1)!));
+
+/** The `motion` offsets: `press-offset` and `rise-offset`. */
+const motionOffsets = (tokens: DtcgTree) =>
+  texts(tokens, 'motion', path => path.at(-1)!.endsWith('-offset'));
+
 const RULES: [RegExp, Rule][] = [
   [/^border(-[a-z]+)*-radius$/, { kind: 'number', pick: whole('radius') }],
   [/^(box|text)-shadow$/, { kind: 'shadow', pick: whole('shadow') }],
@@ -47,6 +55,18 @@ const RULES: [RegExp, Rule][] = [
     { kind: 'number', pick: whole('size') },
   ],
   [/^outline(-width|-offset)?$/, { kind: 'number', pick: whole('focus') }],
+  [
+    /^border(-(top|right|bottom|left|block|inline)(-(start|end))?)?(-width)?$/,
+    {
+      kind: 'number',
+      pick: tokens => [
+        ...texts(tokens, 'border'),
+        ...texts(tokens, 'focus', path => path.at(-1) === 'width'),
+      ],
+    },
+  ],
+  [/^opacity$/, { kind: 'number', pick: mapOpacities }],
+  [/^(transform|translate)$/, { kind: 'number', pick: motionOffsets }],
   [/^@media$/, { kind: 'number', pick: whole('breakpoint') }],
   [
     /^(color|background|border|outline|fill|stroke)(-|$)/,

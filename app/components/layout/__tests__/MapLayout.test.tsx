@@ -81,7 +81,7 @@ it('turns the overlay slot into map padding from the same tokens', () => {
 // PIN-01, NFR-05
 it('puts the action slot 12px left of the account control and hides it on a phone', () => {
   expect(desktop).toMatch(
-    /\.action \{[^}]*right: calc\(var\(--size-gutter\) \+ var\(--size-touch\) \+ var\(--space-12\)\)/
+    /\.action \{[^}]*right: calc\(var\(--size-gutter\) \+ var\(--size-touch\) \+ var\(--space-inset-s\)\)/
   );
   expect(desktop).toMatch(/\.action \{[^}]*top: var\(--layout-account-top\)/);
   expect(media).toMatch(/\.action,\s*\.account,[^{]*\{[^}]*display: none/);

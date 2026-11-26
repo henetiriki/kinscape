@@ -12,11 +12,13 @@ import {
 
 /** Groups where every token needs a note. `type` needs one per style, `map` one per colour. */
 const GROUPS = new Set([
+  'border',
   'breakpoint',
   'colour',
   'focus',
   'font',
   'layout',
+  'motion',
   'radius',
   'shadow',
   'size',

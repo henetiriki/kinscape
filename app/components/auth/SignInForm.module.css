@@ -2,13 +2,13 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--space-24);
+  gap: var(--space-gap-xl);
 }
 
 .head {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-gap-2xs);
 }
 
 .lede {
@@ -18,7 +18,7 @@
 .fields {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: var(--space-gap-m);
 }
 
 .submit {
@@ -27,9 +27,9 @@
 }
 
 .note {
-  border-top: 1px solid var(--line);
+  border-top: var(--border-hairline) solid var(--line);
   margin: 0;
-  padding-top: var(--space-20);
+  padding-top: var(--space-inset-l);
 }
 
 /* The text sets the height, not the paragraph's own line box. */
@@ -39,11 +39,11 @@
 
 @media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .form {
-    gap: var(--space-16);
+    gap: var(--space-gap-m);
   }
 
   .submit {
-    margin-top: var(--space-4);
+    margin-top: var(--space-stack-2xs);
   }
 
   .note {

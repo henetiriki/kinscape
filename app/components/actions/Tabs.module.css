@@ -1,6 +1,6 @@
 .tabs {
   display: inline-flex;
-  gap: var(--space-4);
+  gap: var(--space-gap-2xs);
 }
 
 .tab {
@@ -15,7 +15,7 @@
   font-weight: var(--type-label-weight);
   height: var(--size-control-s);
   line-height: var(--type-label-line);
-  padding: 0 var(--space-16);
+  padding: 0 var(--space-inset-m);
   position: relative;
 }
 
@@ -89,7 +89,7 @@
 .tab:has(.count) {
   align-items: center;
   display: inline-flex;
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
 }
 
 .count {

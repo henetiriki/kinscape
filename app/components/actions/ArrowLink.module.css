@@ -6,7 +6,7 @@
   font-family: var(--type-link-font);
   font-size: var(--type-link-size);
   font-weight: var(--type-link-weight);
-  gap: var(--space-4);
+  gap: var(--space-gap-2xs);
   justify-self: end;
   letter-spacing: var(--type-link-tracking);
   line-height: var(--type-link-line);

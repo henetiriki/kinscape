@@ -9,7 +9,7 @@
 }
 
 .head {
-  border-bottom: 1px solid var(--line);
+  border-bottom: var(--border-hairline) solid var(--line);
   display: flex;
   padding: var(--space-4);
 }

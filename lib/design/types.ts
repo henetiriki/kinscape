@@ -68,7 +68,12 @@ export type DtcgShadowLayer = {
 };
 
 /** A token as the CSS writer sees it: its path, its `$type` and its resolved `$value`. */
-export type DtcgToken = { $type?: string; $value: unknown; path: string[] };
+export type DtcgToken = {
+  $deprecated?: boolean | string;
+  $type?: string;
+  $value: unknown;
+  path: string[];
+};
 
 /** A DTCG `transition` value. */
 export type DtcgTransition = {
@@ -224,10 +229,12 @@ export type SystemToken = {
 
 /** The design system's `tokens.json`. */
 export type SystemTokens = {
+  border: { tokens: SystemToken[] };
   breakpoint: { tokens: SystemToken[] };
   color: { themes: { id: string; name: string }[]; tokens: SystemToken[] };
   focus: { tokens: SystemToken[] };
   layout: { tokens: SystemToken[] };
+  motion: { tokens: SystemToken[] };
   name: string;
   radius: { tokens: SystemToken[] };
   shadow: { tokens: SystemToken[] };

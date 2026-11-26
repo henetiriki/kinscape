@@ -35,9 +35,8 @@ const SHADOW = /^(box|text)-shadow$/;
 
 const OFFSET = /translate(?:[XYZ]|3d)?\(([^)]*)\)/g;
 
-/** A property with a size and no group: opacity, border width, transform offsets and custom properties. */
-const GROUPLESS =
-  /^(opacity|text-shadow|transform|translate|border(-(top|right|bottom|left|block|inline)(-(start|end))?)?(-width)?|--.*)$/;
+/** A property with a size and no group: a text shadow and a custom property. */
+const GROUPLESS = /^(text-shadow|--.*)$/;
 
 const isRead = (property: string) =>
   GROUPLESS.test(property) ||

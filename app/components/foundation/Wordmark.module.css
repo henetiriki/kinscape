@@ -2,7 +2,7 @@
   align-items: center;
   color: var(--ink);
   display: inline-flex;
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
 }
 
 .icon {

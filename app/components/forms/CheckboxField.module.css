@@ -2,7 +2,7 @@
 .row {
   align-items: center;
   display: flex;
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
   min-height: var(--size-field-l);
 }
 

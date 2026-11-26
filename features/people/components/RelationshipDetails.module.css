@@ -17,7 +17,7 @@
 
 .other {
   background: var(--surface-2);
-  border: 1px solid var(--line);
+  border: var(--border-hairline) solid var(--line);
   border-radius: var(--radius-control);
   display: flex;
   flex-direction: column;

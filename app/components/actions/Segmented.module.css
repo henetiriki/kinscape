@@ -4,8 +4,8 @@
   background: var(--segment);
   border-radius: var(--radius-segment);
   display: inline-flex;
-  gap: var(--space-4);
-  padding: var(--space-4);
+  gap: var(--space-gap-2xs);
+  padding: var(--space-inset-2xs);
 }
 
 .segItem {
@@ -24,7 +24,7 @@
   line-height: var(--type-chip-line);
   /* The Map snapshot draws each speed segment at least 40px wide. With the 4px gap, each 44px hit area then meets the next. */
   min-width: 40px; /* own: narrowest speed segment: the 44px hit areas meet */
-  padding: 0 var(--space-12);
+  padding: 0 var(--space-inset-s);
   position: relative;
 }
 

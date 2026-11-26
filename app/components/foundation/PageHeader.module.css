@@ -1,10 +1,10 @@
 .header {
   align-items: center;
   background: var(--surface);
-  border-bottom: 1px solid var(--line);
+  border-bottom: var(--border-hairline) solid var(--line);
   box-sizing: border-box;
   display: flex;
-  gap: var(--space-16);
+  gap: var(--space-gap-m);
   height: var(--layout-page-header);
   padding: 0 var(--size-gutter);
 }
@@ -38,13 +38,13 @@
   font-family: var(--type-control-font);
   font-size: var(--type-control-size);
   font-weight: var(--type-control-weight);
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
   height: var(--size-touch);
   line-height: var(--type-control-line);
   min-width: 0;
-  padding: 0 var(--space-12) 0 var(--space-8);
+  padding: 0 var(--space-inset-s) 0 var(--space-inset-xs);
   text-decoration: none;
-  transition: background var(--motion-press);
+  transition: background var(--motion-press) var(--motion-easing);
 }
 
 .back svg {
@@ -76,7 +76,7 @@
 
 @media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .header {
-    gap: var(--space-8);
+    gap: var(--space-gap-xs);
     height: var(--layout-page-header-phone);
     padding: 0 var(--size-gutter-phone);
   }

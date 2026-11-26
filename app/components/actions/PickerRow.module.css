@@ -9,10 +9,10 @@
   cursor: pointer;
   display: grid;
   font: inherit;
-  gap: var(--space-16);
+  gap: var(--space-gap-m);
   grid-template-columns: minmax(0, 1fr) 200px;
   min-height: var(--size-row-l);
-  padding: var(--space-8) var(--space-20);
+  padding: var(--space-inset-xs) var(--space-inset-l);
   /* The anchor of the hidden words: they stay inside the row. */
   position: relative;
   text-align: start;

@@ -108,3 +108,9 @@ The Spec lets the plan set the sizes. `inset` uses all 10 `scale.space` steps, `
 - The 1.5px, 2.5px and 4px widths: SC.14 (#1208).
 
 ## Deviations
+
+- `scripts/word-count.mts`: the `tokens.md` budget is 860 (the Spec's limit), not 840: "Names" and the size-check text use 852 words.
+- `lib/design/css.mts`: `MAP_SHARED` gains `hero-shade.opacity` and `hero-border.opacity`, so `app/tokens.css` declares the two names that `SignInHero` uses.
+- `lib/design/types.ts`: `DtcgToken` gains `$deprecated`; `SystemTokens` gains `border` and `motion`.
+- Big: the plan's Files that change table omits these tests. Each changed because the CSS or a type changed, and none lost an assertion: `scripts/__tests__/word-count.test.ts` (budget 860), `lib/design/__tests__/format.test.ts` (fixture gets `border` and `motion`; 10 extra families, not 12), `app/components/layout/__tests__/ColumnLayout.test.tsx`, `ArrowLink.test.tsx`, `TextAreaField.test.tsx`, `MapLayout.test.tsx` and `BottomSheet.test.tsx` (each reads a renamed `var()`).
+- Big: steps 3 to 5 of Changing the design system (the canvas copy under `design/canvas/`) are not done. The tech lead runs them.

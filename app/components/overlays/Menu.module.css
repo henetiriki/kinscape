@@ -30,7 +30,7 @@
 }
 
 .panel {
-  padding: var(--space-4);
+  padding: var(--space-inset-2xs);
   text-align: left;
   width: var(--layout-menu-width);
 }
@@ -38,8 +38,8 @@
 .header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-12);
+  gap: var(--space-gap-2xs);
+  padding: var(--space-inset-s);
 }
 
 .caption {
@@ -58,7 +58,7 @@
   background: var(--line);
   border: 0;
   height: 1px;
-  margin: var(--space-4) var(--space-8);
+  margin: var(--space-stack-2xs) var(--space-gap-xs);
 }
 
 /* The first divider sits directly under the header, so it has no space above. */
@@ -77,9 +77,9 @@
   cursor: pointer;
   display: flex;
   font-family: inherit;
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
   min-height: var(--size-touch);
-  padding: var(--space-4) var(--space-12);
+  padding: var(--space-inset-2xs) var(--space-inset-s);
   text-align: left;
   width: 100%;
 }
@@ -133,5 +133,5 @@
 
 .footer {
   display: block;
-  padding: var(--space-8) var(--space-12);
+  padding: var(--space-inset-xs) var(--space-inset-s);
 }

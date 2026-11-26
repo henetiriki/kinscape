@@ -64,6 +64,9 @@ const EASINGS: Record<string, string> = {
   '0.42,0,1,1': 'ease-in',
 };
 
+const cssEasing = (curve: number[]): string =>
+  EASINGS[curve.join(',')] ?? `cubic-bezier(${curve.join(', ')})`;
+
 export const cssTransition = ({
   delay,
   duration,
@@ -71,8 +74,7 @@ export const cssTransition = ({
 }: DtcgTransition): string =>
   [
     cssDuration(duration),
-    EASINGS[timingFunction.join(',')] ??
-      `cubic-bezier(${timingFunction.join(', ')})`,
+    cssEasing(timingFunction),
     ...(delay.value === 0 ? [] : [cssDuration(delay)]),
   ].join(' ');
 
@@ -109,6 +111,8 @@ export const cssText = ({ $type, $value, path }: DtcgToken): string => {
   switch ($type) {
     case 'color':
       return cssColour($value as DtcgColour);
+    case 'cubicBezier':
+      return cssEasing($value as number[]);
     case 'dimension':
       return cssDimension($value as DtcgDimension);
     case 'duration':

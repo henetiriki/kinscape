@@ -63,7 +63,7 @@
 .disc {
   align-items: center;
   background: var(--surface);
-  border: 1px solid var(--line-strong);
+  border: var(--border-hairline) solid var(--line-strong);
   border-radius: 50%;
   box-shadow: var(--shadow-raised);
   box-sizing: border-box;

@@ -169,6 +169,12 @@ describe('cssText', () => {
         timingFunction: [0, 0, 0.58, 1],
       })
     ).toBe('120ms ease-out');
+    expect(text(['motion', 'easing'], 'cubicBezier', [0, 0, 0.58, 1])).toBe(
+      'ease-out'
+    );
+    expect(text(['motion', 'curve'], 'cubicBezier', [0.2, 0, 0, 1])).toBe(
+      'cubic-bezier(0.2, 0, 0, 1)'
+    );
   });
 
   it('fails on a type it cannot write, and names the token', () => {

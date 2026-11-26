@@ -38,7 +38,7 @@
 /* Name and Life share five rows through a subgrid, so the fields line up across the columns. */
 .card {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: var(--border-hairline) solid var(--line);
   border-radius: var(--radius-panel);
   column-gap: var(--space-40);
   display: grid;

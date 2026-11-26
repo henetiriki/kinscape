@@ -1603,52 +1603,163 @@
     "4": {
       "$type": "dimension",
       "$value": "{scale.space.100}",
+      "$deprecated": "Use space.inset.2xs, space.gap.2xs or space.stack.2xs.",
       "$description": "Gaps inside a control, icon to text, and between tight rows."
     },
     "8": {
       "$type": "dimension",
       "$value": "{scale.space.200}",
+      "$deprecated": "Use space.inset.xs, space.gap.xs or space.stack.xs.",
       "$description": "Small gaps between related items, inside controls and between chips."
     },
     "12": {
       "$type": "dimension",
       "$value": "{scale.space.300}",
+      "$deprecated": "Use space.inset.s or space.gap.s.",
       "$description": "Padding inside chips, rows and menu items, and icon gaps."
     },
     "16": {
       "$type": "dimension",
       "$value": "{scale.space.400}",
+      "$deprecated": "Use space.inset.m or space.gap.m.",
       "$description": "Padding inside panels and between sections."
     },
     "20": {
       "$type": "dimension",
       "$value": "{scale.space.500}",
+      "$deprecated": "Use space.inset.l or space.gap.l.",
       "$description": "Roomy padding inside panels and the dock."
     },
     "24": {
       "$type": "dimension",
       "$value": "{scale.space.600}",
+      "$deprecated": "Use space.inset.xl or space.gap.xl.",
       "$description": "Between floating elements on desktop."
     },
     "32": {
       "$type": "dimension",
       "$value": "{scale.space.700}",
+      "$deprecated": "Use space.inset.2xl.",
       "$description": "Between groups on a page."
     },
     "40": {
       "$type": "dimension",
       "$value": "{scale.space.800}",
+      "$deprecated": "Use space.inset.3xl or space.gap.3xl.",
       "$description": "Large gaps on a page and the sign-in hero."
     },
     "48": {
       "$type": "dimension",
       "$value": "{scale.space.900}",
+      "$deprecated": "Use space.inset.4xl.",
       "$description": "Sign-in pane padding and page edges."
     },
     "64": {
       "$type": "dimension",
       "$value": "{scale.space.1000}",
+      "$deprecated": "Use space.inset.5xl.",
       "$description": "Page padding of ColumnLayout, and the gap above the empty People list."
+    },
+    "inset": {
+      "2xs": {
+        "$type": "dimension",
+        "$value": "{scale.space.100}",
+        "$description": "Padding of a key hint and a segmented control."
+      },
+      "xs": {
+        "$type": "dimension",
+        "$value": "{scale.space.200}",
+        "$description": "Padding on one side of a Toast, a menu row and a popup row."
+      },
+      "s": {
+        "$type": "dimension",
+        "$value": "{scale.space.300}",
+        "$description": "Padding inside a chip, an alert, a menu and a field."
+      },
+      "m": {
+        "$type": "dimension",
+        "$value": "{scale.space.400}",
+        "$description": "Padding inside a notice card, a popup and a button."
+      },
+      "l": {
+        "$type": "dimension",
+        "$value": "{scale.space.500}",
+        "$description": "Roomy side padding of a row and a notice card."
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "{scale.space.600}",
+        "$description": "Padding of a Dialog and the end of a text field."
+      },
+      "2xl": {
+        "$type": "dimension",
+        "$value": "{scale.space.700}",
+        "$description": "Page padding above a column and the side padding of the sign-in pane."
+      },
+      "3xl": {
+        "$type": "dimension",
+        "$value": "{scale.space.800}",
+        "$description": "Padding of the sign-in hero."
+      },
+      "4xl": {
+        "$type": "dimension",
+        "$value": "{scale.space.900}",
+        "$description": "Padding of the sign-in pane and the bottom of a page."
+      },
+      "5xl": {
+        "$type": "dimension",
+        "$value": "{scale.space.1000}",
+        "$description": "Page padding of a column and the space above an empty list."
+      }
+    },
+    "gap": {
+      "2xs": {
+        "$type": "dimension",
+        "$value": "{scale.space.100}",
+        "$description": "Gap between an icon and its text, and between tight rows."
+      },
+      "xs": {
+        "$type": "dimension",
+        "$value": "{scale.space.200}",
+        "$description": "Gap between related items, chips and buttons."
+      },
+      "s": {
+        "$type": "dimension",
+        "$value": "{scale.space.300}",
+        "$description": "Gap between the parts of a row, an alert and a popup."
+      },
+      "m": {
+        "$type": "dimension",
+        "$value": "{scale.space.400}",
+        "$description": "Gap between blocks inside a panel and between a row's columns."
+      },
+      "l": {
+        "$type": "dimension",
+        "$value": "{scale.space.500}",
+        "$description": "Gap between the fields of a form and between groups of filters."
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "{scale.space.600}",
+        "$description": "Gap between the sections of a page and of a form."
+      },
+      "3xl": {
+        "$type": "dimension",
+        "$value": "{scale.space.800}",
+        "$description": "Gap between the columns of the person form."
+      }
+    },
+    "stack": {
+      "2xs": {
+        "$type": "dimension",
+        "$value": "{scale.space.100}",
+        "$description": "Space above or below a tight block, such as a hint."
+      },
+      "xs": {
+        "$type": "dimension",
+        "$value": "{scale.space.200}",
+        "$description": "Space between a heading and the block under it."
+      }
     }
   },
   "radius": {
@@ -1855,6 +1966,24 @@
       "$description": "Edge gap around floating elements on a phone."
     }
   },
+  "border": {
+    "hairline": {
+      "$type": "dimension",
+      "$value": {
+        "value": 1,
+        "unit": "px"
+      },
+      "$description": "The line round a card, a field and a row, and between rows."
+    },
+    "emphasis": {
+      "$type": "dimension",
+      "$value": {
+        "value": 2,
+        "unit": "px"
+      },
+      "$description": "The border of a field that is focused, open or in error. For an outline, use the focus width."
+    }
+  },
   "focus": {
     "width": {
       "$type": "dimension",
@@ -1874,65 +2003,51 @@
     }
   },
   "motion": {
+    "easing": {
+      "$type": "cubicBezier",
+      "$value": [0, 0, 0.58, 1],
+      "$description": "The curve of each motion. Write it after the duration."
+    },
     "press": {
-      "$type": "transition",
-      "$value": {
-        "duration": {
-          "value": 120,
-          "unit": "ms"
-        },
-        "delay": {
-          "value": 0,
-          "unit": "ms"
-        },
-        "timingFunction": [0, 0, 0.58, 1]
-      }
+      "$type": "duration",
+      "$value": "{scale.duration.100}",
+      "$description": "Colour change when a control is pressed or hovered."
     },
     "popup": {
-      "$type": "transition",
-      "$value": {
-        "duration": {
-          "value": 160,
-          "unit": "ms"
-        },
-        "delay": {
-          "value": 0,
-          "unit": "ms"
-        },
-        "timingFunction": [0, 0, 0.58, 1]
-      }
+      "$type": "duration",
+      "$value": "{scale.duration.200}",
+      "$description": "A popup, a loading bar and a Toast appear."
     },
     "sheet": {
-      "$type": "transition",
-      "$value": {
-        "duration": {
-          "value": 240,
-          "unit": "ms"
-        },
-        "delay": {
-          "value": 0,
-          "unit": "ms"
-        },
-        "timingFunction": [0, 0, 0.58, 1]
-      }
+      "$type": "duration",
+      "$value": "{scale.duration.300}",
+      "$description": "A Dialog or a Sheet rises into view."
     },
     "changed-border": {
-      "$type": "transition",
-      "$value": {
-        "duration": {
-          "value": 600,
-          "unit": "ms"
-        },
-        "delay": {
-          "value": 0,
-          "unit": "ms"
-        },
-        "timingFunction": [0, 0, 0.58, 1]
-      }
+      "$type": "duration",
+      "$value": "{scale.duration.400}",
+      "$description": "A border that changed on the Map date fades in."
     },
     "toast": {
       "$type": "duration",
-      "$value": "{scale.duration.500}"
+      "$value": "{scale.duration.500}",
+      "$description": "How long a success Toast stays on screen."
+    },
+    "press-offset": {
+      "$type": "dimension",
+      "$value": {
+        "value": 1,
+        "unit": "px"
+      },
+      "$description": "How far a pressed Button moves down."
+    },
+    "rise-offset": {
+      "$type": "dimension",
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      },
+      "$description": "How far a Toast starts below its place and rises."
     }
   },
   "layout": {
@@ -1954,7 +2069,7 @@
     },
     "menu-offset": {
       "$type": "dimension",
-      "$value": "{space.8}",
+      "$value": "{space.inset.xs}",
       "$description": "Gap between the Menu card and the button that opens it."
     },
     "dialog-width": {
@@ -2160,12 +2275,12 @@
       },
       "pane-y": {
         "$type": "dimension",
-        "$value": "{space.48}",
+        "$value": "{space.inset.4xl}",
         "$description": "Top and bottom padding of the sign-in pane."
       },
       "pane-x": {
         "$type": "dimension",
-        "$value": "{space.32}",
+        "$value": "{space.inset.2xl}",
         "$description": "Side padding of the sign-in pane."
       },
       "copy": {
@@ -2293,17 +2408,17 @@
     },
     "action-bar": {
       "$type": "number",
-      "$value": 5,
+      "$value": 10,
       "$description": "The action bar and the saved notice, above the page content."
     },
     "popup": {
       "$type": "number",
-      "$value": 6,
+      "$value": 20,
       "$description": "A popup at a map point, above the map furniture and below a Menu."
     },
     "menu": {
       "$type": "number",
-      "$value": 10,
+      "$value": 30,
       "$description": "A Menu, and the map slots that hang it, above other map furniture."
     }
   },
@@ -2816,6 +2931,30 @@
           "$type": "number",
           "$value": 20.5
         }
+      }
+    },
+    "hero-shade": {
+      "opacity": {
+        "$type": "number",
+        "$value": 0.28
+      }
+    },
+    "hero-border": {
+      "opacity": {
+        "$type": "number",
+        "$value": 0.42
+      }
+    },
+    "fan-line": {
+      "opacity": {
+        "$type": "number",
+        "$value": 0.5
+      }
+    },
+    "fan-ring": {
+      "opacity": {
+        "$type": "number",
+        "$value": 0.25
       }
     }
   }

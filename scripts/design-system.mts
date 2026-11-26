@@ -41,6 +41,7 @@ import {
 } from '#ks/lib/design/cards.mts';
 import { CARDS } from '#ks/lib/design/states.mts';
 import {
+  deprecatedTokens,
   DESIGN_FILES,
   designSections,
   fontFiles,
@@ -385,6 +386,7 @@ const writeBundleFiles = (
   {
     at,
     controls,
+    deprecated,
     design,
     ranges,
     script,
@@ -394,6 +396,7 @@ const writeBundleFiles = (
   }: {
     at: string;
     controls: Controls;
+    deprecated: ReturnType<typeof deprecatedTokens>;
     design: ReturnType<typeof designSections>;
     ranges: Record<string, string>;
     script: string;
@@ -407,7 +410,7 @@ const writeBundleFiles = (
   text('components/index.d.ts', controls.types);
   text('design-system.json', json(systemIndex(sha, at)));
   text('tokens.json', json(system));
-  text('tokens.css', systemCss(system, ranges));
+  text('tokens.css', systemCss(system, ranges, deprecated));
   text('README.md', readme(design));
 };
 
@@ -497,6 +500,7 @@ export const run = async (root: string, out: string): Promise<string[]> => {
   writeBundleFiles(writer, {
     at,
     controls,
+    deprecated: deprecatedTokens(raw),
     design,
     ranges,
     script,

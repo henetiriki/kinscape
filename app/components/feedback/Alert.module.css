@@ -2,13 +2,13 @@
 .alert {
   align-items: flex-start;
   background: var(--tone-bg);
-  border: 1px solid var(--tone-border);
+  border: var(--border-hairline) solid var(--tone-border);
   border-radius: var(--radius-control);
   box-sizing: border-box;
   color: var(--tone-text);
   display: flex;
-  gap: var(--space-12);
-  padding: var(--space-12) var(--space-16);
+  gap: var(--space-gap-s);
+  padding: var(--space-inset-s) var(--space-inset-m);
 }
 
 .alert > svg {
@@ -50,7 +50,7 @@
 
 .titleRow {
   display: flex;
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
   justify-content: space-between;
 }
 

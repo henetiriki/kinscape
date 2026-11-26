@@ -18,7 +18,7 @@ it('gives the grabber a centred touch-size hit area and keeps its 64 × 20px box
   expect(grabber).toContain('position: relative');
   expect(grabber).toContain('height: 20px');
   expect(grabber).toContain('width: 64px');
-  expect(grabber).toContain('margin-bottom: calc(-1 * var(--space-4))');
+  expect(grabber).toContain('margin-bottom: calc(-1 * var(--space-inset-2xs))');
   expect(before).toContain('height: var(--size-touch)');
   expect(before).toContain('width: max(100%, var(--size-touch))');
   expect(before).toContain('translate: -50% -50%');

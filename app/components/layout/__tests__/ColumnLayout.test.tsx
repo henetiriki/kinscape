@@ -24,21 +24,21 @@ const COLUMNS = [
   {
     column: 'list',
     desktop: [
-      'gap: var(--space-24)',
-      'padding: var(--space-32) 0 var(--space-48)',
+      'gap: var(--space-gap-xl)',
+      'padding: var(--space-inset-2xl) 0 var(--space-inset-4xl)',
       'width: min(var(--layout-list-width), 100%)',
     ],
     phone: [
-      'gap: var(--space-16)',
-      'padding: var(--space-20) var(--space-16) var(--space-48)',
+      'gap: var(--space-gap-m)',
+      'padding: var(--space-inset-l) var(--space-inset-m) var(--space-inset-4xl)',
       'width: 100%',
     ],
   },
   {
     column: 'detail',
     desktop: [
-      'gap: var(--space-16)',
-      'padding: var(--space-24) 0 var(--space-32)',
+      'gap: var(--space-gap-m)',
+      'padding: var(--space-inset-xl) 0 var(--space-inset-2xl)',
       'width: min(var(--layout-list-width), 100%)',
     ],
     phone: [],
@@ -46,8 +46,8 @@ const COLUMNS = [
   {
     column: 'form',
     desktop: [
-      'gap: var(--space-16)',
-      'padding: var(--space-20) 0 var(--space-24)',
+      'gap: var(--space-gap-m)',
+      'padding: var(--space-inset-l) 0 var(--space-inset-xl)',
       'width: min(var(--layout-content-width), 100%)',
     ],
     phone: [],
@@ -55,13 +55,13 @@ const COLUMNS = [
   {
     column: 'notice',
     desktop: [
-      'padding: calc(var(--space-64) + var(--space-48) + var(--space-8)) 0 0',
+      'padding: calc(\n      var(--space-inset-5xl) + var(--space-inset-4xl) + var(--space-inset-xs)\n    )\n    0 0',
     ],
     phone: [],
   },
   {
     column: 'phone-notice',
-    desktop: ['padding: var(--space-64) var(--space-16) 0'],
+    desktop: ['padding: var(--space-inset-5xl) var(--space-inset-m) 0'],
     phone: [],
   },
 ] as const;

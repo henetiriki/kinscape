@@ -31,7 +31,7 @@ const BUDGETS: { limit: number; pattern: RegExp; plan?: true }[] = [
   { limit: 800, pattern: /^design\/topics\/foundations\.md$/ },
   { limit: 350, pattern: /^design\/topics\/layout\.md$/ },
   { limit: 550, pattern: /^design\/topics\/map\.md$/ },
-  { limit: 760, pattern: /^design\/topics\/tokens\.md$/ },
+  { limit: 860, pattern: /^design\/topics\/tokens\.md$/ },
   { limit: 200, pattern: /^docs\/README\.md$/ },
   { limit: 650, pattern: /^docs\/architecture-target\.md$/ },
   { limit: 600, pattern: /^docs\/architecture\.md$/ },

@@ -13,6 +13,7 @@ const ref = (type: string, path: string) => ({
 
 const tokens: DtcgTree = {
   $schema: 'https://www.designtokens.org/schemas/2025.10/format.json',
+  border: { hairline: px(1) },
   breakpoint: { 'phone-width': px(639.98) },
   colour: {
     brand: colour('#264f29'),
@@ -34,14 +35,8 @@ const tokens: DtcgTree = {
     pin: { halo: ref('color', 'colour.white'), 'halo-width': num(2) },
   },
   motion: {
-    press: {
-      $type: 'transition',
-      $value: {
-        delay: { unit: 'ms', value: 0 },
-        duration: { unit: 'ms', value: 120 },
-        timingFunction: [0, 0, 0.58, 1],
-      },
-    },
+    easing: { $type: 'cubicBezier', $value: [0, 0, 0.58, 1] },
+    press: { $type: 'duration', $value: { unit: 'ms', value: 120 } },
   },
   radius: { panel: px(12) },
   shadow: {
@@ -63,6 +58,7 @@ const tokens: DtcgTree = {
 };
 
 const notes: Record<string, string> = {
+  'border.hairline': 'A line between rows.',
   'breakpoint.phone-width': 'Phone layout starts below this width.',
   'colour.brand': 'Primary buttons.',
   'colour.focus': 'Focus outline.',
@@ -74,6 +70,8 @@ const notes: Record<string, string> = {
   'map.hillshade.shadow': 'Shaded slopes.',
   'map.land': 'Land fill.',
   'map.pin.halo': 'Ring round a Pin.',
+  'motion.easing': 'The curve of each motion.',
+  'motion.press': 'Press feedback on a control.',
   'radius.panel': 'Panels and the dock.',
   'shadow.raised': 'Panels.',
   'size.touch': 'Smallest target.',
@@ -122,7 +120,7 @@ describe('noteProblems', () => {
   });
 
   it('names every token when there is no note', () => {
-    expect(noteProblems(tokens)).toHaveLength(17);
+    expect(noteProblems(tokens)).toHaveLength(20);
     expect(noteProblems(tokens)).toContain('colour.brand has no note');
   });
 
@@ -188,14 +186,24 @@ describe('noteProblems', () => {
           'map.coastline.width': 'Line width.',
           'map.hillshade.exaggeration': 'Relief.',
           'map.pin.halo-width': 'Halo width.',
-          'motion.press': 'Press.',
         })
       )
     ).toEqual([
       'map.coastline.width: a note where none is needed',
       'map.hillshade.exaggeration: a note where none is needed',
       'map.pin.halo-width: a note where none is needed',
-      'motion.press: a note where none is needed',
+    ]);
+  });
+
+  it('names a border or motion token with no note', () => {
+    expect(
+      noteProblems(
+        withNotes(without('border.hairline', 'motion.easing', 'motion.press'))
+      )
+    ).toEqual([
+      'border.hairline has no note',
+      'motion.easing has no note',
+      'motion.press has no note',
     ]);
   });
 

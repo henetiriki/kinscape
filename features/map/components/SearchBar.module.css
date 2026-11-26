@@ -5,7 +5,7 @@
   box-shadow: var(--shadow-raised);
   box-sizing: border-box;
   display: flex;
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
   height: var(--size-search);
   margin: 0;
 }
@@ -13,12 +13,12 @@
 .bar {
   border-radius: var(--radius-panel);
   display: inline-flex;
-  padding: 0 var(--space-8) 0 var(--space-12);
+  padding: 0 var(--space-inset-xs) 0 var(--space-inset-s);
 }
 
 .pill {
   border-radius: var(--radius-full);
-  padding: 0 var(--space-4) 0 var(--space-12);
+  padding: 0 var(--space-inset-2xs) 0 var(--space-inset-s);
   position: relative;
   width: 100%;
 }

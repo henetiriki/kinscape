@@ -3,6 +3,6 @@
   color: var(--ink-3);
   display: inline-flex;
   font-size: var(--type-caption-size);
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
   line-height: var(--type-caption-line);
 }

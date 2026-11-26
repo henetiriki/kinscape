@@ -36,9 +36,9 @@ export const MapPinCountScreen = () => (
             boxSizing: 'border-box',
             display: 'flex',
             flexDirection: 'column',
-            gap: 'var(--space-12)',
+            gap: 'var(--space-gap-s)',
             left: 400,
-            padding: 'var(--space-16)',
+            padding: 'var(--space-inset-m)',
             position: 'absolute',
             top: 130,
             width: 400,
@@ -52,7 +52,7 @@ export const MapPinCountScreen = () => (
                   alignItems: 'center',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: 'var(--space-4)',
+                  gap: 'var(--space-gap-2xs)',
                 }}>
                 <span
                   style={{

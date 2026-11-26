@@ -11,7 +11,7 @@
 .head {
   border-bottom: var(--border-hairline) solid var(--line);
   display: flex;
-  padding: var(--space-4);
+  padding: var(--space-inset-2xs);
 }
 
 /* The snapshots draw these tabs 40 tall; the hit area stays 44. */
@@ -24,10 +24,10 @@
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: var(--space-20);
+  gap: var(--space-gap-l);
   min-height: 0;
   overflow-y: auto;
-  padding: var(--space-16);
+  padding: var(--space-inset-m);
 }
 
 .body[data-gap='14'] {

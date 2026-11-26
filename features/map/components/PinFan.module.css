@@ -32,14 +32,14 @@
 .line {
   stroke: var(--pin);
   stroke-linecap: round;
-  stroke-opacity: 0.5;
+  stroke-opacity: var(--map-fan-line-opacity);
   stroke-width: 2;
 }
 
 .ring {
   fill: none;
   stroke: var(--pin);
-  stroke-opacity: 0.25;
+  stroke-opacity: var(--map-fan-ring-opacity);
   stroke-width: 1.5;
 }
 

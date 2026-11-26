@@ -10,7 +10,7 @@
 .heading {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-gap-2xs);
 }
 
 .filter {
@@ -26,7 +26,7 @@
   align-items: flex-start;
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: var(--space-gap-m);
   width: 560px;
 }
 
@@ -40,9 +40,9 @@
 .heads {
   color: var(--ink-3);
   display: grid;
-  gap: var(--space-16);
+  gap: var(--space-gap-m);
   grid-template-columns: minmax(0, 1fr) 200px 72px max-content;
-  padding: var(--space-12) var(--space-20);
+  padding: var(--space-inset-s) var(--space-inset-l);
   text-transform: uppercase;
 }
 
@@ -53,7 +53,7 @@
   font-size: var(--type-link-size);
   font-weight: var(--type-link-weight);
   line-height: var(--type-link-line);
-  padding-left: var(--space-20);
+  padding-left: var(--space-inset-l);
   text-transform: none;
 }
 

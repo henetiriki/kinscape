@@ -3,7 +3,7 @@
   color: var(--ink-2);
   display: inline-flex;
   font-size: var(--type-small-size);
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
   line-height: var(--type-small-line);
 }
 

@@ -53,7 +53,7 @@ const useListLayout = (
       .reduce((sum, row) => sum + (row as HTMLElement).offsetHeight, 0);
 
     list.style.maxHeight =
-      height > 0 ? `calc(${height}px + 2 * var(--space-4))` : '';
+      height > 0 ? `calc(${height}px + 2 * var(--space-inset-2xs))` : '';
   }, [listRef, rows]);
 
   // Keep the active row inside the list's view.

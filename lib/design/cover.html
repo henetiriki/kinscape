@@ -42,8 +42,8 @@
       }
       .name {
         position: absolute;
-        bottom: var(--space-32);
-        left: var(--space-32);
+        bottom: var(--space-inset-2xl);
+        left: var(--space-inset-2xl);
         margin: 0;
         color: var(--ink);
         font-family: var(--font-display);
@@ -55,7 +55,7 @@
       .tagline {
         position: absolute;
         bottom: 136px;
-        left: var(--space-32);
+        left: var(--space-inset-2xl);
         max-width: 440px;
         margin: 0;
         color: var(--ink-3);
@@ -67,10 +67,10 @@
   </head>
   <body>
     <svg width="960" height="288" viewBox="0 0 960 288" aria-hidden="true">
-      <!-- Blocks: brand, map-land, map-sea and pin, the identity colours, 96 wide (space-64 + space-32), heights 224, 192, 208 and 160 (sums of space steps).
-           Arrangement: four columns right of x = 480 with space-16 gaps, tops staggered (32, 16, 48, 80), about a quarter of the cover.
+      <!-- Blocks: brand, map-land, map-sea and pin, the identity colours, 96 wide (space-inset-5xl + space-inset-2xl), heights 224, 192, 208 and 160 (sums of space steps).
+           Arrangement: four columns right of x = 480 with space-gap-m gaps, tops staggered (32, 16, 48, 80), about a quarter of the cover.
            Pattern: dashed Polity-border lines (map.border, dash 4 and 2.6) cross the blocks, as the tagline says borders move.
-           Radius: radius-panel on every block; steps used: space-16, space-32, space-64. -->
+           Radius: radius-panel on every block; steps used: space-inset-m, space-inset-2xl, space-inset-5xl. -->
       <rect class="block brand" x="504" y="32" width="96" height="224" />
       <rect class="block land" x="616" y="16" width="96" height="192" />
       <rect class="block sea" x="728" y="48" width="96" height="208" />

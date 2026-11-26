@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding: var(--space-4) 0;
+  padding: var(--space-inset-2xs) 0;
   position: relative;
   width: 480px;
 }
@@ -17,8 +17,8 @@
 
 /* The no-match notice is as wide as the 280px field. */
 .list[data-empty] {
-  gap: var(--space-4);
-  padding: var(--space-16);
+  gap: var(--space-gap-2xs);
+  padding: var(--space-inset-m);
   width: 280px;
 }
 

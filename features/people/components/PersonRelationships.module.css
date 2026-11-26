@@ -7,7 +7,7 @@
 .heading {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-gap-2xs);
 }
 
 .group {
@@ -21,16 +21,16 @@
   align-items: center;
   box-sizing: border-box;
   display: flex;
-  gap: var(--space-16);
+  gap: var(--space-gap-m);
   height: 60px;
   justify-content: space-between;
-  padding: 0 var(--space-20);
+  padding: 0 var(--space-inset-l);
 }
 
 .title {
   align-items: baseline;
   display: flex;
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
 }
 
 .rows {
@@ -45,11 +45,11 @@
 }
 
 .none {
-  padding: var(--space-16) var(--space-20);
+  padding: var(--space-inset-m) var(--space-inset-l);
 }
 
 .failed {
   display: flex;
   justify-content: center;
-  padding-top: var(--space-48);
+  padding-top: var(--space-inset-4xl);
 }

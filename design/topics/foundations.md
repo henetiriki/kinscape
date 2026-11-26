@@ -85,6 +85,9 @@ The `$description` of each `radius` and `shadow` token says where it goes.
 | `sheet`          | Phone sheet: slides; follows the finger while dragged      |
 | `changed-border` | Changed border: MAP-11 highlight, then gone                |
 | `toast`          | Toast: a success toast leaves after 4 seconds; errors stay |
+| `easing`         | The curve of each motion: write it after the duration      |
+| `press-offset`   | Button press: 1px down                                     |
+| `rise-offset`    | Toast: starts 4px low and rises                            |
 
 A map date change redraws at once. Do not animate it. Do not show a loader (NFR-01).
 

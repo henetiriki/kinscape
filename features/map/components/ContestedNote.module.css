@@ -13,7 +13,7 @@
     var(--hatch-line) 0 3px,
     var(--hatch-fill) 3px 8px
   );
-  border: 1px solid var(--ink-2);
+  border: var(--border-hairline) solid var(--ink-2);
   border-radius: 2px; /* own: soft corners of the swatch */
   box-sizing: border-box;
   flex: none;

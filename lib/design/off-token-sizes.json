@@ -1,33 +1,9 @@
 [
   {
     "count": 1,
-    "file": "app/components/actions/ActionBar.module.css",
-    "property": "border-top",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/actions/Button.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/actions/Button.module.css",
-    "property": "transform",
-    "value": "1px"
-  },
-  {
-    "count": 1,
     "file": "app/components/actions/Button.module.css",
     "property": "width",
     "value": "2px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/actions/Chip.module.css",
-    "property": "border",
-    "value": "1px"
   },
   {
     "count": 1,
@@ -55,27 +31,9 @@
   },
   {
     "count": 1,
-    "file": "app/components/actions/IconButton.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/actions/KeyHint.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 1,
     "file": "app/components/actions/KeyHint.module.css",
     "property": "padding",
     "value": "2px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/actions/PersonRow.module.css",
-    "property": "border-top",
-    "value": "1px"
   },
   {
     "count": 2,
@@ -109,18 +67,6 @@
   },
   {
     "count": 1,
-    "file": "app/components/auth/SignInForm.module.css",
-    "property": "border-top",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/auth/SignInHero.module.css",
-    "property": "border-top",
-    "value": "1.5px"
-  },
-  {
-    "count": 1,
     "file": "app/components/auth/SignInHero.module.css",
     "property": "gap",
     "value": "10px"
@@ -134,20 +80,8 @@
   {
     "count": 1,
     "file": "app/components/auth/SignInHero.module.css",
-    "property": "opacity",
-    "value": "0.28"
-  },
-  {
-    "count": 1,
-    "file": "app/components/auth/SignInHero.module.css",
     "property": "width",
     "value": "22px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/feedback/Alert.module.css",
-    "property": "border",
-    "value": "1px"
   },
   {
     "count": 1,
@@ -159,24 +93,6 @@
     "count": 1,
     "file": "app/components/feedback/Alert.module.css",
     "property": "margin-top",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/feedback/Callout.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/feedback/Callout.module.css",
-    "property": "border-bottom",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/feedback/Callout.module.css",
-    "property": "border-right",
     "value": "1px"
   },
   {
@@ -222,28 +138,10 @@
     "value": "6px"
   },
   {
-    "count": 2,
-    "file": "app/components/feedback/Toast.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
     "count": 1,
     "file": "app/components/feedback/Toast.module.css",
     "property": "min-height",
     "value": "60px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/feedback/Toast.module.css",
-    "property": "transform",
-    "value": "4px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/forms/Checkbox.module.css",
-    "property": "border",
-    "value": "1.5px"
   },
   {
     "count": 1,
@@ -290,18 +188,6 @@
   {
     "count": 1,
     "file": "app/components/forms/TextField.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 3,
-    "file": "app/components/forms/TextField.module.css",
-    "property": "border",
-    "value": "2px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/forms/TextField.module.css",
     "property": "margin",
     "value": "-10px"
   },
@@ -344,12 +230,6 @@
   {
     "count": 1,
     "file": "app/components/foundation/PageHeader.module.css",
-    "property": "border-bottom",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/foundation/PageHeader.module.css",
     "property": "width",
     "value": "1px"
   },
@@ -368,12 +248,6 @@
   {
     "count": 1,
     "file": "app/components/overlays/ClickPopup.module.css",
-    "property": "border",
-    "value": "2.5px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/overlays/ClickPopup.module.css",
     "property": "height",
     "value": "12px"
   },
@@ -388,12 +262,6 @@
     "file": "app/components/overlays/ClickPopup.module.css",
     "property": "width",
     "value": "12px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/overlays/Dialog.module.css",
-    "property": "border-top",
-    "value": "1px"
   },
   {
     "count": 1,
@@ -434,12 +302,6 @@
   {
     "count": 1,
     "file": "app/components/overlays/Popup.module.css",
-    "property": "border-top",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/overlays/Popup.module.css",
     "property": "height",
     "value": "4px"
   },
@@ -458,12 +320,6 @@
   {
     "count": 1,
     "file": "app/components/overlays/Sheet.module.css",
-    "property": "border-bottom",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/overlays/Sheet.module.css",
     "property": "height",
     "value": "4px"
   },
@@ -472,12 +328,6 @@
     "file": "app/components/overlays/Sheet.module.css",
     "property": "max-height",
     "value": "90dvh"
-  },
-  {
-    "count": 2,
-    "file": "app/globals.css",
-    "property": "border-width",
-    "value": "1px"
   },
   {
     "count": 1,
@@ -512,12 +362,6 @@
   {
     "count": 1,
     "file": "features/map/components/ContestedNote.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/map/components/ContestedNote.module.css",
     "property": "height",
     "value": "14px"
   },
@@ -532,12 +376,6 @@
     "file": "features/map/components/CountMarker.module.css",
     "property": "--gap",
     "value": "5px"
-  },
-  {
-    "count": 1,
-    "file": "features/map/components/CountMarker.module.css",
-    "property": "border",
-    "value": "2px"
   },
   {
     "count": 1,
@@ -620,12 +458,6 @@
   {
     "count": 2,
     "file": "features/map/components/DateSlider.module.css",
-    "property": "border",
-    "value": "4px"
-  },
-  {
-    "count": 2,
-    "file": "features/map/components/DateSlider.module.css",
     "property": "height",
     "value": "12px"
   },
@@ -656,32 +488,8 @@
   {
     "count": 1,
     "file": "features/map/components/DateSlider.module.css",
-    "property": "translate",
-    "value": "-1px"
-  },
-  {
-    "count": 1,
-    "file": "features/map/components/DateSlider.module.css",
     "property": "width",
     "value": "2px"
-  },
-  {
-    "count": 1,
-    "file": "features/map/components/JumpTo.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/map/components/Legend.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/map/components/Legend.module.css",
-    "property": "border-top",
-    "value": "1px"
   },
   {
     "count": 1,
@@ -692,20 +500,8 @@
   {
     "count": 1,
     "file": "features/map/components/Panel.module.css",
-    "property": "border-bottom",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/map/components/Panel.module.css",
     "property": "gap",
     "value": "14px"
-  },
-  {
-    "count": 1,
-    "file": "features/map/components/PinFan.module.css",
-    "property": "border",
-    "value": "1px"
   },
   {
     "count": 1,
@@ -729,12 +525,6 @@
     "count": 1,
     "file": "features/map/components/SearchBar.module.css",
     "property": "width",
-    "value": "1px"
-  },
-  {
-    "count": 2,
-    "file": "features/map/components/SourcesDialog.module.css",
-    "property": "border-bottom",
     "value": "1px"
   },
   {
@@ -770,24 +560,6 @@
   {
     "count": 1,
     "file": "features/people/components/PeopleList.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/people/components/PeopleList.module.css",
-    "property": "border-bottom",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/people/components/PeopleList.module.css",
-    "property": "border-top",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/people/components/PeopleList.module.css",
     "property": "width",
     "value": "420px"
   },
@@ -818,56 +590,14 @@
   {
     "count": 1,
     "file": "features/people/components/PersonForm.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/people/components/PersonForm.module.css",
     "property": "width",
     "value": "640px"
   },
   {
     "count": 1,
     "file": "features/people/components/PersonRelationships.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/people/components/PersonRelationships.module.css",
-    "property": "border-top",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/people/components/PersonRelationships.module.css",
     "property": "height",
     "value": "60px"
-  },
-  {
-    "count": 1,
-    "file": "features/people/components/PinForm.module.css",
-    "property": "border-top",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/people/components/RelationshipDetails.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/people/components/RelationshipPicker.module.css",
-    "property": "border",
-    "value": "1px"
-  },
-  {
-    "count": 1,
-    "file": "features/people/components/RelationshipPicker.module.css",
-    "property": "border-top",
-    "value": "1px"
   },
   {
     "count": 1,

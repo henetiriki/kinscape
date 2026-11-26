@@ -70,7 +70,7 @@ it('puts the padding on the textarea, so the resize handle sits at the padded co
   const area = /^\.area \{[^}]*\}/m.exec(css)![0];
   const box = /^\.field > \.box \{[^}]*\}/m.exec(css)![0];
 
-  expect(area).toContain('padding: 10px var(--space-12)');
+  expect(area).toContain('padding: 10px var(--space-inset-s)');
   expect(box).toContain('padding: 0;');
   expect(css).toMatch(/:focus-within[^{]*\.area[^{]*\{[^}]*padding: 9px 11px/);
 });
@@ -116,7 +116,7 @@ it('joins a given aria-describedby with the helper id, and marks nothing without
 // PPL-01
 it('takes the text field box, padding 10 12, and 16 / 24 text on a phone', () => {
   expect(css).toContain("composes: box from '@ks/app/components/forms/");
-  expect(css).toContain('padding: 10px var(--space-12)');
+  expect(css).toContain('padding: 10px var(--space-inset-s)');
   expect(css).toMatch(/@media[^{]*\/\* breakpoint: phone \*\//);
   expect(css).toContain('var(--type-body-l-size)');
 });

@@ -240,7 +240,7 @@ describe('layout tokens', () => {
     'app/components/feedback/NoticeCard.module.css': ['360px', '380px'],
     'app/components/feedback/Toast.module.css': ['80px', '164px'],
     'app/components/overlays/Dialog.module.css': ['760px', '56px'],
-    'app/components/overlays/Menu.module.css': ['296px', 'z-index: 10'],
+    'app/components/overlays/Menu.module.css': ['296px', 'z-index: 30'],
     'app/components/overlays/Popup.module.css': ['304px'],
     'features/map/components/MapShell.module.css': ['z-index: 1;'],
     'features/map/components/SearchBar.module.css': ['340px'],
@@ -272,6 +272,39 @@ describe('design/kinscape.tokens.json and design/tokens.generated.ts', () => {
     expect(
       noteProblems(JSON.parse(read('design/kinscape.tokens.json')))
     ).toEqual([]);
+  });
+
+  it('keeps the z layers in order, with the MapLibre corners (z-index 2) between furniture and the action bar', () => {
+    const { z } = generatedTokens;
+    const layers = [z.furniture, z['action-bar'], z.popup, z.menu, z.modal].map(
+      Number
+    );
+
+    expect(layers).toEqual([1, 10, 20, 30, 40]);
+    expect(layers.toSorted((a, b) => a - b)).toEqual(layers);
+    expect(layers[0]).toBeLessThan(2);
+    expect(layers[1]).toBeGreaterThan(2);
+  });
+
+  it('gives each space-N token $deprecated, naming replacements of the same value', () => {
+    const steps = tokenLeaves(source.space, ['space']).filter(
+      ({ path }) => path.length === 2
+    );
+
+    expect(steps).toHaveLength(10);
+
+    for (const { $deprecated, path } of steps) {
+      const name = path.join('.');
+      const replacements = String($deprecated).match(/space\.[a-z]+\.\w+/g);
+
+      expect(replacements?.length, name).toBeGreaterThan(0);
+
+      for (const replacement of replacements ?? []) {
+        expect(resolvedText(source, replacement), replacement).toBe(
+          resolvedText(source, name)
+        );
+      }
+    }
   });
 
   // NFR-06

@@ -118,6 +118,6 @@ it('sets the text in the link font with no underline', () => {
   expect(base).toContain('line-height: var(--type-link-line)');
   expect(base).toContain('letter-spacing: var(--type-link-tracking)');
   expect(base).toContain('color: var(--brand)');
-  expect(base).toContain('gap: var(--space-4)');
+  expect(base).toContain('gap: var(--space-gap-2xs)');
   expect(base).not.toMatch(/underline|composes/);
 });

@@ -12,7 +12,7 @@
 
 .group {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: var(--border-hairline) solid var(--line);
   border-radius: var(--radius-panel);
   overflow: hidden;
 }
@@ -41,7 +41,7 @@
 
 .item,
 .none {
-  border-top: 1px solid var(--line);
+  border-top: var(--border-hairline) solid var(--line);
 }
 
 .none {

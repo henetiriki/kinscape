@@ -11,12 +11,12 @@
   font-size: var(--type-label-size);
   font-weight: var(--type-label-weight);
   line-height: var(--type-label-line);
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--space-stack-xs);
   padding: 0;
 }
 
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
 }

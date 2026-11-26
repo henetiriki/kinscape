@@ -32,7 +32,7 @@
 
 .list {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: var(--border-hairline) solid var(--line);
   border-radius: var(--radius-panel);
   overflow: hidden;
 }
@@ -69,12 +69,12 @@
 }
 
 .item {
-  border-top: 1px solid var(--line);
+  border-top: var(--border-hairline) solid var(--line);
 }
 
 /* The phone form: rows with no panel, and a single column. */
 .phoneRows {
-  border-bottom: 1px solid var(--line);
+  border-bottom: var(--border-hairline) solid var(--line);
   list-style: none;
   margin: 0;
   padding: 0;

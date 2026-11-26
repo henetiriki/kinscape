@@ -5,10 +5,10 @@
   display: flex;
   font-family: var(--font-body);
   font-size: var(--type-body-size);
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
   height: 48px; /* own: Toast and Banner shape */
   line-height: var(--type-body-line);
-  padding: 0 var(--space-4) 0 var(--space-16);
+  padding: 0 var(--space-inset-2xs) 0 var(--space-inset-m);
 }
 
 .shape > svg {
@@ -22,7 +22,7 @@
 .action {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
   background: var(--surface);
-  border: 1px solid var(--line-strong);
+  border: var(--border-hairline) solid var(--line-strong);
   border-radius: var(--radius-control);
   box-sizing: border-box;
   color: var(--ink);
@@ -32,18 +32,18 @@
   font-weight: var(--type-button-s-weight);
   height: var(--size-control-xs);
   line-height: var(--type-button-s-line);
-  padding: 0 var(--space-12);
+  padding: 0 var(--space-inset-s);
 }
 
 .toast {
   composes: floating from '@ks/app/components/foundation/Surface.module.css';
-  border: 1px solid var(--line);
+  border: var(--border-hairline) solid var(--line);
   height: 50px; /* own: Toast with its border */
 }
 
 /* A success toast has no button, so it keeps the left padding on both sides. */
 .success {
-  padding-right: var(--space-16);
+  padding-right: var(--space-inset-m);
 }
 
 .success > svg {
@@ -66,7 +66,7 @@
   box-shadow: var(--shadow-floating);
   color: var(--white);
   height: 52px; /* own: Banner on a desktop */
-  padding-right: var(--space-8);
+  padding-right: var(--space-inset-xs);
 }
 
 .bannerAction {
@@ -79,16 +79,16 @@
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(var(--motion-rise-offset));
   }
 }
 
 /* On a phone a placed Toast or Banner is fixed inside the gutters, at the offsets of the phone designs. */
 @media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .shape[data-placed] {
-    left: var(--space-16);
+    left: var(--space-inset-m);
     position: fixed;
-    right: var(--space-16);
+    right: var(--space-inset-m);
   }
 
   .banner[data-placed] {
@@ -102,19 +102,20 @@
   .shape:has(.action) {
     height: auto;
     min-height: 60px;
-    padding: var(--space-8) var(--space-8) var(--space-8) var(--space-16);
+    padding: var(--space-inset-xs) var(--space-inset-xs) var(--space-inset-xs)
+      var(--space-inset-m);
   }
 
   .action {
     font-size: var(--type-body-size);
     height: var(--size-touch);
     line-height: var(--type-body-line);
-    padding: 0 var(--space-16);
+    padding: 0 var(--space-inset-m);
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .toast {
-    animation: rise var(--motion-popup);
+    animation: rise var(--motion-popup) var(--motion-easing);
   }
 }

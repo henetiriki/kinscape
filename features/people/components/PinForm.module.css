@@ -39,7 +39,7 @@
 }
 
 .actions {
-  border-top: 1px solid var(--line);
+  border-top: var(--border-hairline) solid var(--line);
   display: flex;
   gap: var(--space-8);
   padding: var(--space-16) var(--space-20) var(--space-20);

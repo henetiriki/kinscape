@@ -5,6 +5,9 @@ import type { SystemTokens } from '@ks/lib/design/types.ts';
 import { formatProblems } from '@ks/lib/design/format.mts';
 
 const valid = (): SystemTokens => ({
+  border: {
+    tokens: [{ name: 'border-hairline', usage: 'Lines.', value: '1px' }],
+  },
   breakpoint: {
     tokens: [
       { name: 'breakpoint-phone-width', usage: 'Phones.', value: '639.98px' },
@@ -25,6 +28,9 @@ const valid = (): SystemTokens => ({
   focus: { tokens: [{ name: 'focus-width', usage: 'Outline.', value: '2px' }] },
   layout: {
     tokens: [{ name: 'layout-dock-left', usage: 'Dock.', value: '368px' }],
+  },
+  motion: {
+    tokens: [{ name: 'motion-press', usage: 'Presses.', value: '120ms' }],
   },
   name: 'KinScape',
   radius: {
@@ -300,7 +306,7 @@ describe('formatProblems', () => {
       group.styles.push({ ...group.styles[0], name: `st${at}` });
     }
 
-    for (let at = 0; at < 12; at += 1) {
+    for (let at = 0; at < 10; at += 1) {
       Object.assign(tokens, { [`extra${at}`]: { tokens: [] } });
     }
 

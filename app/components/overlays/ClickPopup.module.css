@@ -1,7 +1,7 @@
 /* The point dot: 12px in the brand colour with a surface edge, centred on the point */
 .dot {
   background: var(--brand);
-  border: 2.5px solid var(--surface);
+  border: 2.5px solid var(--surface); /* own: a drawn ring, SC.14 names its width */
   border-radius: var(--radius-full);
   box-sizing: border-box;
   height: 12px;
@@ -15,7 +15,7 @@
 .body {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
   min-height: 102px;
 }
 

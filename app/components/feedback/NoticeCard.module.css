@@ -2,31 +2,31 @@
   composes: raised from '@ks/app/components/foundation/Surface.module.css';
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
   max-width: 100%;
-  padding: var(--space-16);
+  padding: var(--space-inset-m);
   width: var(--layout-notice-width);
 }
 
 .card[data-progress] {
-  padding: var(--space-16) var(--space-20);
+  padding: var(--space-inset-m) var(--space-inset-l);
 }
 
 .card[data-size='large'] {
-  gap: var(--space-8);
-  padding: var(--space-20);
+  gap: var(--space-gap-xs);
+  padding: var(--space-inset-l);
   width: var(--layout-notice-width-l);
 }
 
 .head {
   align-items: flex-start;
   display: flex;
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
 }
 
 .card[data-size='large'] .head {
   flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
 }
 
 .icon {
@@ -45,15 +45,15 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-gap-2xs);
 }
 
 .card[data-size='large'] .text {
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
 }
 
 .card[data-progress] .text {
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
 }
 
 .title {
@@ -84,12 +84,12 @@
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
 }
 
 /* The buttons line up with the text, not the icon. */
 .card[data-icon]:not([data-size='large']) .actions {
-  padding-left: var(--space-32);
+  padding-left: var(--space-inset-2xl);
 }
 
 /* The phone sample of its component card: 358 wide, 44 buttons. */

@@ -8,16 +8,16 @@
   font-family: var(--type-control-font);
   font-size: var(--type-control-size);
   font-weight: var(--type-control-weight);
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
   height: var(--size-control);
   justify-content: center;
   line-height: var(--type-control-line);
-  padding: 0 var(--space-16);
+  padding: 0 var(--space-inset-m);
   position: relative;
   text-decoration: none;
   transition:
-    background var(--motion-press),
-    border-color var(--motion-press);
+    background var(--motion-press) var(--motion-easing),
+    border-color var(--motion-press) var(--motion-easing);
   white-space: nowrap;
 }
 
@@ -38,7 +38,7 @@
 
 .btn[data-size='xs'] {
   height: var(--size-control-xs);
-  padding: 0 var(--space-12);
+  padding: 0 var(--space-inset-s);
 }
 
 /* A button under 44px keeps a 44px hit area, as Chip does. */
@@ -58,7 +58,7 @@
 
 .btn[data-round] {
   border-radius: var(--radius-full);
-  padding: 0 var(--space-16) 0 var(--space-12);
+  padding: 0 var(--space-inset-m) 0 var(--space-inset-s);
 }
 
 .btn[data-icon-only] {
@@ -71,7 +71,7 @@
 }
 
 .btnPrimary:is(:active:not(:disabled), [data-state='active']) {
-  transform: translateY(1px);
+  transform: translateY(var(--motion-press-offset));
 }
 
 .btnPrimary {
@@ -101,7 +101,7 @@
 
 .btnSecondary {
   background: var(--surface);
-  border: 1px solid var(--line-strong);
+  border: var(--border-hairline) solid var(--line-strong);
   color: var(--ink);
 }
 

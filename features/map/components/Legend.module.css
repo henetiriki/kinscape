@@ -37,7 +37,7 @@
     var(--legend-hatch) 0 3px,
     var(--legend-fill) 3px 9px
   );
-  border: 1px solid var(--legend-border);
+  border: var(--border-hairline) solid var(--legend-border);
   border-radius: var(--radius-small);
   box-sizing: border-box;
   flex: none;
@@ -58,7 +58,7 @@
 }
 
 .glyphs {
-  border-top: 1px solid var(--line);
+  border-top: var(--border-hairline) solid var(--line);
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-4) var(--space-16);

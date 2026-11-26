@@ -16,6 +16,6 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .fill {
-    transition: width var(--motion-popup);
+    transition: width var(--motion-popup) var(--motion-easing);
   }
 }

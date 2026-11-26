@@ -22,7 +22,7 @@
 
 .shade {
   mix-blend-mode: multiply;
-  opacity: 0.28;
+  opacity: var(--map-hero-shade-opacity);
 }
 
 .rivers,
@@ -44,7 +44,7 @@
 
 .borders {
   stroke: var(--hero-border);
-  stroke-opacity: 0.42;
+  stroke-opacity: var(--map-hero-border-opacity);
   stroke-width: var(--hero-border-width);
 }
 
@@ -86,9 +86,9 @@
   color: var(--hero-ink);
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: var(--space-gap-m);
   max-width: var(--layout-sign-in-copy);
-  padding: var(--space-40) var(--space-48);
+  padding: var(--space-inset-3xl) var(--space-inset-4xl);
   position: relative;
 }
 
@@ -104,16 +104,16 @@
 
 .caption {
   align-items: center;
-  bottom: var(--space-32);
+  bottom: var(--space-inset-2xl);
   color: var(--ink-2);
   display: flex;
   gap: 10px;
-  left: var(--space-48);
+  left: var(--space-inset-4xl);
   position: absolute;
 }
 
 .key {
-  border-top: 1.5px solid var(--hero-border);
+  border-top: 1.5px solid var(--hero-border); /* own: a drawn rule, SC.14 names its width */
   display: inline-block;
   width: 22px;
 }

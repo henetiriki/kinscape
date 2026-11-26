@@ -22,7 +22,7 @@
 
 .table th,
 .table td {
-  border-bottom: 1px solid var(--line);
+  border-bottom: var(--border-hairline) solid var(--line);
   padding: var(--space-4) var(--space-12) var(--space-4) 0;
   text-align: left;
   vertical-align: middle;
@@ -60,7 +60,7 @@
 }
 
 .list li {
-  border-bottom: 1px solid var(--line);
+  border-bottom: var(--border-hairline) solid var(--line);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);

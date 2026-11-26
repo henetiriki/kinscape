@@ -59,7 +59,11 @@ const alias = (value: string): string => {
     : `{${systemName(reference.split('.'))}}`;
 };
 
-/** Each leaf of the given groups that has a note, as a token: aliases point at the converted name. `extra` gives sentences that follow the note. */
+/** `$deprecated` is `true` or a message. `false` and no value both mean the token is in use. */
+const isDeprecated = (token: DtcgToken): boolean =>
+  token.$deprecated === true || typeof token.$deprecated === 'string';
+
+/** Each leaf of the given groups that has a note and no `$deprecated`, as a token: aliases point at the converted name. `extra` gives sentences that follow the note. */
 const noted = (
   tree: DtcgTree,
   notes: Map<string, string>,
@@ -71,7 +75,7 @@ const noted = (
     tokenLeaves(tree[group] as DtcgTree, [group]).flatMap(token => {
       const usage = notes.get(token.path.join('.'));
 
-      return usage === undefined
+      return usage === undefined || isDeprecated(token)
         ? []
         : [
             {
@@ -173,6 +177,7 @@ export const systemTokens = (
   });
 
   return {
+    border: { tokens: list('border') },
     breakpoint: valued('breakpoint'),
     color: {
       themes: [{ id: 'light', name: 'Light' }],
@@ -182,6 +187,7 @@ export const systemTokens = (
     },
     focus: { tokens: list('focus') },
     layout: valued('layout'),
+    motion: { tokens: list('motion') },
     name: 'KinScape',
     radius: { tokens: list('radius') },
     shadow: { tokens: list('shadow') },
@@ -198,6 +204,18 @@ export const systemTokens = (
     z: valued('z'),
   };
 };
+
+/** Each token with `$deprecated`, as its CSS name and value. `tokens.json` leaves them out; `tokens.css` keeps them for the boards and the `features/` CSS. */
+export const deprecatedTokens = (tree: DtcgTree): SystemToken[] =>
+  Object.keys(tree)
+    .filter(group => group !== 'scale' && typeof tree[group] === 'object')
+    .flatMap(group => tokenLeaves(tree[group] as DtcgTree, [group]))
+    .filter(isDeprecated)
+    .map(token => ({
+      name: systemName(token.path),
+      usage: String(token.$deprecated),
+      value: alias(stepText(tree, token)),
+    }));
 
 /** The `unicode-range` of the `@font-face` for `file` in a @fontsource stylesheet, if it has one. */
 export const unicodeRange = (css: string, file: string): string | undefined =>
@@ -242,7 +260,8 @@ const block = (selector: string, lines: string[]): string =>
 /** `tokens.css`: what the type would compile from `tokens.json`, which a page synced from code never does. */
 export const systemCss = (
   system: SystemTokens,
-  ranges: Record<string, string>
+  ranges: Record<string, string>,
+  deprecated: SystemToken[]
 ): string =>
   [
     '/* KinScape — generated from tokens.json */',
@@ -254,7 +273,9 @@ export const systemCss = (
       ...declarations(system.spacing.tokens),
       ...declarations(system.radius.tokens),
       ...declarations(system.size.tokens),
+      ...declarations(system.border.tokens),
       ...declarations(system.focus.tokens),
+      ...declarations(system.motion.tokens),
       ...declarations(system.layout.tokens),
       ...declarations(system.breakpoint.tokens),
       ...declarations(system.z.tokens),
@@ -262,6 +283,14 @@ export const systemCss = (
         ([key, stack]) => `  --font-${key}: ${stack};`
       ),
     ]),
+    ...(deprecated.length > 0
+      ? [
+          block(':root', [
+            '  /* Deprecated: boards and the features/ CSS still use these names. */',
+            ...declarations(deprecated),
+          ]),
+        ]
+      : []),
     ...system.type.groups.flatMap(({ family, styles }) =>
       styles.map(style =>
         block(`.${style.name}`, [

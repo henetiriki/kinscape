@@ -2,12 +2,12 @@
   composes: sheet from '@ks/app/components/foundation/Surface.module.css';
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
   height: var(--layout-phone-sheet-collapsed);
 
   /* The grabber's z-index orders it against the content of the sheet only. */
   isolation: isolate;
-  padding: var(--space-8) var(--space-16) var(--space-20);
+  padding: var(--space-inset-xs) var(--space-inset-m) var(--space-inset-l);
   width: 100%;
 }
 
@@ -24,7 +24,7 @@
   display: flex;
   height: 20px; /* own: grabber box */
   justify-content: center;
-  margin-bottom: calc(-1 * var(--space-4));
+  margin-bottom: calc(-1 * var(--space-inset-2xs));
   padding: 0;
   position: relative;
   width: 64px;

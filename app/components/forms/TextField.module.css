@@ -1,20 +1,20 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
 }
 
 /* The box draws the border, so the icon can sit inside it; focus is a 2px brand border instead of the ring. */
 .box {
   align-items: center;
   background: var(--surface);
-  border: 1px solid var(--field-border);
+  border: var(--border-hairline) solid var(--field-border);
   border-radius: var(--radius-control);
   box-sizing: border-box;
   color: var(--ink);
   display: flex;
   height: var(--size-field);
-  padding: 0 var(--space-12);
+  padding: 0 var(--space-inset-s);
   position: relative;
 }
 
@@ -29,19 +29,19 @@
 }
 
 .box:is(:focus-within, [data-state='focus']) {
-  border: 2px solid var(--brand);
+  border: var(--border-emphasis) solid var(--brand);
   padding: 0 11px;
 }
 
 /* A pressed select is the open list: the focus border on surface-2. */
 .box:has(select)[data-state='active'] {
   background: var(--surface-2);
-  border: 2px solid var(--brand);
+  border: var(--border-emphasis) solid var(--brand);
   padding: 0 11px;
 }
 
 .box[data-mark] {
-  border: 2px solid var(--error-border);
+  border: var(--border-emphasis) solid var(--error-border);
   padding: 0 11px;
 }
 
@@ -134,7 +134,7 @@
 
 /* Room for the icon, so a long date stays centred in what is left. */
 .date[data-mark] .input {
-  padding-right: var(--space-24);
+  padding-right: var(--space-inset-xl);
 }
 
 .date > svg {
@@ -155,7 +155,7 @@
 /* The search field sits on surface-2 with no visible border until it has focus. */
 .box[data-type='search'] {
   color: var(--ink-3);
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
 }
 
 .box[data-type='search']:not([data-mark], :focus-within) {
@@ -224,7 +224,7 @@
 
 /* The error icon of a select sits 8px after the chevron. */
 .chevron + svg {
-  margin-left: var(--space-8);
+  margin-left: var(--space-gap-xs);
 }
 
 .box:has(:disabled) .chevron {
@@ -234,7 +234,7 @@
 /* Token field: chips and the input wrap inside one box. */
 .tokens {
   flex-wrap: wrap;
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
   height: auto;
   min-height: var(--size-field);
   padding-block: 0;

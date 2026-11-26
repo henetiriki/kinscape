@@ -1,14 +1,14 @@
 /* A message that points at one control. The caller places both parts. */
 .callout {
   background: var(--error-bg);
-  border: 1px solid var(--error-border);
+  border: var(--border-hairline) solid var(--error-border);
   border-radius: var(--radius-control);
   box-shadow: var(--shadow-floating);
   box-sizing: border-box;
   color: var(--error);
   font-size: var(--type-small-size);
   line-height: var(--type-small-line);
-  padding: var(--space-12);
+  padding: var(--space-inset-s);
 }
 
 .callout strong {
@@ -17,8 +17,8 @@
 
 .pointer {
   background: var(--error-bg);
-  border-bottom: 1px solid var(--error-border);
-  border-right: 1px solid var(--error-border);
+  border-bottom: var(--border-hairline) solid var(--error-border);
+  border-right: var(--border-hairline) solid var(--error-border);
   box-sizing: content-box;
   height: 12px;
   position: absolute;

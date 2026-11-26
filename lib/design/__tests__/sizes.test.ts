@@ -27,10 +27,12 @@ const real = JSON.parse(
 );
 
 const tokens = {
+  border: { hairline: px(1) },
   breakpoint: { 'phone-width': px(639.98) },
   colour: { brand: colour('#264f29') },
   focus: { offset: px(2), width: px(2) },
-  motion: { press: press(120) },
+  map: { 'hero-shade': { opacity: num(0.28) } },
+  motion: { press: press(120), 'press-offset': px(1) },
   radius: { link: px(2) },
   shadow: {
     modal: shadowOf(layer(10, 40, { ...colour('#18211b').$value, alpha: 0.3 })),
@@ -169,6 +171,11 @@ describe('a size that passes', () => {
     ['a line height token', 'line-height: 18px;'],
     ['a weight token', 'font-weight: 600;'],
     ['a z token', 'z-index: 1;'],
+    ['a border token', 'border: 1px solid red;'],
+    ['a focus width in a border', 'border-bottom-width: 2px;'],
+    ['a map opacity', 'opacity: 0.28;'],
+    ['a motion offset in a transform', 'transform: translateY(-1px);'],
+    ['a motion offset in translate', 'translate: -1px 0;'],
     ['a duration token', 'transition: opacity 120ms ease-out;'],
     ['a focus token', 'outline-offset: 2px;'],
     ['a shadow token', 'box-shadow: 0 10px 40px rgb(24  33 27 / 0.3);'],

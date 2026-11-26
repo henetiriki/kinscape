@@ -4,7 +4,7 @@
   composes: ring from '@ks/app/components/foundation/focus.module.css';
   align-items: center;
   background: var(--surface);
-  border: 1px solid var(--line-strong);
+  border: var(--border-hairline) solid var(--line-strong);
   border-radius: var(--radius-full);
   box-sizing: border-box;
   color: var(--ink-3);
@@ -13,10 +13,10 @@
   font-family: var(--font-body);
   font-size: var(--type-chip-size);
   font-weight: var(--type-chip-off-weight);
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
   height: var(--size-chip);
   line-height: var(--type-chip-line);
-  padding: 0 var(--space-12);
+  padding: 0 var(--space-inset-s);
   position: relative;
 }
 
@@ -99,10 +99,10 @@
   font-family: var(--font-body);
   font-size: var(--type-chip-size);
   font-weight: var(--type-chip-weight);
-  gap: var(--space-4);
+  gap: var(--space-gap-2xs);
   height: var(--size-chip-s);
   line-height: var(--type-chip-line);
-  padding: 0 var(--space-4) 0 var(--space-12);
+  padding: 0 var(--space-inset-2xs) 0 var(--space-inset-s);
 }
 
 .removable[data-disabled] {

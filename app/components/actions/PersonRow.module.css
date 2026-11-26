@@ -6,10 +6,10 @@
   color: var(--ink);
   cursor: pointer;
   display: grid;
-  gap: var(--space-16);
+  gap: var(--space-gap-m);
   grid-template-columns: minmax(0, 1fr) 200px 72px;
   min-height: var(--size-row-l);
-  padding: var(--space-8) var(--space-20);
+  padding: var(--space-inset-xs) var(--space-inset-l);
   /* The anchor of the hidden labels: they stay inside the row. */
   position: relative;
   text-decoration: none;
@@ -39,9 +39,9 @@
 .withLink {
   align-items: center;
   display: flex;
-  gap: var(--space-16);
+  gap: var(--space-gap-m);
   /* The anchor of the hidden text of the Relationships link. */
-  padding-right: var(--space-20);
+  padding-right: var(--space-inset-l);
   position: relative;
 }
 
@@ -52,7 +52,7 @@
 
 /* The phone form: no link, so no hover, no Edit and no grid. */
 .phone {
-  border-top: 1px solid var(--line);
+  border-top: var(--border-hairline) solid var(--line);
   box-sizing: border-box;
   color: var(--ink);
   display: flex;
@@ -60,7 +60,7 @@
   gap: 2px;
   justify-content: center;
   min-height: 60px;
-  padding: var(--space-8) 0;
+  padding: var(--space-inset-xs) 0;
   /* The anchor of the hidden labels: they stay inside the row. */
   position: relative;
 }
@@ -70,7 +70,7 @@
   color: var(--ink-3);
   display: flex;
   flex-wrap: wrap;
-  gap: 2px var(--space-12);
+  gap: 2px var(--space-gap-s);
 }
 
 /* Names the Relationships link for a screen reader. */

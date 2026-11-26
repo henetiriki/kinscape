@@ -11,7 +11,7 @@
   composes: ring from '@ks/app/components/foundation/focus.module.css';
   appearance: none;
   background: var(--surface);
-  border: 1.5px solid var(--field-border);
+  border: 1.5px solid var(--field-border); /* own: a drawn box, SC.14 names its width */
   border-radius: var(--radius-small);
   box-sizing: border-box;
   cursor: pointer;

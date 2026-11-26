@@ -23,6 +23,7 @@ How a token value travels.
 - `space`
 - `radius`
 - `size`
+- `border`
 - `focus`
 - `motion`
 - `layout`
@@ -53,6 +54,20 @@ The settings of a group are in `$extensions.kinscape`: `mode`, `unit` and these 
 A step name is a 100-based number. Grid, hybrid and explicit mode start at 100. In ratio mode, the base is 400. A name below 100 fails.
 
 Step n is base × ratioⁿ, then rounded to the nearest multiple of the rounding unit. A halfway value rounds to the larger multiple.
+
+## Names
+
+A component uses a purpose name. A purpose name refers to a `scale` step: `space.inset.m` refers to `{scale.space.400}`.
+
+The property sets the spacing role:
+
+- `inset`: padding, position offsets and negative margins.
+- `gap`: gap properties and inline margins.
+- `stack`: block margins.
+
+The suffix names the step: `2xs` (4px) to `5xl` (64px). A role has only the suffixes that it uses. A `space-N` token is deprecated.
+
+If no name fits, use an [`own:` reason](#the-size-check). Do not add a name for one use.
 
 ## Units
 
@@ -119,11 +134,11 @@ The rule is the "Tokens are the one source" row in [`docs/architecture.md`](../.
 A size passes in these cases:
 
 - It is `0`, a percentage, an `fr`, a keyword, `100vw`, `100vh`, `100dvh` or a `* 1px` multiplier.
-- It equals a token of its property's group.
+- It equals a token of its property's group: `border` for a border width, `map` for an opacity, `motion` for a transform length.
 - Its line has `/* own: <reason> */`. In a `style` prop, `// own: <reason>` also works.
 - It is on `lib/design/off-token-sizes.json`.
 
-Other sizes fail the test, with the file, line, property and value. A property with no group (opacity, border width, transform offsets, custom properties) always needs a reason or an entry.
+Other sizes fail the test, with the file, line, property and value. A property with no group (a text shadow, a custom property) always needs a reason or an entry.
 
 An entry holds a file, a property, a value and a `count`. The test fails if the code has more copies than the count. It also fails if the code has fewer, so the list only gets shorter. After you fix a size, or add an `own:` reason, run `npm run sizes` to write the list again.
 

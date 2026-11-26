@@ -4,7 +4,7 @@
 
 .bar {
   background: var(--surface);
-  border-top: 1px solid var(--line);
+  border-top: var(--border-hairline) solid var(--line);
   bottom: 0;
   box-sizing: border-box;
   height: var(--layout-action-bar);
@@ -22,7 +22,7 @@
   align-items: center;
   box-sizing: border-box;
   display: flex;
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
   height: 100%;
   margin: 0 auto;
   /* The content is as wide as the page's form column; the gutter stays on a narrower window. */
@@ -42,6 +42,6 @@
   .inner {
     align-items: flex-start;
     height: var(--layout-action-bar);
-    padding: var(--space-12) var(--size-gutter-phone) 0;
+    padding: var(--space-inset-s) var(--size-gutter-phone) 0;
   }
 }

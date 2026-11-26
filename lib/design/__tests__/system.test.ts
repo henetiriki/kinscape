@@ -10,6 +10,7 @@ import { notesOf, resolvedText, tokenLeaves } from '@ks/lib/design/dtcg.mts';
 import { formatProblems } from '@ks/lib/design/format.mts';
 import { roleSentences } from '@ks/lib/design/roles.mts';
 import {
+  deprecatedTokens,
   DESIGN_FILES,
   designSections,
   fontFaces,
@@ -22,6 +23,7 @@ import {
   systemTokens,
   unicodeRange,
 } from '@ks/lib/design/system.mts';
+import { trackedFiles } from '@ks/scripts/__tests__/tracked';
 
 const raw = JSON.parse(
   readFileSync('design/kinscape.tokens.json', 'utf8')
@@ -42,7 +44,9 @@ const all = (tokens: SystemTokens) =>
     ...tokens.radius.tokens,
     ...tokens.shadow.tokens,
     ...tokens.size.tokens,
+    ...tokens.border.tokens,
     ...tokens.focus.tokens,
+    ...tokens.motion.tokens,
     ...tokens.layout.tokens,
     ...tokens.breakpoint.tokens,
     ...tokens.z.tokens,
@@ -58,21 +62,24 @@ describe('systemTokens', () => {
       return target === undefined ? value : follow(String(byName.get(target)));
     };
     const expected = [
+      'border',
       'breakpoint',
       'colour',
       'focus',
       'layout',
       'map',
+      'motion',
       'radius',
       'shadow',
       'size',
       'space',
       'z',
     ].flatMap(group =>
-      tokenLeaves(raw[group] as DtcgTree, [group]).flatMap(({ path }) => {
+      tokenLeaves(raw[group] as DtcgTree, [group]).flatMap(token => {
+        const { path } = token;
         const usage = notes.get(path.join('.'));
 
-        return usage === undefined
+        return usage === undefined || token.$deprecated !== undefined
           ? []
           : [
               {
@@ -91,7 +98,34 @@ describe('systemTokens', () => {
         value: follow(value),
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
-    expect(all(system).length).toBe(177);
+    expect(all(system).length).toBe(197);
+  });
+
+  it('shows the purpose names, the border widths and the 8 motion tokens, and no step or space-N', () => {
+    const names = all(system).map(({ name }) => name);
+
+    expect(names.filter(name => /^space-\d+$/.test(name))).toEqual([]);
+    expect(names).toContain('space-inset-m');
+    expect(names).toContain('space-gap-3xl');
+    expect(names).toContain('space-stack-xs');
+    expect(system.border.tokens.map(({ name }) => name)).toEqual([
+      'border-hairline',
+      'border-emphasis',
+    ]);
+    expect(system.motion.tokens.map(({ name }) => name)).toEqual([
+      'motion-easing',
+      'motion-press',
+      'motion-popup',
+      'motion-sheet',
+      'motion-changed-border',
+      'motion-toast',
+      'motion-press-offset',
+      'motion-rise-offset',
+    ]);
+    expect(
+      system.motion.tokens.find(({ name }) => name === 'motion-easing')?.value
+    ).toBe('ease-out');
+    expect(JSON.stringify(system)).not.toContain('space-4"');
   });
 
   it('writes a few tokens as literal name, value and note', () => {
@@ -102,9 +136,9 @@ describe('systemTokens', () => {
       /^Primary buttons, links and selection\. /
     );
     expect(byName.get('surface')?.value).toBe('#ffffff');
-    expect(byName.get('space-4')?.value).toBe('0.25rem');
-    expect(byName.get('space-4')?.usage).toBe(
-      'Gaps inside a control, icon to text, and between tight rows.'
+    expect(byName.get('space-inset-2xs')?.value).toBe('0.25rem');
+    expect(byName.get('space-gap-2xs')?.usage).toBe(
+      'Gap between an icon and its text, and between tight rows.'
     );
     expect(byName.get('radius-panel')?.value).toBe('12px');
     expect(byName.get('size-touch')?.value).toBe('44px');
@@ -150,7 +184,7 @@ describe('systemTokens', () => {
       system.layout.tokens.length,
       system.breakpoint.tokens.length,
       system.z.tokens.length,
-    ]).toEqual([41, 2, 4]);
+    ]).toEqual([41, 2, 5]);
 
     for (const { name, usage, value } of [
       ...system.layout.tokens,
@@ -177,7 +211,7 @@ describe('systemTokens', () => {
       '16': { $value: '{scale.space.400}' },
     });
     expect(
-      system.spacing.tokens.find(({ name }) => name === 'space-16')?.value
+      system.spacing.tokens.find(({ name }) => name === 'space-inset-m')?.value
     ).toBe('1rem');
     expect(
       system.radius.tokens.find(({ name }) => name === 'radius-panel')?.value
@@ -353,8 +387,43 @@ describe('unicodeRange and fontFaces', () => {
   });
 });
 
+describe('deprecatedTokens', () => {
+  it('lists each space-N with its value and its replacements', () => {
+    const list = deprecatedTokens(raw);
+
+    expect(list.map(({ name }) => name)).toEqual(
+      [4, 8, 12, 16, 20, 24, 32, 40, 48, 64].map(step => `space-${step}`)
+    );
+    expect(list[3]).toEqual({
+      name: 'space-16',
+      usage: 'Use space.inset.m or space.gap.m.',
+      value: '1rem',
+    });
+  });
+
+  it('counts `$deprecated: true` as deprecated and `$deprecated: false` as in use', () => {
+    const tree = structuredClone(raw) as {
+      border: { hairline: DtcgTree };
+      space: { inset: { m: DtcgTree } };
+    };
+
+    tree.space.inset.m.$deprecated = false;
+    tree.border.hairline.$deprecated = true;
+
+    const listed = deprecatedTokens(tree as DtcgTree).map(({ name }) => name);
+    const shown = all(systemTokens(tree as DtcgTree, fonts)).map(
+      ({ name }) => name
+    );
+
+    expect(listed).toContain('border-hairline');
+    expect(listed).not.toContain('space-inset-m');
+    expect(shown).toContain('space-inset-m');
+    expect(shown).not.toContain('border-hairline');
+  });
+});
+
 describe('systemCss', () => {
-  const css = systemCss(system, ranges);
+  const css = systemCss(system, ranges, deprecatedTokens(raw));
 
   it('starts with the header, then the colours and shadows in the light theme', () => {
     const [header, light] = css.split('\n\n');
@@ -369,9 +438,10 @@ describe('systemCss', () => {
   });
 
   it('holds spacing, radius, sizes, focus and font stacks in :root', () => {
-    expect(css).toContain(':root {\n  --space-4: 0.25rem;');
+    expect(css).toContain(':root {\n  --space-inset-2xs: 0.25rem;');
     expect(css).toContain('  --radius-panel: 12px;');
     expect(css).toContain('  --size-touch: 44px;');
+    expect(css).toContain('  --border-hairline: 1px;');
     expect(css).toContain('  --focus-width: 2px;');
     expect(css).toContain(
       "  --font-body: 'Public Sans', system-ui, sans-serif;"
@@ -381,8 +451,45 @@ describe('systemCss', () => {
   it('holds the layout, breakpoint and z tokens in :root', () => {
     expect(css).toContain('  --layout-menu-offset: 0.5rem;');
     expect(css).toContain('  --breakpoint-phone-width: 639.98px;');
-    expect(css).toContain('  --z-menu: 10;');
+    expect(css).toContain('  --z-menu: 30;');
+    expect(css).toContain('  --z-modal: 40;');
     expect(css).not.toContain('--layout-dialog-top');
+  });
+
+  it('holds the deprecated space-N names, with their values, in their own :root block', () => {
+    const block = css.split('\n\n').find(part => part.includes('Deprecated'));
+
+    expect(block).toMatch(/^:root \{\n {2}\/\* Deprecated: /);
+    expect(block).toContain('  --space-4: 0.25rem;');
+    expect(block).toContain('  --space-64: 4rem;');
+    expect(css.match(/--space-16: 1rem;/g)).toHaveLength(1);
+  });
+
+  it('writes no deprecated block when no token has $deprecated', () => {
+    const plain = systemCss(system, ranges, []);
+
+    expect(plain).not.toContain('Deprecated');
+    expect(plain).not.toContain('--space-4: ');
+    expect(plain).toContain('  --space-inset-2xs: 0.25rem;');
+  });
+
+  it('declares each motion name that the components bundle uses', () => {
+    const used = new Set(
+      trackedFiles()
+        .filter(file =>
+          /^(app\/components|features)\/.*\.module\.css$/.test(file)
+        )
+        .flatMap(file => [
+          ...readFileSync(file, 'utf8').matchAll(/var\((--motion-[\w-]+)\)/g),
+        ])
+        .map(([, name]) => name)
+    );
+
+    expect(used).toContain('--motion-easing');
+
+    for (const name of used) {
+      expect(css, name).toContain(`  ${name}: `);
+    }
   });
 
   it('has a class per style and a @font-face per font', () => {
@@ -546,7 +653,7 @@ describe('systemIndex', () => {
 
 describe('the cover', () => {
   const cover = readFileSync('lib/design/cover.html', 'utf8');
-  const css = systemCss(system, ranges);
+  const css = systemCss(system, ranges, deprecatedTokens(raw));
   const rects = [
     ...cover.matchAll(
       /<rect class="block (\w+)" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"/g

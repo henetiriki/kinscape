@@ -20,7 +20,7 @@ it('gives the phone callout 4px bottom padding', () => {
     )![0];
 
   expect(phone).toContain(
-    'padding: var(--space-12) var(--space-16) var(--space-4)'
+    'padding: var(--space-inset-s) var(--space-inset-m) var(--space-inset-2xs)'
   );
 });
 

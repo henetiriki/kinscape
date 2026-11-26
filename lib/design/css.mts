@@ -49,7 +49,7 @@ export const fontStack = (stack: string): string => {
  * The `map` tokens that HTML markers on the map draw with too: the halo of a Pin and the ring of
  * the open Pin. The map layers read them as values, and the count marker and the fan of Pins read
  * them as CSS variables. Thus each value lives in one place. The two opacities of the sign-in hero
- * are CSS variables too.
+ * and the two opacities of the fan lines and rings are CSS variables too.
  */
 export const MAP_SHARED = [
   'pin-halo.colour',
@@ -57,6 +57,8 @@ export const MAP_SHARED = [
   'selected',
   'hero-shade.opacity',
   'hero-border.opacity',
+  'fan-line.opacity',
+  'fan-ring.opacity',
 ];
 
 const HEX =

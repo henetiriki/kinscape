@@ -51,14 +51,14 @@
 .line button:first-child {
   align-items: center;
   display: inline-flex;
-  gap: var(--space-4);
+  gap: var(--space-gap-2xs);
 }
 
 /* The card floats over the dock's corner and moves nothing. */
 .card {
   background: var(--surface);
   border-radius: var(--radius-panel);
-  bottom: calc(100% + var(--space-8));
+  bottom: calc(100% + var(--space-inset-xs));
   box-shadow: var(--shadow-floating);
   box-sizing: border-box;
   margin: 0;

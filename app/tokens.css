@@ -299,4 +299,6 @@
   --map-selected-halo-radius: 20.5;
   --map-hero-shade-opacity: 0.28;
   --map-hero-border-opacity: 0.42;
+  --map-fan-line-opacity: 0.5;
+  --map-fan-ring-opacity: 0.25;
 }

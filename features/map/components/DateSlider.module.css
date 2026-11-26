@@ -81,7 +81,7 @@
   box-sizing: border-box;
   display: block;
   height: var(--size-touch);
-  margin: calc(-1 * var(--space-8)) 0;
+  margin: calc(-1 * var(--space-inset-xs)) 0;
   /* The ring hugs the 28px track, not the 44px hit area. */
   outline-offset: -6px;
   padding: 8px 0; /* own: centres the 28px track in the 44px hit area */

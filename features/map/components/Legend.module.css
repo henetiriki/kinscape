@@ -7,9 +7,9 @@
   display: flex;
   flex-direction: column;
   font-size: var(--type-small-size);
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
   line-height: var(--type-small-line);
-  padding: var(--space-12) var(--space-16);
+  padding: var(--space-inset-s) var(--space-inset-m);
 }
 
 .legend > h3 {
@@ -19,7 +19,7 @@
 .row {
   align-items: center;
   display: flex;
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
 }
 
 .line {
@@ -61,6 +61,6 @@
   border-top: var(--border-hairline) solid var(--line);
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-4) var(--space-16);
-  padding-top: var(--space-4);
+  gap: var(--space-gap-2xs) var(--space-gap-m);
+  padding-top: var(--space-inset-2xs);
 }

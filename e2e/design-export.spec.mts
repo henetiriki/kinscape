@@ -49,7 +49,7 @@ ${body}</x-dc>
 </body></html>`;
 
 const BOARD = board(
-  `<div style="padding: var(--space-16); background: var(--surface); width: calc(var(--space-16) * 10)">
+  `<div style="padding: var(--space-inset-m); background: var(--surface); width: calc(var(--space-inset-m) * 10)">
   <h2 class="h2" style="margin: 0">Add a pin</h2>
   <x-import component-from-global-scope="KinScape.TextField" label="Person" default-value="Example Person"></x-import>
   <x-import component-from-global-scope="KinScape.Button" variant="primary" style="flex: 1">Save pin</x-import>

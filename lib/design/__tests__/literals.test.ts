@@ -175,9 +175,9 @@ describe('a form that the test skips', () => {
   it.each([
     ['zero', 'margin: 0;'],
     ['zero with a unit', 'margin: 0px;'],
-    ['a var', 'gap: var(--space-8);'],
-    ['a calc with a var', 'width: calc(100% - var(--space-8) - 36px);'],
-    ['a negative calc with a var', 'margin: calc(-1 * var(--space-8));'],
+    ['a var', 'gap: var(--space-gap-xs);'],
+    ['a calc with a var', 'width: calc(100% - var(--space-inset-xs) - 36px);'],
+    ['a negative calc with a var', 'margin: calc(-1 * var(--space-inset-xs));'],
     ['a value of no token', 'gap: 7px;'],
     ['a value of another group', 'width: 8px;'],
     ['a percent', 'width: 36%;'],
@@ -271,9 +271,9 @@ describe('an own comment', () => {
   });
 
   it('fails on a line of a var', () => {
-    expect(problems(lines('  gap: var(--space-8); /* own: x */'))).toHaveLength(
-      1
-    );
+    expect(
+      problems(lines('  gap: var(--space-gap-xs); /* own: x */'))
+    ).toHaveLength(1);
   });
 });
 

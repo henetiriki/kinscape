@@ -2,7 +2,7 @@
   align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-8);
+  gap: var(--space-gap-xs);
 }
 
 .caption {
@@ -26,7 +26,7 @@
   font-variant-ligatures: none;
   height: var(--size-control-xs);
   line-height: var(--type-mono-line);
-  padding: 0 var(--space-12);
+  padding: 0 var(--space-inset-s);
   position: relative;
 }
 

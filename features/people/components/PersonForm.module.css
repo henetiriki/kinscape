@@ -4,7 +4,7 @@
 .top {
   align-items: flex-end;
   display: flex;
-  gap: var(--space-24);
+  gap: var(--space-gap-xl);
   justify-content: space-between;
 }
 
@@ -15,20 +15,20 @@
 
 .dialogActions {
   display: flex;
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
 }
 
 .heading {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-gap-2xs);
 }
 
 /* An alert, with the Reload button of the conflict beside it. */
 .alert {
   align-items: flex-start;
   display: flex;
-  gap: var(--space-12);
+  gap: var(--space-gap-s);
 }
 
 .alert > :first-child {
@@ -40,12 +40,12 @@
   background: var(--surface);
   border: var(--border-hairline) solid var(--line);
   border-radius: var(--radius-panel);
-  column-gap: var(--space-40);
+  column-gap: var(--space-gap-3xl);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: repeat(5, auto);
-  padding: var(--space-24);
-  row-gap: var(--space-16);
+  padding: var(--space-inset-xl);
+  row-gap: var(--space-gap-m);
 }
 
 .group {
@@ -77,7 +77,7 @@
 }
 
 .toast {
-  bottom: calc(var(--layout-action-bar) + var(--space-16));
+  bottom: calc(var(--layout-action-bar) + var(--space-inset-m));
   display: flex;
   justify-content: center;
   left: 0;

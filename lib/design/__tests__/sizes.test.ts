@@ -162,7 +162,7 @@ describe('a size that passes', () => {
     ['100dvh', 'height: 100dvh;'],
     ['a unit multiplier', 'width: calc(var(--n) * 1px);'],
     ['a unit multiplier with no var', 'width: calc(2 * 1px);'],
-    ['a var', 'gap: var(--space-8);'],
+    ['a var', 'gap: var(--space-gap-xs);'],
     ['a calc with a var', 'width: calc(100% - var(--a) - 37px);'],
     ['a space token', 'gap: 8px;'],
     ['a size token', 'height: 36px;'],

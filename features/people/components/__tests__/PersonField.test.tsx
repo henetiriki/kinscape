@@ -369,11 +369,11 @@ it('limits the list height to its first three rows', () => {
 
   type(field, 'Exa');
   expect((screen.getByRole('listbox') as HTMLElement).style.maxHeight).toBe(
-    'calc(150px + 2 * var(--space-4))'
+    'calc(150px + 2 * var(--space-inset-2xs))'
   );
   type(field, 'Exemple');
   expect((screen.getByRole('listbox') as HTMLElement).style.maxHeight).toBe(
-    'calc(50px + 2 * var(--space-4))'
+    'calc(50px + 2 * var(--space-inset-2xs))'
   );
   type(field, 'Zzz');
   expect((screen.getByRole('listbox') as HTMLElement).style.maxHeight).toBe('');

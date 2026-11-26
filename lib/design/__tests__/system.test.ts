@@ -458,6 +458,14 @@ describe('systemCss', () => {
     expect(css.match(/--space-16: 1rem;/g)).toHaveLength(1);
   });
 
+  it('writes no deprecated block when no token has $deprecated', () => {
+    const plain = systemCss(system, ranges);
+
+    expect(plain).not.toContain('Deprecated');
+    expect(plain).not.toContain('--space-4: ');
+    expect(plain).toContain('  --space-inset-2xs: 0.25rem;');
+  });
+
   it('declares each motion name that the components bundle uses', () => {
     const used = new Set(
       trackedFiles()

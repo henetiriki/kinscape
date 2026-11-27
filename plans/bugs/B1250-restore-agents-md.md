@@ -2,7 +2,7 @@
 
 - **Spec:** #1250
 - **Requirement IDs:** None: the change is to agent CI tooling.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

@@ -6,7 +6,10 @@ export const LAUNCH_ARGS = ['--num-raster-threads=1'];
 /** The map style phone board is a long page; every other phone file is one screen. */
 const PHONE_BOARD = 'map-style-phone';
 
-/** Phone screens, the map style board and the fuzzy-date reference each have their own size. */
+/** Boards taller than one screen. */
+const FULL_PAGE = new Set(['fuzzy-date-readings', 'map-style', 'type-scale']);
+
+/** Phone screens and the tall boards each have their own size. */
 export const shotFor = (name: string): Shot => {
   if (name.includes('phone')) {
     return {
@@ -17,7 +20,7 @@ export const shotFor = (name: string): Shot => {
     };
   }
 
-  if (name === 'map-style' || name === 'fuzzy-date-readings') {
+  if (FULL_PAGE.has(name)) {
     return { fullPage: true, height: 900, scale: 1, width: 1440 };
   }
 

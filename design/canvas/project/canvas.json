@@ -36,6 +36,14 @@
     }
   ],
   "boards": {
+    "Type-scale.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2340,
+      "title": "Type scale — three ratios (proposal)",
+      "page": "drafts"
+    },
     "Sign-in.dc.html": {
       "x": 0,
       "y": 0,
@@ -779,7 +787,8 @@
     "Relationship-edit-spouse.dc.html",
     "Relationship-cycle.dc.html",
     "Relationship-save-failed.dc.html",
-    "Relationship-messages.dc.html"
+    "Relationship-messages.dc.html",
+    "Type-scale.dc.html"
   ],
   "notes": {
     "people-list-title": {
@@ -836,8 +845,8 @@
       "title": "KinScape design system",
       "namespace": "kinscape",
       "artifact": "https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi",
-      "version": "1795792018-083f",
-      "copiedAt": "2026-11-27T15:07:55Z"
+      "version": "1795799762-b97b",
+      "copiedAt": "2026-11-27T17:17:27Z"
     }
   ]
 }

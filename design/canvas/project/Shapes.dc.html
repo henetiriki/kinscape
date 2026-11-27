@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Shapes, rounding and borders</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 1440px; min-height: 900px; box-sizing: border-box; padding: var(--space-inset-xl); background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
+
+  <x-import component-from-global-scope="KinScape.Surface" level="raised">
+    <div style="padding: var(--space-inset-m); display: flex; flex-direction: column; gap: var(--space-gap-xl)">
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs); max-width: 960px">
+        <x-import component-from-global-scope="KinScape.Text" variant="h2" as="h1">Shapes, rounding and borders</x-import>
+        <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">The rounding steps are 4, 8, 12 and 16, plus full. A nested part has an inner rounding = the outer rounding − the gap between them. The border widths are the tokens border.hairline, border.emphasis and focus.width.</x-import>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-gap-m)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs); max-width: 960px">
+          <x-import component-from-global-scope="KinScape.Text" variant="h3" as="h2">Rounding</x-import>
+          <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Each square has a border.hairline border. The sizes are literals.</x-import>
+        </div>
+        <div style="display: flex; gap: var(--space-gap-xl)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
+          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: 4px"></div>
+          <div class="mono" style="color: var(--ink-3)">4 px</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
+          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: 8px"></div>
+          <div class="mono" style="color: var(--ink-3)">8 px</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
+          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: 12px"></div>
+          <div class="mono" style="color: var(--ink-3)">12 px</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
+          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: 16px"></div>
+          <div class="mono" style="color: var(--ink-3)">16 px</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
+          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: 999px"></div>
+          <div class="mono" style="color: var(--ink-3)">full · 999 px</div>
+        </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-gap-m)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs); max-width: 960px">
+          <x-import component-from-global-scope="KinScape.Text" variant="h3" as="h2">Nesting</x-import>
+          <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Three examples. The inner rounding of each is the outer rounding − the gap.</x-import>
+        </div>
+        <div style="display: flex; gap: var(--space-gap-3xl)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
+          <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Segmented control</x-import>
+          <div style="display: flex; gap: 0; padding: 4px; border-radius: 12px; background: var(--segment)">
+            <div class="button-s" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: 8px; background: var(--brand); color: var(--white)">Day</div>
+            <div class="button-s" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: 8px; color: var(--ink-2)">Month</div>
+            <div class="button-s" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: 8px; color: var(--ink-2)">Year</div>
+          </div>
+          <div class="mono" style="color: var(--ink-3)">outer 12 − gap 4 = inner 8</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
+          <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Chip in a panel</x-import>
+          <div style="display: flex; gap: 8px; padding: 8px; border-radius: 12px; background: var(--surface-2); outline: var(--border-hairline) solid var(--line-strong)">
+            <div class="chip" style="box-sizing: border-box; display: flex; align-items: center; height: 28px; padding: 0 8px; border-radius: 4px; background: var(--brand-tint); color: var(--brand)">Farm</div>
+            <div class="chip" style="box-sizing: border-box; display: flex; align-items: center; height: 28px; padding: 0 8px; border-radius: 4px; background: var(--brand-tint); color: var(--brand)">Church</div>
+          </div>
+          <div class="mono" style="color: var(--ink-3)">outer 12 − gap 8 = inner 4</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
+          <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Popup</x-import>
+          <div style="display: flex; flex-direction: column; gap: 0; width: 160px; padding: 4px; border-radius: 12px; background: var(--surface); outline: var(--border-hairline) solid var(--line-strong)">
+            <div class="control" style="box-sizing: border-box; display: flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 8px; background: var(--brand-tint); color: var(--brand)">Edit pin</div>
+            <div class="control" style="box-sizing: border-box; display: flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 8px; color: var(--ink)">Move pin</div>
+            <div class="control" style="box-sizing: border-box; display: flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 8px; color: var(--ink)">Remove pin</div>
+          </div>
+          <div class="mono" style="color: var(--ink-3)">outer 12 − gap 4 = inner 8</div>
+        </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-gap-m)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs); max-width: 960px">
+          <x-import component-from-global-scope="KinScape.Text" variant="h3" as="h2">Borders</x-import>
+          <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Each box takes its width from a token. The focus ring is an outline with an offset.</x-import>
+        </div>
+        <div style="display: flex; gap: var(--space-gap-xl)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-s)">
+          <div style="box-sizing: border-box; width: 200px; height: 72px; margin: 4px; background: var(--surface); border-radius: var(--radius-control); border: var(--border-hairline) solid var(--line-strong)"></div>
+          <div class="mono" style="color: var(--ink-3)">border.hairline · 1px</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-s)">
+          <div style="box-sizing: border-box; width: 200px; height: 72px; margin: 4px; background: var(--surface); border-radius: var(--radius-control); border: var(--border-emphasis) solid var(--ink)"></div>
+          <div class="mono" style="color: var(--ink-3)">border.emphasis · 2px</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-s)">
+          <div style="box-sizing: border-box; width: 200px; height: 72px; margin: 4px; background: var(--surface); border-radius: var(--radius-control); outline: var(--focus-width) solid var(--focus-ring); outline-offset: var(--focus-offset)"></div>
+          <div class="mono" style="color: var(--ink-3)">focus.width · 2px, focus.offset · 2px</div>
+        </div>
+        </div>
+      </div>
+
+    </div>
+  </x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

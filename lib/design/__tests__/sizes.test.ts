@@ -483,6 +483,16 @@ describe('the repo', () => {
     ).toEqual([]);
   });
 
+  it('has no own: comment in a .tsx size file', () => {
+    expect(
+      files
+        .filter(file => file.endsWith('.tsx'))
+        .filter(file =>
+          /(\/\/|\/\*)\s*own:/.test(readFileSync(join(root, file), 'utf8'))
+        )
+    ).toEqual([]);
+  });
+
   it('keeps no moved or nudge size on the list', () => {
     expect(
       list.filter(

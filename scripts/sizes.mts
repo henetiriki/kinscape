@@ -16,18 +16,17 @@ export const run = (
   const tokens = JSON.parse(
     readFileSync(join(root, 'design/kinscape.tokens.json'), 'utf8')
   );
-  const sizes = files
-    .filter(isSizeFile)
-    .flatMap(file =>
-      sizesIn(file, readFileSync(join(root, file), 'utf8'), tokens)
-    );
+  const sizeFiles = files.filter(isSizeFile);
+  const sizes = sizeFiles.flatMap(file =>
+    sizesIn(file, readFileSync(join(root, file), 'utf8'), tokens)
+  );
 
   writeFileSync(
     join(root, LIST),
     `${JSON.stringify(listOf(sizes), null, 2)}\n`
   );
 
-  for (const file of files.filter(path => path.endsWith('.css'))) {
+  for (const file of sizeFiles.filter(path => path.endsWith('.css'))) {
     for (const value of localValues(readFileSync(join(root, file), 'utf8'))) {
       print(`${file}:${value.line}: ${value.name} (${value.reason})`);
     }

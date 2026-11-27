@@ -8,7 +8,7 @@
 
 A local Claude Code session that the tech lead starts draws `Spacing-and-controls.dc.html` and `Shapes.dc.html` in `design/canvas/project/`, and adds their records. The CI build agent writes no file: the records fail the tests until the boards and their snapshots exist. Each board follows `Type-scale.dc.html`: a `Surface` frame, a `Text` title and note, then CSS grid cells of `<div>`. The `DESIGN.md` rows are a design system input, so steps 2 to 7 of [Changing the design system](../design/CANVAS.md#changing-the-design-system) run on the branch.
 
-The board frame, the gaps and the colours use tokens. Spacing uses the purpose names (`--space-inset-*`, `--space-gap-*`), not the deprecated `--space-N`, so SC.11.1 (#1205) has less to change. Each proposed value is a literal. A text sample takes the `tokens.css` class of its role (`.button-s`, `.control`) with a literal `font-size` and `line-height`, as SC.10 does: the exporter drops the bundle CSS, so `var(--type-*)` fails.
+The board frame, the gaps and the colours use tokens. Spacing uses the purpose names (`--space-inset-*`, `--space-gap-*`), not the deprecated `--space-N`, so SC.11.1 (#1205) has less to change. Each proposed value is a literal. A text sample takes the `tokens.css` class of its role (`.button-s`, `.control`) with a literal `font-size` and `line-height`, as SC.10 does. The exporter drops the bundle CSS, so `var(--type-*)` fails.
 
 **`Spacing-and-controls.dc.html`** (Drafts, x 1520, y 0, 1440 wide) has three 440px columns: √2, 1.5 and 1.333. Each column has three parts:
 
@@ -36,7 +36,7 @@ The ties are 20 (√2 and 1.5: 16 or 24), 24 (1.333: 20 or 28) and 32 (1.333: 28
 **`Shapes.dc.html`** (Drafts, x 3040, y 0, 1440 × 900) has three rows:
 
 1. **Rounding.** Five 96px squares with a `border.hairline` border: 4, 8, 12, 16 and full (999px).
-2. **Nesting.** The three examples of the Spec's table. Each label reads "outer 12 − gap 4 = inner 8". The segmented control has three segments, and the selected one is filled. The chip panel holds two chips. The popup has three menu rows, and one row is highlighted.
+2. **Nesting.** The three examples of the Spec's table. Each label shows its outer rounding, gap and inner rounding, for example "outer 12 − gap 4 = inner 8". The segmented control has three segments, and the selected one is filled. The chip panel holds two chips. The popup has three menu rows, and one row is highlighted.
 3. **Borders.** Three boxes: `var(--border-hairline) solid var(--line-strong)`, `var(--border-emphasis) solid var(--ink)`, and an outline of `var(--focus-width) solid var(--focus-ring)` with `var(--focus-offset)`.
 
 ## Components
@@ -94,7 +94,7 @@ The ties are 20 (√2 and 1.5: 16 or 24), 24 (1.333: 20 or 28) and 32 (1.333: 28
 A local Claude Code session that the tech lead starts runs every step. It needs a signed-in account.
 
 1. Record the D1 answer. Commit the approval. If D1 is A, reword #1207 ([reword step](../.github/agent/build.md#reword)).
-2. Add the two `DESIGN.md` rows, `NO_ENTRY`, the two counts, the `export.json` entries and, if D1 is A, the `shots.mts` change and its test row (step 1 of Changing the design system).
+2. Do step 1 of Changing the design system. Add the two `DESIGN.md` rows, the `NO_ENTRY` names, the two counts and the `export.json` entries. If D1 is A, add the `shots.mts` change and its test row.
 3. Run `npm run design-system` (step 2).
 4. Run `/publish-design-system` (step 3).
 5. Run "Updating the install", 4.1 to 4.6 (step 4).
@@ -106,7 +106,7 @@ A local Claude Code session that the tech lead starts runs every step. It needs 
 11. Run `gh workflow run design-agent-shots.yml --ref spec/SC.11-spacing-shapes-boards`. Pull its commit.
 12. Compare the sha256 of each file under `canvas/project/ds/kinscape/` with `.design-system/project/`.
 13. Run all checks. Paste the output.
-14. In the PR body, list the boards, their layout, the hand-drawn parts and each value with no token: the steps, the name table, the control sizes and heights, the 16px side padding, the radii and the nested values.
+14. In the PR body, list the boards, their layout and the hand-drawn parts. Then list each value with no token. These are the steps, the name table, the control sizes and heights, the 16px side padding, the Steps list height, the radii and the nested values.
 
 ## Risks
 
@@ -139,3 +139,4 @@ Spacing and control sizes in code: SC.13 (#1207). Rounding and border widths in 
 ## Deviations
 
 - `Spacing-and-controls` is 1401 px high, not 1300 px. Its `canvas.json` `h`, its `export.json` viewport and its `$preview` height are 1401 (9b04ede8).
+- Each Steps list has a 212px minimum height (9 rows × 20px + 8 gaps × 4px), so the three columns line up (7ec69052).

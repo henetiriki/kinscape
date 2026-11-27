@@ -127,7 +127,7 @@ jobs:
       # (scripts/__tests__/load-agent-files.test.ts checks the list). The reword step of build.md
       # reads spec-checks.md, and no prompt of a build holds that file. AGENTS.md is not in the
       # list: claude-code-action restores it from main, and the SessionStart hook in
-      # .github/agent/settings.json keeps that copy out of the index.
+      # .github/agent/settings.json writes main's copy again and keeps it out of the index.
       main_files: docs/security.md docs/writing.md docs/code-rules.md docs/code-rules/pattern-table.md docs/code-rules/scale.md docs/code-rules/test-quality.md docs/patterns/auth.md docs/patterns/ci-images.md docs/patterns/components.md docs/patterns/data.md docs/patterns/dev-screens.md docs/patterns/domain.md docs/patterns/map.md docs/patterns/tree-data.md .github/agent/spec-checks.md
       prompt: >-
         @${{ github.event.review.user.login }} approved the plan on PR #${{ github.event.pull_request.number }}.

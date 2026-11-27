@@ -27,7 +27,7 @@
       {
         "hooks": [
           {
-            "command": "git reset -q -- AGENTS.md && git update-index --skip-worktree -- AGENTS.md",
+            "command": "git checkout refs/remotes/origin/main -- AGENTS.md && git reset -q -- AGENTS.md && git update-index --skip-worktree -- AGENTS.md",
             "type": "command"
           }
         ],

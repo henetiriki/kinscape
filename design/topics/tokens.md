@@ -67,7 +67,7 @@ The property sets the spacing role:
 
 The suffix names the step: `2xs` (4px) to `5xl` (64px). A role has only the suffixes that it uses. A `space-N` token is deprecated.
 
-If no name fits, use an [`own:` reason](#the-size-check). Do not add a name for one use.
+If no name fits, make the size a [local value](#the-size-check). Do not add a name for one use.
 
 ## Units
 
@@ -120,9 +120,7 @@ Each module outside tests that imports `design/tokens.generated.ts` or reads `de
 
 ## The checks
 
-- `lib/design/__tests__/literals.test.ts` fails on a `.module.css` literal that equals a token of its group.
-- Write `/* own: <reason> */` on a literal that is a part's own dimension.
-
+- `lib/design/__tests__/literals.test.ts` fails on a `.module.css` literal that equals a token of its group, a bad local value or an `own:` comment.
 - `lib/design/__tests__/sizes.test.ts` fails on a size that is off the tokens ([The size check](#the-size-check)).
 
 The rule is the "Tokens are the one source" row in [`docs/architecture.md`](../../docs/architecture.md).
@@ -135,12 +133,14 @@ A size passes in these cases:
 
 - It is `0`, a percentage, an `fr`, a keyword, `100vw`, `100vh`, `100dvh` or a `* 1px` multiplier.
 - It equals a token of its property's group: `border` for a border width, `map` for an opacity, `motion` for a transform length.
-- Its line has `/* own: <reason> */`. In a `style` prop, `// own: <reason>` also works.
+- Its line is a local value with a listed reason.
 - It is on `lib/design/off-token-sizes.json`.
 
-Other sizes fail the test, with the file, line, property and value. A property with no group (a text shadow, a custom property) always needs a reason or an entry.
+Other sizes fail the test. A custom property or a text shadow needs a local value or an entry.
 
-An entry holds a file, a property, a value and a `count`. The test fails if the code has more copies than the count. It also fails if the code has fewer, so the list only gets shorter. After you fix a size, or add an `own:` reason, run `npm run sizes` to write the list again.
+A local value is a custom property with `/* local: <reason> */`. The reason is `shape`, `nudge` (1px) or `drawing`. Any other reason fails, and so does `own:`. `npm run sizes` prints each local value with its file, line and reason.
+
+An entry holds a file, a property, a value and a `count`. The test fails if a count differs from the code. After a change, run `npm run sizes`.
 
 In a `style` prop, the check reads only literals. It skips an identifier, a call and a template with an expression.
 

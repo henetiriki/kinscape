@@ -1,8 +1,9 @@
 .glyph {
+  --glyph: 1em; /* local: shape */
   color: var(--pin);
   display: inline-block;
   flex: none;
-  height: 1em;
+  height: var(--glyph);
   vertical-align: -0.125em;
-  width: 1em;
+  width: var(--glyph);
 }

@@ -44,6 +44,19 @@ it('writes the off-token sizes of the size files', () => {
   ]);
 });
 
+it('prints each local value with its file, line and reason', () => {
+  writeFileSync(
+    join(root, 'c.module.css'),
+    '.a {\n  gap: 8px;\n  --thumb: 26px; /* local: shape */\n}\n'
+  );
+
+  const printed: string[] = [];
+
+  run(root, ['a.module.css', 'c.module.css'], line => printed.push(line));
+
+  expect(printed).toEqual(['c.module.css:3: --thumb (shape)']);
+});
+
 it('ends the file with a newline', () => {
   run(root, ['a.module.css']);
   expect(readFileSync(join(root, LIST), 'utf8')).toMatch(/\]\n$/);

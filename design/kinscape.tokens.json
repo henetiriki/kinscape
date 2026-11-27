@@ -2404,7 +2404,7 @@
     "furniture": {
       "$type": "number",
       "$value": 1,
-      "$description": "Stack order of the map furniture (search, zoom, panel, dock and credits) and of the Callout pointer."
+      "$description": "Stack order of the map furniture (search, zoom, panel, dock and credits), of the Callout pointer and of the open Pin fan."
     },
     "action-bar": {
       "$type": "number",

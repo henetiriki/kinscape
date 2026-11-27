@@ -141,3 +141,6 @@ Three `own:` lines take a token (D3): `Credits` and `PlaceMarker` `z-index: var(
 - Inline `style` sizes in TSX stay on the list.
 
 ## Deviations
+
+- Big: `app/components/auth/__tests__/SignInHero.test.tsx` (`.key` border regex) and `lib/ui/__tests__/EventGlyph.test.tsx` (`height: 1em`) read the CSS text. The plan does not list them, so they fail until the tech lead lets the build update them.
+- `scripts/sizes.mts` `run` takes a `print` argument that defaults to `console.log`, so the test can read the output.

@@ -9,9 +9,10 @@
 
 .checkbox {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
+  --box-border: 1.5px; /* local: shape */
   appearance: none;
   background: var(--surface);
-  border: 1.5px solid var(--field-border); /* own: a drawn box, SC.14 names its width */
+  border: var(--box-border) solid var(--field-border);
   border-radius: var(--radius-small);
   box-sizing: border-box;
   cursor: pointer;
@@ -33,14 +34,15 @@
 }
 
 .tick {
+  --tick: 14px; /* local: shape */
   color: var(--white);
   grid-area: 1 / 1;
-  height: 14px;
+  height: var(--tick);
   place-self: center;
   pointer-events: none;
   /* The positioned `.checkbox` paints over an unpositioned sibling in the same cell. */
   position: relative;
-  width: 14px;
+  width: var(--tick);
 }
 
 .checkbox:not(:checked) + .tick {

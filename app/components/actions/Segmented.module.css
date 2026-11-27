@@ -10,6 +10,7 @@
 
 .segItem {
   composes: ringWithin from '@ks/app/components/foundation/focus.module.css';
+  --seg-min: 40px; /* local: shape */
   align-items: center;
   border-radius: var(--radius-segment-item);
   box-sizing: border-box;
@@ -23,7 +24,7 @@
   justify-content: center;
   line-height: var(--type-chip-line);
   /* The Map snapshot draws each speed segment at least 40px wide. With the 4px gap, each 44px hit area then meets the next. */
-  min-width: 40px; /* own: narrowest speed segment: the 44px hit areas meet */
+  min-width: var(--seg-min);
   padding: 0 var(--space-inset-s);
   position: relative;
 }

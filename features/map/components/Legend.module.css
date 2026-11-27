@@ -32,6 +32,8 @@
 }
 
 .hatch {
+  --swatch-height: 16px; /* local: shape */
+  --swatch-width: 32px; /* local: shape */
   background: repeating-linear-gradient(
     45deg,
     var(--legend-hatch) 0 3px,
@@ -41,8 +43,8 @@
   border-radius: var(--radius-small);
   box-sizing: border-box;
   flex: none;
-  height: 16px; /* own: hatch swatch */
-  width: 32px;
+  height: var(--swatch-height);
+  width: var(--swatch-width);
 }
 
 .halo {

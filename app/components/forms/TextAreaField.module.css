@@ -37,9 +37,10 @@
 }
 
 .field > .box[data-mark] > svg {
+  --mark-top: 8px; /* local: shape */
   position: absolute;
   right: 11px;
-  top: 8px; /* own: mark in line with the first text line */
+  top: var(--mark-top);
 }
 
 /* Only a vertical resize; content past the height scrolls inside the box. */

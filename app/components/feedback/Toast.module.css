@@ -1,12 +1,13 @@
 /* The 48px shape a Toast and a Banner share. A Banner is 52px tall on a desktop. */
 .shape {
+  --shape-height: 48px; /* local: shape */
   align-items: center;
   box-sizing: border-box;
   display: flex;
   font-family: var(--font-body);
   font-size: var(--type-body-size);
   gap: var(--space-gap-s);
-  height: 48px; /* own: Toast and Banner shape */
+  height: var(--shape-height);
   line-height: var(--type-body-line);
   padding: 0 var(--space-inset-2xs) 0 var(--space-inset-m);
 }
@@ -37,8 +38,9 @@
 
 .toast {
   composes: floating from '@ks/app/components/foundation/Surface.module.css';
+  --toast-height: 50px; /* local: shape */
   border: var(--border-hairline) solid var(--line);
-  height: 50px; /* own: Toast with its border */
+  height: var(--toast-height);
 }
 
 /* A success toast has no button, so it keeps the left padding on both sides. */
@@ -61,11 +63,12 @@
 
 /* This rule sets the shadow itself. A composed `floating` sets a white background and can come after this rule. */
 .banner {
+  --banner-height: 52px; /* local: shape */
   background: var(--ink);
   border-radius: var(--radius-panel);
   box-shadow: var(--shadow-floating);
   color: var(--white);
-  height: 52px; /* own: Banner on a desktop */
+  height: var(--banner-height);
   padding-right: var(--space-inset-xs);
 }
 

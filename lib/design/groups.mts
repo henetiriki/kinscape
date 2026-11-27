@@ -104,9 +104,6 @@ export const numbers = (text: string, durations: boolean) =>
 
 export const blank = (text: string) => text.replaceAll(/[^\n]/g, ' ');
 
-/** An `own:` comment with its reason in group 1. */
-export const OWN = /\/\*\s*own:(.*?)\*\//;
-
 /** The text of `css` with each comment blanked. */
 export const uncommented = (css: string) =>
   css.replaceAll(/\/\*[\s\S]*?\*\//g, blank);

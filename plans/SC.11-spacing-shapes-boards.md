@@ -135,3 +135,7 @@ A local Claude Code session that the tech lead starts runs every step. It needs 
 ## Out of scope
 
 Spacing and control sizes in code: SC.13 (#1207). Rounding and border widths in code: SC.14 (#1208). Board sizes as tokens: SC.11.1 (#1205).
+
+## Deviations
+
+- `Spacing-and-controls` is 1401 px high, not 1300 px. Its `canvas.json` `h`, its `export.json` viewport and its `$preview` height are 1401 (9b04ede8).

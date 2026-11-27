@@ -145,3 +145,4 @@ Three `own:` lines take a token (D3): `Credits` and `PlaceMarker` `z-index: var(
 
 - Big: `app/components/auth/__tests__/SignInHero.test.tsx` (`.key` border regex) and `lib/ui/__tests__/EventGlyph.test.tsx` (`height: 1em`) read the CSS text that the plan changes. The tech lead told the build to update them. Each test now reads the local value and its `var()` use.
 - `scripts/sizes.mts` `run` takes a `print` argument that defaults to `console.log`, so the test can read the output.
+- The workflow Design: Render snapshots changed 72 files in `design/source/`. Only CSS Module class hashes, line numbers and declaration order differ. No JPG changed.

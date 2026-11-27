@@ -2,7 +2,7 @@
 
 - **Spec:** #1204
 - **Requirement IDs:** [NFR-06](../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -63,7 +63,7 @@ The ties are 20 (√2 and 1.5: 16 or 24), 24 (1.333: 20 or 28) and 32 (1.333: 28
 - **B.** Keep the cut JPG. The reader opens the canvas for the controls. No other issue changes.
 - **Other:** your own.
 
-Recommended: A, because the PO compares the controls from the JPG, and SC.10 (#1203 plan D1) chose the same for `type-scale`.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

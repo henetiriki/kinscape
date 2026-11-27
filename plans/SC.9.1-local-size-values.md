@@ -2,7 +2,7 @@
 
 - **Spec:** #1202
 - **Requirement IDs:** none. The Spec changes no behaviour.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -23,7 +23,7 @@ D9 A moves 29 entries. Its rule clearly moves 25 of them. These four are each on
 - **B.** Move only the `CountMarker` and `SearchBar` entries. `KeyHint` and `DateSlider` keep their entries for SC.13.1 (#1211). The table moves 27, and the build rewords D9 to 27.
 - **Other:** your own.
 
-Recommended: A, because each value sizes one drawn part of one component, and no other component has that part.
+**Answer: A** (@henetiriki)
 
 **D12 · The reason for an `own:` line that places a part** · Decides: Tech lead
 
@@ -33,7 +33,7 @@ Some `own:` lines place or size a part in its control and are no shape outline: 
 - **B.** An offset that lines a part up with another (`TextAreaField` `top: 8px`, `DateSlider` `top`) gets `nudge`. The rest are as in A.
 - **Other:** your own.
 
-Recommended: A, because `nudge` then always means a correction of a few pixels, as Behaviour defines it. The offsets are 8px to 24px.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

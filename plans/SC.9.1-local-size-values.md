@@ -91,6 +91,7 @@ Three `own:` lines take a token (D3): `Credits` and `PlaceMarker` `z-index: var(
 | `lib/design/__tests__/sizes.test.ts`                                                                             | Changed       | The `own comment` cases become local-value cases, and `own:` no longer passes a size in CSS or a `style` prop. The repo part adds: no CSS size file has a `localProblems` problem.                                         |
 | `scripts/__tests__/sizes.test.ts`                                                                                | Changed       | The run prints each local value with file, line and reason.                                                                                                                                                                |
 | `lib/design/__tests__/tokens-page.test.ts`                                                                       | Changed       | › The size check names each reason of `REASONS`.                                                                                                                                                                           |
+| `app/components/auth/__tests__/SignInHero.test.tsx`, `lib/ui/__tests__/EventGlyph.test.tsx`                      | Changed       | Each reads the local value and its `var()` use in place of the old literal.                                                                                                                                                |
 | `design/canvas/project/ds/`, `design/canvas/project/canvas.json`, `design/canvas/VERSION`                        | Changed       | Design system steps 3 to 5 only.                                                                                                                                                                                           |
 
 ## Order of work
@@ -142,5 +143,5 @@ Three `own:` lines take a token (D3): `Credits` and `PlaceMarker` `z-index: var(
 
 ## Deviations
 
-- Big: `app/components/auth/__tests__/SignInHero.test.tsx` (`.key` border regex) and `lib/ui/__tests__/EventGlyph.test.tsx` (`height: 1em`) read the CSS text. The plan does not list them, so they fail until the tech lead lets the build update them.
+- Big: `app/components/auth/__tests__/SignInHero.test.tsx` (`.key` border regex) and `lib/ui/__tests__/EventGlyph.test.tsx` (`height: 1em`) read the CSS text that the plan changes. The tech lead told the build to update them. Each test now reads the local value and its `var()` use.
 - `scripts/sizes.mts` `run` takes a `print` argument that defaults to `console.log`, so the test can read the output.

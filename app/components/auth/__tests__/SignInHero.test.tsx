@@ -39,7 +39,10 @@ it('keeps the headline, tagline and caption as text', () => {
 
 it('draws the approximate line dashed and the recorded line solid', () => {
   expect(css).toMatch(/\.dash \{\s*border-top-style: dashed/);
-  expect(css).toMatch(/\.key \{\s*border-top: 1\.5px solid/);
+  expect(css).toMatch(
+    /\.key \{\s*--key-rule: 1\.5px; \/\* local: drawing \*\//
+  );
+  expect(css).toMatch(/border-top: var\(--key-rule\) solid/);
 });
 
 // NFR-03

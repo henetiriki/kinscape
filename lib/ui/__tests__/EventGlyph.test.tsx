@@ -61,8 +61,9 @@ it('sizes a glyph 1em square in --pin, so it follows the text around it', () => 
   const rule = css.slice(css.indexOf('.glyph'));
 
   expect(rule).toContain('color: var(--pin)');
-  expect(rule).toContain('height: 1em');
-  expect(rule).toContain('width: 1em');
+  expect(rule).toContain('--glyph: 1em; /* local: shape */');
+  expect(rule).toContain('height: var(--glyph)');
+  expect(rule).toContain('width: var(--glyph)');
   render(<EventGlyph event='birth' />);
 
   expect(screen.getByRole('img', { hidden: true }).classList).toContain(

@@ -413,6 +413,16 @@
       "viewport": { "height": 2340, "width": 1440 }
     },
     {
+      "file": "Spacing-and-controls.dc.html",
+      "name": "spacing-and-controls",
+      "viewport": { "height": 1300, "width": 1440 }
+    },
+    {
+      "file": "Shapes.dc.html",
+      "name": "shapes",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
       "file": "Map-add-pin.dc.html",
       "name": "map-add-pin",
       "viewport": { "height": 900, "width": 1440 }

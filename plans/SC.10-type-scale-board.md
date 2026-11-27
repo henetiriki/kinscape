@@ -2,7 +2,7 @@
 
 - **Spec:** #1203
 - **Requirement IDs:** [NFR-06](../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -52,7 +52,7 @@ Colours, spacing and the column headings use tokens and `Text`. The board is abo
 - **B.** Keep the cut JPG. The reader opens the canvas for steps 300 and 200. No other issue changes.
 - **Other:** your own.
 
-Recommended: A, because the Screens row links the JPG, and a cut JPG hides the fine print that Spec D1 weighs.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

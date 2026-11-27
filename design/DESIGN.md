@@ -84,6 +84,8 @@ Each file in `design/topics/` has `paths:` frontmatter. `npm run plan:new` lists
 | Person form, phone, notice                        | [person-form-phone.jpg](person-form-phone.jpg)                               |
 | Fuzzy dates, readings and messages                | [fuzzy-date-readings.jpg](fuzzy-date-readings.jpg)                           |
 | Type scale, three ratios (proposal)               | [type-scale.jpg](type-scale.jpg)                                             |
+| Spacing and controls, three ratios (proposal)     | [spacing-and-controls.jpg](spacing-and-controls.jpg)                         |
+| Shapes, rounding and borders (proposal)           | [shapes.jpg](shapes.jpg)                                                     |
 | Relationships, page, three groups                 | [person-relationships.jpg](person-relationships.jpg)                         |
 | Relationships, no links yet                       | [person-relationships-empty.jpg](person-relationships-empty.jpg)             |
 | Relationships, failed to load                     | [person-relationships-load-failed.jpg](person-relationships-load-failed.jpg) |

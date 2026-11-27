@@ -96,11 +96,13 @@ const NO_ENTRY = [
   'map-style',
   'map-style-phone',
   'relationship-messages',
+  'shapes',
   'sign-in-desktop-proposed',
   'sign-in-phone-error-proposed',
   'sign-in-phone-proposed',
   'sign-in-phone-unavailable',
   'sign-in-unavailable',
+  'spacing-and-controls',
   'type-scale',
 ];
 

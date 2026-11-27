@@ -73,6 +73,8 @@ const imports = () =>
   readFileSync(join(root, 'CLAUDE.md'), 'utf8')
     .match(/^@(\S+)$/gm)
     ?.map(line => line.slice(1)) ?? [];
+// claude-code-action restores AGENTS.md from the base branch, so no run-claude caller names it (#1250).
+const callerImports = () => imports().filter(file => file !== 'AGENTS.md');
 const mainFiles = () => [
   ...imports(),
   CODE_RULES,
@@ -680,6 +682,110 @@ describe('the main_files input of the run-claude action', () => {
     });
   });
 
+  // claude-code-action restores AGENTS.md from the base branch, and stages it. The SessionStart hook
+  // puts the index back and marks the file (#1250 D1).
+  describe('the SessionStart hook of settings.json', () => {
+    const HOOK =
+      'git reset -q -- AGENTS.md && git update-index --skip-worktree -- AGENTS.md';
+    const entries = () =>
+      (
+        JSON.parse(agent('settings.json')) as {
+          hooks: {
+            SessionStart?: {
+              hooks: { command: string; type: string }[];
+              matcher?: string;
+            }[];
+          };
+        }
+      ).hooks.SessionStart ?? [];
+    const git = (dir: string, ...args: string[]) =>
+      spawnSync('git', args, {
+        cwd: dir,
+        encoding: 'utf8',
+        env: {
+          ...process.env,
+          GIT_AUTHOR_EMAIL: 'a@example.test',
+          GIT_AUTHOR_NAME: 'A',
+          GIT_COMMITTER_EMAIL: 'a@example.test',
+          GIT_COMMITTER_NAME: 'A',
+        },
+      });
+    // A PR branch whose AGENTS.md differs from main's, after the action restored main's copy and staged it.
+    const restored = () => {
+      const repo = mkdtempSync(join(tmpdir(), 'session-start-'));
+
+      git(repo, 'init', '-q', '-b', 'main');
+      writeFileSync(join(repo, 'AGENTS.md'), 'main rules\n');
+      writeFileSync(join(repo, 'other.md'), 'one\n');
+      git(repo, 'add', '-A');
+      git(repo, 'commit', '-q', '-m', 'cut');
+      git(repo, 'checkout', '-q', '-b', 'pr');
+      writeFileSync(join(repo, 'AGENTS.md'), 'branch rules\n');
+      git(repo, 'commit', '-q', '-am', 'the branch edits AGENTS.md');
+      git(repo, 'checkout', '-q', 'main', '--', 'AGENTS.md');
+
+      return repo;
+    };
+    const runHook = (repo: string) =>
+      spawnSync('bash', ['-e', '-c', entries()[0]?.hooks[0]?.command ?? ''], {
+        cwd: repo,
+        encoding: 'utf8',
+      });
+
+    it('runs the two commands once, when Claude starts', () => {
+      expect(entries()).toHaveLength(1);
+      expect(entries()[0].matcher).toBe('startup');
+      expect(entries()[0].hooks).toEqual([{ command: HOOK, type: 'command' }]);
+    });
+
+    it('leaves the index with the branch copy and the file marked', () => {
+      const repo = restored();
+
+      expect(git(repo, 'diff', '--cached', '--name-only').stdout).toBe(
+        'AGENTS.md\n'
+      );
+      expect(runHook(repo).status).toBe(0);
+      expect(git(repo, 'diff', '--cached', '--name-only').stdout).toBe('');
+      expect(git(repo, 'ls-files', '-v', 'AGENTS.md').stdout).toMatch(/^S /);
+      expect(readFileSync(join(repo, 'AGENTS.md'), 'utf8')).toBe(
+        'main rules\n'
+      );
+      rmSync(repo, { force: true, recursive: true });
+    });
+
+    it('keeps AGENTS.md out of the commit', () => {
+      const repo = restored();
+
+      runHook(repo);
+      writeFileSync(join(repo, 'other.md'), 'two\n');
+      git(repo, 'add', '-A');
+      git(repo, 'commit', '-q', '-m', 'agent work');
+      expect(git(repo, 'show', '--name-only', '--format=', 'HEAD').stdout).toBe(
+        'other.md\n'
+      );
+      rmSync(repo, { force: true, recursive: true });
+    });
+
+    it('lets the merge of resolve-conflict.md pass', () => {
+      const repo = restored();
+
+      git(repo, 'branch', '-f', 'other', 'main');
+      git(repo, 'checkout', '-q', 'other');
+      writeFileSync(join(repo, 'new.md'), 'x\n');
+      git(repo, 'add', '-A');
+      git(repo, 'commit', '-q', '-m', 'main moves');
+      git(repo, 'checkout', '-q', 'pr');
+      git(repo, 'checkout', '-q', 'main', '--', 'AGENTS.md');
+      runHook(repo);
+      git(repo, 'update-index', '--no-skip-worktree', '--', 'AGENTS.md');
+      git(repo, 'checkout', '--', 'AGENTS.md');
+      expect(git(repo, 'merge', '--no-commit', '--no-ff', 'other').status).toBe(
+        0
+      );
+      rmSync(repo, { force: true, recursive: true });
+    });
+  });
+
   // These callers check out a PR branch. All but the build skip a hand-back PR. A plan run checks out main.
   // A respond run sets no files, because tag mode fetches the PR branch after the copy.
   describe('the callers', () => {
@@ -692,9 +798,12 @@ describe('the main_files input of the run-claude action', () => {
       '%s names the files CLAUDE.md imports and the code rules',
       file => {
         expect(given(file)).toEqual([
-          [...imports(), CODE_RULES, ...CODE_RULE_FILES, ...PATTERN_FILES].join(
-            ' '
-          ),
+          [
+            ...callerImports(),
+            CODE_RULES,
+            ...CODE_RULE_FILES,
+            ...PATTERN_FILES,
+          ].join(' '),
         ]);
       }
     );
@@ -703,7 +812,7 @@ describe('the main_files input of the run-claude action', () => {
     it('claude-build.yml names those files and the Spec checks', () => {
       expect(given('claude-build.yml')).toEqual([
         [
-          ...imports(),
+          ...callerImports(),
           CODE_RULES,
           ...CODE_RULE_FILES,
           ...PATTERN_FILES,
@@ -711,6 +820,16 @@ describe('the main_files input of the run-claude action', () => {
         ].join(' '),
       ]);
       expect(existsSync(join(root, SPEC_CHECKS))).toBe(true);
+    });
+
+    it.each([
+      'claude-build.yml',
+      'claude-fix-review.yml',
+      'claude-resolve-conflict.yml',
+    ])('%s does not name AGENTS.md', file => {
+      for (const list of given(file)) {
+        expect(String(list).split(' ')).not.toContain('AGENTS.md');
+      }
     });
 
     it.each(['claude-plan.yml', 'claude-respond.yml'])(

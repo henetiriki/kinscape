@@ -9,16 +9,13 @@ import {
   declarations,
   keyOf,
   numbers,
-  OWN,
   rulesFor,
   uncommented,
   withoutVars,
 } from '#ks/lib/design/groups.mts';
+import { isListed, localValues } from '#ks/lib/design/local.mts';
 
 type Found = { at: number; key: string; text: string };
-
-/** The `//` form of an `own:` comment, which only a `style` prop accepts. */
-const OWN_LINE = /\/\/\s*own:(.*)$/;
 
 /** A number with its sign, digits and unit. The unit can be any word, so the regex reads `100dvh` and `60ch`. */
 const LENGTH =
@@ -129,20 +126,20 @@ const partsOf = (property: string, value: string, tokens: DtcgTree): Part[] => {
   }));
 };
 
-const ownOf = (row: string, line = false) =>
-  ((OWN.exec(row) ?? (line ? OWN_LINE.exec(row) : null))?.[1] ?? '').trim() !==
-  '';
-
 const lineAt = (text: string, offset: number) =>
   text.slice(0, offset).split('\n').length;
 
 const cssSizes = (file: string, text: string, tokens: DtcgTree): Size[] => {
-  const rows = text.split('\n');
+  const locals = new Set(
+    localValues(text)
+      .filter(value => isListed(value.reason))
+      .map(value => value.line)
+  );
   const clean = uncommented(text);
   const make = (part: Part, line: number): Size => ({
     file,
     line,
-    own: ownOf(rows[line - 1]),
+    local: locals.has(line),
     property: part.property,
     token: part.token,
     value: part.value,
@@ -233,7 +230,6 @@ const tsxSizes = (file: string, text: string, tokens: DtcgTree): Size[] => {
     true,
     ts.ScriptKind.TSX
   );
-  const rows = text.split('\n');
 
   return styleObjects(source)
     .flatMap(object => object.properties)
@@ -263,7 +259,7 @@ const tsxSizes = (file: string, text: string, tokens: DtcgTree): Size[] => {
       return partsOf(property, value, tokens).map(part => ({
         file,
         line: first + value.slice(0, part.at).split('\n').length - 1,
-        own: ownOf(rows[first - 1], true),
+        local: false,
         property: part.property,
         token: part.token,
         value: part.value,
@@ -289,7 +285,7 @@ export const sizesIn = (
     ? cssSizes(file, text, tokens)
     : tsxSizes(file, text, tokens);
 
-const needsEntry = (size: Size) => !size.token && !size.own;
+const needsEntry = (size: Size) => !size.token && !size.local;
 
 const keyFor = (size: { file: string; property: string; value: string }) =>
   JSON.stringify([size.file, size.property, size.value]);
@@ -331,7 +327,7 @@ export const listProblems = (sizes: Size[], list: SizeEntry[]): string[] => {
       .slice(counts.get(key) ?? 0)
       .map(
         size =>
-          `${size.file}:${size.line}: ${size.property}: ${size.value} is off the tokens: use a token, add /* own: <reason> */ or run npm run sizes`
+          `${size.file}:${size.line}: ${size.property}: ${size.value} is off the tokens: use a token, make it a local value with /* local: <reason> */ or run npm run sizes`
       )
   );
   const stale = list.flatMap(entry => {

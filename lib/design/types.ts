@@ -94,6 +94,14 @@ export type LargeTextResult = { ok: boolean; text: string };
 /** A problem that `tokenLiterals` finds in a `.module.css` file: its 1-based line and what is wrong. */
 export type LiteralProblem = { line: number; text: string };
 
+/** A custom property with a `local:` comment. */
+export type LocalValue = {
+  line: number;
+  name: string;
+  reason: string;
+  value: string;
+};
+
 export type Outcome = 'blocked' | 'matches';
 
 /** A prop in a control's README table. */
@@ -161,11 +169,11 @@ export type Shot = {
   width: number;
 };
 
-/** A size that the size check reads. `token`: it equals a token of its group. `own`: its line has an `own:` reason. */
+/** A size that the size check reads. `token`: it equals a token of its group. `local`: its line is a local value with a listed reason. */
 export type Size = {
   file: string;
   line: number;
-  own: boolean;
+  local: boolean;
   property: string;
   token: boolean;
   value: string;

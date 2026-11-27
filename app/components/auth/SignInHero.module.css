@@ -113,9 +113,11 @@
 }
 
 .key {
-  border-top: 1.5px solid var(--hero-border); /* own: a drawn rule, SC.14 names its width */
+  --key-rule: 1.5px; /* local: drawing */
+  --key-width: 22px; /* local: drawing */
+  border-top: var(--key-rule) solid var(--hero-border);
   display: inline-block;
-  width: 22px;
+  width: var(--key-width);
 }
 
 .dash {

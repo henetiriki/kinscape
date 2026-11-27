@@ -93,6 +93,7 @@
 }
 
 .count {
+  --count-min: 20px; /* local: shape */
   background: var(--brand);
   border-radius: var(--radius-full);
   box-sizing: border-box;
@@ -101,7 +102,7 @@
   font-size: var(--type-chip-size);
   font-weight: var(--type-chip-weight);
   line-height: var(--type-chip-line);
-  min-width: 20px; /* own: a one-digit count stays round */
+  min-width: var(--count-min);
   padding: 0 6px;
   text-align: center;
 }

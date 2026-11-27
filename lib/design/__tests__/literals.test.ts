@@ -108,7 +108,7 @@ describe('a literal that equals a token of its group', () => {
 
   it('names the literal and a fix in the text', () => {
     expect(problems(lines('  gap: 8px;'))[0].text).toBe(
-      'gap: 8px equals a token of its group: use var(--token) or add /* own: <reason> */'
+      'gap: 8px equals a token of its group: use var(--token)'
     );
   });
 
@@ -213,51 +213,46 @@ describe('a form that the test skips', () => {
   });
 });
 
-describe('an own comment', () => {
-  it('lets a literal pass', () => {
-    expect(problems(lines('  gap: 8px; /* own: pointer square */'))).toEqual(
-      []
-    );
-  });
-
-  it('lets each part of the line pass', () => {
-    expect(problems(lines('  margin: -8px 8px; /* own: centred */'))).toEqual(
-      []
-    );
-  });
-
-  it('fails with no reason', () => {
-    expect(problems(lines('  gap: 8px; /* own: */'))).toEqual([
-      { line: 2, text: 'The own: comment has no reason' },
+describe('a local value and an own comment', () => {
+  it('fails a token literal that has an own comment', () => {
+    expect(problems(lines('  gap: 8px; /* own: pointer square */'))).toEqual([
+      { line: 2, text: expect.stringContaining('gap: 8px equals a token') },
+      {
+        line: 2,
+        text: 'The own: comment is gone: use var(--token) or a local value',
+      },
     ]);
   });
 
-  it('fails with a blank reason', () => {
-    expect(problems(lines('  gap: 8px; /* own:   */'))).toHaveLength(1);
-  });
-
-  it('lets an off-token size pass', () => {
-    expect(problems(lines('  gap: 7px; /* own: odd */'))).toEqual([]);
-  });
-
-  it('lets a colour literal pass', () => {
-    expect(problems(lines('  color: #18211b; /* own: brand copy */'))).toEqual(
-      []
-    );
-  });
-
-  it('lets a custom property size pass', () => {
-    expect(problems(lines('  --thumb: 26px; /* own: odd */'))).toEqual([]);
-  });
-
-  it('fails on a line with no size', () => {
-    expect(problems(lines('  gap: 0; /* own: odd */'))).toEqual([
-      { line: 2, text: 'The own: comment is on a line with no size' },
+  it('fails an own comment on an off-token size', () => {
+    expect(problems(lines('  gap: 7px; /* own: odd */'))).toEqual([
+      {
+        line: 2,
+        text: 'The own: comment is gone: use var(--token) or a local value',
+      },
     ]);
   });
 
-  it('fails on a line with a keyword only', () => {
-    expect(problems(lines('  width: auto; /* own: odd */'))).toHaveLength(1);
+  it('passes a custom property with a listed reason', () => {
+    expect(problems(lines('  --thumb: 26px; /* local: shape */'))).toEqual([]);
+  });
+
+  it('fails a local value with no reason', () => {
+    expect(problems(lines('  --thumb: 26px; /* local: */'))).toEqual([
+      { line: 2, text: 'The local: comment has no reason' },
+    ]);
+  });
+
+  it('fails a local value with the reason misc', () => {
+    expect(problems(lines('  --thumb: 26px; /* local: misc */'))).toHaveLength(
+      1
+    );
+  });
+
+  it('fails a local comment on a line that is not a custom property', () => {
+    expect(problems(lines('  width: auto; /* local: shape */'))).toEqual([
+      { line: 2, text: 'The local: comment is not on a custom property' },
+    ]);
   });
 
   it('fails on an outline offset that equals the focus token', () => {
@@ -268,12 +263,6 @@ describe('an own comment', () => {
 
   it('fails on an outline width that is a focus literal beside a colour', () => {
     expect(problems(lines('  outline: 2px solid #264f29;'))).toHaveLength(2);
-  });
-
-  it('fails on a line of a var', () => {
-    expect(
-      problems(lines('  gap: var(--space-gap-xs); /* own: x */'))
-    ).toHaveLength(1);
   });
 });
 

@@ -1,8 +1,9 @@
 /* The loading bar stands where the name or the address will be. */
 .bar {
+  --bar-height: 20px; /* local: shape */
   background: var(--line);
   border-radius: var(--radius-small);
   display: block;
-  height: 20px; /* own: line height of the text it stands for */
+  height: var(--bar-height);
   max-width: 100%;
 }

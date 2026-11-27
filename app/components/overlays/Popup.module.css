@@ -197,13 +197,15 @@
 
 /* A square turned 45°, 16 wide; the caller places it on the popup's edge. */
 .pointer {
+  --pointer: 16px; /* local: shape */
+  --pointer-radius: 2px; /* local: shape */
   background: var(--surface);
-  border-radius: 2px; /* own: soft corners of the pointer */
-  height: 16px; /* own: pointer square */
+  border-radius: var(--pointer-radius);
+  height: var(--pointer);
   position: absolute;
   rotate: 45deg;
   translate: -50%;
-  width: 16px; /* own: pointer square */
+  width: var(--pointer);
 }
 
 .placedPointer {

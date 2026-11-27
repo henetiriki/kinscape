@@ -13,6 +13,7 @@ import {
   shadowOf,
   weight,
 } from '@ks/lib/design/__tests__/dtcg-fixtures';
+import { localProblems } from '@ks/lib/design/local.mts';
 import {
   isSizeFile,
   listOf,
@@ -55,9 +56,9 @@ const css = (...rows: string[]) => lines(...rows);
 const tsx = (style: string) =>
   `export const A = () => (\n  <div style={${style}} />\n);\n`;
 
-/** The sizes that fail the check: off the tokens, with no `own:` reason. */
+/** The sizes that fail the check: off the tokens, and not a local value. */
 const off = (file: string, text: string) =>
-  sizesIn(file, text, tokens).filter(size => !size.token && !size.own);
+  sizesIn(file, text, tokens).filter(size => !size.token && !size.local);
 
 describe('an off-token size in a .module.css file', () => {
   it('names the file, line, property and value', () => {
@@ -65,7 +66,7 @@ describe('an off-token size in a .module.css file', () => {
       {
         file: 'a.module.css',
         line: 2,
-        own: false,
+        local: false,
         property: 'gap',
         token: false,
         value: '7px',
@@ -219,32 +220,55 @@ describe('a size that passes', () => {
   });
 });
 
-describe('an own comment', () => {
-  it('passes a size on its line in CSS', () => {
-    expect(off('a.module.css', css('  gap: 7px; /* own: odd */'))).toEqual([]);
-  });
+describe('a local value', () => {
+  it.each(['shape', 'nudge', 'drawing'])(
+    'passes a size with the reason %s',
+    reason => {
+      expect(
+        off('a.module.css', css(`  --a: 7px; /* local: ${reason} */`))
+      ).toEqual([]);
+    }
+  );
 
   it('keeps a size that has no reason', () => {
-    expect(off('a.module.css', css('  gap: 7px; /* own: */'))).toHaveLength(1);
+    expect(off('a.module.css', css('  --a: 7px; /* local: */'))).toHaveLength(
+      1
+    );
+  });
+
+  it('keeps a size with the reason misc', () => {
+    expect(
+      off('a.module.css', css('  --a: 7px; /* local: misc */'))
+    ).toHaveLength(1);
+  });
+
+  it('keeps a size on a line that is not a custom property', () => {
+    expect(
+      off('a.module.css', css('  gap: 7px; /* local: shape */'))
+    ).toHaveLength(1);
+  });
+
+  it('keeps a size with an own comment', () => {
+    expect(off('a.module.css', css('  gap: 7px; /* own: odd */'))).toHaveLength(
+      1
+    );
   });
 
   it('marks the size and keeps it out of the list', () => {
     const sizes = sizesIn(
       'a.module.css',
-      css('  gap: 7px; /* own: x */'),
+      css('  --a: 7px; /* local: shape */'),
       tokens
     );
 
-    expect(sizes).toMatchObject([{ own: true, token: false }]);
+    expect(sizes).toMatchObject([{ local: true, token: false }]);
     expect(listOf(sizes)).toEqual([]);
   });
 
-  it('passes a size on its line in a style prop', () => {
-    expect(off('A.tsx', tsx('{\n    gap: 7, // own: odd\n  }'))).toEqual([]);
-  });
-
-  it('passes a size with a block comment in a style prop', () => {
-    expect(off('A.tsx', tsx('{\n    gap: 7, /* own: odd */\n  }'))).toEqual([]);
+  it('keeps a size in a style prop, whatever the comment', () => {
+    expect(off('A.tsx', tsx('{\n    gap: 7, // own: odd\n  }'))).toHaveLength(
+      1
+    );
   });
 });
 
@@ -254,7 +278,7 @@ describe('an inline style prop', () => {
       {
         file: 'A.tsx',
         line: 2,
-        own: false,
+        local: false,
         property: 'gap',
         token: false,
         value: '7px',
@@ -445,5 +469,38 @@ describe('the repo', () => {
 
   it('keeps the list sorted', () => {
     expect(list).toEqual(listOf(sizes));
+  });
+
+  it('has no local-value problem in a CSS size file', () => {
+    expect(
+      files
+        .filter(file => file.endsWith('.css'))
+        .flatMap(file =>
+          localProblems(readFileSync(join(root, file), 'utf8')).map(
+            problem => `${file}:${problem.line}: ${problem.text}`
+          )
+        )
+    ).toEqual([]);
+  });
+
+  it('has no own: comment in a .tsx size file', () => {
+    expect(
+      files
+        .filter(file => file.endsWith('.tsx'))
+        .filter(file =>
+          /(\/\/|\/\*)\s*own:/.test(readFileSync(join(root, file), 'utf8'))
+        )
+    ).toEqual([]);
+  });
+
+  it('keeps no moved or nudge size on the list', () => {
+    expect(
+      list.filter(
+        entry =>
+          /(Alert|NoticeCard)\.module\.css$/.test(entry.file) &&
+          entry.property === 'margin-top' &&
+          entry.value === '1px'
+      )
+    ).toEqual([]);
   });
 });

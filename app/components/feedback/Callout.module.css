@@ -12,18 +12,19 @@
 }
 
 .callout strong {
-  font-weight: 600; /* own: bold text in small text */
+  font-weight: var(--type-label-weight);
 }
 
 .pointer {
+  --pointer: 12px; /* local: shape */
   background: var(--error-bg);
   border-bottom: var(--border-hairline) solid var(--error-border);
   border-right: var(--border-hairline) solid var(--error-border);
   box-sizing: content-box;
-  height: 12px;
+  height: var(--pointer);
   position: absolute;
   rotate: 45deg;
   translate: -50%;
-  width: 12px;
+  width: var(--pointer);
   z-index: var(--z-furniture);
 }

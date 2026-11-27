@@ -45,6 +45,11 @@
 
 /* A fan Pin: a 44px target. The margin puts its centre on the Place, and `left` and `top` move it to its spot. */
 .pin {
+  --disc: 36px; /* local: shape */
+  --disc-hover: 40px; /* local: shape */
+  --disc-pressed: 32px; /* local: shape */
+  --glyph: 22px; /* local: shape */
+  --halo-pressed: 44px; /* local: shape */
   align-items: center;
   background: transparent;
   border: 0;
@@ -69,11 +74,11 @@
   box-sizing: border-box;
   color: var(--pin);
   display: flex;
-  font-size: 22px; /* own: glyph size in the disc */
-  height: 36px; /* own: disc */
+  font-size: var(--glyph);
+  height: var(--disc);
   justify-content: center;
   position: relative;
-  width: 36px; /* own: disc */
+  width: var(--disc);
 }
 
 /* The halo of hover and pressed: the halo of a Pin on the map. */
@@ -88,8 +93,8 @@
 
 @media (hover: hover) {
   .pin:hover .disc {
-    height: 40px; /* own: hovered disc */
-    width: 40px; /* own: hovered disc */
+    height: var(--disc-hover);
+    width: var(--disc-hover);
   }
 
   .pin:hover::before {
@@ -100,8 +105,8 @@
 }
 
 .pin[data-state='hover'] .disc {
-  height: 40px; /* own: hovered disc */
-  width: 40px; /* own: hovered disc */
+  height: var(--disc-hover);
+  width: var(--disc-hover);
 }
 
 .pin[data-state='hover']::before {
@@ -111,14 +116,14 @@
 }
 
 .pin:is(:active, [data-state='active']) .disc {
-  height: 32px;
-  width: 32px;
+  height: var(--disc-pressed);
+  width: var(--disc-pressed);
 }
 
 .pin:is(:active, [data-state='active'])::before {
   display: block;
-  height: 44px; /* own: pressed halo */
-  width: 44px; /* own: pressed halo */
+  height: var(--halo-pressed);
+  width: var(--halo-pressed);
 }
 
 .pin:is(:focus-visible, [data-state='focus']) .disc {

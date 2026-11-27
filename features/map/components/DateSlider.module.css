@@ -1,6 +1,16 @@
 /* The marks sit under the native range, in line with the 26px thumb's centre. */
 .slider {
-  --thumb: 26px;
+  --band-radius: 2px; /* local: shape */
+  --input-pad: 8px; /* local: shape */
+  --mark-height: 12px; /* local: shape */
+  --mark-top: 8px; /* local: shape */
+  --ring-offset: -6px; /* local: shape */
+  --thumb: 26px; /* local: shape */
+  --thumb-nudge: 1px; /* local: nudge */
+  --thumb-ring: 4px; /* local: shape */
+  --tick-width: 2px; /* local: shape */
+  --track-top: 12px; /* local: shape */
+  --years-top: 24px; /* local: shape */
   height: var(--size-control);
   position: relative;
 }
@@ -18,7 +28,7 @@
   left: 0;
   position: absolute;
   right: 0;
-  top: 12px; /* own: track centre on the thumb centre */
+  top: var(--track-top);
 }
 
 .contested {
@@ -27,22 +37,22 @@
     var(--hatch-line) 0 2px,
     transparent 2px 4px
   );
-  border-radius: 2px; /* own: soft corners of the contested band */
-  height: 12px;
+  border-radius: var(--band-radius);
+  height: var(--mark-height);
   left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--f));
   position: absolute;
-  top: 8px; /* own: band centred on the track */
+  top: var(--mark-top);
   width: calc((100% - var(--thumb)) * (var(--g) - var(--f)));
 }
 
 .tick {
   background: var(--ink-3);
-  height: 12px;
+  height: var(--mark-height);
   left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--f));
   position: absolute;
-  top: 8px; /* own: ticks centred on the track */
+  top: var(--mark-top);
   translate: -50% 0;
-  width: 2px;
+  width: var(--tick-width);
 }
 
 .years {
@@ -50,7 +60,7 @@
   font-family: var(--type-mono-font);
   font-size: var(--type-mono-size);
   font-variant-ligatures: none;
-  inset: 24px 0 auto; /* own: years under the track */
+  inset: var(--years-top) 0 auto;
   line-height: var(--type-mono-line);
   position: absolute;
 }
@@ -83,8 +93,8 @@
   height: var(--size-touch);
   margin: calc(-1 * var(--space-inset-xs)) 0;
   /* The ring hugs the 28px track, not the 44px hit area. */
-  outline-offset: -6px;
-  padding: 8px 0; /* own: centres the 28px track in the 44px hit area */
+  outline-offset: var(--ring-offset);
+  padding: var(--input-pad) 0;
   position: relative;
   width: 100%;
 }
@@ -103,18 +113,18 @@
 .slider input::-webkit-slider-thumb {
   appearance: none;
   background: var(--brand);
-  border: 4px solid var(--surface); /* own: the thumb ring, SC.14 makes it a local value */
+  border: var(--thumb-ring) solid var(--surface);
   border-radius: 50%;
   box-shadow: var(--shadow-thumb);
   box-sizing: border-box;
   height: var(--thumb);
-  margin-top: 1px;
+  margin-top: var(--thumb-nudge);
   width: var(--thumb);
 }
 
 .slider input::-moz-range-thumb {
   background: var(--brand);
-  border: 4px solid var(--surface); /* own: the thumb ring, SC.14 makes it a local value */
+  border: var(--thumb-ring) solid var(--surface);
   border-radius: 50%;
   box-shadow: var(--shadow-thumb);
   box-sizing: border-box;

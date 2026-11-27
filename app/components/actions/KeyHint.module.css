@@ -1,4 +1,5 @@
 .key {
+  --key-pad: 2px; /* local: shape */
   border: var(--border-hairline) solid var(--line-strong);
   border-radius: var(--radius-small);
   color: var(--ink-3);
@@ -6,5 +7,5 @@
   font-size: var(--type-mono-size);
   font-variant-ligatures: none;
   line-height: var(--type-mono-line);
-  padding: 2px var(--space-inset-2xs);
+  padding: var(--key-pad) var(--space-inset-2xs);
 }

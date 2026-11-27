@@ -12,9 +12,10 @@
 }
 
 .alert > svg {
+  --icon-nudge: 1px; /* local: nudge */
   color: var(--tone-border);
   flex: none;
-  margin-top: 1px;
+  margin-top: var(--icon-nudge);
 }
 
 .error {

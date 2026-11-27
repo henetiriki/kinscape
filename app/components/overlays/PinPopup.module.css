@@ -49,10 +49,11 @@
 }
 
 .event {
+  --glyph: 16px; /* local: shape */
   align-items: center;
   color: var(--pin);
   display: flex;
-  font-size: 16px; /* own: event glyph size */
+  font-size: var(--glyph);
   gap: var(--space-gap-xs);
 }
 

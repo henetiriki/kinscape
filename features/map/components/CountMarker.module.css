@@ -1,5 +1,10 @@
 /* The count marker of `map-pin-count`: a 32px disc in --pin with a 2px white border, on a 44px target. */
 .marker {
+  --count-line: 1; /* local: shape */
+  --disc: 32px; /* local: shape */
+  --disc-hover: 36px; /* local: shape */
+  --disc-pressed: 28px; /* local: shape */
+  --halo-pressed: 40px; /* local: shape */
   align-items: center;
   background: transparent;
   border: 0;
@@ -24,11 +29,11 @@
   font-family: var(--type-label-font);
   font-size: var(--type-label-size);
   font-weight: var(--type-label-weight);
-  height: 32px;
+  height: var(--disc);
   justify-content: center;
-  line-height: 1;
+  line-height: var(--count-line);
   position: relative;
-  width: 32px;
+  width: var(--disc);
 }
 
 /* The halo of hover and pressed: the halo of a Pin on the map. */
@@ -43,8 +48,8 @@
 
 @media (hover: hover) {
   .marker:hover .disc {
-    height: 36px; /* own: hovered disc */
-    width: 36px; /* own: hovered disc */
+    height: var(--disc-hover);
+    width: var(--disc-hover);
   }
 
   .marker:hover::before {
@@ -55,8 +60,8 @@
 }
 
 .marker[data-state='hover'] .disc {
-  height: 36px; /* own: hovered disc */
-  width: 36px; /* own: hovered disc */
+  height: var(--disc-hover);
+  width: var(--disc-hover);
 }
 
 .marker[data-state='hover']::before {
@@ -66,14 +71,14 @@
 }
 
 .marker:is(:active, [data-state='active']) .disc {
-  height: 28px;
-  width: 28px;
+  height: var(--disc-pressed);
+  width: var(--disc-pressed);
 }
 
 .marker:is(:active, [data-state='active'])::before {
   display: block;
-  height: 40px; /* own: pressed halo */
-  width: 40px; /* own: pressed halo */
+  height: var(--halo-pressed);
+  width: var(--halo-pressed);
 }
 
 .marker:is(:focus-visible, [data-state='focus']) .disc {
@@ -87,7 +92,7 @@
  * disc is 5px wider in radius than the 22px Pin, so the ring and its halo sit 5px further out.
  */
 .ring {
-  --gap: 5px;
+  --gap: 5px; /* local: shape */
 
   border: calc(var(--map-selected-width) * 1px) solid var(--map-selected-colour);
   border-radius: 50%;

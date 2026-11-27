@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
+import { REASONS } from '@ks/lib/design/local.mts';
 import { trackedFiles } from '@ks/scripts/__tests__/tracked';
 import { patternFiles, patternsFor } from '@ks/scripts/pattern-files.mts';
 
@@ -89,6 +90,10 @@ describe('the token page', () => {
 
   it('has the part "The size check"', () => {
     expect(readFileSync(PAGE, 'utf8')).toMatch(/^## The size check$/m);
+  });
+
+  it.each(REASONS)('names the local value reason %s', reason => {
+    expect(readFileSync(PAGE, 'utf8')).toContain(`\`${reason}\``);
   });
 
   it('has the part "Scales"', () => {

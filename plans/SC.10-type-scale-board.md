@@ -126,3 +126,5 @@ The chosen ratio as settings, the merges and the renames: SC.12 (#1206). Spacing
 
 - Big: CI built only the `DESIGN.md` row, `NO_ENTRY`, the two counts, `shots.mts` and its test row. It cannot edit `design/canvas/` (hook) or sign in to claude.ai. The `export.json` entry, the board and steps 3 to 12 stay for the local session. Until then two count tests fail (84 against 85).
 - #1206 reworded for D1 A (#1203 plan D1).
+- The meta line and each sample take the `tokens.css` text-style class of their role (`.mono`, `.h1`). They use no `var(--type-<role>-*)`. The exporter drops the bundle CSS, so `design:export` failed on those variables.
+- The board is 1440 × 2340 px, not 1800. The wrapped samples make the rows taller. The workflow JPG shows the real height.

@@ -123,3 +123,6 @@ A local Claude Code session that the tech lead starts runs every step. It needs 
 The chosen ratio as settings, the merges and the renames: SC.12 (#1206). Spacing, controls, rounding and borders: SC.11 (#1204).
 
 ## Deviations
+
+- Big: CI built only the `DESIGN.md` row, `NO_ENTRY`, the two counts, `shots.mts` and its test row. It cannot edit `design/canvas/` (hook) or sign in to claude.ai. The `export.json` entry, the board and steps 3 to 12 stay for the local session. Until then two count tests fail (84 against 85).
+- #1206 reworded for D1 A (#1203 plan D1).

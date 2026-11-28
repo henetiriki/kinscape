@@ -39,7 +39,7 @@ body{margin:0}
 
   <form style="flex: 1; padding: var(--space-inset-xl) var(--size-gutter-phone) var(--space-inset-l); display: flex; flex-direction: column; gap: var(--space-gap-m); box-sizing: border-box">
     <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs)">
-      <x-import component-from-global-scope="KinScape.Text" variant="h1Phone" as="h1">Sign in</x-import>
+      <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Sign in</x-import>
       <p class="body" style="margin: 0; color: var(--ink-3)">Your tree is private. Sign in to open the map.</p>
     </div>
 
@@ -50,7 +50,7 @@ body{margin:0}
 
     <x-import component-from-global-scope="KinScape.Button" type="submit" variant="primary" size="l" full="{{yes}}" style="margin-top: var(--space-stack-2xs)">Sign in</x-import>
     <sc-if value="{{showGoogle}}" hint-placeholder-val="{{ true }}">
-      <button type="button" class="button" style="height: var(--size-control-l); border: var(--border-hairline) solid var(--google-border); border-radius: var(--radius-control); background: var(--white); color: var(--google-text); display: flex; align-items: center; justify-content: center; gap: var(--space-gap-s); cursor: pointer">
+      <button type="button" class="control" style="height: var(--size-control-l); border: var(--border-hairline) solid var(--google-border); border-radius: var(--radius-control); background: var(--white); color: var(--google-text); display: flex; align-items: center; justify-content: center; gap: var(--space-gap-s); cursor: pointer">
         <span aria-hidden="true" style="flex: none; width: 20px; height: 20px; box-sizing: border-box; border: var(--border-hairline) dashed var(--google-border); border-radius: var(--radius-small)"></span>
         Continue with Google
       </button>

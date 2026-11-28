@@ -21,7 +21,7 @@
       <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs)">
         <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Relationships</x-import>
         <x-import component-from-global-scope="KinScape.Text" variant="small" as="p"><span style="display: inline-flex; align-items: baseline"><span style="color: var(--ink)"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{subtitle.name}}</x-import></span><span>.</span></span> Each change saves at once.</x-import>
-        <span style="display: flex; flex-direction: column"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">{{subtitle.words}}</span><span aria-hidden="true" style="display: contents"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{subtitle.line}}</x-import></span></span>
+        <span style="display: flex; flex-direction: column"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">{{subtitle.words}}</span><span aria-hidden="true" style="display: contents"><x-import component-from-global-scope="KinScape.Text" variant="monoCaption" as="span">{{subtitle.line}}</x-import></span></span>
       </div>
 
       <sc-if value="{{showFailed}}" hint-placeholder-val="{{ false }}">
@@ -88,7 +88,7 @@
           <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs); background: var(--surface-2); border: var(--border-hairline) solid var(--line); border-radius: var(--radius-control); padding: var(--space-inset-s) var(--space-inset-m)">
             <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{dialog.who.name}}</x-import>
             <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">{{dialog.who.words}}</span>
-            <span aria-hidden="true" style="display: contents"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span" style="color: var(--ink-3)">{{dialog.who.line}}</x-import></span>
+            <span aria-hidden="true" style="display: contents"><x-import component-from-global-scope="KinScape.Text" variant="monoCaption" as="span" style="color: var(--ink-3)">{{dialog.who.line}}</x-import></span>
           </div>
           <sc-if value="{{dialog.isSubtype}}" hint-placeholder-val="{{ true }}">
             <x-import component-from-global-scope="KinScape.Segmented" label="{{dialog.subtypeLabel}}" name="subtype" options="{{subtypeOptions}}" value="{{subtype}}" on-change="{{onSubtype}}"></x-import>

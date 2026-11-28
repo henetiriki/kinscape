@@ -36,14 +36,6 @@
     }
   ],
   "boards": {
-    "Type-scale.dc.html": {
-      "x": 0,
-      "y": 0,
-      "w": 1440,
-      "h": 2340,
-      "title": "Type scale — three ratios (proposal)",
-      "page": "drafts"
-    },
     "Spacing-and-controls.dc.html": {
       "x": 1520,
       "y": 0,
@@ -804,7 +796,6 @@
     "Relationship-cycle.dc.html",
     "Relationship-save-failed.dc.html",
     "Relationship-messages.dc.html",
-    "Type-scale.dc.html",
     "Spacing-and-controls.dc.html",
     "Shapes.dc.html"
   ],

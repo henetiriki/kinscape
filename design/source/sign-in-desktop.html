@@ -9,12 +9,15 @@
       body{margin:0}
     </style>
     <style data-pseudo="">
-      [data-pseudo="1"]::-webkit-search-cancel-button{appearance: none; display: none;}
-      [data-pseudo="1"]::-webkit-search-decoration{appearance: none; display: none;}
-      [data-pseudo="1"]::placeholder{color: rgb(74, 84, 76);}
+      [data-pseudo="1"]::before{content: none; z-index: -1; height: 44px; position: absolute; top: 50%; left: 50%; translate: -50% -50%; width: 100%;}
       [data-pseudo="2"]::-webkit-search-cancel-button{appearance: none; display: none;}
       [data-pseudo="2"]::-webkit-search-decoration{appearance: none; display: none;}
-      [data-pseudo="2"]::placeholder{color: rgb(24, 33, 27);}
+      [data-pseudo="2"]::placeholder{color: rgb(74, 84, 76);}
+      [data-pseudo="3"]::before{content: none; z-index: -1; height: 44px; position: absolute; top: 50%; left: 50%; translate: -50% -50%; width: 100%;}
+      [data-pseudo="4"]::-webkit-search-cancel-button{appearance: none; display: none;}
+      [data-pseudo="4"]::-webkit-search-decoration{appearance: none; display: none;}
+      [data-pseudo="4"]::placeholder{color: rgb(24, 33, 27);}
+      [data-pseudo="5"]::before{content: none; height: 44px; position: absolute; top: 50%; left: 50%; translate: -50% -50%; box-sizing: border-box; min-width: 44px; padding-inline-start: 0px; padding-inline-end: 0px; width: 100%;}
     </style>
   </head>
   <body>
@@ -233,7 +236,7 @@
             </div>
             <div style="display: flex; flex-direction: column; gap: 1rem">
               <div
-                class="_field_1c4ee_1"
+                class="_field_1glf1_1"
                 style="gap: 8px; flex-direction: column; display: flex;">
                 <label
                   class="_label_pm00z_57"
@@ -242,22 +245,23 @@
                   Email
                 </label>
                 <label
-                  class="_box_1c4ee_8"
+                  class="_box_1glf1_8 _hitAreaBox_jlw0r_12"
                   data-size="l"
                   data-testid="field-box"
+                  data-pseudo="1"
                   style="background: rgb(255, 255, 255); border: 1px solid rgb(142, 151, 140); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); height: 50px; padding: 0px 12px; align-items: center; display: flex; position: relative; isolation: isolate;">
                   <input
-                    class="_input_1c4ee_87"
+                    class="_input_1glf1_90"
                     autocomplete="username"
                     placeholder="you@example.com"
                     id=":r0:"
                     type="email"
-                    data-pseudo="1"
+                    data-pseudo="2"
                     style='color: rgb(24, 33, 27); font-family: "Public Sans", system-ui, sans-serif; font-size: 16px; line-height: 24px; background: 0px 0px; border: 0px rgb(24, 33, 27); outline: 0px none rgb(24, 33, 27); flex: 1 1 0%; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px;' />
                 </label>
               </div>
               <div
-                class="_field_1c4ee_1"
+                class="_field_1glf1_1"
                 style="gap: 8px; flex-direction: column; display: flex;">
                 <label
                   class="_label_pm00z_57"
@@ -266,22 +270,23 @@
                   Password
                 </label>
                 <label
-                  class="_box_1c4ee_8"
+                  class="_box_1glf1_8 _hitAreaBox_jlw0r_12"
                   data-size="l"
                   data-testid="field-box"
+                  data-pseudo="3"
                   style="background: rgb(255, 255, 255); border: 1px solid rgb(142, 151, 140); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); height: 50px; padding: 0px 12px; align-items: center; display: flex; position: relative; isolation: isolate;">
                   <input
                     aria-label="Password"
-                    class="_input_1c4ee_87"
+                    class="_input_1glf1_90"
                     autocomplete="current-password"
                     id=":r1:"
                     type="password"
                     value="example-password"
-                    data-pseudo="2"
+                    data-pseudo="4"
                     style='color: rgb(24, 33, 27); font-family: "Public Sans", system-ui, sans-serif; font-size: 16px; line-height: 24px; background: 0px 0px; border: 0px rgb(24, 33, 27); outline: 0px none rgb(24, 33, 27); flex: 1 1 0%; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px;' />
                   <button
                     aria-label="Show password"
-                    class="_eye_1c4ee_185 _ring_17j5c_3"
+                    class="_eye_1glf1_188 _ring_17j5c_3"
                     type="button"
                     style="border-radius: 7px; color: rgb(74, 84, 76); cursor: pointer; height: 44px; width: 44px; background: 0px 0px; border: 0px rgb(74, 84, 76); flex: 0 0 auto; justify-content: center; align-items: center; margin: 0px -10px 0px 0px; padding: 0px; display: flex;">
                     <svg
@@ -305,10 +310,11 @@
               </div>
             </div>
             <button
-              class="_btn_1nae8_1 _ring_17j5c_3 _btnPrimary_1nae8_56"
+              class="_btn_1eee2_1 _ring_17j5c_3 _hitAreaBordered_jlw0r_10 _btnPrimary_1eee2_68 _hitAreaFill_jlw0r_11"
               data-full="true"
               data-size="l"
               type="submit"
+              data-pseudo="5"
               style='border-radius: 8px; box-sizing: border-box; cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 16px; font-weight: 600; align-items: center; gap: 8px; height: 50px; line-height: 24px; padding: 0px 16px; white-space: nowrap; justify-content: center; text-decoration: rgb(255, 255, 255); display: flex; position: relative; width: 360px; background: rgb(38, 79, 41); color: rgb(255, 255, 255); border: 0px rgb(255, 255, 255);'>
               Sign in
             </button>

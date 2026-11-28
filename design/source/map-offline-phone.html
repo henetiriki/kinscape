@@ -16,16 +16,16 @@
       [data-pseudo="1"]::placeholder{color: rgb(74, 84, 76);}
       [data-pseudo="1"]::-webkit-search-cancel-button{appearance: none; display: none;}
       [data-pseudo="1"]::-webkit-search-decoration{appearance: none; display: none;}
-      [data-pseudo="2"]::before{content: ""; height: 44px; width: 64px; position: absolute; top: 10px; left: 32px; translate: -50% -50%;}
-      [data-pseudo="3"]::before{content: ""; height: 44px; width: 44px; position: absolute; top: 20px; left: 20px; translate: -50% -50%;}
-      [data-pseudo="4"]::before{content: ""; height: 44px; width: 214px; z-index: -1; position: absolute; top: 20px; left: 0px; translate: 0px -50%;}
+      [data-pseudo="2"]::before{content: ""; height: 44px; position: absolute; top: 10px; left: 32px; translate: -50% -50%; box-sizing: border-box; min-width: 44px; width: 64px; padding-inline-start: 0px; padding-inline-end: 0px;}
+      [data-pseudo="3"]::before{content: ""; height: 44px; position: absolute; top: 20px; left: 20px; translate: -50% -50%; width: 44px;}
+      [data-pseudo="4"]::before{z-index: -1; content: ""; height: 44px; position: absolute; top: 20px; left: 107px; translate: -50% -50%; width: 214px;}
       [data-pseudo="5"]::-webkit-search-cancel-button{appearance: none; display: none;}
       [data-pseudo="5"]::-webkit-search-decoration{appearance: none; display: none;}
       [data-pseudo="5"]::placeholder{color: rgb(24, 33, 27);}
-      [data-pseudo="6"]::before{content: ""; height: 44px; width: 44px; position: absolute; top: 20px; left: 20px; translate: -50% -50%;}
-      [data-pseudo="7"]::before{content: ""; height: 44px; width: 44px; position: absolute; top: 21px; left: 21px; translate: -50% -50%;}
-      [data-pseudo="8"]::before{content: ""; height: 44px; min-width: 100%; width: 73px; position: absolute; top: 21px; left: 36.5px; translate: -50% -50%;}
-      [data-pseudo="9"]::before{content: ""; height: 44px; width: 44px; position: absolute; top: 25px; left: 25px; translate: -50% -50%;}
+      [data-pseudo="6"]::before{content: ""; height: 44px; position: absolute; top: 20px; left: 20px; translate: -50% -50%; width: 44px;}
+      [data-pseudo="7"]::before{content: ""; height: 44px; position: absolute; top: 21px; left: 21px; translate: -50% -50%; box-sizing: border-box; min-width: 44px; padding-inline-start: 0px; padding-inline-end: 0px; width: 44px;}
+      [data-pseudo="8"]::before{min-width: 100%; content: ""; height: 44px; position: absolute; top: 21px; left: 36.5px; translate: -50% -50%; width: 73px;}
+      [data-pseudo="9"]::before{content: ""; height: 44px; position: absolute; top: 25px; left: 25px; translate: -50% -50%; width: 44px;}
     </style>
   </head>
   <body>
@@ -282,20 +282,20 @@
           style="z-index: 1; position: absolute; bottom: 0px; left: 0px; right: 0px; flex-direction: column; display: flex;">
           <section
             aria-label="Map date"
-            class="_sheet_152bh_1 _sheet_1w41m_23 _base_1w41m_2"
+            class="_sheet_dqlcw_1 _sheet_1w41m_23 _base_1w41m_2"
             style="gap: 12px; height: 152px; isolation: isolate; padding: 8px 16px 24px; flex-direction: column; width: 390px; display: flex; background: rgb(255, 255, 255); border-radius: 18px 18px 0px 0px; box-sizing: border-box; box-shadow: rgba(24, 33, 27, 0.16) 0px -6px 24px 0px;">
             <button
               aria-expanded="false"
               aria-label="Expand the sheet"
-              class="_grabber_152bh_18"
+              class="_grabber_dqlcw_18 _hitAreaFill_jlw0r_11"
               type="button"
               data-pseudo="2"
               style="cursor: pointer; height: 20px; margin-bottom: -4px; width: 64px; z-index: 1; background: 0px 0px; border-width: 0px; border-style: none; border-image: none; justify-content: center; align-self: center; align-items: center; padding: 0px; display: flex; position: relative;">
               <span
-                class="_handle_152bh_48"
+                class="_handle_dqlcw_38"
                 style="background: rgb(201, 207, 197); border-radius: 2px; height: 4px; width: 40px;"></span>
             </button>
-            <div class="_sheetField_1f3it_47" style="display: contents;">
+            <div class="_sheetField_1dnul_47" style="display: contents;">
               <div
                 class="_wrap_vg9pm_1"
                 style="gap: 12px; flex-direction: column; display: flex; margin-top: 4px;">
@@ -304,7 +304,7 @@
                   style="align-items: center; gap: 4px; display: flex; position: relative;">
                   <button
                     aria-label="Back"
-                    class="_iconBtn_1yvf6_1 _ring_17j5c_3"
+                    class="_iconBtn_15fxs_1 _ring_17j5c_3 _hitArea_jlw0r_9"
                     type="button"
                     data-pseudo="3"
                     style="background: rgb(255, 255, 255); border: 1px solid rgb(226, 229, 221); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); cursor: pointer; height: 42px; width: 42px; justify-content: center; align-items: center; padding: 0px; display: flex; position: relative;">
@@ -328,17 +328,17 @@
                     data-testid="date-anchor"
                     style="position: relative; flex: 1 1 0%; min-width: 0px;">
                     <div
-                      class="_field_1c4ee_1"
+                      class="_field_1glf1_1"
                       style="gap: 8px; flex-direction: column; display: flex;">
                       <label
-                        class="_box_1c4ee_8 _date_1c4ee_126"
+                        class="_box_1glf1_8 _hitAreaBox_jlw0r_12 _date_1glf1_129"
                         data-fill="true"
                         data-testid="field-box"
                         data-pseudo="4"
                         style="background: rgb(255, 255, 255); border: 1px solid rgb(142, 151, 140); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); height: 42px; padding: 0px 12px; align-items: center; display: flex; position: relative; isolation: isolate; width: 216px;">
                         <input
                           aria-label="Date shown"
-                          class="_input_1c4ee_87"
+                          class="_input_1glf1_90"
                           id=":r1:"
                           type="text"
                           value="1901"
@@ -349,7 +349,7 @@
                   </span>
                   <button
                     aria-label="Forward"
-                    class="_iconBtn_1yvf6_1 _ring_17j5c_3"
+                    class="_iconBtn_15fxs_1 _ring_17j5c_3 _hitArea_jlw0r_9"
                     type="button"
                     data-pseudo="6"
                     style="background: rgb(255, 255, 255); border: 1px solid rgb(226, 229, 221); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); cursor: pointer; height: 42px; width: 42px; justify-content: center; align-items: center; padding: 0px; display: flex; position: relative;">
@@ -368,11 +368,11 @@
                     </svg>
                   </button>
                   <span
-                    class="_sheetPlay_1f3it_67"
+                    class="_sheetPlay_1dnul_67"
                     style="margin-left: 4px; display: flex;">
                     <button
                       aria-label="Play through time"
-                      class="_btn_1nae8_1 _ring_17j5c_3 _btnPrimary_1nae8_56"
+                      class="_btn_1eee2_1 _ring_17j5c_3 _hitAreaBordered_jlw0r_10 _btnPrimary_1eee2_68 _hitAreaFill_jlw0r_11"
                       data-icon-only="true"
                       data-round="true"
                       type="button"
@@ -406,7 +406,7 @@
 
       <div style="position: absolute; left: 1rem; right: 1rem; top: 80px">
         <div
-          class="_shape_l4h6k_2 _banner_l4h6k_78"
+          class="_shape_1g6b0_2 _banner_1g6b0_72"
           role="status"
           style='box-sizing: border-box; font-family: "Public Sans", system-ui, sans-serif; font-size: 16px; align-items: center; gap: 12px; height: 64px; line-height: 24px; padding: 8px 8px 8px 16px; display: flex; background: rgb(24, 33, 27); border-radius: 12px; box-shadow: rgba(24, 33, 27, 0.1) 0px 1px 2px 0px, rgba(24, 33, 27, 0.2) 0px 10px 30px 0px; color: rgb(255, 255, 255); min-height: 60px;'>
           <svg
@@ -425,11 +425,11 @@
             <path
               d="M3 3l18 18M8.5 8.6A5.5 5.5 0 0 0 6.5 18H17M17.6 12.2A4 4 0 0 1 20.5 16"></path>
           </svg>
-          <span class="_message_l4h6k_19" style="flex: 1 1 0%;">
+          <span class="_message_1g6b0_19" style="flex: 1 1 0%;">
             Terrain didn't load. Borders and pins still work.
           </span>
           <button
-            class="_action_l4h6k_23 _ring_17j5c_3 _bannerAction_l4h6k_88 _ringOnDark_17j5c_19"
+            class="_action_1g6b0_23 _ring_17j5c_3 _hitArea_jlw0r_9 _bannerAction_1g6b0_82 _ringOnDark_17j5c_19"
             type="button"
             data-pseudo="8"
             style='background: 0px 0px; border: 1px solid rgba(255, 255, 255, 0.45); border-radius: 8px; box-sizing: border-box; color: rgb(255, 255, 255); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 16px; font-weight: 600; height: 44px; line-height: 24px; padding: 0px 16px; position: relative;'>
@@ -441,7 +441,7 @@
         style="position: absolute; right: 1rem; top: 156px; width: 48px; height: 48px">
         <button
           aria-label="Layers and filters"
-          class="_iconBtn_1yvf6_1 _ring_17j5c_3"
+          class="_iconBtn_15fxs_1 _ring_17j5c_3 _hitArea_jlw0r_9"
           data-variant="raised"
           type="button"
           data-pseudo="9"

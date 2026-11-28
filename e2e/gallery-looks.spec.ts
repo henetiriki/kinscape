@@ -695,8 +695,11 @@ test.describe('at 1440px', () => {
             getComputedStyle(node).outlineStyle === 'none'
               ? node.firstElementChild
               : null;
+          // A field box is a label too, but the eye button inside it has its own ring.
           const style = getComputedStyle(
-            node.closest('label') ?? inner ?? node
+            node.closest('label:not([data-testid="field-box"])') ??
+              inner ??
+              node
           );
 
           return {

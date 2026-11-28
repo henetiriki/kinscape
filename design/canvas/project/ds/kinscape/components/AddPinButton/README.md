@@ -1,4 +1,4 @@
-The map's "Add a pin" button (PIN-01): the primary Button, 44px high.
+The map's "Add a pin" button (PIN-01): the primary Button, 42px high.
 
 ## Design
 

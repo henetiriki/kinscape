@@ -16,7 +16,7 @@ A single-line field with its label and, below it, helper text or an error that r
 | `label` | `string` | yes |  |
 | `mark` | `"error" \| "warning"` | no | Marks the field when its message is shown elsewhere, or as a warning. |
 | `shortcut` | `string` | no | A key that focuses the field when no text input has focus. A search field shows it as a hint. |
-| `size` | `"l"` | no | `l` is the 48px sign-in field. |
+| `size` | `"l"` | no | `l` is the 50px sign-in field. |
 | `state` | `"active" \| "focus" \| "hover"` | no |  |
 | `type` | `"search" \| "text" \| "email" \| "password"` | no |  |
 

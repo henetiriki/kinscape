@@ -16,8 +16,10 @@ export const coordinates = (page: Page) => page.getByLabel('Coordinates');
  * The label alone names the map filter too, so the form scopes it.
  */
 export const gapBelowPrecision = async (form: Locator, next: Locator) => {
+  // The select reaches past its box, so the box is its parent.
   const box = (await form
     .getByLabel('Precision', { exact: true })
+    .locator('xpath=..')
     .boundingBox())!;
   const below = (await next.boundingBox())!;
 

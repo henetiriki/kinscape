@@ -52,6 +52,11 @@
   width: max(calc(100% + 2px), var(--size-touch));
 }
 
+/* A primary button has no border, so its hit area does not reach past it. */
+.btnPrimary:not([data-size='l'])::before {
+  width: max(100%, var(--size-touch));
+}
+
 .btn[data-full] {
   width: 100%;
 }

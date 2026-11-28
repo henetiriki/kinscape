@@ -31,6 +31,17 @@ const ROLES = [
   'small',
   'title',
 ];
+/** Old role names that no other role reuses. A board class with one of them is stale. */
+const RETIRED = [
+  'body-l',
+  'button',
+  'button-s',
+  'h1-phone',
+  'link-s',
+  'mono-l',
+  'mono-m',
+  'overline-tight',
+];
 const camel = (name: string) =>
   name.replace(/-(\w)/g, (_, letter: string) => letter.toUpperCase());
 
@@ -90,6 +101,39 @@ describe('the type roles', () => {
         name => !ROLES.includes(name)
       )
     ).toEqual([]);
+  });
+
+  it('names no other role on a board', () => {
+    const boards = globSync('design/canvas/project/*.dc.html', {
+      cwd: root,
+    }).map(file => read(file));
+    const variants = ROLES.map(camel);
+    const textTags = boards.flatMap(board =>
+      [...board.matchAll(/<x-import\b[^>]*KinScape\.Text"[^>]*>/g)].map(
+        ([tag]) => tag
+      )
+    );
+    const variantsUsed = textTags.flatMap(tag => [
+      ...tag.matchAll(/variant="([A-Za-z0-9]+)"/g).map(([, name]) => name),
+    ]);
+    const varsUsed = boards.flatMap(board => [
+      ...board
+        .matchAll(
+          /var\(--type-([a-z0-9-]+?)-(?:font|size|line|weight|tracking)\)/g
+        )
+        .map(([, name]) => name),
+    ]);
+    const classesUsed = boards.flatMap(board =>
+      [...board.matchAll(/class="([^"]*)"/g)].flatMap(([, value]) =>
+        value.split(/\s+/)
+      )
+    );
+
+    expect(varsUsed.length).toBeGreaterThan(100);
+    expect(variantsUsed.length).toBeGreaterThan(50);
+    expect(varsUsed.filter(name => !ROLES.includes(name))).toEqual([]);
+    expect(variantsUsed.filter(name => !variants.includes(name))).toEqual([]);
+    expect(classesUsed.filter(name => RETIRED.includes(name))).toEqual([]);
   });
 
   it('finds an unknown role name', () => {

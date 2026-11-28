@@ -1067,6 +1067,10 @@ export const designSystem = (root: string) => {
   };
 };
 
+/** A board uses the design system if it mounts a component or links its files. A linked file needs the canvas copy to load. */
+export const usesDesignSystem = (board: string) =>
+  board.includes('<x-import') || board.includes('"ds/kinscape/');
+
 type RenderContext = {
   canvas: ReturnType<typeof readCanvasExport>;
   deps: DesignExportDeps;
@@ -1086,7 +1090,7 @@ const renderSnapshot = async (
   const rendered = await deps.render(
     prepare(board, canvas.icon, {
       ...urls,
-      ...(board.includes('<x-import') && {
+      ...(usesDesignSystem(board) && {
         system: designSystem(root),
       }),
     }),

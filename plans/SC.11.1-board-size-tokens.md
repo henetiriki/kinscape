@@ -125,6 +125,7 @@ Check 1 compares the snapshots before and after, with rem as px at a 16px root. 
 - Big: The CI build did not edit the boards or run steps 3 to 5 and 7. They need claude.ai. The boards still hold `var(--space-N)`, so the `design` job fails until step 7.
 - `.design-system/` is gitignored, so step 4 commits no file.
 - Big: `Map-style.dc.html` and `Map-style-phone.dc.html` linked no design system, so no `var()` resolved on them. The tech lead allowed a `<link>` to `tokens.css` and `bundle.css` in each `<head>`. The Constraints name no `<head>` edit.
+- `scripts/design-export.mts` gives the design system to a board that links `ds/kinscape/`, not only to one with an `<x-import>` (`usesDesignSystem`). The workflow export failed on the two style boards without it.
 - Big: The four menu panels on `Map.dc.html` and `Map-phone-states.dc.html` take `--z-menu` (30), not `--z-popup` (20). The tech lead chose this. It changes their stacking value.
 - Big: The workflow snapshots of `map-desktop`, `map-desktop-filters` and `map-phone` write some literal colours as the board spells them, not as `rgb()` (check 1). Their sizes and JPGs are the same.
 - A one-off script made the board edits. It keeps a size literal where no token names the part (D4). The PR lists each one.

@@ -34,6 +34,7 @@ import {
   readCanvasExport,
   snapshotProblems,
   tokenColours,
+  usesDesignSystem,
 } from '@ks/scripts/design-export.mts';
 import { screenNames, snapshotNames } from '@ks/scripts/design-shots.mts';
 
@@ -151,6 +152,18 @@ describe('prepare and finish', () => {
         urls
       )
     ).toBe(`<head><script src="${urls.helpers}"></script></head>`);
+  });
+
+  it('a board uses the design system if it mounts a component or links its tokens', () => {
+    expect(
+      usesDesignSystem(
+        '<x-import component-from-global-scope="K.B"></x-import>'
+      )
+    ).toBe(true);
+    expect(
+      usesDesignSystem('<link rel="stylesheet" href="ds/kinscape/tokens.css">')
+    ).toBe(true);
+    expect(usesDesignSystem('<div style="gap: 4px"></div>')).toBe(false);
   });
 
   it('prepare loads a design system from files: React 18, its CSS as a style and its scripts', () => {

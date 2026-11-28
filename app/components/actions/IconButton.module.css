@@ -1,5 +1,6 @@
 .iconBtn {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
+  composes: hitArea from '@ks/app/components/foundation/hit-area.module.css';
   align-items: center;
   background: var(--surface);
   border: var(--border-hairline) solid var(--line);
@@ -13,17 +14,6 @@
   padding: 0;
   position: relative;
   width: var(--size-control);
-}
-
-/* The 42px button keeps a 44px hit area. */
-.iconBtn::before {
-  content: '';
-  height: var(--size-touch);
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  translate: -50% -50%;
-  width: var(--size-touch);
 }
 
 /* Raised: the 50px button that floats over the map. */

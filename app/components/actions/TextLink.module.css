@@ -1,4 +1,5 @@
 .textLink {
+  composes: hitAreaBox from '@ks/app/components/foundation/hit-area.module.css';
   border-radius: var(--radius-link);
   color: var(--brand);
   cursor: pointer;
@@ -31,18 +32,13 @@
   border-radius: var(--radius-link);
 }
 
-/* A 44px hit area, centred on the link. The anchor keeps its line height, so a link in running text does not grow. */
-.textLink:not([aria-disabled='true'])::before {
-  content: '';
-  height: var(--size-touch);
-  left: 50%;
-
-  /* A minimum, not the `max` function. A hidden link has no layout, so the function stays in its computed style. The snapshot export refuses it. */
+/* The anchor keeps its line height, so a link in running text does not grow. A minimum, not the `max` function: a hidden link has no layout, so the function stays in its computed style, and the snapshot export refuses it. */
+.textLink::before {
   min-width: var(--size-touch);
-  position: absolute;
-  top: 50%;
-  translate: -50% -50%;
-  width: 100%;
+}
+
+.textLink[aria-disabled='true']::before {
+  content: none;
 }
 
 /* The button form: undo the button's own look, so it reads as the link. It has no href, so it needs the touch height of a control. */

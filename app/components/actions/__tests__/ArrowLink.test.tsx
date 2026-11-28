@@ -60,13 +60,11 @@ describe('with an href', () => {
   // NFR-05, NFR-06
   it('has a 44px hit area, centred on the link', () => {
     const link = /\.link \{[^}]*\}/.exec(css)![0];
-    const area = /\.link::before \{[^}]*\}/.exec(css)![0];
 
     expect(link).toContain('position: relative');
-    expect(area).toContain('height: var(--size-touch)');
-    expect(area).toContain('width: max(100%, var(--size-touch))');
-    expect(area).toContain('position: absolute');
-    expect(area).toContain('translate: -50% -50%');
+    expect(link).toContain(
+      "composes: hitAreaFill from '@ks/app/components/foundation/hit-area.module.css'"
+    );
   });
 });
 

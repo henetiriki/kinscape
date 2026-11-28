@@ -1,18 +1,6 @@
 [
   {
     "count": 1,
-    "file": "app/components/actions/Button.module.css",
-    "property": "width",
-    "value": "2px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/actions/Chip.module.css",
-    "property": "width",
-    "value": "2px"
-  },
-  {
-    "count": 1,
     "file": "app/components/actions/DateText.module.css",
     "property": "height",
     "value": "1px"

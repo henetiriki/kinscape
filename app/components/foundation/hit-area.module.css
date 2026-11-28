@@ -1,0 +1,34 @@
+/*
+ * The 44px hit area of a control under 44px. A control sets `position: relative` and takes one variant with
+ * `composes: <variant> from '@ks/app/components/foundation/hit-area.module.css'`:
+ * `hitArea` is 44px wide, `hitAreaFill` is as wide as the control (44px at least), `hitAreaBordered` adds the 1px border
+ * on each side, and `hitAreaBox` is as wide as the control. `hitAreaFill` follows `hitAreaBordered`, so it wins when a control takes both.
+ */
+.hitArea::before,
+.hitAreaBordered::before,
+.hitAreaFill::before,
+.hitAreaBox::before {
+  content: '';
+  height: var(--size-touch);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+}
+
+.hitArea::before {
+  width: var(--size-touch);
+}
+
+.hitAreaBordered::before {
+  /* The padding box is inside the 1px border. */
+  width: max(calc(100% + 2px), var(--size-touch));
+}
+
+.hitAreaFill::before {
+  width: max(100%, var(--size-touch));
+}
+
+.hitAreaBox::before {
+  width: 100%;
+}

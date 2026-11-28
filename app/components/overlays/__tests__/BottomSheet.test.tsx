@@ -13,15 +13,14 @@ const css = readFileSync(
 // NFR-05, NFR-06
 it('gives the grabber a centred touch-size hit area and keeps its 64 × 20px box', () => {
   const grabber = /\.grabber \{[^}]*\}/.exec(css)![0];
-  const before = /\.grabber::before \{[^}]*\}/.exec(css)?.[0] ?? '';
 
   expect(grabber).toContain('position: relative');
   expect(grabber).toContain('height: 20px');
   expect(grabber).toContain('width: 64px');
   expect(grabber).toContain('margin-bottom: calc(-1 * var(--space-inset-2xs))');
-  expect(before).toContain('height: var(--size-touch)');
-  expect(before).toContain('width: max(100%, var(--size-touch))');
-  expect(before).toContain('translate: -50% -50%');
+  expect(grabber).toContain(
+    "composes: hitAreaFill from '@ks/app/components/foundation/hit-area.module.css'"
+  );
 });
 
 // NFR-06 (#988): the date row starts inside the hit area and is positioned, so it takes the tap unless the grabber stacks above it.

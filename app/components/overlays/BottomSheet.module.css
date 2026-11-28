@@ -16,6 +16,7 @@
 }
 
 .grabber {
+  composes: hitAreaFill from '@ks/app/components/foundation/hit-area.module.css';
   --grabber-height: 20px; /* local: shape */
   align-items: center;
   align-self: center;
@@ -32,17 +33,6 @@
 
   /* The content starts inside the 44px hit area. A positioned child, such as the date row, takes the tap there unless the grabber is above it. */
   z-index: var(--z-furniture);
-}
-
-/* A 44px hit area, centred on the grabber. The grabber keeps its 64 × 20px box. */
-.grabber::before {
-  content: '';
-  height: var(--size-touch);
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  translate: -50% -50%;
-  width: max(100%, var(--size-touch));
 }
 
 .handle {

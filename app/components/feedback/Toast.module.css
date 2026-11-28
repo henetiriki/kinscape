@@ -22,6 +22,7 @@
 
 .action {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
+  composes: hitArea from '@ks/app/components/foundation/hit-area.module.css';
   background: var(--surface);
   border: var(--border-hairline) solid var(--line-strong);
   border-radius: var(--radius-control);
@@ -37,16 +38,9 @@
   position: relative;
 }
 
-/* The 30px button keeps a 44px hit area. */
+/* The 30px button keeps a 44px hit area. It is at least as wide as the button. */
 .action::before {
-  content: '';
-  height: var(--size-touch);
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  translate: -50% -50%;
   min-width: 100%;
-  width: var(--size-touch);
 }
 
 .toast {

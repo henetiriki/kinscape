@@ -612,7 +612,7 @@ export const pageHtml = (): string => {
   }
 
   // The links stay until here: `tokens.css` gives `:root` the values that `var()` reads.
-  document.querySelectorAll('link').forEach(node => node.remove());
+  document.querySelectorAll('link, [data-root]').forEach(n => n.remove());
   title.insertAdjacentHTML(
     'afterend',
     '<link rel="stylesheet" href="fonts.css">'
@@ -973,7 +973,34 @@ export const inlineStyles = (tokens: string[]): void => {
     }
   }
 
+  // `pageHtml` reads each `var()` from `:root` after the bundle is gone. A name that only the
+  // bundle gives (`--type-*`) goes in `<style data-root>` until then.
+  const own = Array.from(bundle.sheet.cssRules)
+    .filter(
+      (rule): rule is CSSStyleRule =>
+        'selectorText' in rule &&
+        (rule as CSSStyleRule).selectorText === ':root'
+    )
+    .flatMap(({ style }) =>
+      Array.from(style)
+        .filter(name => name.startsWith('--'))
+        .map(name => [name, style.getPropertyValue(name).trim()] as const)
+    );
+
   bundle.remove();
+
+  const root = getComputedStyle(document.documentElement);
+  const missing = own.filter(
+    ([name]) => root.getPropertyValue(name).trim() === ''
+  );
+
+  if (missing.length > 0) {
+    const block = document.createElement('style');
+
+    block.dataset.root = '';
+    block.textContent = `:root{${missing.map(([name, value]) => `${name}:${value};`).join('')}}`;
+    document.head.append(block);
+  }
 };
 
 /**

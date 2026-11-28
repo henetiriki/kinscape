@@ -286,25 +286,13 @@ describe('design/kinscape.tokens.json and design/tokens.generated.ts', () => {
     expect(layers[1]).toBeGreaterThan(2);
   });
 
-  it('gives each space-N token $deprecated, naming replacements of the same value', () => {
-    const steps = tokenLeaves(source.space, ['space']).filter(
-      ({ path }) => path.length === 2
-    );
-
-    expect(steps).toHaveLength(10);
-
-    for (const { $deprecated, path } of steps) {
-      const name = path.join('.');
-      const replacements = String($deprecated).match(/space\.[a-z]+\.\w+/g);
-
-      expect(replacements?.length, name).toBeGreaterThan(0);
-
-      for (const replacement of replacements ?? []) {
-        expect(resolvedText(source, replacement), replacement).toBe(
-          resolvedText(source, name)
-        );
-      }
-    }
+  it('holds only the inset, gap and stack roles in space, and gives space.gap.2xl 32px (2rem)', () => {
+    expect(Object.keys(source.space).toSorted()).toEqual([
+      'gap',
+      'inset',
+      'stack',
+    ]);
+    expect(resolvedText(source, 'space.gap.2xl')).toBe('2rem');
   });
 
   // NFR-06

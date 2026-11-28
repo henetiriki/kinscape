@@ -121,3 +121,6 @@ Check 1 compares the snapshots before and after, with rem as px at a 16px root. 
 - New scale values: SC.12 to SC.14.
 
 ## Deviations
+
+- Big: The CI build did not edit the boards or run steps 3 to 5 and 7. They need claude.ai. The boards still hold `var(--space-N)`, so the `design` job fails until step 7.
+- `.design-system/` is gitignored, so step 4 commits no file.

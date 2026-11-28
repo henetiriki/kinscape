@@ -65,8 +65,7 @@ The property sets the spacing role:
 - `gap`: gap properties and inline margins.
 - `stack`: block margins.
 
-The suffix names the step: `2xs` (4px) to `5xl` (64px). A role has only the suffixes that it uses. A `space-N` token is deprecated.
-
+The suffix names the step: `2xs` (4px) to `5xl` (64px). A role has only the suffixes that it uses.
 If no name fits, make the size a [local value](#the-size-check). Do not add a name for one use.
 
 ## Units

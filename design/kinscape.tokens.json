@@ -1600,66 +1600,6 @@
     }
   },
   "space": {
-    "4": {
-      "$type": "dimension",
-      "$value": "{scale.space.100}",
-      "$deprecated": "Use space.inset.2xs, space.gap.2xs or space.stack.2xs.",
-      "$description": "Gaps inside a control, icon to text, and between tight rows."
-    },
-    "8": {
-      "$type": "dimension",
-      "$value": "{scale.space.200}",
-      "$deprecated": "Use space.inset.xs, space.gap.xs or space.stack.xs.",
-      "$description": "Small gaps between related items, inside controls and between chips."
-    },
-    "12": {
-      "$type": "dimension",
-      "$value": "{scale.space.300}",
-      "$deprecated": "Use space.inset.s or space.gap.s.",
-      "$description": "Padding inside chips, rows and menu items, and icon gaps."
-    },
-    "16": {
-      "$type": "dimension",
-      "$value": "{scale.space.400}",
-      "$deprecated": "Use space.inset.m or space.gap.m.",
-      "$description": "Padding inside panels and between sections."
-    },
-    "20": {
-      "$type": "dimension",
-      "$value": "{scale.space.500}",
-      "$deprecated": "Use space.inset.l or space.gap.l.",
-      "$description": "Roomy padding inside panels and the dock."
-    },
-    "24": {
-      "$type": "dimension",
-      "$value": "{scale.space.600}",
-      "$deprecated": "Use space.inset.xl or space.gap.xl.",
-      "$description": "Between floating elements on desktop."
-    },
-    "32": {
-      "$type": "dimension",
-      "$value": "{scale.space.700}",
-      "$deprecated": "Use space.inset.2xl.",
-      "$description": "Between groups on a page."
-    },
-    "40": {
-      "$type": "dimension",
-      "$value": "{scale.space.800}",
-      "$deprecated": "Use space.inset.3xl or space.gap.3xl.",
-      "$description": "Large gaps on a page and the sign-in hero."
-    },
-    "48": {
-      "$type": "dimension",
-      "$value": "{scale.space.900}",
-      "$deprecated": "Use space.inset.4xl.",
-      "$description": "Sign-in pane padding and page edges."
-    },
-    "64": {
-      "$type": "dimension",
-      "$value": "{scale.space.1000}",
-      "$deprecated": "Use space.inset.5xl.",
-      "$description": "Page padding of ColumnLayout, and the gap above the empty People list."
-    },
     "inset": {
       "2xs": {
         "$type": "dimension",
@@ -1742,6 +1682,11 @@
         "$type": "dimension",
         "$value": "{scale.space.600}",
         "$description": "Gap between the sections of a page and of a form."
+      },
+      "2xl": {
+        "$type": "dimension",
+        "$value": "{scale.space.700}",
+        "$description": "Gap between the groups of a board."
       },
       "3xl": {
         "$type": "dimension",

@@ -10,7 +10,6 @@ import { notesOf, resolvedText, tokenLeaves } from '@ks/lib/design/dtcg.mts';
 import { formatProblems } from '@ks/lib/design/format.mts';
 import { roleSentences } from '@ks/lib/design/roles.mts';
 import {
-  deprecatedTokens,
   DESIGN_FILES,
   designSections,
   fontFaces,
@@ -79,7 +78,7 @@ describe('systemTokens', () => {
         const { path } = token;
         const usage = notes.get(path.join('.'));
 
-        return usage === undefined || token.$deprecated !== undefined
+        return usage === undefined
           ? []
           : [
               {
@@ -98,7 +97,7 @@ describe('systemTokens', () => {
         value: follow(value),
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
-    expect(all(system).length).toBe(197);
+    expect(all(system).length).toBe(198);
   });
 
   it('shows the purpose names, the border widths and the 8 motion tokens, and no step or space-N', () => {
@@ -208,7 +207,7 @@ describe('systemTokens', () => {
 
   it('writes a token that refers to a scale step as the value of the step, not an alias', () => {
     expect(raw.space).toMatchObject({
-      '16': { $value: '{scale.space.400}' },
+      inset: { m: { $value: '{scale.space.400}' } },
     });
     expect(
       system.spacing.tokens.find(({ name }) => name === 'space-inset-m')?.value
@@ -387,43 +386,8 @@ describe('unicodeRange and fontFaces', () => {
   });
 });
 
-describe('deprecatedTokens', () => {
-  it('lists each space-N with its value and its replacements', () => {
-    const list = deprecatedTokens(raw);
-
-    expect(list.map(({ name }) => name)).toEqual(
-      [4, 8, 12, 16, 20, 24, 32, 40, 48, 64].map(step => `space-${step}`)
-    );
-    expect(list[3]).toEqual({
-      name: 'space-16',
-      usage: 'Use space.inset.m or space.gap.m.',
-      value: '1rem',
-    });
-  });
-
-  it('counts `$deprecated: true` as deprecated and `$deprecated: false` as in use', () => {
-    const tree = structuredClone(raw) as {
-      border: { hairline: DtcgTree };
-      space: { inset: { m: DtcgTree } };
-    };
-
-    tree.space.inset.m.$deprecated = false;
-    tree.border.hairline.$deprecated = true;
-
-    const listed = deprecatedTokens(tree as DtcgTree).map(({ name }) => name);
-    const shown = all(systemTokens(tree as DtcgTree, fonts)).map(
-      ({ name }) => name
-    );
-
-    expect(listed).toContain('border-hairline');
-    expect(listed).not.toContain('space-inset-m');
-    expect(shown).toContain('space-inset-m');
-    expect(shown).not.toContain('border-hairline');
-  });
-});
-
 describe('systemCss', () => {
-  const css = systemCss(system, ranges, deprecatedTokens(raw));
+  const css = systemCss(system, ranges);
 
   it('starts with the header, then the colours and shadows in the light theme', () => {
     const [header, light] = css.split('\n\n');
@@ -454,23 +418,6 @@ describe('systemCss', () => {
     expect(css).toContain('  --z-menu: 30;');
     expect(css).toContain('  --z-modal: 40;');
     expect(css).not.toContain('--layout-dialog-top');
-  });
-
-  it('holds the deprecated space-N names, with their values, in their own :root block', () => {
-    const block = css.split('\n\n').find(part => part.includes('Deprecated'));
-
-    expect(block).toMatch(/^:root \{\n {2}\/\* Deprecated: /);
-    expect(block).toContain('  --space-4: 0.25rem;');
-    expect(block).toContain('  --space-64: 4rem;');
-    expect(css.match(/--space-16: 1rem;/g)).toHaveLength(1);
-  });
-
-  it('writes no deprecated block when no token has $deprecated', () => {
-    const plain = systemCss(system, ranges, []);
-
-    expect(plain).not.toContain('Deprecated');
-    expect(plain).not.toContain('--space-4: ');
-    expect(plain).toContain('  --space-inset-2xs: 0.25rem;');
   });
 
   it('declares each motion name that the components bundle uses', () => {
@@ -653,7 +600,7 @@ describe('systemIndex', () => {
 
 describe('the cover', () => {
   const cover = readFileSync('lib/design/cover.html', 'utf8');
-  const css = systemCss(system, ranges, deprecatedTokens(raw));
+  const css = systemCss(system, ranges);
   const rects = [
     ...cover.matchAll(
       /<rect class="block (\w+)" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"/g

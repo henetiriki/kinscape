@@ -793,6 +793,36 @@ describe('inlinePseudoStyles and inlineStyles', () => {
     expect(document.querySelector('style')).toBeNull();
   });
 
+  it('keeps a bundle :root name that :root lacks in <style data-root>', () => {
+    document.head.innerHTML =
+      '<title>T</title><style data-bundle>:root{--type-body-size:0.9375rem;--space-gap-m:1rem}.a{width:1px}</style>';
+    document.body.innerHTML = '<x-import><i class="a"></i></x-import>';
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      getPropertyValue: (name: string) =>
+        name === '--space-gap-m' ? ' 1rem ' : name === 'width' ? '5px' : '',
+    } as unknown as CSSStyleDeclaration);
+
+    inlineStyles([]);
+
+    expect(document.querySelector('style[data-bundle]')).toBeNull();
+    expect(document.querySelector('style[data-root]')?.textContent).toBe(
+      ':root{--type-body-size:0.9375rem;}'
+    );
+  });
+
+  it('adds no <style data-root> when :root has every name', () => {
+    document.head.innerHTML =
+      '<title>T</title><style data-bundle>:root{--x:1px}.a{width:1px}</style>';
+    document.body.innerHTML = '<x-import><i class="a"></i></x-import>';
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      getPropertyValue: () => '1px',
+    } as unknown as CSSStyleDeclaration);
+
+    inlineStyles([]);
+
+    expect(document.querySelector('style[data-root]')).toBeNull();
+  });
+
   // A pseudo-element has no `style` attribute, so its rules stay as CSS with written-out values.
   describe('a pseudo-element rule', () => {
     const inline = (tokens: string[]) => {
@@ -1089,6 +1119,17 @@ describe('pageHtml', () => {
 
     expect(pageHtml()).toBe(
       '<!doctype html>\n<html><head><title>T</title><link rel="stylesheet" href="fonts.css"></head><body><p style="margin-top: 8px; width: 40px;">A</p></body></html>\n'
+    );
+  });
+
+  it('writes a value from <style data-root> and removes that element', () => {
+    document.head.innerHTML =
+      '<title>T</title><style data-root>:root{--size:0.9375rem;}</style>';
+    document.body.innerHTML =
+      '<x-dc><p style="font-size: var(--size)">A</p></x-dc>';
+
+    expect(pageHtml()).toBe(
+      '<!doctype html>\n<html><head><title>T</title><link rel="stylesheet" href="fonts.css"></head><body><p style="font-size: 0.9375rem">A</p></body></html>\n'
     );
   });
 

@@ -69,7 +69,6 @@ export type DtcgShadowLayer = {
 
 /** A token as the CSS writer sees it: its path, its `$type` and its resolved `$value`. */
 export type DtcgToken = {
-  $deprecated?: boolean | string;
   $type?: string;
   $value: unknown;
   path: string[];

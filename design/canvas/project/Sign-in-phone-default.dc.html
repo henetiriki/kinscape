@@ -16,8 +16,8 @@ body{margin:0}
 </style>
 </helmet>
   <x-import component-from-global-scope="KinScape.SignInLayout" hero="{{hero}}">
-    <form style="flex: 1; display: flex; flex-direction: column; gap: var(--space-16); font-family: var(--font-body)">
-    <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+    <form style="flex: 1; display: flex; flex-direction: column; gap: var(--space-gap-m); font-family: var(--font-body)">
+    <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs)">
       <x-import component-from-global-scope="KinScape.Text" variant="h1Phone" as="h1">Sign in</x-import>
       <p class="body" style="margin: 0; color: var(--ink-3)">Your tree is private. Sign in to open the map.</p>
     </div>
@@ -25,7 +25,7 @@ body{margin:0}
     <x-import component-from-global-scope="KinScape.TextField" size="l" type="email" label="Email" autocomplete="username" placeholder="you@example.com"></x-import>
     <x-import component-from-global-scope="KinScape.TextField" size="l" type="password" label="Password" autocomplete="current-password" default-value="example-password"></x-import>
 
-    <div style="margin-top: var(--space-4)"><x-import component-from-global-scope="KinScape.Button" type="submit" variant="primary" size="l" full="{{yes}}">Sign in</x-import></div>
+    <div style="margin-top: var(--space-stack-2xs)"><x-import component-from-global-scope="KinScape.Button" type="submit" variant="primary" size="l" full="{{yes}}">Sign in</x-import></div>
 
     <div style="margin-top: auto"><x-import component-from-global-scope="KinScape.Text" variant="small" as="p">There's no sign-up. Accounts are set up by whoever runs this KinScape.</x-import></div>
     </form>

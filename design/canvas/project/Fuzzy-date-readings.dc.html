@@ -14,9 +14,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <style>body{margin:0}</style>
 </helmet>
-<div style="width: 1440px; height: 1240px; box-sizing: border-box; padding: var(--space-64); background: var(--surface); font-family: var(--font-body); color: var(--ink); display: flex; flex-direction: column; gap: var(--space-40)">
+<div style="width: 1440px; height: 1240px; box-sizing: border-box; padding: var(--space-inset-5xl); background: var(--surface); font-family: var(--font-body); color: var(--ink); display: flex; flex-direction: column; gap: var(--space-gap-3xl)">
 
-  <div style="display: flex; flex-direction: column; gap: var(--space-8); max-width: 720px">
+  <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); max-width: 720px">
     <span style="text-transform: uppercase; color: var(--ink-3)"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">People · Birth and death</x-import></span>
     <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Fuzzy dates</x-import>
     <x-import component-from-global-scope="KinScape.Text" variant="body" as="p">Birth and death each take one line of GEDCOM-style text. Under the field, a plain reading follows the typing. A problem shows only after Enter or when focus leaves, as for the map date field.</x-import>
@@ -24,88 +24,88 @@
 
   <div style="display: flex; gap: 72px; align-items: flex-start">
 
-    <div style="width: 840px; flex: none; display: flex; flex-direction: column; gap: var(--space-12)">
+    <div style="width: 840px; flex: none; display: flex; flex-direction: column; gap: var(--space-gap-s)">
       <table style="width: 100%; border-collapse: collapse; text-align: left">
         <caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">What the user types and what shows under the field</caption>
         <thead>
-          <tr style="border-bottom: 1px solid var(--line-strong); text-transform: uppercase; color: var(--ink-3)">
-            <th scope="col" style="width: 180px; padding: 0 var(--space-16) var(--space-8) 0; font-weight: 600"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Case</x-import></th>
-            <th scope="col" style="width: 220px; padding: 0 var(--space-16) var(--space-8) 0; font-weight: 600"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">The user types</x-import></th>
-            <th scope="col" style="padding: 0 0 var(--space-8); font-weight: 600"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Under the field</x-import></th>
+          <tr style="border-bottom: var(--border-hairline) solid var(--line-strong); text-transform: uppercase; color: var(--ink-3)">
+            <th scope="col" style="width: 180px; padding: 0 var(--space-inset-m) var(--space-inset-xs) 0; font-weight: 600"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Case</x-import></th>
+            <th scope="col" style="width: 220px; padding: 0 var(--space-inset-m) var(--space-inset-xs) 0; font-weight: 600"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">The user types</x-import></th>
+            <th scope="col" style="padding: 0 0 var(--space-inset-xs); font-weight: 600"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Under the field</x-import></th>
           </tr>
         </thead>
         <tbody>
-          <tr><th scope="rowgroup" colspan="3" style="padding: var(--space-20) 0 var(--space-8)"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Qualifiers: one reading each</x-import></th></tr>
-            <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Exact date</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">14 MAR 1850</td>
+          <tr><th scope="rowgroup" colspan="3" style="padding: var(--space-inset-l) 0 var(--space-inset-xs)"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Qualifiers: one reading each</x-import></th></tr>
+            <tr style="border-top: var(--border-hairline) solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-inset-m) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Exact date</x-import></th>
+              <td style="padding: 0 var(--space-inset-m) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: var(--type-mono-m-size); line-height: var(--type-mono-m-line)">14 MAR 1850</td>
               <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">On 14 March 1850</strong></p></td>
             </tr>
-            <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">About</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">ABT 1850</td>
+            <tr style="border-top: var(--border-hairline) solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-inset-m) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">About</x-import></th>
+              <td style="padding: 0 var(--space-inset-m) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: var(--type-mono-m-size); line-height: var(--type-mono-m-line)">ABT 1850</td>
               <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">About 1850</strong></p></td>
             </tr>
-            <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Before</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">BEF 1850</td>
+            <tr style="border-top: var(--border-hairline) solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-inset-m) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Before</x-import></th>
+              <td style="padding: 0 var(--space-inset-m) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: var(--type-mono-m-size); line-height: var(--type-mono-m-line)">BEF 1850</td>
               <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">Before 1850</strong></p></td>
             </tr>
-            <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">After</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">AFT 1850</td>
+            <tr style="border-top: var(--border-hairline) solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-inset-m) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">After</x-import></th>
+              <td style="padding: 0 var(--space-inset-m) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: var(--type-mono-m-size); line-height: var(--type-mono-m-line)">AFT 1850</td>
               <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">After 1850</strong></p></td>
             </tr>
-            <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Between</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">BET 1850 AND 1855</td>
+            <tr style="border-top: var(--border-hairline) solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-inset-m) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Between</x-import></th>
+              <td style="padding: 0 var(--space-inset-m) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: var(--type-mono-m-size); line-height: var(--type-mono-m-line)">BET 1850 AND 1855</td>
               <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">Between 1850 and 1855</strong></p></td>
             </tr>
-            <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Period</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">FROM 1850 TO 1855</td>
+            <tr style="border-top: var(--border-hairline) solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-inset-m) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Period</x-import></th>
+              <td style="padding: 0 var(--space-inset-m) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: var(--type-mono-m-size); line-height: var(--type-mono-m-line)">FROM 1850 TO 1855</td>
               <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">From 1850 to 1855</strong></p></td>
             </tr>
-            <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Estimated</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">EST 1850</td>
+            <tr style="border-top: var(--border-hairline) solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-inset-m) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Estimated</x-import></th>
+              <td style="padding: 0 var(--space-inset-m) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: var(--type-mono-m-size); line-height: var(--type-mono-m-line)">EST 1850</td>
               <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">Estimated as 1850</strong></p></td>
             </tr>
-            <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Calculated</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">CAL 1850</td>
+            <tr style="border-top: var(--border-hairline) solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-inset-m) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Calculated</x-import></th>
+              <td style="padding: 0 var(--space-inset-m) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: var(--type-mono-m-size); line-height: var(--type-mono-m-line)">CAL 1850</td>
               <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">Calculated as 1850</strong></p></td>
             </tr>
-          <tr><th scope="rowgroup" colspan="3" style="padding: var(--space-24) 0 var(--space-8)"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Errors: one message each, shown after Enter or leaving the field</x-import></th></tr>
-            <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Wrong format</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">14/03/1850</td>
-              <td style="padding: var(--space-8) 0"><span style="display: flex; gap: var(--space-8); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">Use a date like 1850, 14 MAR 1850, ABT 1850 or BET 1850 AND 1855.</x-import></span></td>
+          <tr><th scope="rowgroup" colspan="3" style="padding: var(--space-inset-xl) 0 var(--space-inset-xs)"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Errors: one message each, shown after Enter or leaving the field</x-import></th></tr>
+            <tr style="border-top: var(--border-hairline) solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-inset-m) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Wrong format</x-import></th>
+              <td style="padding: 0 var(--space-inset-m) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: var(--type-mono-m-size); line-height: var(--type-mono-m-line)">14/03/1850</td>
+              <td style="padding: var(--space-inset-xs) 0"><span style="display: flex; gap: var(--space-gap-xs); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">Use a date like 1850, 14 MAR 1850, ABT 1850 or BET 1850 AND 1855.</x-import></span></td>
             </tr>
-            <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Year out of range</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">ABT 850</td>
-              <td style="padding: var(--space-8) 0"><span style="display: flex; gap: var(--space-8); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">Use a year from 1000 to 2999.</x-import></span></td>
+            <tr style="border-top: var(--border-hairline) solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-inset-m) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Year out of range</x-import></th>
+              <td style="padding: 0 var(--space-inset-m) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: var(--type-mono-m-size); line-height: var(--type-mono-m-line)">ABT 850</td>
+              <td style="padding: var(--space-inset-xs) 0"><span style="display: flex; gap: var(--space-gap-xs); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">Use a year from 1000 to 2999.</x-import></span></td>
             </tr>
-            <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Day doesn't exist</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">31 FEB 1850</td>
-              <td style="padding: var(--space-8) 0"><span style="display: flex; gap: var(--space-8); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">February 1850 has 28 days.</x-import></span></td>
+            <tr style="border-top: var(--border-hairline) solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-inset-m) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Day doesn't exist</x-import></th>
+              <td style="padding: 0 var(--space-inset-m) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: var(--type-mono-m-size); line-height: var(--type-mono-m-line)">31 FEB 1850</td>
+              <td style="padding: var(--space-inset-xs) 0"><span style="display: flex; gap: var(--space-gap-xs); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">February 1850 has 28 days.</x-import></span></td>
             </tr>
-            <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Range in reverse</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">BET 1855 AND 1850</td>
-              <td style="padding: var(--space-8) 0"><span style="display: flex; gap: var(--space-8); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">Put the earlier date first: BET 1850 AND 1855.</x-import></span></td>
+            <tr style="border-top: var(--border-hairline) solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-inset-m) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Range in reverse</x-import></th>
+              <td style="padding: 0 var(--space-inset-m) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: var(--type-mono-m-size); line-height: var(--type-mono-m-line)">BET 1855 AND 1850</td>
+              <td style="padding: var(--space-inset-xs) 0"><span style="display: flex; gap: var(--space-gap-xs); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">Put the earlier date first: BET 1850 AND 1855.</x-import></span></td>
             </tr>
         </tbody>
       </table>
       <x-import component-from-global-scope="KinScape.Text" variant="caption" as="p">An exact year or month reads "In 1850" or "In March 1850". Lower case works too. Months are JAN to DEC. Years run from 1000 to 2999.</x-import>
     </div>
 
-    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-32)">
-      <section aria-labelledby="fd-rules" style="display: flex; flex-direction: column; gap: var(--space-12)">
+    <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-gap-2xl)">
+      <section aria-labelledby="fd-rules" style="display: flex; flex-direction: column; gap: var(--space-gap-s)">
         <x-import component-from-global-scope="KinScape.Text" variant="h3" as="h2" id="fd-rules">How it behaves</x-import>
-        <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: var(--space-8)">
+        <ol style="margin: 0; padding-left: var(--space-inset-l); display: flex; flex-direction: column; gap: var(--space-gap-xs)">
           <li><x-import component-from-global-scope="KinScape.Text" variant="body" as="span">The reading takes the helper's place and follows the typing. It's a polite live region, so it's read after a pause.</x-import></li>
           <li><x-import component-from-global-scope="KinScape.Text" variant="body" as="span">Check on Enter or when focus leaves, never while the user types.</x-import></li>
           <li><x-import component-from-global-scope="KinScape.Text" variant="body" as="span">A bad date keeps its text. The field gets a 2px error border, an error icon and aria-invalid. The message replaces the reading and is linked with aria-describedby.</x-import></li>
@@ -115,13 +115,13 @@
         </ol>
       </section>
 
-      <section aria-labelledby="fd-try" style="display: flex; flex-direction: column; gap: var(--space-12); padding: var(--space-20); border-radius: var(--radius-panel); background: var(--surface-2)">
+      <section aria-labelledby="fd-try" style="display: flex; flex-direction: column; gap: var(--space-gap-s); padding: var(--space-inset-l); border-radius: var(--radius-panel); background: var(--surface-2)">
         <x-import component-from-global-scope="KinScape.Text" variant="h3" as="h2" id="fd-try">Try it</x-import>
-        <div style="display: flex; flex-direction: column; gap: var(--space-8)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
           <label for="fd-input" class="label" style="color: var(--ink)">Birth</label>
           <span style="position: relative; display: flex">
             <input id="fd-input" type="text" autocomplete="off" spellcheck="false" aria-invalid="{{tryIt.invalid}}" aria-describedby="fd-input-msg" value="{{tryIt.text}}" onChange="{{tryIt.onInput}}" onBlur="{{tryIt.onBlur}}" onFocus="{{tryIt.onFocus}}" onMouseEnter="{{tryIt.onEnter}}" onMouseLeave="{{tryIt.onLeave}}" onKeyDown="{{tryIt.onKey}}" style="{{tryIt.style}}">
-            <sc-if value="{{tryIt.invalid}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; right: 12px; top: 13px; display: flex; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span></sc-if>
+            <sc-if value="{{tryIt.invalid}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; right: var(--space-inset-s); top: 13px; display: flex; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span></sc-if>
           </span>
           <div id="fd-input-msg" aria-live="polite">
             <sc-if value="{{tryIt.showError}}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="p" tone="error" role="alert">{{tryIt.error}}</x-import></sc-if>
@@ -133,27 +133,27 @@
     </div>
   </div>
 
-  <section aria-labelledby="fd-states" style="display: flex; flex-direction: column; gap: var(--space-16)">
+  <section aria-labelledby="fd-states" style="display: flex; flex-direction: column; gap: var(--space-gap-m)">
     <x-import component-from-global-scope="KinScape.Text" variant="h3" as="h2" id="fd-states">The field's states</x-import>
-    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-32)">
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-gap-2xl)">
 
-      <div style="display: flex; flex-direction: column; gap: var(--space-8)">
+      <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
         <x-import component-from-global-scope="KinScape.Text" variant="caption" as="p">Empty: the helper shows an example</x-import>
         <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Birth" helper="For example 1850, ABT 1850 or BET 1850 AND 1855."></x-import>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: var(--space-8)">
+      <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
         <x-import component-from-global-scope="KinScape.Text" variant="caption" as="p">Typing, with focus: the reading follows</x-import>
         <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Birth" default-value="BET 1850 AND 18" state="focus" helper="For example 1850, ABT 1850 or BET 1850 AND 1855."></x-import>
         <x-import component-from-global-scope="KinScape.Text" variant="caption" as="p">Not readable yet, so the example stays. No error while typing.</x-import>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: var(--space-8)">
+      <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
         <x-import component-from-global-scope="KinScape.Text" variant="caption" as="p">Readable: the reading replaces the example</x-import>
         <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Birth" default-value="BET 1850 AND 1855"></x-import>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: var(--space-8)">
+      <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
         <x-import component-from-global-scope="KinScape.Text" variant="caption" as="p">After Enter or leaving: the error</x-import>
         <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Death" default-value="31 FEB 1850"></x-import>
       </div>

@@ -18,32 +18,32 @@
 
   <x-import component-from-global-scope="KinScape.ColumnLayout" column="detail" header="{{header}}">
 
-      <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+      <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs)">
         <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Relationships</x-import>
         <x-import component-from-global-scope="KinScape.Text" variant="small" as="p"><span style="display: inline-flex; align-items: baseline"><span style="color: var(--ink)"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{subtitle.name}}</x-import></span><span>.</span></span> Each change saves at once.</x-import>
         <span style="display: flex; flex-direction: column"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">{{subtitle.words}}</span><span aria-hidden="true" style="display: contents"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{subtitle.line}}</x-import></span></span>
       </div>
 
       <sc-if value="{{showFailed}}" hint-placeholder-val="{{ false }}">
-        <div style="display: flex; justify-content: center; padding-top: var(--space-48)"><x-import component-from-global-scope="KinScape.NoticeCard" size="large" icon="cloudOff" title="Relationships didn't load" actions="{{retryActions}}">Check your connection, then try again. Nothing in your Tree has changed.</x-import></div>
+        <div style="display: flex; justify-content: center; padding-top: var(--space-inset-4xl)"><x-import component-from-global-scope="KinScape.NoticeCard" size="large" icon="cloudOff" title="Relationships didn't load" actions="{{retryActions}}">Check your connection, then try again. Nothing in your Tree has changed.</x-import></div>
       </sc-if>
 
       <sc-if value="{{showGroups}}" hint-placeholder-val="{{ true }}">
         <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
-          <section aria-labelledby="{{g.headId}}" style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); overflow: hidden">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); height: 60px; box-sizing: border-box; padding: 0 var(--space-20)">
-              <div style="display: flex; align-items: baseline; gap: var(--space-12)">
+          <section aria-labelledby="{{g.headId}}" style="background: var(--surface); border: var(--border-hairline) solid var(--line); border-radius: var(--radius-panel); overflow: hidden">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-gap-m); height: 60px; box-sizing: border-box; padding: 0 var(--space-inset-l)">
+              <div style="display: flex; align-items: baseline; gap: var(--space-gap-s)">
                 <x-import component-from-global-scope="KinScape.Text" variant="h3" as="h2" id="{{g.headId}}">{{g.title}}</x-import>
                 <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">{{g.count}}</x-import>
               </div>
               <x-import component-from-global-scope="KinScape.Button" variant="secondary" on-click="{{g.onAdd}}">Add</x-import>
             </div>
             <sc-if value="{{g.isEmpty}}" hint-placeholder-val="{{ false }}">
-              <div style="border-top: 1px solid var(--line); padding: var(--space-16) var(--space-20)"><x-import component-from-global-scope="KinScape.Text" variant="body" as="p">{{g.emptyLine}}</x-import></div>
+              <div style="border-top: var(--border-hairline) solid var(--line); padding: var(--space-inset-m) var(--space-inset-l)"><x-import component-from-global-scope="KinScape.Text" variant="body" as="p">{{g.emptyLine}}</x-import></div>
             </sc-if>
             <ul style="list-style: none; margin: 0; padding: 0">
               <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="3">
-                <li style="border-top: 1px solid var(--line)">
+                <li style="border-top: var(--border-hairline) solid var(--line)">
                   <x-import component-from-global-scope="KinScape.RelationshipRow" href="Person-edit.dc.html" surname="{{r.surname}}" given-names="{{r.givenNames}}" subtype="{{r.subtype}}" born="{{r.born}}" born-reading="{{r.bornReading}}" died="{{r.died}}" died-reading="{{r.diedReading}}" deceased="{{r.deceased}}" married="{{r.married}}" married-reading="{{r.marriedReading}}" divorced="{{r.divorced}}" divorced-reading="{{r.divorcedReading}}"></x-import>
                 </li>
               </sc-for>
@@ -65,7 +65,7 @@
         <sc-if value="{{dialog.isPick}}" hint-placeholder-val="{{ true }}">
           <x-import component-from-global-scope="KinScape.TextField" type="search" label="Find a person" helper="Matches given names, surnames, maiden names and spelling variants." value="{{query}}" on-change="{{onQuery}}"></x-import>
           <sc-if value="{{dialog.hasMatches}}" hint-placeholder-val="{{ true }}">
-            <ul style="list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: var(--radius-control); overflow: hidden">
+            <ul style="list-style: none; margin: 0; padding: 0; border: var(--border-hairline) solid var(--line); border-radius: var(--radius-control); overflow: hidden">
               <sc-for list="{{dialog.matches}}" as="m" hint-placeholder-count="3">
                 <li style="border-top: {{m.top}}">
                   <x-import component-from-global-scope="KinScape.PickerRow" surname="{{m.surname}}" given-names="{{m.givenNames}}" maiden-name="{{m.maiden}}" matched-variant="{{m.variant}}" born="{{m.born}}" born-reading="{{m.bornReading}}" died="{{m.died}}" died-reading="{{m.diedReading}}" deceased="{{m.deceased}}" on-click="{{m.onPick}}"></x-import>
@@ -79,13 +79,13 @@
           <sc-if value="{{dialog.noOthers}}" hint-placeholder-val="{{ false }}">
             <div style="display: flex; justify-content: center"><x-import component-from-global-scope="KinScape.NoticeCard" icon="people" title="No other people in your Tree" actions="{{dialog.noOthersActions}}">Add another person first, then link them here.</x-import></div>
           </sc-if>
-          <div style="display: flex; gap: var(--space-12)">
+          <div style="display: flex; gap: var(--space-gap-s)">
             <x-import component-from-global-scope="KinScape.Button" variant="secondary" on-click="{{closeDialog}}">Cancel</x-import>
           </div>
         </sc-if>
 
         <sc-if value="{{dialog.isDetails}}" hint-placeholder-val="{{ false }}">
-          <div style="display: flex; flex-direction: column; gap: var(--space-4); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-control); padding: var(--space-12) var(--space-16)">
+          <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs); background: var(--surface-2); border: var(--border-hairline) solid var(--line); border-radius: var(--radius-control); padding: var(--space-inset-s) var(--space-inset-m)">
             <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{dialog.who.name}}</x-import>
             <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">{{dialog.who.words}}</span>
             <span aria-hidden="true" style="display: contents"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span" style="color: var(--ink-3)">{{dialog.who.line}}</x-import></span>
@@ -97,7 +97,7 @@
             <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Marriage" helper="For example 1875, ABT 1875 or BET 1875 AND 1877." default-value="{{marriage}}" autocomplete="off" spell-check="false"></x-import>
             <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Divorce" helper="Leave it empty if they did not divorce." default-value="{{divorce}}" autocomplete="off" spell-check="false"></x-import>
           </sc-if>
-          <div style="display: flex; gap: var(--space-12)">
+          <div style="display: flex; gap: var(--space-gap-s)">
             <x-import component-from-global-scope="KinScape.Button" variant="primary" on-click="{{closeDialog}}">Save</x-import>
             <sc-if value="{{dialog.canGoBack}}" hint-placeholder-val="{{ true }}">
               <x-import component-from-global-scope="KinScape.Button" variant="secondary" on-click="{{goBack}}">Back</x-import>
@@ -113,7 +113,7 @@
   </sc-if>
 
   <sc-if value="{{showToast}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%)"><x-import component-from-global-scope="KinScape.Toast" tone="error" action="Try again" on-action="{{closeToast}}" on-dismiss="{{closeToast}}">Couldn't save the link. Your picks are still here.</x-import></div>
+    <div style="position: absolute; left: 50%; bottom: var(--space-inset-xl); transform: translateX(-50%)"><x-import component-from-global-scope="KinScape.Toast" tone="error" action="Try again" on-action="{{closeToast}}" on-dismiss="{{closeToast}}">Couldn't save the link. Your picks are still here.</x-import></div>
   </sc-if>
 </div>
 </x-dc>

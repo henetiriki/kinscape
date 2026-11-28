@@ -16,20 +16,20 @@ body{margin:0}
 </style>
 </helmet>
   <x-import component-from-global-scope="KinScape.SignInLayout" hero="{{hero}}">
-    <form style="display: flex; flex-direction: column; gap: var(--space-24); font-family: var(--font-body)">
-      <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+    <form style="display: flex; flex-direction: column; gap: var(--space-gap-xl); font-family: var(--font-body)">
+      <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs)">
           <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Sign in</x-import>
           <p class="body" style="margin: 0; color: var(--ink-3)">Your tree is private. Sign in to open the map.</p>
         </div>
 
-      <div style="display: flex; flex-direction: column; gap: var(--space-16)">
+      <div style="display: flex; flex-direction: column; gap: var(--space-gap-m)">
         <x-import component-from-global-scope="KinScape.TextField" size="l" type="email" label="Email" autocomplete="username" placeholder="you@example.com"></x-import>
         <x-import component-from-global-scope="KinScape.TextField" size="l" type="password" label="Password" autocomplete="current-password" default-value="example-password"></x-import>
       </div>
 
       <x-import component-from-global-scope="KinScape.Button" type="submit" variant="primary" size="l" full="{{yes}}">Sign in</x-import>
 
-      <p class="small" style="margin: 0; padding-top: var(--space-20); border-top: 1px solid var(--line); color: var(--ink-3)">There's no sign-up. Accounts are set up by whoever runs this KinScape.</p>
+      <p class="small" style="margin: 0; padding-top: var(--space-inset-l); border-top: var(--border-hairline) solid var(--line); color: var(--ink-3)">There's no sign-up. Accounts are set up by whoever runs this KinScape.</p>
     </form>
   </x-import>
 </x-dc>
@@ -69,14 +69,14 @@ class Component extends DCLogic {
       <text x="656" y="707" font-size="12" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round" style="font-family: var(--font-mono); fill: var(--map-muted-label); stroke: var(--map-land)">FROM 1872 TO 1910</text>
     </svg>
 
-    <div style="position: relative; padding: var(--space-40) var(--space-48); display: flex; flex-direction: column; gap: var(--space-16); max-width: 520px">
+    <div style="position: relative; padding: var(--space-inset-3xl) var(--space-inset-4xl); display: flex; flex-direction: column; gap: var(--space-gap-m); max-width: 520px">
       <h2 class="display" style="margin: 0; color: var(--ink)">Borders move.<br>Places don't.</h2>
       <p class="body-l" style="margin: 0; color: var(--ink-2); max-width: 380px">South Africa as it was on any date from 1652 to today, with your family where they were.</p>
     </div>
-    <div class="mono" style="position: absolute; left: var(--space-48); bottom: var(--space-32); display: flex; gap: var(--space-8); align-items: center; color: var(--ink-2)">
+    <div class="mono" style="position: absolute; left: var(--space-inset-4xl); bottom: var(--space-inset-2xl); display: flex; gap: var(--space-gap-xs); align-items: center; color: var(--ink-2)">
       <span style="display: inline-block; width: 22px; height: 0; border-top: 1.5px solid var(--map-border-colour)"></span>
       <span>Map date 1901-01-01 · borders as recorded</span>
-      <span style="display: inline-block; width: 22px; height: 0; border-top: 1.5px dashed var(--map-border-colour); margin-left: var(--space-8)"></span>
+      <span style="display: inline-block; width: 22px; height: 0; border-top: 1.5px dashed var(--map-border-colour); margin-left: var(--space-gap-xs)"></span>
       <span>approximate</span>
     </div>`;
 

@@ -17,7 +17,7 @@
 <div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: var(--surface); font-family: var(--font-body); color: var(--ink)">
 
   <x-import component-from-global-scope="KinScape.ColumnLayout" column="list" header="{{header}}">
-    <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+    <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs)">
       <x-import component-from-global-scope="KinScape.Text" variant="h1Phone" as="h1">People</x-import>
       <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" role="status">{{countText}}</x-import>
     </div>
@@ -26,7 +26,7 @@
 
     <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">To add or edit people, use a computer.</x-import>
 
-    <ul aria-label="People, by surname" style="list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--line)">
+    <ul aria-label="People, by surname" style="list-style: none; margin: 0; padding: 0; border-bottom: var(--border-hairline) solid var(--line)">
       <sc-for list="{{rows}}" as="p" hint-placeholder-count="8">
         <li>
           <x-import component-from-global-scope="KinScape.PersonRow" form="phone" href="/" surname="{{p.surname}}" given-names="{{p.given}}" born="{{p.born}}" born-reading="{{p.bornReading}}" died="{{p.died}}" died-reading="{{p.diedReading}}" deceased="{{p.deceased}}" maiden-name="{{p.maiden}}" matched-variant="{{p.variant}}"></x-import>

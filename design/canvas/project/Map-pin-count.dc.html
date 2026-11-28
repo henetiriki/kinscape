@@ -83,10 +83,10 @@ class Component extends DCLogic {
       const looks = [['default', 'Default'], ['hover', 'Hover'], ['focus', 'Focus'], ['pressed', 'Pressed'], ['selected', 'Selected']];
       above = [
         marker('default', P),
-        `<section aria-label="Count marker looks" style="position: absolute; left: 400px; top: 130px; width: 400px; box-sizing: border-box; padding: var(--space-16); background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-raised); display: flex; flex-direction: column; gap: var(--space-12)">`,
+        `<section aria-label="Count marker looks" style="position: absolute; left: 400px; top: 130px; width: 400px; box-sizing: border-box; padding: var(--space-inset-m); background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-raised); display: flex; flex-direction: column; gap: var(--space-gap-s)">`,
         TEXT('overline', 'Count marker looks'),
         `<div style="display: flex; justify-content: space-between">`,
-        ...looks.map(([look, name]) => `<span style="display: flex; flex-direction: column; align-items: center; gap: var(--space-4)"><span style="display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: var(--radius-control); background: var(--map-land)">${marker(look)}</span>${TEXT('caption', name)}</span>`),
+        ...looks.map(([look, name]) => `<span style="display: flex; flex-direction: column; align-items: center; gap: var(--space-gap-2xs)"><span style="display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: var(--radius-control); background: var(--map-land)">${marker(look)}</span>${TEXT('caption', name)}</span>`),
         `</div>`,
         TEXT('small', 'Accessible name: “3 Pins”.'),
         `</section>`

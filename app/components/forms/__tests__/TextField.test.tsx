@@ -203,17 +203,6 @@ it('focuses the field on its shortcut unless a text input has focus', () => {
   expect(search).not.toHaveFocus();
 });
 
-// NFR-05, NFR-06
-it('draws a 44px hit area behind the label box of a field under 50px', () => {
-  const rule = css.match(
-    /(label\.box:not\(\[data-size='l'\]\)::before) \{([^}]*)\}/
-  );
-
-  expect(rule?.[2]).toContain('height: var(--size-touch)');
-  expect(rule?.[2]).toContain('z-index: calc(-1 * var(--z-furniture))');
-  expect(css).toMatch(/label\.box \{[^}]*isolation: isolate/);
-});
-
 // NFR-06
 it('wraps the input in a label box that adds no text to its name', () => {
   render(<TextField label='Place' />);

@@ -828,6 +828,22 @@ test.describe('at 1440px', () => {
     ).toBe(66);
   });
 
+  // NFR-06: a loading row is as high as the field that replaces it, so no field moves (#1141).
+  test('a loading row is as high as its field: one bar 42px, two bars 66px', async ({
+    page,
+  }) => {
+    await open(page, 'LoadingField');
+
+    const rows = async (label: string) =>
+      Math.round(
+        (await state(page, label).getByTestId('loading-bars').boundingBox())!
+          .height
+      );
+
+    expect(await rows('LoadingField · one bar')).toBe(42);
+    expect(await rows('LoadingField · two bars')).toBe(66);
+  });
+
   // NFR-05, NFR-06
   test('a medium button at 200% text is its line, two insets and two borders', async ({
     page,

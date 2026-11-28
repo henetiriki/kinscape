@@ -32,7 +32,7 @@ The CSS is `calc(<line> + 2 * <inset> + 2 * var(--border-hairline))`, with `var(
 
 - `Button`: the `::before` hit area covers each size except `l`.
 - `IconButton`, the `Toast` button: a `::before` hit area, as `Chip` has.
-- `TextField` input and select: they reach 2px past the box in each state (D12). A token field takes the same rule, so its box is 42px.
+- `TextField` input and select: they reach 2px past the box, 3px with a 2px border (D12, see Deviations). A token field takes the same rule, so its box is 42px.
 - `SearchBar` input: `min-height: var(--size-touch)`.
 - `TextAreaField`: block padding `var(--space-inset-xs)`. In focus and error, each padding is less by `border.emphasis` − `border.hairline` (Spec D8).
 - `LoadingField`: one bar is `var(--size-field)`. Two bars are `calc(2 * var(--type-body-line) + 2 * var(--space-inset-xs) + 2 * var(--border-hairline))`.
@@ -137,3 +137,11 @@ A text `input` has no `::before`. The input already reaches over the box border 
 - Rounding and borders: SC.14 (#1208).
 
 ## Deviations
+
+- Big: D12 asks for option B (a `<label>` round the box). The build uses option A. A wrapper `<label>` and the existing `<label for>` both name the input, so its accessible name doubles. B also changes five components and their tests. The input reaches 2px past a 1px border and 3px past a 2px border. Decide whether to build B.
+- Big: check 5 does not pass. `UNDER_44` in `e2e/gallery-looks.spec.ts` lists 23 controls: the `ZoomControls` buttons (1px gap), and the `DateDock` buttons and epoch buttons (a field input or a neighbour overlaps their hit area). File a Bug, then empty the list.
+- Big: the local-session steps are not done: steps 3 to 5 and 7 of the design system change, the board deletion and the `Map-add-pin.dc.html` rows. Until then `npm run design:check` fails on the board screens that draw the old heights.
+- `size` in `lib/design/system.mts` uses resolved values: the design system does not allow an alias outside `color`.
+- `lib/design/large-text.json` needs no change: the 200% run gives the same list.
+- `TextField.test.tsx` checks the new margins. The snapshot counts stay 86 until the board goes.
+- `Toast.module.css` hit area is `min-width: 100%` with a 44px width. A `calc(100% + 2px)` is an off-token size.

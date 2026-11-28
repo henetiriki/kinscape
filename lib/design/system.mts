@@ -187,7 +187,7 @@ export const systemTokens = (
     name: 'KinScape',
     radius: { tokens: list('radius') },
     shadow: { tokens: list('shadow') },
-    size: { tokens: list('size') },
+    size: valued('size'),
     spacing: { tokens: list('space') },
     type: {
       families: Object.fromEntries(

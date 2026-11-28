@@ -154,7 +154,7 @@
   cursor: default;
 }
 
-/* On a phone a chip is 44 tall; a removable chip and its × are 36. */
+/* On a phone a chip is 44 tall; a removable chip and its × are 30. */
 @media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .chip {
     height: var(--size-touch);

@@ -41,8 +41,8 @@
   padding: 0 var(--space-inset-s);
 }
 
-/* A button under 44px keeps a 44px hit area, as Chip does. */
-:is(.btn[data-size='s'], .btn[data-size='xs'])::before {
+/* A button under 44px keeps a 44px hit area, as Chip does. The large button is 50px. */
+.btn:not([data-size='l'])::before {
   content: '';
   height: var(--size-touch);
   left: 50%;

@@ -5,16 +5,20 @@
   gap: var(--space-gap-xs);
 }
 
+/* One bar is the height of a field, so the form does not move when the field replaces it. */
 .bars {
   align-items: flex-start;
   display: flex;
   flex-direction: column;
   gap: var(--space-gap-xs);
   justify-content: center;
-  min-height: var(--size-touch);
+  min-height: var(--size-field);
 }
 
-/* The two bars of a text area, 68px high as `pin-edit-loading` draws them. The text area is 66px. */
+/* Two bars are the height of a two-row text area. */
 .bars[data-rows='2'] {
-  min-height: 68px;
+  min-height: calc(
+    2 * var(--type-body-line) + 2 * var(--space-inset-xs) + 2 *
+      var(--border-hairline)
+  );
 }

@@ -11,12 +11,13 @@ const css = readFileSync(
 );
 
 // NFR-05, NFR-06
-it('reaches the input and the select over a 2px border, but not in a token field', () => {
+it('reaches the input and the select 3px past a 2px border, and 2px past a 1px border', () => {
   const rule = css.match(
-    /(\.box:not\(\.tokens\):is\([^{]*?> :is\(\.input, \.select\)) \{([^}]*)\}/
+    /(\.box:is\([^{]*?> :is\(\.input, \.select\)) \{([^}]*)\}/
   );
 
-  expect(rule?.[2]).toContain('margin-block: -2px');
+  expect(css).toMatch(/\.input \{[^}]*margin-block: -2px/);
+  expect(rule?.[2]).toContain('margin-block: -3px');
   expect(rule?.[1]).toContain(':focus-within');
   expect(rule?.[1]).toContain("[data-state='focus']");
   expect(rule?.[1]).toContain('[data-mark]');

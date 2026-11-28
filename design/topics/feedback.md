@@ -51,7 +51,7 @@ The DateField component card shows it. The field is 188px wide and accepts `1901
 
 ### Fuzzy date field
 
-The FuzzyDateField component card shows it. It is a label, a 44px input and one line under the input. The input text is Mono M with ligatures off. On a phone it takes the size and line of Body L, 16 / 24.
+The FuzzyDateField component card shows it. It is a label, a 42px input and one line under the input. The input text is Mono M with ligatures off. On a phone it takes the size and line of Body L, 16 / 24.
 
 1. The line is one `aria-live="polite"` slot. It shows the helper, "Reads as **{reading}**", or the error message.
 2. The reading follows the typing. The error shows on Enter or when focus leaves, never while the user types.

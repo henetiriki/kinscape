@@ -97,7 +97,7 @@ describe('systemTokens', () => {
         value: follow(value),
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
-    expect(all(system).length).toBe(198);
+    expect(all(system).length).toBe(201);
   });
 
   it('shows the purpose names, the border widths and the 8 motion tokens, and no step or space-N', () => {

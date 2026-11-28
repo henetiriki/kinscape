@@ -34,6 +34,19 @@
   height: var(--size-control-xs);
   line-height: var(--type-control-small-line);
   padding: 0 var(--space-inset-s);
+  position: relative;
+}
+
+/* The 30px button keeps a 44px hit area. */
+.action::before {
+  content: '';
+  height: var(--size-touch);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  min-width: 100%;
+  width: var(--size-touch);
 }
 
 .toast {

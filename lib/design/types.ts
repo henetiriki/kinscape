@@ -32,6 +32,9 @@ export type ColourRole = {
 /** A shared control: its name and source file. */
 export type Control = { name: string; path: string };
 
+/** The parts of a control size (`size.control-*`): a reference to each of its line, inset step and border. */
+export type ControlParts = { border: string; inset: string; line: string };
+
 /**
  * What the TypeScript program says of a control. `rest`: it also takes its HTML element's
  * attributes. `forms` lists the required props of each form of a control whose props are a union.

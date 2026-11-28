@@ -79,12 +79,6 @@
   },
   {
     "count": 1,
-    "file": "app/components/feedback/LoadingField.module.css",
-    "property": "min-height",
-    "value": "68px"
-  },
-  {
-    "count": 1,
     "file": "app/components/feedback/NoticeCard.module.css",
     "property": "width",
     "value": "358px"
@@ -111,25 +105,7 @@
     "count": 1,
     "file": "app/components/forms/TextAreaField.module.css",
     "property": "padding",
-    "value": "10px"
-  },
-  {
-    "count": 2,
-    "file": "app/components/forms/TextAreaField.module.css",
-    "property": "padding",
-    "value": "11px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/forms/TextAreaField.module.css",
-    "property": "padding",
     "value": "37px"
-  },
-  {
-    "count": 2,
-    "file": "app/components/forms/TextAreaField.module.css",
-    "property": "padding",
-    "value": "9px"
   },
   {
     "count": 1,
@@ -147,13 +123,13 @@
     "count": 2,
     "file": "app/components/forms/TextField.module.css",
     "property": "margin-block",
-    "value": "-1px"
+    "value": "-2px"
   },
   {
     "count": 1,
     "file": "app/components/forms/TextField.module.css",
     "property": "margin-block",
-    "value": "-2px"
+    "value": "-3px"
   },
   {
     "count": 3,

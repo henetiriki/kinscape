@@ -15,7 +15,18 @@
   width: var(--size-control);
 }
 
-/* Raised: the 48px button that floats over the map. */
+/* The 42px button keeps a 44px hit area. */
+.iconBtn::before {
+  content: '';
+  height: var(--size-touch);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  width: var(--size-touch);
+}
+
+/* Raised: the 50px button that floats over the map. */
 .iconBtn[data-variant='raised'] {
   border: 0;
   border-radius: var(--radius-panel);

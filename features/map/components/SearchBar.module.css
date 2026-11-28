@@ -49,8 +49,8 @@
   flex: 1;
   font-family: var(--type-body-font);
   font-size: var(--type-body-size);
-  height: var(--size-field);
   line-height: var(--type-body-line);
+  min-height: var(--size-touch);
   min-width: 0;
   outline: 0;
   padding: 0;

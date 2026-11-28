@@ -14,7 +14,7 @@
   padding: var(--space-inset-2xs);
 }
 
-/* The snapshots draw these tabs 40 tall; the hit area stays 44. */
+/* The snapshots draw these tabs 30 tall; the hit area stays 44. */
 .panel .head [role='tab'] {
   height: var(--size-control-s);
 }

@@ -2,7 +2,7 @@
 
 - **Spec:** #1206
 - **Requirement IDs:** [NFR-06](../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -55,7 +55,7 @@ Change no size, layout, word or part.
 - **B.** `type.h1` gets `size-phone` and `line-phone` leaves. `Text.module.css` swaps them in a marked `@media`. Cost: two new `--type-h1-*` names for the role-set test to allow. Each other reader of `--type-h1-size` needs its own rule.
 - **Other:** your own.
 
-Recommended: A, because the step lives in one place and each reader of `--type-h1-*` gets it.
+**Answer: A** (@henetiriki)
 
 **D15 · The shape of the derived mode** · Decides: Tech lead
 
@@ -63,7 +63,7 @@ Recommended: A, because the step lives in one place and each reader of `--type-h
 - **B.** The `type` group holds the settings, and `npm run tokens` writes each role's `line` value. `scale.line` goes. Cost: generated values outside `scale`, so `scaleProblems` must also read `type`. A role's line refers to no step.
 - **Other:** your own.
 
-Recommended: A, because each role keeps the step-then-purpose layers of #1188 D11, and `scaleProblems` checks the steps as it does today.
+**Answer: A** (@henetiriki)
 
 **D16 · The phone rules that switch to an equal style** · Decides: Tech lead
 
@@ -73,7 +73,7 @@ On a phone, `TextField`, `TextAreaField` and `FuzzyDateField` switch to `body-l`
 - **B.** Keep each rule, renamed to `--type-body-*` on both sides. Cost: three rules that change nothing.
 - **Other:** your own.
 
-Recommended: A, because `body` is the base step, which the ratio does not move. B loses little and keeps the zoom guard.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

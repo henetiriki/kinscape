@@ -2,7 +2,7 @@
 
 - **Spec:** #1207
 - **Requirement IDs:** [NFR-05](../docs/requirements.md#nfr-05), [NFR-06](../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -47,7 +47,7 @@ DTCG 2025.10 has no expression type. `cssText` writes a `dimension` only from `{
 - **B.** The `$value` is the string `calc({type.control.line} + 2 * {space.inset.xs} + 2 * {border.hairline})`. Cost: the file breaks DTCG 2025.10 (#1188 D1). `cssText`, `dtcgProblems`, the design system and the size check each need a string branch. No `sizePx` number.
 - **Other:** your own.
 
-Recommended: A, because the file stays valid DTCG and follows the scale pattern: settings in `$extensions`, values that `npm run tokens` writes.
+**Answer: A** (@henetiriki)
 
 **D12 · The 44px hit area of a field input** · Decides: Tech lead
 
@@ -57,7 +57,7 @@ A text `input` has no `::before`. The input already reaches over the box border 
 - **B.** A `<label>` wraps the box, and the box takes a `::before` hit area. Cost: new markup in `TextField`, `TextAreaField`, `FuzzyDateField`, `PersonField` and `DateField`, and their tests.
 - **Other:** your own.
 
-Recommended: A, because it extends the rule that the input already follows, and the markup stays.
+**Answer: B** (@henetiriki)
 
 ## Alternatives considered
 

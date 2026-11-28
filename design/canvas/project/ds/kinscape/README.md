@@ -18,34 +18,30 @@ Components set these styles with `<Text variant>` (`app/components/foundation/Te
 
 All three are OFL fonts. The app and the snapshots load the same `@fontsource` files, pinned in `package-lock.json`. Map labels need Public Sans Regular, SemiBold and Italic as glyph PBFs too (see Map style).
 
-| Style                             | Font · size / line · weight                | Used for                           |
-| --------------------------------- | ------------------------------------------ | ---------------------------------- |
-| Display (`display`)               | Bricolage 52 / 56 · 700 · tracking −0.02em | Sign-in headline                   |
-| H1 (`h1`)                         | Bricolage 32 / 40 · 500 · −0.015em         | Page title                         |
-| H1 phone (`h1-phone`)             | Bricolage 28 / 32 · 500 · −0.015em         | Page title on a phone              |
-| H2 (`h2`)                         | Bricolage 24 / 32 · 700                    | Dialog and section titles          |
-| H3 (`h3`)                         | Bricolage 22 / 28 · 700                    | Place name in a popup, cards       |
-| Title (`title`)                   | Public Sans 15 / 22 · 600                  | Notice titles, row titles          |
-| Body L (`body-l`)                 | Public Sans 16 / 24 · 400                  | Sign-in, fields                    |
-| Body (`body`)                     | Public Sans 15 / 22 · 400                  | Panels, popups                     |
-| Label (`label`)                   | Public Sans 14 / 20 · 600                  | Field labels, layer rows           |
-| Small (`small`)                   | Public Sans 13 / 20 · 400, `--ink-3`       | Helper text                        |
-| Caption (`caption`)               | Public Sans 12.5 / 18 · 400, `--ink-3`     | Credits, footnotes                 |
-| Credits (`credits`)               | Public Sans 11 / 16 · 400, `--credits`     | Credits line and scale bar         |
-| Overline (`overline`)             | Public Sans 11 / 16 · 600, caps, 0.1em     | Section headings                   |
-| Overline tight (`overline-tight`) | Public Sans 11 / 12 · 600, caps, 0.1em     | Layer group headings               |
-| Button (`button`)                 | Public Sans 16 / 24 · 600                  | 50px buttons (sign-in)             |
-| Control (`control`)               | Public Sans 15 / 22 · 600                  | 44px buttons and controls          |
-| Chip (`chip`)                     | Public Sans 13.5 / 20 · 600                | Chip that is on                    |
-| Chip off (`chip-off`)             | Public Sans 13.5 / 20 · 400                | Chip that is off                   |
-| Button S (`button-s`)             | Public Sans 14 / 20 · 600                  | 40px and 36px buttons              |
-| Link (`link`)                     | Public Sans 15 / 22 · 500                  | Links in running text              |
-| Link S (`link-s`)                 | Public Sans 13 / 20 · 500                  | Links in helper text and footnotes |
-| Mono L (`mono-l`)                 | JetBrains Mono 22 / 28 · 500               | Map date field                     |
-| Mono M (`mono-m`)                 | JetBrains Mono 15 / 22 · 400               | Fuzzy date field                   |
-| Mono (`mono`)                     | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists     |
+| Style                           | Font · size / line · weight                | Used for                           |
+| ------------------------------- | ------------------------------------------ | ---------------------------------- |
+| Display (`display`)             | Bricolage 49 / 60 · 700 · tracking −0.02em | Sign-in headline                   |
+| H1 (`h1`)                       | Bricolage 39 / 48 · 500 · −0.015em         | Page title; 31 / 40 on a phone     |
+| H2 (`h2`)                       | Bricolage 25 / 32 · 700                    | Dialog and section titles          |
+| H3 (`h3`)                       | Bricolage 20 / 24 · 700                    | Place name in a popup, cards       |
+| Title (`title`)                 | Public Sans 16 / 24 · 600                  | Notice titles, row titles          |
+| Body (`body`)                   | Public Sans 16 / 24 · 400                  | Panels, popups, sign-in, fields    |
+| Label (`label`)                 | Public Sans 13 / 20 · 600                  | Field labels, layer rows           |
+| Small (`small`)                 | Public Sans 13 / 20 · 400, `--ink-3`       | Helper text                        |
+| Caption (`caption`)             | Public Sans 10 / 16 · 400, `--ink-3`       | Credits, footnotes                 |
+| Credits (`credits`)             | Public Sans 10 / 16 · 400, `--credits`     | Credits line and scale bar         |
+| Overline (`overline`)           | Public Sans 10 / 16 · 600, caps, 0.1em     | Section headings, layer groups     |
+| Control (`control`)             | Public Sans 16 / 24 · 600                  | 50px and 44px buttons, controls    |
+| Control small (`control-small`) | Public Sans 13 / 20 · 600                  | 40px and 36px buttons              |
+| Chip (`chip`)                   | Public Sans 13 / 20 · 600                  | Chip that is on                    |
+| Chip off (`chip-off`)           | Public Sans 13 / 20 · 400                  | Chip that is off                   |
+| Link (`link`)                   | Public Sans 16 / 24 · 500                  | Links in running text              |
+| Link small (`link-small`)       | Public Sans 13 / 20 · 500                  | Links in helper text and footnotes |
+| Mono title (`mono-title`)       | JetBrains Mono 20 / 32 · 500               | Map date field                     |
+| Mono (`mono`)                   | JetBrains Mono 16 / 24 · 400               | Fuzzy date field                   |
+| Mono caption (`mono-caption`)   | JetBrains Mono 10 / 16 · 400               | Dates and coordinates in lists     |
 
-Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line.
+A size is 16px × 1.25ⁿ, rounded to a pixel. A line height is the size × 1.25 for a heading role and × 1.5 for each other role, rounded to the nearest multiple of 4px. A halfway value takes the larger multiple. Keep running text under 68 characters a line.
 
 ## Colours
 
@@ -97,7 +93,7 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 
 ## Components
 
-- **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
+- **Buttons:** by height. L 50 (sign-in, full width): `type.control`. M 44: `type.control`, padding 16. S 40: `type.control-small`, padding 16. XS 36: `type.control-small`, padding 12.
 - **Primary button:** `--brand` fill, white text.
 - **Secondary button:** white, 1px `--line-strong` border, `--ink` text. With an `href`, a button is a plain link with the same look and states.
 - **Icon button:** raised variant: 48px, `--radius-panel`, `--shadow-raised`, no border. Same states as the plain one.
@@ -106,15 +102,15 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 - **Back link:** a 44px link with the back icon and the name of the page above. It takes its hover, focus and pressed looks from the icon button.
 - **Action bar:** a 72px white bar fixed to the bottom of the window, with a top `--line` border. It holds the primary button, then the secondary one. On a phone it adds the safe area of the device below the 72px.
 - **Google sign-in (proposed):** not in the requirements yet. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
-- **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, `radius.control`. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see Feedback and validation. Clear the password after a failed sign-in.
+- **Text field:** M 44px and L 48px (sign-in) with `type.body`; 1px `--field-border`, `radius.control`. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see Feedback and validation. Clear the password after a failed sign-in.
 - **Select field:** the box of the Text field with a native select and a drawn chevron. Error: the look of the Text field, with the icon 8px after the chevron.
-- **Long text field:** a label, a textarea and a helper. 1px `--field-border`, `radius.control`, padding 10 12, `type.body` (`type.body-l` on phones). It resizes up and down only, scrolls long content inside, and takes a `maxLength`. Hover: `--ink-3` border. Focus: 2px `--brand` border. Error: the look of the Text field, with the icon at the top right and the message in place of the helper.
-- **Fuzzy date field:** a label, a 44px input and one line under it, in `type.mono-m` (`type.body-l` size on phones), ligatures off. 1px `--field-border`, `radius.control`. Hover, focus and error follow the Text field. The line shows the helper, the reading or the error: see Fuzzy date field.
+- **Long text field:** a label, a textarea and a helper. 1px `--field-border`, `radius.control`, padding 10 12, `type.body`. It resizes up and down only, scrolls long content inside, and takes a `maxLength`. Hover: `--ink-3` border. Focus: 2px `--brand` border. Error: the look of the Text field, with the icon at the top right and the message in place of the helper.
+- **Fuzzy date field:** a label, a 44px input and one line under it, in `type.mono`, ligatures off. 1px `--field-border`, `radius.control`. Hover, focus and error follow the Text field. The line shows the helper, the reading or the error: see Fuzzy date field.
 - **Person field:** a Text field that picks one Person. The panel is 320px wide, so the field is 280px. A Picker row needs about 440px, so the list is a popover 480px wide. It opens 4px under the field, on its left edge, over the map. It shows at most three rows and scrolls past them. A row that matches a spelling variant shows it. If no Person matches, a 280px notice shows "No one matches “{text}”" and the line "Check the spelling, or add the person to the Tree first." The focus stays in the text box. Down and Up move through the rows, Enter picks one and Esc closes the list. When the user types after a pick, the pick clears. A press outside the field and the list closes it too. The error "Choose a person." follows the Text field.
 - **Add a pin button:** the primary Button, 44px high, named "Add a pin". It has the default, hover, focus and pressed looks. A desktop map shows it at the top right, 12px left of the account control and level with it. It opens the empty panel. A phone has no such button.
 - **Arrow link:** a text and the forward icon (16px, 4px gap) in `type.link`, with no underline. With an `href` it is a link: hover `--brand-hover`, pressed `--brand-pressed`, focus the ring. Without one it is a label for a row that is one link, and it turns `--brand-pressed` while that link is pressed.
-- **Person row:** the whole row is a link to edit. Grid: name, a 200px Dates column, then an Arrow link label "Edit". Minimum height `size.row-l`. The name is "Surname, Given names" in `type.title`. A `type.small` line shows "née {maiden}" and "Matches the spelling “{variant}”" only when needed. The dates are one `type.mono` line: "1889 – 1932", "1889 –", "? – 1932", "1889 – ?" or "? – ?". A missing death date reads "?" only when the Person is marked deceased. A screen reader skips the line and hears the dates in words. An optional "Relationships" text link sits after the row link. Hover: `--surface-2` fill. Pressed: `--segment` fill and a `--brand-pressed` "Edit". Focus: the ring.
-- **Relationship row:** the other Person's name, the Person row's line of dates, and an Arrow link "Edit". A parent or child row adds a `type.small` subtype: Biological, Adoptive or Step. A spouse row adds a second `type.mono` line: "Mar. 1875, div. 1890", "Mar. 1875" or "Div. 1890". It has no remove control and no phone form.
+- **Person row:** the whole row is a link to edit. Grid: name, a 200px Dates column, then an Arrow link label "Edit". Minimum height `size.row-l`. The name is "Surname, Given names" in `type.title`. A `type.small` line shows "née {maiden}" and "Matches the spelling “{variant}”" only when needed. The dates are one `type.mono-caption` line: "1889 – 1932", "1889 –", "? – 1932", "1889 – ?" or "? – ?". A missing death date reads "?" only when the Person is marked deceased. A screen reader skips the line and hears the dates in words. An optional "Relationships" text link sits after the row link. Hover: `--surface-2` fill. Pressed: `--segment` fill and a `--brand-pressed` "Edit". Focus: the ring.
+- **Relationship row:** the other Person's name, the Person row's line of dates, and an Arrow link "Edit". A parent or child row adds a `type.small` subtype: Biological, Adoptive or Step. A spouse row adds a second `type.mono-caption` line: "Mar. 1875, div. 1890", "Mar. 1875" or "Div. 1890". It has no remove control and no phone form.
 - **Picker row:** the whole row is a button that picks the Person. It shows the name, the same note as the Person row and the same line of dates. It has the Person row's default, hover, focus and pressed states. It has no phone form.
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
 - **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
@@ -126,10 +122,10 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 - **Count marker:** A `--pin` circle with the count marks a Place with two or more Pins on the Map date. Name: "3 Pins".
 - **Fan of Pins:** Hover or a first tap spreads the Pins in rings, from below the Place, clockwise in date order. Name: "Birth, about 1850".
 - **Pin popup:** A click on a Pin opens it. The popup is 304px wide and sits `pin-popup-gap` left of the Pin, with its pointer on the right edge. Near the top the popup stops at the free area, and the pointer still marks the Pin.
-- **Pin popup, content:** The header holds the Event glyph in `--pin` and the event type in an overline. Under it are the Person's name in `type.h3` and a Close icon button, 8px up and right. Then come the date reading in `type.title` and the recorded date in `type.mono`. A `--surface-2` box (radius `radius.control`, padding 12) holds the overline "Address as recorded" and the address. A desktop popup ends with a primary "Add a pin here" and a secondary "Edit".
+- **Pin popup, content:** The header holds the Event glyph in `--pin` and the event type in an overline. Under it are the Person's name in `type.h3` and a Close icon button, 8px up and right. Then come the date reading in `type.title` and the recorded date in `type.mono-caption`. A `--surface-2` box (radius `radius.control`, padding 12) holds the overline "Address as recorded" and the address. A desktop popup ends with a primary "Add a pin here" and a secondary "Edit".
 - **Pin popup, phone:** A phone shows the popup in the Map date sheet, under the slider and a 1px `--line` rule. The popup has neither "Add a pin here" nor "Edit". A `type.caption` line in `--ink-3` says "Look-up only on a phone. Add people and pins on a tablet or computer."
 - **Pin popup, loading and failed:** The event type and both date lines show. While loading, a 168px bar replaces the name and a 220px bar replaces the address, each 20px high in `--line`, and both buttons are disabled. If the details fail, an error Alert "Couldn't load this Pin" with the text "The details didn't load." replaces the address. A secondary "Try again" replaces the other buttons.
-- **Click popup:** A click on empty map opens it. It has the frame of the Pin popup and sits `popup-gap` left of the point. The overline "Point on the map" sits over the point in `type.mono`: decimal degrees with 6 decimals, latitude first. A Close icon button sits 8px up and right. A `small` line says "The panel opens with this point filled in." A primary "Add a pin here" ends it. The popup is at least 134px high, so the pointer clears the bottom corner. The point shows as a 12px dot in `--brand` with a 2.5px `--surface` edge. Close and Esc close it. M3 adds the jurisdiction chain between the coordinates and the button.
+- **Click popup:** A click on empty map opens it. It has the frame of the Pin popup and sits `popup-gap` left of the point. The overline "Point on the map" sits over the point in `type.mono-caption`: decimal degrees with 6 decimals, latitude first. A Close icon button sits 8px up and right. A `small` line says "The panel opens with this point filled in." A primary "Add a pin here" ends it. The popup is at least 134px high, so the pointer clears the bottom corner. The point shows as a 12px dot in `--brand` with a 2.5px `--surface` edge. Close and Esc close it. M3 adds the jurisdiction chain between the coordinates and the button.
 - **Notice card:** white card with the panel shadow, an icon, a `type.title` title and one line of help, plus up to two buttons. A button can be a link. It shows empty and loading states.
 - **Banner:** `--ink` background, white text, the `floating` shadow, top centre of the map, with one action. For problems that don't block the map.
 - **Menu:** white card, popup shadow, 44px rows with an icon.

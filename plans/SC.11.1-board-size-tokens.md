@@ -124,3 +124,6 @@ Check 1 compares the snapshots before and after, with rem as px at a 16px root. 
 
 - Big: The CI build did not edit the boards or run steps 3 to 5 and 7. They need claude.ai. The boards still hold `var(--space-N)`, so the `design` job fails until step 7.
 - `.design-system/` is gitignored, so step 4 commits no file.
+- Big: `Map-style.dc.html` and `Map-style-phone.dc.html` link no design system, so no `var()` resolves on them. They keep their literals (check 2). A later Chore adds the link.
+- Big: The workflow snapshots of `map-desktop`, `map-desktop-filters` and `map-phone` write some literal colours as the board spells them, not as `rgb()` (check 1). Their sizes and JPGs are the same.
+- A one-off script made the board edits. It keeps a size literal where no token names the part (D4). The PR lists each one.

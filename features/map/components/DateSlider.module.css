@@ -57,11 +57,11 @@
 
 .years {
   color: var(--ink-3);
-  font-family: var(--type-mono-font);
-  font-size: var(--type-mono-size);
+  font-family: var(--type-mono-caption-font);
+  font-size: var(--type-mono-caption-size);
   font-variant-ligatures: none;
   inset: var(--years-top) 0 auto;
-  line-height: var(--type-mono-line);
+  line-height: var(--type-mono-caption-line);
   position: absolute;
 }
 

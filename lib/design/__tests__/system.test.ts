@@ -219,7 +219,7 @@ describe('systemTokens', () => {
       system.type.groups
         .flatMap(({ styles }) => styles)
         .find(({ name }) => name === 'body')
-    ).toMatchObject({ fontSize: '0.9375rem', lineHeight: '1.375rem' });
+    ).toMatchObject({ fontSize: '1rem', lineHeight: '1.5rem' });
     expect(JSON.stringify(system)).not.toContain('{scale.');
   });
 
@@ -246,18 +246,18 @@ describe('systemTokens', () => {
     ]);
 
     expect(names).toEqual([
-      ['Display', 'display', 5],
-      ['Body', 'body', 16],
+      ['Display', 'display', 4],
+      ['Body', 'body', 13],
       ['Mono', 'mono', 3],
     ]);
     expect(system.type.groups[0].styles[1]).toEqual({
-      fontSize: '2rem',
+      fontSize: '2.4375rem',
       fontStyle: 'normal',
       fontWeight: '500',
       letterSpacing: '-0.015em',
-      lineHeight: '2.5rem',
+      lineHeight: '3rem',
       name: 'h1',
-      usage: 'Page title.',
+      usage: 'Page title, on a desktop and on a phone.',
     });
     expect(system.type.families.display).toBe(
       "'Bricolage Grotesque', sans-serif"
@@ -441,7 +441,7 @@ describe('systemCss', () => {
 
   it('has a class per style and a @font-face per font', () => {
     expect(css).toContain(
-      '.h1 {\n  font-family: var(--font-display);\n  font-size: 2rem;\n  line-height: 2.5rem;\n  font-weight: 500;\n  letter-spacing: -0.015em;\n  font-style: normal;\n}'
+      '.h1 {\n  font-family: var(--font-display);\n  font-size: 2.4375rem;\n  line-height: 3rem;\n  font-weight: 500;\n  letter-spacing: -0.015em;\n  font-style: normal;\n}'
     );
     expect(css.match(/@font-face/g)).toHaveLength(8);
   });

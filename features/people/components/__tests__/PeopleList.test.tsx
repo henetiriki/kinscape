@@ -269,10 +269,10 @@ describe('PeopleList', () => {
     });
 
     // PPL-01
-    it('draws the heading as the phone page title', () => {
+    it('draws the heading as the page title', () => {
       open();
       expect(screen.getByRole('heading', { name: 'People' }).className).toBe(
-        'h1Phone'
+        'h1'
       );
     });
 

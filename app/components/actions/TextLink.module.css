@@ -55,8 +55,8 @@
 }
 
 .textLink[data-size='small'] {
-  font-size: var(--type-link-s-size);
-  line-height: var(--type-link-s-line);
+  font-size: var(--type-link-small-size);
+  line-height: var(--type-link-small-line);
 }
 
 @media (hover: hover) {

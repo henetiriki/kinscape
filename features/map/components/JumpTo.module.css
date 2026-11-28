@@ -21,11 +21,11 @@
   color: var(--ink-2);
   cursor: pointer;
   display: inline-flex;
-  font-family: var(--type-mono-font);
-  font-size: var(--type-mono-size);
+  font-family: var(--type-mono-caption-font);
+  font-size: var(--type-mono-caption-size);
   font-variant-ligatures: none;
   height: var(--size-control-xs);
-  line-height: var(--type-mono-line);
+  line-height: var(--type-mono-caption-line);
   padding: 0 var(--space-inset-s);
   position: relative;
 }

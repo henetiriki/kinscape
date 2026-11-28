@@ -28,7 +28,7 @@ export const DateText = (
   return (
     <span className={styles.date}>
       <span className={styles.hidden}>{words}</span>
-      <Text aria-hidden='true' variant='mono'>
+      <Text aria-hidden='true' variant='monoCaption'>
         {line}
       </Text>
     </span>

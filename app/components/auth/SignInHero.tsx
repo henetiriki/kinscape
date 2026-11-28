@@ -152,7 +152,7 @@ const Copy = () => (
       <br />
       Places don&apos;t.
     </Text>
-    <Text variant='bodyL'>
+    <Text variant='body'>
       South Africa as it was on any date from 1652 to today, with your family
       where they were.
     </Text>
@@ -162,9 +162,9 @@ const Copy = () => (
 const Caption = () => (
   <div className={styles.caption}>
     <span aria-hidden='true' className={styles.key} />
-    <Text variant='mono'>Map date 1901-01-01 · borders as recorded</Text>
+    <Text variant='monoCaption'>Map date 1901-01-01 · borders as recorded</Text>
     <span aria-hidden='true' className={`${styles.key} ${styles.dash}`} />
-    <Text variant='mono'>approximate</Text>
+    <Text variant='monoCaption'>approximate</Text>
   </div>
 );
 

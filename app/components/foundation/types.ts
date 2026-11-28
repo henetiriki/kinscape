@@ -18,22 +18,19 @@ export type LinkComponent =
 
 export type Other =
   | 'body'
-  | 'bodyL'
-  | 'button'
-  | 'buttonS'
   | 'caption'
   | 'chip'
   | 'chipOff'
   | 'control'
+  | 'controlSmall'
   | 'credits'
-  | 'h1Phone'
   | 'label'
   | 'link'
-  | 'linkS'
+  | 'linkSmall'
   | 'mono'
-  | 'monoL'
+  | 'monoCaption'
+  | 'monoTitle'
   | 'overline'
-  | 'overlineTight'
   | 'small'
   | 'title';
 export type SurfaceLevel = 'floating' | 'modal' | 'raised' | 'sheet';

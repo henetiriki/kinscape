@@ -43,11 +43,45 @@ const named = (
   return steps;
 };
 
+const settingsOf = (group: DtcgTree | undefined): ScaleSettings | undefined =>
+  (group?.$extensions as { kinscape?: ScaleSettings } | undefined)?.kinscape;
+
+type Derived = Extract<ScaleSettings, { mode: 'derived' }>;
+
+/** Each step of the `from` group, times the ratio, rounded. It needs the whole `tree` to find that group. */
+const derivedSteps = (
+  scale: string,
+  settings: Derived,
+  tree: DtcgTree | undefined
+): Step[] => {
+  const source = settingsOf(
+    ((tree?.scale ?? {}) as DtcgTree)[settings.from] as DtcgTree | undefined
+  );
+
+  if (source === undefined) {
+    throw new Error(
+      `scale.${scale}: the from group "${settings.from}" has no settings`
+    );
+  }
+
+  return stepsOf(settings.from, source, tree).map(step => ({
+    name: step.name,
+    note: `Step ${step.name} of scale.${settings.from} times ${settings.ratio}, rounded to ${settings.round}px.`,
+    value: roundTo(step.value * settings.ratio, settings.round),
+  }));
+};
+
 /** The steps of the group `scale` under `scale.`, from its settings. It throws, naming the group, if a name falls below 100 or the mode is unknown. */
-export const stepsOf = (scale: string, settings: ScaleSettings): Step[] => {
+export const stepsOf = (
+  scale: string,
+  settings: ScaleSettings,
+  tree?: DtcgTree
+): Step[] => {
   const px = settings.unit === 'rem' ? 'px' : settings.unit;
 
   switch (settings.mode) {
+    case 'derived':
+      return derivedSteps(scale, settings, tree);
     case 'explicit':
       return named(
         scale,
@@ -96,9 +130,6 @@ export const stepsOf = (scale: string, settings: ScaleSettings): Step[] => {
   }
 };
 
-const settingsOf = (group: DtcgTree): ScaleSettings | undefined =>
-  (group.$extensions as { kinscape?: ScaleSettings } | undefined)?.kinscape;
-
 /** The token of a step. A rem group builds its steps in px, so the token holds px ÷ 16 (exact in binary). */
 const tokenOf = (settings: ScaleSettings, step: Step): DtcgTree => ({
   $description: step.note,
@@ -132,7 +163,7 @@ export const withSteps = (tree: DtcgTree): DtcgTree => {
         Object.entries(group).filter(([key]) => key.startsWith('$'))
       ),
       ...Object.fromEntries(
-        stepsOf(name, settings).map(step => [
+        stepsOf(name, settings, tree).map(step => [
           step.name,
           tokenOf(settings, step),
         ])
@@ -153,7 +184,10 @@ const text = (type: unknown, value: unknown, path: string): string =>
 export const scaleProblems = (tree: DtcgTree): string[] =>
   groupsOf(tree).flatMap(([name, group, settings]) => {
     const wanted = new Map(
-      stepsOf(name, settings).map(step => [step.name, tokenOf(settings, step)])
+      stepsOf(name, settings, tree).map(step => [
+        step.name,
+        tokenOf(settings, step),
+      ])
     );
     const have = Object.entries(group).filter(([key]) => !key.startsWith('$'));
     const names = new Set([...wanted.keys(), ...have.map(([key]) => key)]);

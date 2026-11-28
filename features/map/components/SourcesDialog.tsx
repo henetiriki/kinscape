@@ -56,7 +56,7 @@ export const SourcesList = ({ sources }: { sources: Source[] }) => (
               <Licence source={source} />
             </td>
             <td className={styles.date}>
-              <Text variant='mono'>{source.dateChecked}</Text>
+              <Text variant='monoCaption'>{source.dateChecked}</Text>
             </td>
           </tr>
         ))}
@@ -70,7 +70,7 @@ export const SourcesList = ({ sources }: { sources: Source[] }) => (
             <span>{source.title}</span>
             <Licence source={source} />
             <span className={styles.date}>
-              <Text variant='mono'>Checked {source.dateChecked}</Text>
+              <Text variant='monoCaption'>Checked {source.dateChecked}</Text>
             </span>
           </span>
           <span className={styles.detail}>{detail(source)}</span>

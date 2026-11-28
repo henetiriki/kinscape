@@ -63,63 +63,49 @@ export const font = {
 export const type = {
   "display": {
     "font": "'Bricolage Grotesque', sans-serif",
-    "size": "3.25rem",
-    "line": "3.5rem",
+    "size": "3.0625rem",
+    "line": "3.75rem",
     "weight": "700",
     "tracking": "-0.02em"
   },
   "h1": {
     "font": "'Bricolage Grotesque', sans-serif",
-    "size": "2rem",
-    "line": "2.5rem",
-    "weight": "500",
-    "tracking": "-0.015em"
-  },
-  "h1-phone": {
-    "font": "'Bricolage Grotesque', sans-serif",
-    "size": "1.75rem",
-    "line": "2rem",
+    "size": "2.4375rem",
+    "line": "3rem",
     "weight": "500",
     "tracking": "-0.015em"
   },
   "h2": {
     "font": "'Bricolage Grotesque', sans-serif",
-    "size": "1.5rem",
+    "size": "1.5625rem",
     "line": "2rem",
     "weight": "700",
     "tracking": "0"
   },
   "h3": {
     "font": "'Bricolage Grotesque', sans-serif",
-    "size": "1.375rem",
-    "line": "1.75rem",
+    "size": "1.25rem",
+    "line": "1.5rem",
     "weight": "700",
     "tracking": "0"
   },
   "title": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "0.9375rem",
-    "line": "1.375rem",
+    "size": "1rem",
+    "line": "1.5rem",
     "weight": "600",
     "tracking": "0"
   },
-  "body-l": {
+  "body": {
     "font": "'Public Sans', system-ui, sans-serif",
     "size": "1rem",
     "line": "1.5rem",
     "weight": "400",
     "tracking": "0"
   },
-  "body": {
-    "font": "'Public Sans', system-ui, sans-serif",
-    "size": "0.9375rem",
-    "line": "1.375rem",
-    "weight": "400",
-    "tracking": "0"
-  },
   "label": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "0.875rem",
+    "size": "0.8125rem",
     "line": "1.25rem",
     "weight": "600",
     "tracking": "0"
@@ -133,98 +119,84 @@ export const type = {
   },
   "caption": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "0.78125rem",
-    "line": "1.125rem",
+    "size": "0.625rem",
+    "line": "1rem",
     "weight": "400",
     "tracking": "0"
   },
   "credits": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "0.6875rem",
+    "size": "0.625rem",
     "line": "1rem",
     "weight": "400",
     "tracking": "0"
   },
   "overline": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "0.6875rem",
+    "size": "0.625rem",
     "line": "1rem",
     "weight": "600",
     "tracking": "0.1em"
   },
-  "overline-tight": {
-    "font": "'Public Sans', system-ui, sans-serif",
-    "size": "0.6875rem",
-    "line": "0.75rem",
-    "weight": "600",
-    "tracking": "0.1em"
-  },
-  "button": {
+  "control": {
     "font": "'Public Sans', system-ui, sans-serif",
     "size": "1rem",
     "line": "1.5rem",
     "weight": "600",
     "tracking": "0"
   },
-  "control": {
-    "font": "'Public Sans', system-ui, sans-serif",
-    "size": "0.9375rem",
-    "line": "1.375rem",
-    "weight": "600",
-    "tracking": "0"
-  },
   "chip": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "0.84375rem",
+    "size": "0.8125rem",
     "line": "1.25rem",
     "weight": "600",
     "tracking": "0"
   },
   "chip-off": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "0.84375rem",
+    "size": "0.8125rem",
     "line": "1.25rem",
     "weight": "400",
     "tracking": "0"
   },
-  "button-s": {
+  "control-small": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "0.875rem",
+    "size": "0.8125rem",
     "line": "1.25rem",
     "weight": "600",
     "tracking": "0"
   },
   "link": {
     "font": "'Public Sans', system-ui, sans-serif",
-    "size": "0.9375rem",
-    "line": "1.375rem",
+    "size": "1rem",
+    "line": "1.5rem",
     "weight": "500",
     "tracking": "0"
   },
-  "link-s": {
+  "link-small": {
     "font": "'Public Sans', system-ui, sans-serif",
     "size": "0.8125rem",
     "line": "1.25rem",
     "weight": "500",
     "tracking": "0"
   },
-  "mono-l": {
+  "mono-title": {
     "font": "'JetBrains Mono', monospace",
-    "size": "1.375rem",
-    "line": "1.75rem",
+    "size": "1.25rem",
+    "line": "2rem",
     "weight": "500",
-    "tracking": "0"
-  },
-  "mono-m": {
-    "font": "'JetBrains Mono', monospace",
-    "size": "0.9375rem",
-    "line": "1.375rem",
-    "weight": "400",
     "tracking": "0"
   },
   "mono": {
     "font": "'JetBrains Mono', monospace",
-    "size": "0.75rem",
+    "size": "1rem",
+    "line": "1.5rem",
+    "weight": "400",
+    "tracking": "0"
+  },
+  "mono-caption": {
+    "font": "'JetBrains Mono', monospace",
+    "size": "0.625rem",
     "line": "1rem",
     "weight": "400",
     "tracking": "0"

@@ -254,16 +254,14 @@ it('passes other attributes to the input', () => {
   expect(field.name).toBe('born');
 });
 
-it('sets the input in 15 / 22 Mono from a token, ligatures off, and 16 / 24 on a phone', () => {
+it('sets the input in 16 / 24 Mono from a token, ligatures off', () => {
   const input = /^\.input \{[^}]*\}/m.exec(css)![0];
-  const phone = /@media[^{]*\{\s*\.input \{[^}]*\}/.exec(css)![0];
 
   expect(css).toContain("composes: box from '@ks/app/components/forms/");
-  expect(input).toContain('font-size: var(--type-mono-m-size)');
-  expect(input).toContain('line-height: var(--type-mono-m-line)');
+  expect(input).toContain('font-size: var(--type-mono-size)');
+  expect(input).toContain('line-height: var(--type-mono-line)');
   expect(input).toContain('font-variant-ligatures: none');
-  expect(phone).toContain('font-size: var(--type-body-l-size)');
-  expect(phone).toContain('line-height: var(--type-body-l-line)');
+  expect(css).not.toContain('@media');
 });
 
 it('draws the line under the box as a 20px paragraph, not an inline span in a taller line', () => {

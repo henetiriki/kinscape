@@ -68,7 +68,7 @@
 }
 
 .line .date {
-  line-height: var(--type-mono-line);
+  line-height: var(--type-mono-caption-line);
 }
 
 .line {

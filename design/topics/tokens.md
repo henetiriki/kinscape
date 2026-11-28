@@ -54,9 +54,11 @@ The settings of a group are in `$extensions.kinscape`: `mode`, `unit` and these 
 
 A step name is a 100-based number. Grid, hybrid and explicit mode start at 100. In ratio mode, the base is 400. A name below 100 fails.
 
+A control size refers to a line, an inset step and a border.
+
 A role takes a breakpoint step in `$extensions.kinscape.breakpoints.<name>`. `npm run tokens` writes a marked `@media` block.
 
-Step n is base × ratioⁿ, then rounded to the nearest multiple of the rounding unit. A halfway value rounds to the larger multiple.
+Step n is base × ratioⁿ, rounded to the nearest multiple of the rounding unit. A halfway value rounds to the larger multiple.
 
 ## Names
 

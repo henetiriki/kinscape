@@ -21,19 +21,19 @@ it('gives the button form a touch-size minimum height', () => {
 // NFR-05, NFR-06
 it('gives an enabled link a centred touch-size hit area, and the disabled text none', () => {
   const link = /\.textLink \{[^}]*\}/.exec(css)![0];
-  const before =
-    /\.textLink:not\(\[aria-disabled='true'\]\)::before \{[^}]*\}/.exec(
-      css
-    )![0];
+  const before = /\.textLink::before \{[^}]*\}/.exec(css)![0];
 
   expect(link).toContain('position: relative');
-  expect(before).toContain('height: var(--size-touch)');
+  expect(link).toContain(
+    "composes: hitAreaBox from '@ks/app/components/foundation/hit-area.module.css'"
+  );
   expect(before).toContain('min-width: var(--size-touch)');
-  expect(before).toContain('width: 100%');
   // A hidden link keeps the `max` function in its computed style, and the snapshot export refuses it.
+  expect(link).not.toContain('max(');
   expect(before).not.toContain('max(');
-  expect(before).toContain('translate: -50% -50%');
-  expect(css).not.toMatch(/aria-disabled='true'\]::before/);
+  expect(css).toMatch(
+    /\.textLink\[aria-disabled='true'\]::before \{\s*content: none/
+  );
 });
 
 // NFR-05, NFR-06

@@ -10,6 +10,7 @@
 
 .segItem {
   composes: ringWithin from '@ks/app/components/foundation/focus.module.css';
+  composes: hitAreaFill from '@ks/app/components/foundation/hit-area.module.css';
   --seg-min: 40px; /* local: shape */
   align-items: center;
   border-radius: var(--radius-segment-item);
@@ -27,16 +28,6 @@
   min-width: var(--seg-min);
   padding: 0 var(--space-inset-s);
   position: relative;
-}
-
-.segItem::before {
-  content: '';
-  height: var(--size-touch);
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  translate: -50% -50%;
-  width: max(100%, var(--size-touch));
 }
 
 /* The radio fills its label so a click anywhere on it lands on the radio. */

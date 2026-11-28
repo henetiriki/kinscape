@@ -5,7 +5,7 @@ import type { ControlState } from '@ks/app/components/foundation/types';
 import { Button } from '@ks/app/components/actions/Button';
 
 /**
- * The map's "Add a pin" button (PIN-01): the primary Button, 44px high. It goes in the `action`
+ * The map's "Add a pin" button (PIN-01): the primary Button, 42px high. It goes in the `action`
  * slot of `MapLayout`, which hides it on a phone.
  */
 export const AddPinButton = ({

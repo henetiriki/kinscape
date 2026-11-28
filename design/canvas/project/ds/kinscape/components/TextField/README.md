@@ -2,7 +2,7 @@ A single-line field with its label and, below it, helper text or an error that r
 
 ## Design
 
-- **Text field:** M 44px and L 48px (sign-in) with `type.body`; 1px `--field-border`, `radius.control`. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see Feedback and validation. Clear the password after a failed sign-in.
+- **Text field:** M 42px and L 50px (sign-in) with `type.body`; 1px `--field-border`, `radius.control`. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see Feedback and validation. Clear the password after a failed sign-in.
 
 ## Props
 
@@ -16,7 +16,7 @@ A single-line field with its label and, below it, helper text or an error that r
 | `label` | `string` | yes |  |
 | `mark` | `"error" \| "warning"` | no | Marks the field when its message is shown elsewhere, or as a warning. |
 | `shortcut` | `string` | no | A key that focuses the field when no text input has focus. A search field shows it as a hint. |
-| `size` | `"l"` | no | `l` is the 48px sign-in field. |
+| `size` | `"l"` | no | `l` is the 50px sign-in field. |
 | `state` | `"active" \| "focus" \| "hover"` | no |  |
 | `type` | `"search" \| "text" \| "email" \| "password"` | no |  |
 

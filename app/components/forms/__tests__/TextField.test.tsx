@@ -202,3 +202,26 @@ it('focuses the field on its shortcut unless a text input has focus', () => {
   fireEvent.keyDown(document.body, { key: '/' });
   expect(search).not.toHaveFocus();
 });
+
+// NFR-06
+it('wraps the input in a label box that adds no text to its name', () => {
+  render(<TextField label='Place' />);
+
+  const box = screen.getByTestId('field-box');
+
+  expect(box.tagName).toBe('LABEL');
+  expect(box.contains(screen.getByRole('textbox', { name: 'Place' }))).toBe(
+    true
+  );
+  expect(box.textContent).toBe('');
+});
+
+// NFR-06
+it('names a password input by its label, not by the eye button in its label box', () => {
+  render(<TextField label='Password' type='password' />);
+
+  expect(screen.getByTestId('field-box').tagName).toBe('LABEL');
+  expect(screen.getByLabelText('Password').getAttribute('aria-label')).toBe(
+    'Password'
+  );
+});

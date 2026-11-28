@@ -5,6 +5,7 @@
 
 .tab {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
+  composes: hitAreaFill from '@ks/app/components/foundation/hit-area.module.css';
   background: transparent;
   border: 0;
   border-radius: var(--radius-control);
@@ -28,16 +29,6 @@
   flex: 1;
   height: var(--size-touch);
   justify-content: center;
-}
-
-.tab::before {
-  content: '';
-  height: var(--size-touch);
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  translate: -50% -50%;
-  width: max(100%, var(--size-touch));
 }
 
 .tab[aria-selected='true'] {

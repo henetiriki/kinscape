@@ -26,3 +26,10 @@
 .card button:is(:focus-visible, [data-state='focus']) {
   z-index: var(--z-furniture);
 }
+
+/* The buttons are 1px apart, so no 44px hit area fits each. Each hit area covers its button and the gap below it, and no neighbour takes the gap. */
+.card button::before {
+  height: calc(100% + var(--border-hairline));
+  top: 0;
+  translate: -50% 0;
+}

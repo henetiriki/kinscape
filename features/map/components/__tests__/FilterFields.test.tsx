@@ -44,7 +44,7 @@ it('draws Person, Surname, Event type and Branch in that order', () => {
 
   expect(
     // eslint-disable-next-line testing-library/no-node-access -- the test checks the order of the labels and legends, and no query returns them
-    [...document.querySelectorAll('label, legend')].map(
+    [...document.querySelectorAll('label[for], legend')].map(
       node => node.textContent
     )
   ).toEqual(['Person', 'Surname', 'Event type', 'Branch']);

@@ -9,6 +9,7 @@
 
 .checkbox {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
+  composes: hitArea from '@ks/app/components/foundation/hit-area.module.css';
   --box-border: 1.5px; /* local: shape */
   appearance: none;
   background: var(--surface);
@@ -21,16 +22,6 @@
   margin: 0;
   position: relative;
   width: var(--size-checkbox);
-}
-
-.checkbox::before {
-  content: '';
-  height: var(--size-touch);
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  translate: -50% -50%;
-  width: var(--size-touch);
 }
 
 .tick {

@@ -9,9 +9,10 @@
       body{margin:0}
     </style>
     <style data-pseudo="">
-      [data-pseudo="1"]::-webkit-search-cancel-button{appearance: none; display: none;}
-      [data-pseudo="1"]::-webkit-search-decoration{appearance: none; display: none;}
-      [data-pseudo="1"]::placeholder{color: rgb(24, 33, 27);}
+      [data-pseudo="1"]::before{z-index: -1; content: ""; height: 44px; position: absolute; top: 20px; left: 178px; translate: -50% -50%; width: 356px;}
+      [data-pseudo="2"]::-webkit-search-cancel-button{appearance: none; display: none;}
+      [data-pseudo="2"]::-webkit-search-decoration{appearance: none; display: none;}
+      [data-pseudo="2"]::placeholder{color: rgb(24, 33, 27);}
     </style>
   </head>
   <body>
@@ -101,7 +102,7 @@
           style="flex: 1 1 0%; min-height: 0px; overflow-y: auto;">
           <div
             class="_content_wkoqz_15"
-            style="box-sizing: border-box; margin: 0px; gap: 16px; padding: 20px 16px 48px; width: 390px; flex-direction: column; display: flex;">
+            style="box-sizing: border-box; margin: 0px; gap: 16px; padding: 24px 16px 44px; width: 390px; flex-direction: column; display: flex;">
             <div style="display: flex; flex-direction: column; gap: 0.25rem">
               <h1
                 class="_h1_pm00z_12"
@@ -116,7 +117,7 @@
               </p>
             </div>
             <div
-              class="_field_esjf0_1"
+              class="_field_1glf1_1"
               style="gap: 8px; flex-direction: column; display: flex;">
               <label
                 class="_label_pm00z_57"
@@ -124,11 +125,12 @@
                 style='font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: normal; line-height: 20px; margin: 0px;'>
                 Find a person
               </label>
-              <span
-                class="_box_esjf0_8"
+              <label
+                class="_box_1glf1_8 _hitAreaBox_jlw0r_12"
                 data-testid="field-box"
                 data-type="search"
-                style="background: rgb(244, 245, 240); border: 1px solid transparent; border-radius: 8px; box-sizing: border-box; color: rgb(74, 84, 76); height: 44px; padding: 0px 12px; align-items: center; display: flex; position: relative; gap: 8px;">
+                data-pseudo="1"
+                style="background: rgb(244, 245, 240); border: 1px solid transparent; border-radius: 8px; box-sizing: border-box; color: rgb(74, 84, 76); height: 42px; padding: 0px 12px; align-items: center; display: flex; position: relative; isolation: isolate; gap: 8px;">
                 <svg
                   aria-hidden="true"
                   data-icon="search"
@@ -146,14 +148,14 @@
                   <path d="M16 16l4.5 4.5"></path>
                 </svg>
                 <input
-                  class="_input_esjf0_71"
+                  class="_input_1glf1_90"
                   aria-describedby=":r0:-message"
                   id=":r0:"
                   type="search"
                   value=""
-                  data-pseudo="1"
+                  data-pseudo="2"
                   style='color: rgb(24, 33, 27); font-family: "Public Sans", system-ui, sans-serif; font-size: 16px; line-height: 24px; background: 0px 0px; border: 0px rgb(24, 33, 27); outline: 0px none rgb(24, 33, 27); flex: 1 1 0%; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px;' />
-              </span>
+              </label>
               <span
                 class="_small_pm00z_66"
                 id=":r0:-message"

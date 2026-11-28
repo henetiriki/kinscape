@@ -78,6 +78,7 @@
 /* Close is 36 round, pulled 8 up and right; a 44 × 44 hit area sits over it. */
 .close {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
+  composes: hitArea from '@ks/app/components/foundation/hit-area.module.css';
   align-items: center;
   background: transparent;
   border: 0;
@@ -93,16 +94,6 @@
   padding: 0;
   position: relative;
   width: var(--size-control-xs);
-}
-
-.close::before {
-  content: '';
-  height: var(--size-touch);
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  translate: -50% -50%;
-  width: var(--size-touch);
 }
 
 @media (hover: hover) {

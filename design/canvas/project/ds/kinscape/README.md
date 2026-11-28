@@ -31,8 +31,8 @@ All three are OFL fonts. The app and the snapshots load the same `@fontsource` f
 | Caption (`caption`)             | Public Sans 10 / 16 · 400, `--ink-3`       | Credits, footnotes                 |
 | Credits (`credits`)             | Public Sans 10 / 16 · 400, `--credits`     | Credits line and scale bar         |
 | Overline (`overline`)           | Public Sans 10 / 16 · 600, caps, 0.1em     | Section headings, layer groups     |
-| Control (`control`)             | Public Sans 16 / 24 · 600                  | 50px and 44px buttons, controls    |
-| Control small (`control-small`) | Public Sans 13 / 20 · 600                  | 40px and 36px buttons              |
+| Control (`control`)             | Public Sans 16 / 24 · 600                  | 50px and 42px buttons, controls    |
+| Control small (`control-small`) | Public Sans 13 / 20 · 600                  | 30px buttons                       |
 | Chip (`chip`)                   | Public Sans 13 / 20 · 600                  | Chip that is on                    |
 | Chip off (`chip-off`)           | Public Sans 13 / 20 · 400                  | Chip that is off                   |
 | Link (`link`)                   | Public Sans 16 / 24 · 500                  | Links in running text              |
@@ -67,8 +67,8 @@ The `$description` of each `radius` and `shadow` token says where it goes.
 
 | Token   | Value                                                                                                                                                     |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                                                                   |
-| Touch   | Targets at least 44px. Buttons and fields 44–50px tall                                                                                                    |
+| Spacing | Steps of 4, 8, 12 and 16px, then ×√2 on the 4px grid: 24, 32, 44, 64, 92. 16–24 inside panels, 24 between floating elements on desktop                    |
+| Touch   | Targets at least 44px. Controls are 30, 42 and 50px tall (small, medium, large). Each under 44px has a 44px hit area                                      |
 | Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields: see Text field                                                                  |
 | Icons   | 24px grid, 2px stroke, round caps and joins, `currentColor`. Draw at 16, 18 or 20px (24 on the phone layers button). An icon-only button carries the name |
 
@@ -93,27 +93,27 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 
 ## Components
 
-- **Buttons:** by height. L 50 (sign-in, full width): `type.control`. M 44: `type.control`, padding 16. S 40: `type.control-small`, padding 16. XS 36: `type.control-small`, padding 12.
+- **Buttons:** by height. L 50 (sign-in, full width): `type.control`. M 42: `type.control`, padding 16. S 30: `type.control-small`, padding 16. XS 30: `type.control-small`, padding 12.
 - **Primary button:** `--brand` fill, white text.
 - **Secondary button:** white, 1px `--line-strong` border, `--ink` text. With an `href`, a button is a plain link with the same look and states.
-- **Icon button:** raised variant: 48px, `--radius-panel`, `--shadow-raised`, no border. Same states as the plain one.
+- **Icon button:** raised variant: 50px, `--radius-panel`, `--shadow-raised`, no border. Same states as the plain one.
 - **Text link:** with `onClick` and no `href`, it is a button with the same look.
 - **Page header:** a 64px white bar (60px on a phone) with a bottom `--line` border. It holds the Wordmark (icon only on a phone), a divider, the back link and the Avatar at the right.
 - **Back link:** a 44px link with the back icon and the name of the page above. It takes its hover, focus and pressed looks from the icon button.
 - **Action bar:** a 72px white bar fixed to the bottom of the window, with a top `--line` border. It holds the primary button, then the secondary one. On a phone it adds the safe area of the device below the 72px.
 - **Google sign-in (proposed):** not in the requirements yet. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
-- **Text field:** M 44px and L 48px (sign-in) with `type.body`; 1px `--field-border`, `radius.control`. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see Feedback and validation. Clear the password after a failed sign-in.
+- **Text field:** M 42px and L 50px (sign-in) with `type.body`; 1px `--field-border`, `radius.control`. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see Feedback and validation. Clear the password after a failed sign-in.
 - **Select field:** the box of the Text field with a native select and a drawn chevron. Error: the look of the Text field, with the icon 8px after the chevron.
-- **Long text field:** a label, a textarea and a helper. 1px `--field-border`, `radius.control`, padding 10 12, `type.body`. It resizes up and down only, scrolls long content inside, and takes a `maxLength`. Hover: `--ink-3` border. Focus: 2px `--brand` border. Error: the look of the Text field, with the icon at the top right and the message in place of the helper.
-- **Fuzzy date field:** a label, a 44px input and one line under it, in `type.mono`, ligatures off. 1px `--field-border`, `radius.control`. Hover, focus and error follow the Text field. The line shows the helper, the reading or the error: see Fuzzy date field.
+- **Long text field:** a label, a textarea and a helper. 1px `--field-border`, `radius.control`, padding 8 12, `type.body`. It resizes up and down only, scrolls long content inside, and takes a `maxLength`. Hover: `--ink-3` border. Focus: 2px `--brand` border. Error: the look of the Text field, with the icon at the top right and the message in place of the helper.
+- **Fuzzy date field:** a label, a 42px input and one line under it, in `type.mono`, ligatures off. 1px `--field-border`, `radius.control`. Hover, focus and error follow the Text field. The line shows the helper, the reading or the error: see Fuzzy date field.
 - **Person field:** a Text field that picks one Person. The panel is 320px wide, so the field is 280px. A Picker row needs about 440px, so the list is a popover 480px wide. It opens 4px under the field, on its left edge, over the map. It shows at most three rows and scrolls past them. A row that matches a spelling variant shows it. If no Person matches, a 280px notice shows "No one matches “{text}”" and the line "Check the spelling, or add the person to the Tree first." The focus stays in the text box. Down and Up move through the rows, Enter picks one and Esc closes the list. When the user types after a pick, the pick clears. A press outside the field and the list closes it too. The error "Choose a person." follows the Text field.
-- **Add a pin button:** the primary Button, 44px high, named "Add a pin". It has the default, hover, focus and pressed looks. A desktop map shows it at the top right, 12px left of the account control and level with it. It opens the empty panel. A phone has no such button.
+- **Add a pin button:** the primary Button, 42px high, named "Add a pin". It has the default, hover, focus and pressed looks. A desktop map shows it at the top right, 12px left of the account control and level with it. It opens the empty panel. A phone has no such button.
 - **Arrow link:** a text and the forward icon (16px, 4px gap) in `type.link`, with no underline. With an `href` it is a link: hover `--brand-hover`, pressed `--brand-pressed`, focus the ring. Without one it is a label for a row that is one link, and it turns `--brand-pressed` while that link is pressed.
 - **Person row:** the whole row is a link to edit. Grid: name, a 200px Dates column, then an Arrow link label "Edit". Minimum height `size.row-l`. The name is "Surname, Given names" in `type.title`. A `type.small` line shows "née {maiden}" and "Matches the spelling “{variant}”" only when needed. The dates are one `type.mono-caption` line: "1889 – 1932", "1889 –", "? – 1932", "1889 – ?" or "? – ?". A missing death date reads "?" only when the Person is marked deceased. A screen reader skips the line and hears the dates in words. An optional "Relationships" text link sits after the row link. Hover: `--surface-2` fill. Pressed: `--segment` fill and a `--brand-pressed` "Edit". Focus: the ring.
 - **Relationship row:** the other Person's name, the Person row's line of dates, and an Arrow link "Edit". A parent or child row adds a `type.small` subtype: Biological, Adoptive or Step. A spouse row adds a second `type.mono-caption` line: "Mar. 1875, div. 1890", "Mar. 1875" or "Div. 1890". It has no remove control and no phone form.
 - **Picker row:** the whole row is a button that picks the Person. It shows the name, the same note as the Person row and the same line of dates. It has the Person row's default, hover, focus and pressed states. It has no phone form.
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
-- **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
+- **Chips** (event type filters): 30px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
 - **Tabs** (Layers / Filters): the selected tab gets `--brand-tint`. A count badge in `--brand` shows active filters.
 - **Layer rows:** a checkbox (accent `--brand`), the name in `type.label`, a one-line description in `--ink-3`. The description gives live facts, such as how many pins are true on the date.
 - **Date dock:** step back, a typed date field, step forward, Year / Month / Day, a contested-claims note and Play with 1, 5 or 10 yr/s. Under that is the 1652–today slider with epoch ticks and the contested years hatched. The thumb snaps to each step at the chosen precision. The date field is the only date readout. Then "Jump to" epoch buttons and keyboard hints.
@@ -182,7 +182,7 @@ The DateField component card shows it. The field is 188px wide and accepts `1901
 
 ### Fuzzy date field
 
-The FuzzyDateField component card shows it. It is a label, a 44px input and one line under the input. The input text is Mono M with ligatures off. On a phone it takes the size and line of Body L, 16 / 24.
+The FuzzyDateField component card shows it. It is a label, a 42px input and one line under the input. The input text is Mono M with ligatures off. On a phone it takes the size and line of Body L, 16 / 24.
 
 1. The line is one `aria-live="polite"` slot. It shows the helper, "Reads as **{reading}**", or the error message.
 2. The reading follows the typing. The error shows on Enter or when focus leaves, never while the user types.

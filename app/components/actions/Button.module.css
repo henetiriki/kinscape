@@ -1,5 +1,6 @@
 .btn {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
+  composes: hitAreaBordered from '@ks/app/components/foundation/hit-area.module.css';
   align-items: center;
   border-radius: var(--radius-control);
   box-sizing: border-box;
@@ -41,15 +42,9 @@
   padding: 0 var(--space-inset-s);
 }
 
-/* A button under 44px keeps a 44px hit area, as Chip does. */
-:is(.btn[data-size='s'], .btn[data-size='xs'])::before {
-  content: '';
-  height: var(--size-touch);
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  translate: -50% -50%;
-  width: max(calc(100% + 2px), var(--size-touch));
+/* The large button is 50px, so it needs no hit area. */
+.btn[data-size='l']::before {
+  content: none;
 }
 
 .btn[data-full] {
@@ -74,7 +69,9 @@
   transform: translateY(var(--motion-press-offset));
 }
 
+/* A primary button has no border, so its hit area does not reach past it. */
 .btnPrimary {
+  composes: hitAreaFill from '@ks/app/components/foundation/hit-area.module.css';
   background: var(--brand);
   border: 0;
   color: var(--white);

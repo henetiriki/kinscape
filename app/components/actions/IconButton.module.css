@@ -1,5 +1,6 @@
 .iconBtn {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
+  composes: hitArea from '@ks/app/components/foundation/hit-area.module.css';
   align-items: center;
   background: var(--surface);
   border: var(--border-hairline) solid var(--line);
@@ -15,7 +16,7 @@
   width: var(--size-control);
 }
 
-/* Raised: the 48px button that floats over the map. */
+/* Raised: the 50px button that floats over the map. */
 .iconBtn[data-variant='raised'] {
   border: 0;
   border-radius: var(--radius-panel);

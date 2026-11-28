@@ -134,7 +134,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 
   <sc-if value="{{v.account}}" hint-placeholder-val="{{ false }}">
-    <div style="z-index: var(--z-menu); position: absolute; right: var(--size-gutter-phone); top: calc(var(--space-inset-5xl) + var(--space-inset-s))"><x-import component-from-global-scope="KinScape.MenuPanel" email="researcher@example.com" groups="{{accountMenu.groups}}" hovered="people"></x-import></div>
+    <div style="z-index: var(--z-menu); position: absolute; right: var(--size-gutter-phone); top: calc(var(--layout-phone-pill-top) + var(--size-search) + var(--layout-menu-offset))"><x-import component-from-global-scope="KinScape.MenuPanel" email="researcher@example.com" groups="{{accountMenu.groups}}" hovered="people"></x-import></div>
   </sc-if>
 
   <sc-if value="{{v.sources}}" hint-placeholder-val="{{ false }}">

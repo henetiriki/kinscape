@@ -10,6 +10,7 @@ import {
   queriesOf,
   withQueries,
 } from '#ks/lib/design/breakpoints.mts';
+import { withControlSizes } from '#ks/lib/design/control-sizes.mts';
 import { dtcgProblems } from '#ks/lib/design/dtcg.mts';
 import { withSteps } from '#ks/lib/design/scales.mts';
 import { buildTokens } from '#ks/lib/design/style-dictionary.mts';
@@ -25,8 +26,8 @@ export const OUTPUTS = {
 /** The token file under `root`, with the steps of each scale written from its settings. */
 const read = (root: string) => {
   // A reference to a step resolves only after `withSteps` writes the steps.
-  const tokens = withSteps(
-    JSON.parse(readFileSync(join(root, SOURCE), 'utf8'))
+  const tokens = withControlSizes(
+    withSteps(JSON.parse(readFileSync(join(root, SOURCE), 'utf8')))
   );
   const problems = dtcgProblems(tokens);
 

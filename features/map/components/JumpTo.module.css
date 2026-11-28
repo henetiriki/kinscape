@@ -2,7 +2,8 @@
   align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-gap-xs);
+  /* A wrapped row keeps 16px from the next: the hit areas of 30px buttons reach 7px past them. */
+  gap: var(--space-gap-m) var(--space-gap-xs);
 }
 
 .caption {
@@ -13,6 +14,7 @@
 
 .epoch {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
+  composes: hitAreaBox from '@ks/app/components/foundation/hit-area.module.css';
   align-items: center;
   background: var(--surface);
   border: var(--border-hairline) solid var(--track);
@@ -28,17 +30,6 @@
   line-height: var(--type-mono-caption-line);
   padding: 0 var(--space-inset-s);
   position: relative;
-}
-
-/* A 44px hit area around the 36px button. */
-.epoch::before {
-  content: '';
-  height: var(--size-touch);
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  translate: 0 -50%;
 }
 
 .epoch[aria-current] {

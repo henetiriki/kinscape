@@ -1,4 +1,4 @@
-The phone's one 48px button that opens Layers and filters.
+The phone's one 50px button that opens Layers and filters.
 
 ## Props
 

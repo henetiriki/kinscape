@@ -5,7 +5,7 @@ import type { ControlState } from '@ks/app/components/foundation/types';
 import { IconButton } from '@ks/app/components/actions/IconButton';
 import { Icon } from '@ks/app/components/foundation/Icon';
 
-/** The phone's one 48px button that opens Layers and filters. */
+/** The phone's one 50px button that opens Layers and filters. */
 export const LayersButton = ({
   state,
   ...rest

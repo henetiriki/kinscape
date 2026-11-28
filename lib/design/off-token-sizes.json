@@ -1,18 +1,6 @@
 [
   {
     "count": 1,
-    "file": "app/components/actions/Button.module.css",
-    "property": "width",
-    "value": "2px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/actions/Chip.module.css",
-    "property": "width",
-    "value": "2px"
-  },
-  {
-    "count": 1,
     "file": "app/components/actions/DateText.module.css",
     "property": "height",
     "value": "1px"
@@ -79,12 +67,6 @@
   },
   {
     "count": 1,
-    "file": "app/components/feedback/LoadingField.module.css",
-    "property": "min-height",
-    "value": "68px"
-  },
-  {
-    "count": 1,
     "file": "app/components/feedback/NoticeCard.module.css",
     "property": "width",
     "value": "358px"
@@ -111,25 +93,7 @@
     "count": 1,
     "file": "app/components/forms/TextAreaField.module.css",
     "property": "padding",
-    "value": "10px"
-  },
-  {
-    "count": 2,
-    "file": "app/components/forms/TextAreaField.module.css",
-    "property": "padding",
-    "value": "11px"
-  },
-  {
-    "count": 1,
-    "file": "app/components/forms/TextAreaField.module.css",
-    "property": "padding",
     "value": "37px"
-  },
-  {
-    "count": 2,
-    "file": "app/components/forms/TextAreaField.module.css",
-    "property": "padding",
-    "value": "9px"
   },
   {
     "count": 1,
@@ -327,7 +291,7 @@
     "count": 1,
     "file": "features/map/components/DateDock.module.css",
     "property": "--callout-lift",
-    "value": "48px"
+    "value": "52px"
   },
   {
     "count": 1,

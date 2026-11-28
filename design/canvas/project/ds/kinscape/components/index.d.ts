@@ -388,7 +388,7 @@ type Base = {
     icon?: IconName;
     /** Fully round, as Play. */
     round?: boolean;
-    /** Heights 50, 44, 40 and 36. */
+    /** Heights 50, 42, 30 and 30. */
     size?: 'l' | 'm' | 's' | 'xs';
     state?: ControlState;
     variant?: 'primary' | 'secondary';
@@ -419,7 +419,7 @@ export type ButtonProps = Parameters<typeof Button>[0];
 export declare const IconButton: ({ label, state, variant, ...rest }: {
     label: string;
     state?: ControlState;
-    /** `raised` is 48px with a shadow and no border, for a button over the map. */
+    /** `raised` is 50px with a shadow and no border, for a button over the map. */
     variant?: "raised";
 } & Omit<ComponentProps<"button">, "aria-label" | "className">) => import("react").JSX.Element;
 export type IconButtonProps = Parameters<typeof IconButton>[0];
@@ -599,7 +599,7 @@ export declare const TextField: ({ date, defaultShown, error, helper, hideLabel,
     mark?: "error" | "warning";
     /** A key that focuses the field when no text input has focus. A search field shows it as a hint. */
     shortcut?: string;
-    /** `l` is the 48px sign-in field. */
+    /** `l` is the 50px sign-in field. */
     size?: "l";
     state?: ControlState;
     type?: "email" | "password" | "search" | "text";
@@ -790,14 +790,14 @@ export declare const ZoomControls: ({ atMax, atMin, onFit, onZoomIn, onZoomOut, 
 }) => import("react").JSX.Element;
 export type ZoomControlsProps = Parameters<typeof ZoomControls>[0];
 
-/** The phone's one 48px button that opens Layers and filters. */
+/** The phone's one 50px button that opens Layers and filters. */
 export declare const LayersButton: ({ state, ...rest }: {
     state?: ControlState;
 } & Omit<ComponentProps<"button">, "aria-label" | "children" | "className">) => import("react").JSX.Element;
 export type LayersButtonProps = Parameters<typeof LayersButton>[0];
 
 /**
- * The map's "Add a pin" button (PIN-01): the primary Button, 44px high. It goes in the `action`
+ * The map's "Add a pin" button (PIN-01): the primary Button, 42px high. It goes in the `action`
  * slot of `MapLayout`, which hides it on a phone.
  */
 export declare const AddPinButton: ({ state, ...rest }: {
@@ -1078,9 +1078,9 @@ export type LoadingBarProps = Parameters<typeof LoadingBar>[0];
 
 /**
  * A field that is still loading: its label over one bar, or over two bars for a text area. Two bars
- * are 68px high, as `pin-edit-loading` draws them. A text area of two rows is 66px high, so the form
- * moves when the field replaces them. The form that holds it sets `aria-busy`, so a screen reader
- * skips the bars.
+ * are as high as a text area of two rows (66px). One bar is as high as a field (42px). So the form
+ * does not move when the field replaces them. The form that holds it sets `aria-busy`, so a screen
+ * reader skips the bars.
  */
 export declare const LoadingField: ({ label, widths, }: {
     label: string;

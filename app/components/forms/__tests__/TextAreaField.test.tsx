@@ -70,9 +70,11 @@ it('puts the padding on the textarea, so the resize handle sits at the padded co
   const area = /^\.area \{[^}]*\}/m.exec(css)![0];
   const box = /^\.field > \.box \{[^}]*\}/m.exec(css)![0];
 
-  expect(area).toContain('padding: 10px var(--space-inset-s)');
+  expect(area).toContain('padding: var(--space-inset-xs) var(--space-inset-s)');
   expect(box).toContain('padding: 0;');
-  expect(css).toMatch(/:focus-within[^{]*\.area[^{]*\{[^}]*padding: 9px 11px/);
+  expect(css).toMatch(
+    /:focus-within[^{]*\.area[^{]*\{[^}]*padding:\s*calc\(\s*var\(--space-inset-xs\) - var\(--border-emphasis\) \+ var\(--border-hairline\)\s*\)/
+  );
 });
 
 // PIN-02
@@ -114,9 +116,9 @@ it('joins a given aria-describedby with the helper id, and marks nothing without
 });
 
 // PPL-01
-it('takes the text field box, padding 10 12, and 16 / 24 text', () => {
+it('takes the text field box, block padding inset xs, and 16 / 24 text', () => {
   expect(css).toContain("composes: box from '@ks/app/components/forms/");
-  expect(css).toContain('padding: 10px var(--space-inset-s)');
+  expect(css).toContain('padding: var(--space-inset-xs) var(--space-inset-s)');
   expect(css).toContain('var(--type-body-size)');
   expect(css).not.toContain('@media');
 });

@@ -41,8 +41,8 @@ All three are OFL fonts. The app and the snapshots load the same `@fontsource` f
 | Caption (`caption`)             | Public Sans 10 / 16 · 400, `--ink-3`       | Credits, footnotes                 |
 | Credits (`credits`)             | Public Sans 10 / 16 · 400, `--credits`     | Credits line and scale bar         |
 | Overline (`overline`)           | Public Sans 10 / 16 · 600, caps, 0.1em     | Section headings, layer groups     |
-| Control (`control`)             | Public Sans 16 / 24 · 600                  | 50px and 44px buttons, controls    |
-| Control small (`control-small`) | Public Sans 13 / 20 · 600                  | 40px and 36px buttons              |
+| Control (`control`)             | Public Sans 16 / 24 · 600                  | 50px and 42px buttons, controls    |
+| Control small (`control-small`) | Public Sans 13 / 20 · 600                  | 30px buttons                       |
 | Chip (`chip`)                   | Public Sans 13 / 20 · 600                  | Chip that is on                    |
 | Chip off (`chip-off`)           | Public Sans 13 / 20 · 400                  | Chip that is off                   |
 | Link (`link`)                   | Public Sans 16 / 24 · 500                  | Links in running text              |
@@ -65,8 +65,8 @@ The `$description` of each `radius` and `shadow` token says where it goes.
 
 | Token   | Value                                                                                                                                                     |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                                                                   |
-| Touch   | Targets at least 44px. Buttons and fields 44–50px tall                                                                                                    |
+| Spacing | Steps of 4, 8, 12 and 16px, then ×√2 on the 4px grid: 24, 32, 44, 64, 92. 16–24 inside panels, 24 between floating elements on desktop                    |
+| Touch   | Targets at least 44px. Controls are 30, 42 and 50px tall (small, medium, large). Each under 44px has a 44px hit area                                      |
 | Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields: see Text field                                                                  |
 | Icons   | 24px grid, 2px stroke, round caps and joins, `currentColor`. Draw at 16, 18 or 20px (24 on the phone layers button). An icon-only button carries the name |
 

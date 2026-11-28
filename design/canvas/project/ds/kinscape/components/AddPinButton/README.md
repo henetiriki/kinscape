@@ -1,8 +1,8 @@
-The map's "Add a pin" button (PIN-01): the primary Button, 44px high.
+The map's "Add a pin" button (PIN-01): the primary Button, 42px high.
 
 ## Design
 
-- **Add a pin button:** the primary Button, 44px high, named "Add a pin". It has the default, hover, focus and pressed looks. A desktop map shows it at the top right, 12px left of the account control and level with it. It opens the empty panel. A phone has no such button.
+- **Add a pin button:** the primary Button, 42px high, named "Add a pin". It has the default, hover, focus and pressed looks. A desktop map shows it at the top right, 12px left of the account control and level with it. It opens the empty panel. A phone has no such button.
 
 ## Props
 

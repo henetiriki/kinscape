@@ -60,7 +60,7 @@ test.describe('phone, 390 × 844', () => {
   });
 
   // NFR-06
-  test('controls are at least 44 and the Layers button 48, with no precision', async ({
+  test('controls are at least 42 and the Layers button 50, with no precision', async ({
     page,
   }) => {
     for (const name of ['Back', 'Forward', 'Close']) {
@@ -69,7 +69,8 @@ test.describe('phone, 390 × 844', () => {
       if (await control.count()) {
         const { height, width } = await box(control.first());
 
-        expect(Math.min(height, width)).toBeGreaterThanOrEqual(44);
+        // A 42px button keeps a 44px hit area: e2e/gallery-looks.spec.ts.
+        expect(Math.min(height, width)).toBeGreaterThanOrEqual(42);
       }
     }
 
@@ -77,7 +78,7 @@ test.describe('phone, 390 × 844', () => {
       page.getByRole('button', { name: 'Layers and filters' })
     );
 
-    expect([layers.width, layers.height]).toEqual([48, 48]);
+    expect([layers.width, layers.height]).toEqual([50, 50]);
     expect(layers.x + layers.width).toBeLessThanOrEqual(390 - 16 + 1);
     expect(layers.x).toBeGreaterThan(195);
     await expect(page.getByRole('radiogroup')).toHaveCount(0);

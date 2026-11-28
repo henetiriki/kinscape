@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import * as generatedTokens from '@ks/design/tokens.generated.ts';
+import { controlProblems } from '@ks/lib/design/control-sizes.mts';
 import { strayColours } from '@ks/lib/design/css.mts';
 import {
   dtcgProblems,
@@ -71,6 +72,114 @@ describe('design/tokens.generated.ts', () => {
 
 it('has each step of design/kinscape.tokens.json as its settings give it', () => {
   expect(scaleProblems(source), 'run `npm run tokens`').toEqual([]);
+});
+
+// NFR-05, NFR-06 (SC.13)
+describe('the spacing and control sizes', () => {
+  const rem = (path: string) => Number.parseFloat(resolvedText(source, path));
+
+  it('has the hybrid space steps 100 to 900 and no step 1000', () => {
+    expect(
+      Object.keys(source.scale.space)
+        .filter(key => !key.startsWith('$'))
+        .map(key => [key, rem(`scale.space.${key}`) * 16])
+    ).toEqual([
+      ['100', 4],
+      ['200', 8],
+      ['300', 12],
+      ['400', 16],
+      ['500', 24],
+      ['600', 32],
+      ['700', 44],
+      ['800', 64],
+      ['900', 92],
+    ]);
+  });
+
+  // The value before SC.13, in px. A tie takes the larger step.
+  const BEFORE: Record<string, number> = {
+    'gap.2xl': 32,
+    'gap.2xs': 4,
+    'gap.3xl': 40,
+    'gap.l': 20,
+    'gap.m': 16,
+    'gap.s': 12,
+    'gap.xl': 24,
+    'gap.xs': 8,
+    'inset.2xl': 32,
+    'inset.2xs': 4,
+    'inset.3xl': 40,
+    'inset.4xl': 48,
+    'inset.5xl': 64,
+    'inset.l': 20,
+    'inset.m': 16,
+    'inset.s': 12,
+    'inset.xl': 24,
+    'inset.xs': 8,
+    'stack.2xs': 4,
+    'stack.xs': 8,
+  };
+  const STEPS = [4, 8, 12, 16, 24, 32, 44, 64, 92];
+
+  it.each(Object.entries(BEFORE))(
+    'gives space.%s the step nearest %ipx',
+    (name, before) => {
+      const nearest = STEPS.reduce((best, step) =>
+        Math.abs(step - before) <= Math.abs(best - before) ? step : best
+      );
+
+      expect(rem(`space.${name}`) * 16).toBe(nearest);
+    }
+  );
+
+  it.each([
+    ['control-small', 30],
+    ['control-medium', 42],
+    ['control-large', 50],
+  ])('gives size.%s its parts as %ipx', (name, height) => {
+    const line = rem(
+      `type.${name === 'control-small' ? 'control-small' : 'control'}.line`
+    );
+    const inset =
+      { 'control-large': 's', 'control-medium': 'xs' }[name] ?? '2xs';
+
+    expect(line * 16 + 2 * rem(`space.inset.${inset}`) * 16 + 2 * 1).toBe(
+      height
+    );
+    expect(resolvedText(source, `size.${name}`)).toBe(`${height}px`);
+    expect(controlProblems(source)).toEqual([]);
+  });
+
+  it.each([
+    ['control', 'control-medium'],
+    ['field', 'control-medium'],
+    ['control-l', 'control-large'],
+    ['field-l', 'control-large'],
+    ['search', 'control-large'],
+    ['control-s', 'control-small'],
+    ['control-xs', 'control-small'],
+    ['chip', 'control-small'],
+    ['chip-s', 'control-small'],
+  ])('has size.%s refer to size.%s', (name, size) => {
+    expect(source.size[name].$value).toBe(`{size.${size}}`);
+    expect(read(OUTPUTS.css)).toContain(`--size-${name}: var(--size-${size});`);
+  });
+
+  it('writes each control size as a calc() of var() names', () => {
+    expect(read(OUTPUTS.css)).toContain(
+      '--size-control-medium: calc(var(--type-control-line) + 2 * var(--space-inset-xs) + 2 * var(--border-hairline));'
+    );
+  });
+
+  it('names a stale control-size $value', () => {
+    const stale = structuredClone(source);
+
+    stale.size['control-medium'].$value.value = 44;
+
+    expect(controlProblems(stale)).toEqual([
+      'size.control-medium: $value is 44px, the parts give 42px',
+    ]);
+  });
 });
 
 // NFR-05, NFR-06: text and spacing follow the reader's text size, so they are rem.
@@ -143,7 +252,7 @@ describe('the design snapshots', () => {
   );
 
   it('are all checked', () => {
-    expect(snapshots).toHaveLength(86);
+    expect(snapshots).toHaveLength(85);
   });
 
   it.each(snapshots)('%s uses only token colours', name => {

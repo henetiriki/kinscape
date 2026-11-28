@@ -23,7 +23,10 @@
 }
 
 .field > .box:is(:focus-within, [data-state='focus']) .area {
-  padding: 9px 11px;
+  padding: calc(
+      var(--space-inset-xs) - var(--border-emphasis) + var(--border-hairline)
+    )
+    calc(var(--space-inset-s) - var(--border-emphasis) + var(--border-hairline));
 }
 
 /* In error the text takes the focus padding. The box keeps a 37px gutter on the right: 11px, the 18px icon and an 8px gap.
@@ -33,7 +36,10 @@
 }
 
 .field > .box[data-mark] .area {
-  padding: 9px 11px;
+  padding: calc(
+      var(--space-inset-xs) - var(--border-emphasis) + var(--border-hairline)
+    )
+    calc(var(--space-inset-s) - var(--border-emphasis) + var(--border-hairline));
 }
 
 .field > .box[data-mark] > svg {
@@ -56,7 +62,7 @@
   min-width: 0;
   outline: 0;
   overflow-y: auto;
-  padding: 10px var(--space-inset-s);
+  padding: var(--space-inset-xs) var(--space-inset-s);
   resize: vertical;
 }
 

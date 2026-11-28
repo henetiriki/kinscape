@@ -1,7 +1,8 @@
-/* A 36px pill with a 44px hit area; 44px on a phone */
+/* A 30px pill with a 44px hit area; 44px on a phone */
 
 .chip {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
+  composes: hitAreaBordered from '@ks/app/components/foundation/hit-area.module.css';
   align-items: center;
   background: var(--surface);
   border: var(--border-hairline) solid var(--line-strong);
@@ -18,17 +19,6 @@
   line-height: var(--type-chip-line);
   padding: 0 var(--space-inset-s);
   position: relative;
-}
-
-.chip::before {
-  content: '';
-  height: var(--size-touch);
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  translate: -50% -50%;
-  /* The padding box is inside the 1px border. */
-  width: max(calc(100% + 2px), var(--size-touch));
 }
 
 .chip[aria-pressed='true'] {
@@ -112,6 +102,7 @@
 
 .remove {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
+  composes: hitArea from '@ks/app/components/foundation/hit-area.module.css';
   align-items: center;
   background: transparent;
   border: 0;
@@ -124,16 +115,6 @@
   padding: 0;
   position: relative;
   width: var(--size-chip-remove);
-}
-
-.remove::before {
-  content: '';
-  height: var(--size-touch);
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  translate: -50% -50%;
-  width: var(--size-touch);
 }
 
 @media (hover: hover) {
@@ -154,7 +135,7 @@
   cursor: default;
 }
 
-/* On a phone a chip is 44 tall; a removable chip and its × are 36. */
+/* On a phone a chip is 44 tall; a removable chip and its × are 30. */
 @media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
   .chip {
     height: var(--size-touch);

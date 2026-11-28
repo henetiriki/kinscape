@@ -37,7 +37,7 @@ export const SelectField = ({
           {label}
         </Text>
       )}
-      <span
+      <label
         className={styles.box}
         data-mark={error ? 'error' : undefined}
         data-state={state}
@@ -59,7 +59,7 @@ export const SelectField = ({
           <Icon name='chevronDown' />
         </span>
         {error && <Icon name='error' />}
-      </span>
+      </label>
       {field.message}
     </div>
   );

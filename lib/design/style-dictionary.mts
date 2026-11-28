@@ -12,6 +12,7 @@ import type { Tree } from '#ks/design/types.ts';
 import type { DtcgTree } from '#ks/lib/design/types.ts';
 
 import { queriesOf } from '#ks/lib/design/breakpoints.mts';
+import { controlCss, controlOf } from '#ks/lib/design/control-sizes.mts';
 import {
   cssName,
   fontStack,
@@ -42,6 +43,11 @@ const inCss = (token: TransformedToken): boolean =>
 
 const cssValue = (token: TransformedToken): string => {
   const reference = referenceOf(token);
+  const parts = controlOf(token.original);
+
+  if (parts !== undefined) {
+    return controlCss(parts);
+  }
 
   if (reference !== undefined && !reference.startsWith('scale.')) {
     return `var(${cssName(reference.split('.'))})`;

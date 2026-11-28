@@ -229,7 +229,7 @@
     },
     "space": {
       "100": {
-        "$description": "Explicit list, value 1.",
+        "$description": "Grid of 4px, step 1.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
@@ -237,7 +237,7 @@
         }
       },
       "200": {
-        "$description": "Explicit list, value 2.",
+        "$description": "Grid of 4px, step 2.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
@@ -245,7 +245,7 @@
         }
       },
       "300": {
-        "$description": "Explicit list, value 3.",
+        "$description": "Grid of 4px, step 3.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
@@ -253,7 +253,7 @@
         }
       },
       "400": {
-        "$description": "Explicit list, value 4.",
+        "$description": "Grid of 4px, step 4.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
@@ -261,58 +261,53 @@
         }
       },
       "500": {
-        "$description": "Explicit list, value 5.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 1.25
-        }
-      },
-      "600": {
-        "$description": "Explicit list, value 6.",
+        "$description": "Ratio 1.414 from 16px, rounded to 4px, step 1.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
           "value": 1.5
         }
       },
-      "700": {
-        "$description": "Explicit list, value 7.",
+      "600": {
+        "$description": "Ratio 1.414 from 16px, rounded to 4px, step 2.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
           "value": 2
         }
       },
+      "700": {
+        "$description": "Ratio 1.414 from 16px, rounded to 4px, step 3.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 2.75
+        }
+      },
       "800": {
-        "$description": "Explicit list, value 8.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 2.5
-        }
-      },
-      "900": {
-        "$description": "Explicit list, value 9.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 3
-        }
-      },
-      "1000": {
-        "$description": "Explicit list, value 10.",
+        "$description": "Ratio 1.414 from 16px, rounded to 4px, step 4.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
           "value": 4
         }
       },
+      "900": {
+        "$description": "Ratio 1.414 from 16px, rounded to 4px, step 5.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 5.75
+        }
+      },
       "$extensions": {
         "kinscape": {
-          "mode": "explicit",
-          "unit": "rem",
-          "values": [4, 8, 12, 16, 20, 24, 32, 40, 48, 64]
+          "above": 5,
+          "grid": 4,
+          "limit": 16,
+          "mode": "hybrid",
+          "ratio": 1.414,
+          "unit": "rem"
         }
       }
     },
@@ -1571,27 +1566,27 @@
       },
       "xl": {
         "$type": "dimension",
-        "$value": "{scale.space.600}",
+        "$value": "{scale.space.500}",
         "$description": "Padding of a Dialog and the end of a text field."
       },
       "2xl": {
         "$type": "dimension",
-        "$value": "{scale.space.700}",
+        "$value": "{scale.space.600}",
         "$description": "Page padding above a column and the side padding of the sign-in pane."
       },
       "3xl": {
         "$type": "dimension",
-        "$value": "{scale.space.800}",
+        "$value": "{scale.space.700}",
         "$description": "Padding of the sign-in hero."
       },
       "4xl": {
         "$type": "dimension",
-        "$value": "{scale.space.900}",
+        "$value": "{scale.space.700}",
         "$description": "Padding of the sign-in pane and the bottom of a page."
       },
       "5xl": {
         "$type": "dimension",
-        "$value": "{scale.space.1000}",
+        "$value": "{scale.space.800}",
         "$description": "Page padding of a column and the space above an empty list."
       }
     },
@@ -1623,17 +1618,17 @@
       },
       "xl": {
         "$type": "dimension",
-        "$value": "{scale.space.600}",
+        "$value": "{scale.space.500}",
         "$description": "Gap between the sections of a page and of a form."
       },
       "2xl": {
         "$type": "dimension",
-        "$value": "{scale.space.700}",
+        "$value": "{scale.space.600}",
         "$description": "Gap between the groups of a board."
       },
       "3xl": {
         "$type": "dimension",
-        "$value": "{scale.space.800}",
+        "$value": "{scale.space.700}",
         "$description": "Gap between the columns of the person form."
       }
     },
@@ -1709,76 +1704,100 @@
       },
       "$description": "Smallest tap target."
     },
-    "control": {
+    "control-small": {
       "$type": "dimension",
       "$value": {
-        "value": 44,
-        "unit": "px"
+        "unit": "px",
+        "value": 30
       },
+      "$description": "Small control: line, inset 2xs and border.",
+      "$extensions": {
+        "kinscape": {
+          "control": {
+            "line": "{type.control-small.line}",
+            "inset": "{space.inset.2xs}",
+            "border": "{border.hairline}"
+          }
+        }
+      }
+    },
+    "control-medium": {
+      "$type": "dimension",
+      "$value": {
+        "unit": "px",
+        "value": 42
+      },
+      "$description": "Medium control: line, inset xs and border.",
+      "$extensions": {
+        "kinscape": {
+          "control": {
+            "line": "{type.control.line}",
+            "inset": "{space.inset.xs}",
+            "border": "{border.hairline}"
+          }
+        }
+      }
+    },
+    "control-large": {
+      "$type": "dimension",
+      "$value": {
+        "unit": "px",
+        "value": 50
+      },
+      "$description": "Large control: line, inset s and border.",
+      "$extensions": {
+        "kinscape": {
+          "control": {
+            "line": "{type.control.line}",
+            "inset": "{space.inset.s}",
+            "border": "{border.hairline}"
+          }
+        }
+      }
+    },
+    "control": {
+      "$type": "dimension",
+      "$value": "{size.control-medium}",
       "$description": "Medium buttons and controls."
     },
     "control-l": {
       "$type": "dimension",
-      "$value": {
-        "value": 50,
-        "unit": "px"
-      },
+      "$value": "{size.control-large}",
       "$description": "Large sign-in buttons."
     },
     "control-s": {
       "$type": "dimension",
-      "$value": {
-        "value": 40,
-        "unit": "px"
-      },
+      "$value": "{size.control-small}",
       "$description": "Small buttons."
     },
     "control-xs": {
       "$type": "dimension",
-      "$value": {
-        "value": 36,
-        "unit": "px"
-      },
+      "$value": "{size.control-small}",
       "$description": "Extra-small buttons and round icon buttons."
     },
     "field": {
       "$type": "dimension",
-      "$value": {
-        "value": 44,
-        "unit": "px"
-      },
+      "$value": "{size.control-medium}",
       "$description": "Text field height."
     },
     "field-l": {
       "$type": "dimension",
-      "$value": {
-        "value": 48,
-        "unit": "px"
-      },
+      "$value": "{size.control-large}",
       "$description": "Sign-in field height and the layers button."
     },
     "search": {
       "$type": "dimension",
-      "$value": {
-        "value": 52,
-        "unit": "px"
-      },
+      "$value": "{size.control-large}",
       "$description": "Search bar height."
     },
     "chip": {
       "$type": "dimension",
-      "$value": {
-        "value": 36,
-        "unit": "px"
-      },
+      "$value": "{size.control-small}",
       "$description": "Chip height."
     },
     "chip-s": {
       "$type": "dimension",
-      "$value": {
-        "value": 30,
-        "unit": "px"
-      },
+      "$value": "{size.control-small}",
       "$description": "Small chip height."
     },
     "chip-remove": {

@@ -7,11 +7,7 @@ export const LAUNCH_ARGS = ['--num-raster-threads=1'];
 const PHONE_BOARD = 'map-style-phone';
 
 /** Boards taller than one screen. */
-const FULL_PAGE = new Set([
-  'fuzzy-date-readings',
-  'map-style',
-  'spacing-and-controls',
-]);
+const FULL_PAGE = new Set(['fuzzy-date-readings', 'map-style']);
 
 /** Phone screens and the tall boards each have their own size. */
 export const shotFor = (name: string): Shot => {

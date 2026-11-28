@@ -6,6 +6,7 @@
 
 /* The box draws the border, so the icon can sit inside it; focus is a 2px brand border instead of the ring. */
 .box {
+  composes: hitAreaBox from '@ks/app/components/foundation/hit-area.module.css';
   align-items: center;
   background: var(--surface);
   border: var(--border-hairline) solid var(--field-border);
@@ -16,6 +17,24 @@
   height: var(--size-field);
   padding: 0 var(--space-inset-s);
   position: relative;
+}
+
+/* The 42px box is a label with a 44px hit area behind its content. A click in the part outside the box focuses the input. The large box is 50px. */
+label.box {
+  isolation: isolate;
+}
+
+label.box::before {
+  z-index: calc(-1 * var(--z-furniture));
+}
+
+/* A box that is not a label has no input to focus. */
+.box:not(label)::before {
+  content: none;
+}
+
+.box[data-size='l']::before {
+  content: none;
 }
 
 @media (hover: hover) {
@@ -134,7 +153,7 @@
   right: 9px;
 }
 
-/* The 48px sign-in size: 16 / 24 text. */
+/* The 50px sign-in size: 16 / 24 text. */
 .box[data-size='l'] {
   height: var(--size-field-l);
 }
@@ -165,7 +184,7 @@
   display: none;
 }
 
-/* The 44px eye button sits inside the 48px field, past the padding. */
+/* The 44px eye button sits inside the 50px field, past the padding. */
 .eye {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
   align-items: center;
@@ -246,7 +265,7 @@
   }
 }
 
-/* A 44px input in a 42px row inside the 1px border, reaching over it like any field's input. */
+/* A 44px input in the 42px box, reaching over the border like any field's input. */
 .tokens .input {
   flex: 1 1 100px;
   min-height: var(--size-touch);

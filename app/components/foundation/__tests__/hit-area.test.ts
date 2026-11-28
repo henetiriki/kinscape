@@ -8,7 +8,7 @@ const css = readFileSync(
 );
 
 const rule = (selector: string) =>
-  new RegExp(`\\n\\n${selector}::before \\{[^}]*\\}`).exec(css)![0];
+  new RegExp(`(?<!,)\\n${selector}::before \\{[^}]*\\}`).exec(css)![0];
 
 // NFR-05, NFR-06
 it('draws a 44px area centred on each variant', () => {
@@ -32,14 +32,19 @@ it('draws a 44px area centred on each variant', () => {
 // NFR-05, NFR-06
 it('gives each variant its width, and the fill variant follows the bordered one', () => {
   expect(rule('\\.hitArea')).toContain('width: var(--size-touch)');
+  expect(rule('\\.hitAreaBordered')).toContain('width: 100%');
   expect(rule('\\.hitAreaBordered')).toContain(
-    'width: max(calc(100% + 2px), var(--size-touch))'
+    'padding-inline: var(--border-hairline)'
   );
-  expect(rule('\\.hitAreaFill')).toContain(
-    'width: max(100%, var(--size-touch))'
-  );
+  expect(rule('\\.hitAreaFill')).toContain('min-width: var(--size-touch)');
+  expect(rule('\\.hitAreaFill')).toContain('width: 100%');
   expect(rule('\\.hitAreaBox')).toContain('width: 100%');
   expect(css.indexOf('.hitAreaFill::before {')).toBeGreaterThan(
     css.indexOf('.hitAreaBordered::before {')
   );
+});
+
+// The snapshot export refuses a function in a computed style, and a control with no hit area has no layout to resolve it.
+it('writes no max() or calc() in a rule', () => {
+  expect(css.replace(/\/\*[\s\S]*?\*\//g, '')).not.toMatch(/max\(|calc\(/);
 });

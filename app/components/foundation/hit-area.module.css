@@ -3,6 +3,8 @@
  * `composes: <variant> from '@ks/app/components/foundation/hit-area.module.css'`:
  * `hitArea` is 44px wide, `hitAreaFill` is as wide as the control (44px at least), `hitAreaBordered` adds the 1px border
  * on each side, and `hitAreaBox` is as wide as the control. `hitAreaFill` follows `hitAreaBordered`, so it wins when a control takes both.
+ * A width is a percentage and a minimum, never `max()` or `calc()`: a control with no hit area (`content: none`) has no layout,
+ * so such a function stays in its computed style, and the snapshot export refuses it.
  */
 .hitArea::before,
 .hitAreaBordered::before,
@@ -20,13 +22,19 @@
   width: var(--size-touch);
 }
 
+/* The padding box is inside the 1px border, so a 1px padding on each side adds it back. */
 .hitAreaBordered::before {
-  /* The padding box is inside the 1px border. */
-  width: max(calc(100% + 2px), var(--size-touch));
+  box-sizing: content-box;
+  min-width: var(--size-touch);
+  padding-inline: var(--border-hairline);
+  width: 100%;
 }
 
 .hitAreaFill::before {
-  width: max(100%, var(--size-touch));
+  box-sizing: border-box;
+  min-width: var(--size-touch);
+  padding-inline: 0;
+  width: 100%;
 }
 
 .hitAreaBox::before {

@@ -15,6 +15,9 @@
   align-items: flex-start;
   display: flex;
   gap: var(--space-gap-m);
+  /* The slider input reaches 8px up into the row. Without this the slider takes the lower hit area of Back, the field and Forward. */
+  position: relative;
+  z-index: var(--z-furniture);
 }
 
 .play {

@@ -119,31 +119,10 @@ const HIT_CASES = [
 
 // Controls under 44px with no 44px hit area on a phone. Each Bug holds its controls, as "card, caption, control".
 const UNDER_44: Record<string, readonly string[]> = {
-  // SC.13 (#1207): a 42px button beside a 1px gap or an input keeps less than 44px of hit area. A Bug is to be filed.
+  // SC.13 (#1207): the grabber's 44px hit area reaches 4px into the date field below it. Moving the field down 4px changes each phone screen with the sheet. A Bug is to be filed.
   'SC.13 follow-up': [
-    'ZoomControls, ZoomControls · default, button button Zoom in',
-    'ZoomControls, ZoomControls · default, button button Zoom out',
-    'ZoomControls, ZoomControls · active, button button Zoom in',
-    'ZoomControls, ZoomControls · active, button button Zoom out',
-    'ZoomControls, ZoomControls · focus, button button Zoom out',
-    'ZoomControls, ZoomControls · hover, button button Zoom in',
-    'ZoomControls, ZoomControls · hover, button button Zoom out',
-    'ZoomControls, ZoomControls · most zoom, button button Zoom in',
-    'ZoomControls, ZoomControls · most zoom, button button Zoom out',
-    'ZoomControls, ZoomControls · least zoom, button button Zoom in',
-    'ZoomControls, ZoomControls · least zoom, button button Zoom out',
-    'DateDock, DateDock · Map date, button button Back',
-    'DateDock, DateDock · Map date, button button Forward',
-    'DateDock, DateDock · with epochs, button button Back',
-    'DateDock, DateDock · with epochs, button button Forward',
-    'DateDock, DateDock · with epochs, button button 1652',
-    'DateDock, DateDock · with epochs, button button 1854',
-    'DateDock, DateDock · with epochs, button button 1880',
-    'DateDock, DateDock · with epochs, button button 1902',
-    'DateDock, DateDock · with epochs, button button 1910',
-    'DateDock, DateDock · with epochs, button button 1976',
-    'DateDock, DateDock · invalid date, button button Back',
-    'DateDock, DateDock · invalid date, button button Forward',
+    'DateDock, DateDock · phone sheet, input text Date shown',
+    'DateDock, DateDock · phone sheet · invalid date, input text Date shown',
   ],
 };
 const UNDER_44_KEYS: ReadonlySet<string> = new Set(
@@ -306,20 +285,27 @@ test.describe('on a phone', () => {
       const count = await controls.count();
 
       for (let i = 0; i < count; i += 1) {
-        // A radio is hidden: its label holds the hit area.
+        // A radio is hidden: its label holds the hit area. So does the label box of a field.
         const input = controls.nth(i);
-        const control =
-          (await input.getAttribute('type')) === 'radio'
-            ? input.locator('xpath=ancestor::label[1]')
+        const radio = (await input.getAttribute('type')) === 'radio';
+        const field = input.locator(
+          'xpath=ancestor::label[@data-testid="field-box"][1]'
+        );
+        const control = radio
+          ? input.locator('xpath=ancestor::label[1]')
+          : (await field.count()) > 0
+            ? field
             : input;
         const box = (await control.boundingBox())!;
-        const [caption, kind] = await control.evaluate(node => [
-          node.closest('figure')?.querySelector('figcaption')?.textContent ??
-            '',
-          `${node.tagName.toLowerCase()} ${node.getAttribute('type') ?? ''} ${
-            node.getAttribute('aria-label') ?? node.textContent?.trim() ?? ''
-          }`.trim(),
-        ]);
+        const [caption, kind] = await (radio ? control : input).evaluate(
+          node => [
+            node.closest('figure')?.querySelector('figcaption')?.textContent ??
+              '',
+            `${node.tagName.toLowerCase()} ${node.getAttribute('type') ?? ''} ${
+              node.getAttribute('aria-label') ?? node.textContent?.trim() ?? ''
+            }`.trim(),
+          ]
+        );
         const key = `${name}, ${caption}, ${kind}`;
         const where = `${key} ${Math.round(box.width)}x${Math.round(box.height)}`;
         const points: [string, number, number][] = [];

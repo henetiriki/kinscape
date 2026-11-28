@@ -85,41 +85,48 @@ const FieldBox = ({
   size,
   state,
   type,
-}: BoxProps) => (
-  <span
-    className={date ? `${styles.box} ${styles.date}` : styles.box}
-    data-fill={date === 'fill' || undefined}
-    data-mark={marked}
-    data-size={size}
-    data-state={state}
-    data-testid='field-box'
-    data-type={type === 'search' ? 'search' : undefined}>
-    {type === 'search' && <Icon name='search' />}
-    <input
-      aria-keyshortcuts={shortcut}
-      aria-label={hideLabel ? label : undefined}
-      className={styles.input}
-      {...rest}
-      aria-describedby={describedBy}
-      aria-invalid={marked === 'error' || undefined}
-      id={id}
-      ref={input}
-      type={type === 'password' && shown ? 'text' : type}
-    />
-    {marked && <Icon name={marked} />}
-    {type === 'search' && shortcut && <KeyHint decorative>{shortcut}</KeyHint>}
-    {type === 'password' && (
-      <button
-        aria-label={shown ? 'Hide password' : 'Show password'}
-        className={styles.eye}
-        disabled={rest.disabled}
-        onClick={() => setShown(!shown)}
-        type='button'>
-        <Icon name={shown ? 'eyeOff' : 'eye'} size={20} />
-      </button>
-    )}
-  </span>
-);
+}: BoxProps) => {
+  // The eye button sits inside the label box, so the input takes its name from aria-label, not from the box.
+  const named = hideLabel || type === 'password';
+
+  return (
+    <label
+      className={date ? `${styles.box} ${styles.date}` : styles.box}
+      data-fill={date === 'fill' || undefined}
+      data-mark={marked}
+      data-size={size}
+      data-state={state}
+      data-testid='field-box'
+      data-type={type === 'search' ? 'search' : undefined}>
+      {type === 'search' && <Icon name='search' />}
+      <input
+        aria-keyshortcuts={shortcut}
+        aria-label={named ? label : undefined}
+        className={styles.input}
+        {...rest}
+        aria-describedby={describedBy}
+        aria-invalid={marked === 'error' || undefined}
+        id={id}
+        ref={input}
+        type={type === 'password' && shown ? 'text' : type}
+      />
+      {marked && <Icon name={marked} />}
+      {type === 'search' && shortcut && (
+        <KeyHint decorative>{shortcut}</KeyHint>
+      )}
+      {type === 'password' && (
+        <button
+          aria-label={shown ? 'Hide password' : 'Show password'}
+          className={styles.eye}
+          disabled={rest.disabled}
+          onClick={() => setShown(!shown)}
+          type='button'>
+          <Icon name={shown ? 'eyeOff' : 'eye'} size={20} />
+        </button>
+      )}
+    </label>
+  );
+};
 
 /** A single-line field with its label and, below it, helper text or an error that replaces it. */
 export const TextField = ({

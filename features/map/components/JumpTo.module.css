@@ -2,7 +2,8 @@
   align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-gap-xs);
+  /* A wrapped row keeps 16px from the next: the hit areas of 30px buttons reach 7px past them. */
+  gap: var(--space-gap-m) var(--space-gap-xs);
 }
 
 .caption {

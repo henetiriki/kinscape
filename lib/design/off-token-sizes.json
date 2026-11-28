@@ -123,13 +123,13 @@
     "count": 2,
     "file": "app/components/forms/TextField.module.css",
     "property": "margin-block",
-    "value": "-2px"
+    "value": "-1px"
   },
   {
     "count": 1,
     "file": "app/components/forms/TextField.module.css",
     "property": "margin-block",
-    "value": "-3px"
+    "value": "-2px"
   },
   {
     "count": 3,

@@ -11,13 +11,12 @@ const css = readFileSync(
 );
 
 // NFR-05, NFR-06
-it('reaches the input and the select 3px past a 2px border, and 2px past a 1px border', () => {
+it('reaches the input and the select over a 2px border, but not in a token field', () => {
   const rule = css.match(
-    /(\.box:is\([^{]*?> :is\(\.input, \.select\)) \{([^}]*)\}/
+    /(\.box:not\(\.tokens\):is\([^{]*?> :is\(\.input, \.select\)) \{([^}]*)\}/
   );
 
-  expect(css).toMatch(/\.input \{[^}]*margin-block: -2px/);
-  expect(rule?.[2]).toContain('margin-block: -3px');
+  expect(rule?.[2]).toContain('margin-block: -2px');
   expect(rule?.[1]).toContain(':focus-within');
   expect(rule?.[1]).toContain("[data-state='focus']");
   expect(rule?.[1]).toContain('[data-mark]');
@@ -202,4 +201,38 @@ it('focuses the field on its shortcut unless a text input has focus', () => {
   unmount();
   fireEvent.keyDown(document.body, { key: '/' });
   expect(search).not.toHaveFocus();
+});
+
+// NFR-05, NFR-06
+it('draws a 44px hit area behind the label box of a field under 50px', () => {
+  const rule = css.match(
+    /(label\.box:not\(\[data-size='l'\]\)::before) \{([^}]*)\}/
+  );
+
+  expect(rule?.[2]).toContain('height: var(--size-touch)');
+  expect(rule?.[2]).toContain('z-index: calc(-1 * var(--z-furniture))');
+  expect(css).toMatch(/label\.box \{[^}]*isolation: isolate/);
+});
+
+// NFR-06
+it('wraps the input in a label box that adds no text to its name', () => {
+  render(<TextField label='Place' />);
+
+  const box = screen.getByTestId('field-box');
+
+  expect(box.tagName).toBe('LABEL');
+  expect(box.contains(screen.getByRole('textbox', { name: 'Place' }))).toBe(
+    true
+  );
+  expect(box.textContent).toBe('');
+});
+
+// NFR-06
+it('names a password input by its label, not by the eye button in its label box', () => {
+  render(<TextField label='Password' type='password' />);
+
+  expect(screen.getByTestId('field-box').tagName).toBe('LABEL');
+  expect(screen.getByLabelText('Password').getAttribute('aria-label')).toBe(
+    'Password'
+  );
 });

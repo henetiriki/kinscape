@@ -18,6 +18,22 @@
   position: relative;
 }
 
+/* The 42px box is a label with a 44px hit area behind its content. A click in the part outside the box focuses the input. The large box is 50px. */
+label.box {
+  isolation: isolate;
+}
+
+label.box:not([data-size='l'])::before {
+  content: '';
+  height: var(--size-touch);
+  left: 0;
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  width: 100%;
+  z-index: calc(-1 * var(--z-furniture));
+}
+
 @media (hover: hover) {
   .box:not([data-mark], :focus-within):hover:not(:has(:disabled)) {
     border-color: var(--ink-3);
@@ -67,11 +83,11 @@
   color: var(--warning-border);
 }
 
-/* The input fills the box and reaches 2px past it (3px with a 2px border): a 44px target in the 42px box. Its background is transparent. */
+/* The input fills the box and reaches over its 1px and 2px borders, so the whole field height is its target. */
 .input {
   align-self: stretch;
   background: transparent;
-  margin-block: -2px;
+  margin-block: -1px;
   border: 0;
   color: inherit;
   flex: 1;
@@ -96,15 +112,15 @@
   transition: background-color 0s 600000s;
 }
 
-/* A 2px border: the input and the select reach one pixel more. */
-.box:is(
+/* A 2px border: the input and the select reach over it. A token field keeps its height. */
+.box:not(.tokens):is(
     :focus-within,
     [data-state='focus'],
     [data-mark],
     :has(select)[data-state='active']
   )
   > :is(.input, .select) {
-  margin-block: -3px;
+  margin-block: -2px;
 }
 
 .date {
@@ -199,7 +215,7 @@
   flex: 1;
   font-family: var(--type-body-font);
   font-size: var(--type-body-size);
-  margin-block: -2px;
+  margin-block: -1px;
   min-width: 0;
   outline: 0;
   padding: 0;

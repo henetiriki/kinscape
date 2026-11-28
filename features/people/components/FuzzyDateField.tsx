@@ -136,7 +136,7 @@ export const FuzzyDateField = (props: FuzzyDateFieldArgs) => {
       <Text as='label' htmlFor={id} variant='label'>
         {label}
       </Text>
-      <span
+      <label
         className={styles.box}
         data-mark={error ? 'error' : undefined}
         data-state={state}
@@ -162,7 +162,7 @@ export const FuzzyDateField = (props: FuzzyDateFieldArgs) => {
           value={text}
         />
         {error && <Icon name='error' />}
-      </span>
+      </label>
       <Slot
         checks={checks}
         error={error}

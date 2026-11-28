@@ -388,7 +388,7 @@ type Base = {
     icon?: IconName;
     /** Fully round, as Play. */
     round?: boolean;
-    /** Heights 50, 44, 40 and 36. */
+    /** Heights 50, 42, 30 and 30. */
     size?: 'l' | 'm' | 's' | 'xs';
     state?: ControlState;
     variant?: 'primary' | 'secondary';
@@ -1078,7 +1078,7 @@ export type LoadingBarProps = Parameters<typeof LoadingBar>[0];
 
 /**
  * A field that is still loading: its label over one bar, or over two bars for a text area. Two bars
- * are as high as a text area of two rows (66px), and one bar is as high as a field (42px), so the form
+ * are as high as a text area of two rows (66px). One bar is as high as a field (42px). So the form
  * does not move when the field replaces them. The form that holds it sets `aria-busy`, so a screen
  * reader skips the bars.
  */

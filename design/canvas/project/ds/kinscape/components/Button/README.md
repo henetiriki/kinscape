@@ -2,7 +2,7 @@ An action: primary for the one main action in a view, secondary for the rest.
 
 ## Design
 
-- **Buttons:** by height. L 50 (sign-in, full width): `type.control`. M 44: `type.control`, padding 16. S 40: `type.control-small`, padding 16. XS 36: `type.control-small`, padding 12.
+- **Buttons:** by height. L 50 (sign-in, full width): `type.control`. M 42: `type.control`, padding 16. S 30: `type.control-small`, padding 16. XS 30: `type.control-small`, padding 12.
 - **Primary button:** `--brand` fill, white text.
 - **Secondary button:** white, 1px `--line-strong` border, `--ink` text. With an `href`, a button is a plain link with the same look and states.
 
@@ -17,7 +17,7 @@ An action: primary for the one main action in a view, secondary for the rest.
 | `icon` | `"menu" \| "search" \| "alert" \| "back" \| "chevronDown" \| "close" \| "cloudOff" \| "copy" \| "document" \| "done" \| "error" \| "export" \| "eye" \| "eyeOff" \| "fit" \| "forward" \| "info" \| "layers" \| "people" \| "place" \| "play" \| "signOut" \| "success" \| "warning" \| "zoomIn" \| "zoomOut"` | no | A leading icon, or the only content of an icon-only Button. |
 | `label` | `string` | no |  |
 | `round` | `boolean` | no | Fully round, as Play. |
-| `size` | `"s" \| "l" \| "m" \| "xs"` | no | Heights 50, 44, 40 and 36. |
+| `size` | `"s" \| "l" \| "m" \| "xs"` | no | Heights 50, 42, 30 and 30. |
 | `state` | `"active" \| "focus" \| "hover"` | no |  |
 | `variant` | `"primary" \| "secondary"` | no |  |
 

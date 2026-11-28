@@ -208,6 +208,25 @@ describe('buildTokens', () => {
       expect(text).not.toContain('"breakpoints"');
     });
 
+    it('throws, naming the role, on a breakpoint with no size or line reference', async () => {
+      const noLine = structuredClone(withPhone);
+      const literal = structuredClone(withPhone);
+
+      noLine.type.h1.$extensions.kinscape.breakpoints = {
+        phone: { size: '{type.h1.size}' },
+      } as never;
+      literal.type.h1.$extensions.kinscape.breakpoints = {
+        phone: { line: '{type.h1.line}', size: '31px' },
+      } as never;
+
+      await expect(buildTokens(noLine, OUT)).rejects.toThrow(
+        'type.h1: breakpoint "phone" needs a line reference'
+      );
+      await expect(buildTokens(literal, OUT)).rejects.toThrow(
+        'type.h1: breakpoint "phone" needs a size reference'
+      );
+    });
+
     it('throws on a breakpoint that the file has no query for', async () => {
       const bad = structuredClone(withPhone);
 

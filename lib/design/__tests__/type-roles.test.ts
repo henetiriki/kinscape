@@ -8,7 +8,7 @@ const root = join(import.meta.dirname, '../../..');
 const read = (path: string) => readFileSync(join(root, path), 'utf8');
 const source = JSON.parse(read('design/kinscape.tokens.json'));
 
-/** The 20 type roles (SC.12, NFR-06). Adding or renaming a role starts here. */
+/** The 20 type roles (SC.12, NFR-06). To add or rename a role, start here. */
 const ROLES = [
   'body',
   'caption',
@@ -33,10 +33,40 @@ const ROLES = [
 ];
 const camel = (name: string) =>
   name.replace(/-(\w)/g, (_, letter: string) => letter.toUpperCase());
+const VARIANTS = ROLES.map(camel);
 
-/** The names after `prefix` in `text`, up to the next `-size`, `-line` and so on. */
+/** The first group of each match of `pattern` in `text`, once. */
 const namesIn = (text: string, pattern: RegExp) =>
   new Set([...text.matchAll(pattern)].map(([, name]) => name));
+
+/** The role names in the `var(--type-…)` calls of `text`. */
+const varNames = (text: string) => [
+  ...text
+    .matchAll(/var\(--type-([a-z0-9-]+?)-(?:font|size|line|weight|tracking)\)/g)
+    .map(([, name]) => name),
+];
+
+/** The `variant` of each `KinScape.Text` import in `board`. */
+const textVariants = (board: string) =>
+  [...board.matchAll(/<x-import\b[^>]*KinScape\.Text"[^>]*>/g)].flatMap(
+    ([tag]) => [
+      ...tag.matchAll(/variant="([A-Za-z0-9]+)"/g).map(([, name]) => name),
+    ]
+  );
+
+/** The classes of `board` that no `.class` rule defines, in `css` or in the board itself. */
+const undefinedClasses = (board: string, css: string) => {
+  const defined = namesIn(`${css}\n${board}`, /(?<![\w-])\.([a-z][\w-]*)/g);
+
+  return [...board.matchAll(/class="([^"]*)"/g)]
+    .flatMap(([, value]) => value.split(/\s+/))
+    .filter(name => name !== '' && !defined.has(name));
+};
+
+/** Each name in `names` that is not in `allowed`, once. */
+const unknown = (names: string[], allowed: string[]) => [
+  ...new Set(names.filter(name => !allowed.includes(name))),
+];
 
 // NFR-06
 describe('the type roles', () => {
@@ -56,82 +86,55 @@ describe('the type roles', () => {
   });
 
   it('has a Text style for each role except the headings, and a class for each', () => {
-    const variants = ROLES.map(camel);
     const css = read('app/components/foundation/Text.module.css');
     const classes = namesIn(css, /^\.(\w+) \{/gm);
 
     expect(Object.keys(DEFAULT_TAG).toSorted()).toEqual(
-      variants
-        .filter(name => !['display', 'h1', 'h2', 'h3'].includes(name))
-        .toSorted()
+      VARIANTS.filter(
+        name => !['display', 'h1', 'h2', 'h3'].includes(name)
+      ).toSorted()
     );
     expect(
-      variants.filter(name => !classes.has(name)),
+      VARIANTS.filter(name => !classes.has(name)),
       'a role with no class'
     ).toEqual([]);
   });
 
-  // The check that fails an unknown name: it reads each `var(--type-…)` of the app.
-  it('names no other role in a var(--type-…) of the app, the features or the tokens', () => {
-    const files = [
-      ...globSync('{app,features}/**/*.{css,tsx}', { cwd: root }).filter(
-        file => !file.includes('__tests__')
-      ),
-    ];
-    const used = files.flatMap(file => [
-      ...read(file).matchAll(
-        /var\(--type-([a-z0-9-]+)-(?:font|size|line|weight|tracking)\)/g
-      ),
-    ]);
+  it('names no other role in a var(--type-…) of the app, the features or the libraries', () => {
+    const files = globSync('{app,features,lib}/**/*.{css,ts,tsx,mts}', {
+      cwd: root,
+    }).filter(file => !file.includes('__tests__'));
+    const used = files.flatMap(file => varNames(read(file)));
 
     expect(used.length).toBeGreaterThan(50);
-    expect(
-      [...new Set(used.map(([, name]) => name))].filter(
-        name => !ROLES.includes(name)
-      )
-    ).toEqual([]);
+    expect(unknown(used, ROLES)).toEqual([]);
   });
 
   it('names no other role on a board', () => {
+    const css = read('design/canvas/project/ds/kinscape/tokens.css');
     const boards = globSync('design/canvas/project/*.dc.html', {
       cwd: root,
     }).map(file => read(file));
-    const variants = ROLES.map(camel);
-    const textTags = boards.flatMap(board =>
-      [...board.matchAll(/<x-import\b[^>]*KinScape\.Text"[^>]*>/g)].map(
-        ([tag]) => tag
-      )
-    );
-    const variantsUsed = textTags.flatMap(tag => [
-      ...tag.matchAll(/variant="([A-Za-z0-9]+)"/g).map(([, name]) => name),
-    ]);
-    const varsUsed = boards.flatMap(board => [
-      ...board
-        .matchAll(
-          /var\(--type-([a-z0-9-]+?)-(?:font|size|line|weight|tracking)\)/g
-        )
-        .map(([, name]) => name),
-    ]);
-    const classesUsed = boards.flatMap(board =>
-      [...board.matchAll(/class="([^"]*)"/g)].flatMap(([, value]) =>
-        value.split(/\s+/)
-      )
-    );
 
-    expect(varsUsed.length).toBeGreaterThan(100);
-    expect(variantsUsed.length).toBeGreaterThan(50);
-    expect(varsUsed.filter(name => !ROLES.includes(name))).toEqual([]);
-    expect(variantsUsed.filter(name => !variants.includes(name))).toEqual([]);
-    expect(classesUsed.length).toBeGreaterThan(20);
-    expect(classesUsed.filter(name => !ROLES.includes(name))).toEqual([]);
+    expect(boards.flatMap(varNames).length).toBeGreaterThan(100);
+    expect(boards.flatMap(textVariants).length).toBeGreaterThan(50);
+    expect(unknown(boards.flatMap(varNames), ROLES)).toEqual([]);
+    expect(unknown(boards.flatMap(textVariants), VARIANTS)).toEqual([]);
+    expect(
+      boards.flatMap(board => undefinedClasses(board, css)),
+      'a board class that no rule defines'
+    ).toEqual([]);
   });
 
-  it('finds an unknown role name', () => {
-    const text = 'font-size: var(--type-body-xl-size);';
+  it('finds an unknown name in a var(), a Text variant and a class', () => {
+    const board = [
+      '<style>.note { margin: 0 }</style>',
+      '<x-import component-from-global-scope="KinScape.Text" variant="button">x</x-import>',
+      '<p class="note button" style="font-size: var(--type-body-xl-size)"></p>',
+    ].join('');
 
-    expect([...namesIn(text, /--type-([a-z0-9-]+)-size/g)]).toEqual([
-      'body-xl',
-    ]);
-    expect(ROLES).not.toContain('body-xl');
+    expect(unknown(varNames(board), ROLES)).toEqual(['body-xl']);
+    expect(unknown(textVariants(board), VARIANTS)).toEqual(['button']);
+    expect(undefinedClasses(board, '.body { color: red }')).toEqual(['button']);
   });
 });

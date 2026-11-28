@@ -164,6 +164,20 @@ describe('a derived group', () => {
     );
   });
 
+  it('throws, naming the group, on a from group that is derived', () => {
+    expect(() => withSteps(treeWith(derived(1.5, 'line')))).toThrow(
+      'scale.line: the from group "line" is derived, so it cannot be a source'
+    );
+    expect(() =>
+      withSteps({
+        scale: {
+          heading: { $extensions: { kinscape: derived(1.25, 'line') } },
+          line: { $extensions: { kinscape: derived(1.5, 'heading') } },
+        },
+      })
+    ).toThrow('is derived, so it cannot be a source');
+  });
+
   it('throws on a call with no tree to find the from group in', () => {
     expect(() =>
       stepsOf('line', derived(1.5) as Parameters<typeof stepsOf>[1])

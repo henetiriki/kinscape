@@ -82,10 +82,17 @@ const breakpointBlocks = (
 
       blocks.set(name, [
         ...(blocks.get(name) ?? []),
-        ...BREAKPOINT_PROPS.map(
-          prop =>
-            `    --${systemName(['type', role, prop])}: ${resolvedText(tokens, referenceIn(refs[prop])!)};`
-        ),
+        ...BREAKPOINT_PROPS.map(prop => {
+          const reference = referenceIn(refs[prop]);
+
+          if (reference === undefined) {
+            throw new Error(
+              `type.${role}: breakpoint "${name}" needs a ${prop} reference`
+            );
+          }
+
+          return `    --${systemName(['type', role, prop])}: ${resolvedText(tokens, reference)};`;
+        }),
       ]);
     }
   }

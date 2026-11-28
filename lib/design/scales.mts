@@ -48,7 +48,7 @@ const settingsOf = (group: DtcgTree | undefined): ScaleSettings | undefined =>
 
 type Derived = Extract<ScaleSettings, { mode: 'derived' }>;
 
-/** Each step of the `from` group, times the ratio, rounded. It needs the whole `tree` to find that group. */
+/** Each step of the `from` group, times the ratio, rounded. It needs the whole `tree` to find that group. A derived `from` group throws: it would loop. */
 const derivedSteps = (
   scale: string,
   settings: Derived,
@@ -61,6 +61,12 @@ const derivedSteps = (
   if (source === undefined) {
     throw new Error(
       `scale.${scale}: the from group "${settings.from}" has no settings`
+    );
+  }
+
+  if (source.mode === 'derived') {
+    throw new Error(
+      `scale.${scale}: the from group "${settings.from}" is derived, so it cannot be a source`
     );
   }
 

@@ -232,16 +232,6 @@ export const type = {
 } as const;
 
 export const space = {
-  "4": "0.25rem",
-  "8": "0.5rem",
-  "12": "0.75rem",
-  "16": "1rem",
-  "20": "1.25rem",
-  "24": "1.5rem",
-  "32": "2rem",
-  "40": "2.5rem",
-  "48": "3rem",
-  "64": "4rem",
   "inset": {
     "2xs": "0.25rem",
     "xs": "0.5rem",
@@ -261,6 +251,7 @@ export const space = {
     "m": "1rem",
     "l": "1.25rem",
     "xl": "1.5rem",
+    "2xl": "2rem",
     "3xl": "2.5rem"
   },
   "stack": {

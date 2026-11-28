@@ -31,15 +31,15 @@
         </div>
         <div style="display: flex; gap: var(--space-gap-xl)">
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
-          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: 4px"></div>
+          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: var(--radius-small)"></div>
           <div class="mono" style="color: var(--ink-3)">4 px</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
-          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: 8px"></div>
+          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: var(--radius-control)"></div>
           <div class="mono" style="color: var(--ink-3)">8 px</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
-          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: 12px"></div>
+          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: var(--radius-panel)"></div>
           <div class="mono" style="color: var(--ink-3)">12 px</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
@@ -47,7 +47,7 @@
           <div class="mono" style="color: var(--ink-3)">16 px</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
-          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: 999px"></div>
+          <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: var(--radius-full)"></div>
           <div class="mono" style="color: var(--ink-3)">full · 999 px</div>
         </div>
         </div>
@@ -61,27 +61,27 @@
         <div style="display: flex; gap: var(--space-gap-3xl)">
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
           <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Segmented control</x-import>
-          <div style="display: flex; gap: 0; padding: 4px; border-radius: 12px; background: var(--segment)">
-            <div class="button-s" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: 8px; background: var(--brand); color: var(--white)">Day</div>
-            <div class="button-s" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: 8px; color: var(--ink-2)">Month</div>
-            <div class="button-s" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: 8px; color: var(--ink-2)">Year</div>
+          <div style="display: flex; gap: 0; padding: var(--space-inset-2xs); border-radius: var(--radius-panel); background: var(--segment)">
+            <div class="button-s" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: var(--radius-control); background: var(--brand); color: var(--white)">Day</div>
+            <div class="button-s" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: var(--radius-control); color: var(--ink-2)">Month</div>
+            <div class="button-s" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: var(--radius-control); color: var(--ink-2)">Year</div>
           </div>
           <div class="mono" style="color: var(--ink-3)">outer 12 − gap 4 = inner 8</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
           <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Chip in a panel</x-import>
-          <div style="display: flex; gap: 8px; padding: 8px; border-radius: 12px; background: var(--surface-2); outline: var(--border-hairline) solid var(--line-strong)">
-            <div class="chip" style="box-sizing: border-box; display: flex; align-items: center; height: 28px; padding: 0 8px; border-radius: 4px; background: var(--brand-tint); color: var(--brand)">Farm</div>
-            <div class="chip" style="box-sizing: border-box; display: flex; align-items: center; height: 28px; padding: 0 8px; border-radius: 4px; background: var(--brand-tint); color: var(--brand)">Church</div>
+          <div style="display: flex; gap: var(--space-gap-xs); padding: var(--space-inset-xs); border-radius: var(--radius-panel); background: var(--surface-2); outline: var(--border-hairline) solid var(--line-strong)">
+            <div class="chip" style="box-sizing: border-box; display: flex; align-items: center; height: 28px; padding: 0 var(--space-inset-xs); border-radius: var(--radius-small); background: var(--brand-tint); color: var(--brand)">Farm</div>
+            <div class="chip" style="box-sizing: border-box; display: flex; align-items: center; height: 28px; padding: 0 var(--space-inset-xs); border-radius: var(--radius-small); background: var(--brand-tint); color: var(--brand)">Church</div>
           </div>
           <div class="mono" style="color: var(--ink-3)">outer 12 − gap 8 = inner 4</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
           <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Popup</x-import>
-          <div style="display: flex; flex-direction: column; gap: 0; width: 160px; padding: 4px; border-radius: 12px; background: var(--surface); outline: var(--border-hairline) solid var(--line-strong)">
-            <div class="control" style="box-sizing: border-box; display: flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 8px; background: var(--brand-tint); color: var(--brand)">Edit pin</div>
-            <div class="control" style="box-sizing: border-box; display: flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 8px; color: var(--ink)">Move pin</div>
-            <div class="control" style="box-sizing: border-box; display: flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 8px; color: var(--ink)">Remove pin</div>
+          <div style="display: flex; flex-direction: column; gap: 0; width: 160px; padding: var(--space-inset-2xs); border-radius: var(--radius-panel); background: var(--surface); outline: var(--border-hairline) solid var(--line-strong)">
+            <div class="control" style="box-sizing: border-box; display: flex; align-items: center; height: 36px; padding: 0 var(--space-inset-s); border-radius: var(--radius-control); background: var(--brand-tint); color: var(--brand)">Edit pin</div>
+            <div class="control" style="box-sizing: border-box; display: flex; align-items: center; height: 36px; padding: 0 var(--space-inset-s); border-radius: var(--radius-control); color: var(--ink)">Move pin</div>
+            <div class="control" style="box-sizing: border-box; display: flex; align-items: center; height: 36px; padding: 0 var(--space-inset-s); border-radius: var(--radius-control); color: var(--ink)">Remove pin</div>
           </div>
           <div class="mono" style="color: var(--ink-3)">outer 12 − gap 4 = inner 8</div>
         </div>

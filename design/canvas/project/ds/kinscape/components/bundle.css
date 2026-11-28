@@ -171,16 +171,6 @@
   --type-mono-line: 1rem;
   --type-mono-weight: 400;
   --type-mono-tracking: 0;
-  --space-4: 0.25rem;
-  --space-8: 0.5rem;
-  --space-12: 0.75rem;
-  --space-16: 1rem;
-  --space-20: 1.25rem;
-  --space-24: 1.5rem;
-  --space-32: 2rem;
-  --space-40: 2.5rem;
-  --space-48: 3rem;
-  --space-64: 4rem;
   --space-inset-2xs: 0.25rem;
   --space-inset-xs: 0.5rem;
   --space-inset-s: 0.75rem;
@@ -197,6 +187,7 @@
   --space-gap-m: 1rem;
   --space-gap-l: 1.25rem;
   --space-gap-xl: 1.5rem;
+  --space-gap-2xl: 2rem;
   --space-gap-3xl: 2.5rem;
   --space-stack-2xs: 0.25rem;
   --space-stack-xs: 0.5rem;

@@ -18,8 +18,8 @@
 
   <x-import component-from-global-scope="KinScape.ColumnLayout" column="form" header="{{header}}" actions="{{actions}}">
 
-      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-24)">
-        <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-gap-xl)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs)">
           <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">{{title}}</x-import>
           <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Given names and surname are required. Everything else can wait.</x-import>
         </div>
@@ -33,13 +33,13 @@
       </sc-if>
 
       <sc-if value="{{showConflict}}" hint-placeholder-val="{{ false }}">
-        <div style="display: flex; align-items: center; gap: var(--space-12)">
+        <div style="display: flex; align-items: center; gap: var(--space-gap-s)">
           <div style="width: 640px"><x-import component-from-global-scope="KinScape.Alert" tone="error" title="This person changed while you were editing">Nothing was saved. Reload to see the latest version, then make your changes again.</x-import></div>
           <x-import component-from-global-scope="KinScape.Button" variant="secondary" on-click="{{reload}}">Reload</x-import>
         </div>
       </sc-if>
 
-      <div style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); padding: var(--space-24); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); column-gap: var(--space-40); row-gap: var(--space-16)">
+      <div style="background: var(--surface); border: var(--border-hairline) solid var(--line); border-radius: var(--radius-panel); padding: var(--space-inset-xl); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); column-gap: var(--space-gap-3xl); row-gap: var(--space-gap-m)">
 
         <div role="group" aria-labelledby="p-group-name" style="grid-column: 1; grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; align-items: start; min-width: 0">
             <x-import component-from-global-scope="KinScape.Text" variant="title" as="span" id="p-group-name">Name</x-import>
@@ -59,7 +59,7 @@
             <x-import component-from-global-scope="KinScape.CheckboxField" label="Deceased" description="{{deceasedNote}}" checked="{{deceased}}" disabled="{{deceasedLocked}}" on-change="{{toggleDeceased}}"></x-import>
         </div>
 
-        <div style="grid-column: 3; grid-row: 2 / span 4; display: flex; flex-direction: column; gap: var(--space-8); min-width: 0">
+        <div style="grid-column: 3; grid-row: 2 / span 4; display: flex; flex-direction: column; gap: var(--space-gap-xs); min-width: 0">
           <x-import component-from-global-scope="KinScape.TextAreaField" label="Notes" helper="Sources, stories, anything the fields can't hold." value="{{notes}}" on-change="{{onNotes}}"></x-import>
         </div>
 
@@ -67,10 +67,10 @@
   </x-import>
 
   <sc-if value="{{showLeave}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 10; background: var(--scrim); display: flex; align-items: center; justify-content: center">
+    <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: var(--z-action-bar); background: var(--scrim); display: flex; align-items: center; justify-content: center">
       <x-import component-from-global-scope="KinScape.DialogPanel" form="centred" title="Leave without saving?" title-id="leave-dialog-title" on-close="{{keepEditing}}">
         <x-import component-from-global-scope="KinScape.Text" variant="body" as="p">You changed this person. If you leave now, the changes are lost.</x-import>
-        <div style="display: flex; gap: var(--space-12)">
+        <div style="display: flex; gap: var(--space-gap-s)">
           <x-import component-from-global-scope="KinScape.Button" variant="primary" on-click="{{keepEditing}}">Keep editing</x-import>
           <x-import component-from-global-scope="KinScape.Button" variant="secondary" href="Person-relationships.dc.html">Leave without saving</x-import>
         </div>
@@ -79,7 +79,7 @@
   </sc-if>
 
   <sc-if value="{{showToast}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; left: 50%; bottom: 88px; transform: translateX(-50%); z-index: 10"><x-import component-from-global-scope="KinScape.Toast" tone="{{toast.tone}}" action="{{toast.action}}" on-action="{{toast.onAction}}" on-dismiss="{{toast.onDismiss}}">{{toast.text}}</x-import></div>
+    <div style="position: absolute; left: 50%; bottom: 88px; transform: translateX(-50%); z-index: var(--z-action-bar)"><x-import component-from-global-scope="KinScape.Toast" tone="{{toast.tone}}" action="{{toast.action}}" on-action="{{toast.onAction}}" on-dismiss="{{toast.onDismiss}}">{{toast.text}}</x-import></div>
   </sc-if>
 </div>
 </x-dc>

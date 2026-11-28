@@ -24,7 +24,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 
   <x-import component-from-global-scope="KinScape.MapLayout" panel="{{panel}}" dock="{{dock}}" credits="{{credits}}"></x-import>
 
-  <div style="z-index: 2; position: absolute; left: var(--size-gutter); bottom: 6px; box-sizing: border-box; width: 72px; height: 17px; padding: 0 4px; border: 1px solid var(--credits); border-top: 0; background: var(--white-60); font-size: 11px; line-height: 16px; color: var(--credits); white-space: nowrap">100 km</div>
+  <div style="z-index: 2; position: absolute; left: var(--size-gutter); bottom: 6px; box-sizing: border-box; width: 72px; height: 17px; padding: 0 var(--space-inset-2xs); border: var(--border-hairline) solid var(--credits); border-top: 0; background: var(--white-60); font-size: var(--type-credits-size); line-height: var(--type-credits-line); color: var(--credits); white-space: nowrap">100 km</div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["default","open"],"default":"default"},"$preview":{"width":800,"height":900}}'>

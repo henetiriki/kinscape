@@ -32,13 +32,13 @@ body{margin:0}
       </g>
       <rect x="631" y="684" width="18" height="18" rx="2.5" stroke-width="2.5" vector-effect="non-scaling-stroke" style="fill: var(--pin); stroke: var(--white)"></rect>
     </svg>
-    <div style="position: absolute; left: var(--size-gutter-phone); top: var(--size-gutter-phone); display: flex; align-items: center; gap: var(--space-12)">
+    <div style="position: absolute; left: var(--size-gutter-phone); top: var(--size-gutter-phone); display: flex; align-items: center; gap: var(--space-gap-s)">
       <x-import component-from-global-scope="KinScape.Wordmark" size="36"></x-import>
     </div>
   </div>
 
-  <form style="flex: 1; padding: var(--space-24) var(--size-gutter-phone) var(--space-20); display: flex; flex-direction: column; gap: var(--space-16); box-sizing: border-box">
-    <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+  <form style="flex: 1; padding: var(--space-inset-xl) var(--size-gutter-phone) var(--space-inset-l); display: flex; flex-direction: column; gap: var(--space-gap-m); box-sizing: border-box">
+    <div style="display: flex; flex-direction: column; gap: var(--space-gap-2xs)">
       <x-import component-from-global-scope="KinScape.Text" variant="h1Phone" as="h1">Sign in</x-import>
       <p class="body" style="margin: 0; color: var(--ink-3)">Your tree is private. Sign in to open the map.</p>
     </div>
@@ -47,10 +47,10 @@ body{margin:0}
     <x-import component-from-global-scope="KinScape.TextField" size="l" type="password" label="Password" autocomplete="current-password" default-value="example-password"></x-import>
     <x-import component-from-global-scope="KinScape.CheckboxField" plain="{{yes}}" label="Keep me signed in on this device" default-checked="{{yes}}"></x-import>
 
-    <x-import component-from-global-scope="KinScape.Button" type="submit" variant="primary" size="l" full="{{yes}}" style="margin-top: var(--space-4)">Sign in</x-import>
+    <x-import component-from-global-scope="KinScape.Button" type="submit" variant="primary" size="l" full="{{yes}}" style="margin-top: var(--space-stack-2xs)">Sign in</x-import>
     <sc-if value="{{showGoogle}}" hint-placeholder-val="{{ true }}">
-      <button type="button" class="button" style="height: var(--size-control-l); border: 1px solid var(--google-border); border-radius: var(--radius-control); background: var(--white); color: var(--google-text); display: flex; align-items: center; justify-content: center; gap: var(--space-12); cursor: pointer">
-        <span aria-hidden="true" style="flex: none; width: 20px; height: 20px; box-sizing: border-box; border: 1px dashed var(--google-border); border-radius: var(--radius-small)"></span>
+      <button type="button" class="button" style="height: var(--size-control-l); border: var(--border-hairline) solid var(--google-border); border-radius: var(--radius-control); background: var(--white); color: var(--google-text); display: flex; align-items: center; justify-content: center; gap: var(--space-gap-s); cursor: pointer">
+        <span aria-hidden="true" style="flex: none; width: 20px; height: 20px; box-sizing: border-box; border: var(--border-hairline) dashed var(--google-border); border-radius: var(--radius-small)"></span>
         Continue with Google
       </button>
     </sc-if>

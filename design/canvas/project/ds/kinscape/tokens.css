@@ -110,6 +110,7 @@
   --space-gap-m: 1rem;
   --space-gap-l: 1.25rem;
   --space-gap-xl: 1.5rem;
+  --space-gap-2xl: 2rem;
   --space-gap-3xl: 2.5rem;
   --space-stack-2xs: 0.25rem;
   --space-stack-xs: 0.5rem;
@@ -204,20 +205,6 @@
   --font-display: 'Bricolage Grotesque', sans-serif;
   --font-body: 'Public Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-}
-
-:root {
-  /* Deprecated: boards and the features/ CSS still use these names. */
-  --space-4: 0.25rem;
-  --space-8: 0.5rem;
-  --space-12: 0.75rem;
-  --space-16: 1rem;
-  --space-20: 1.25rem;
-  --space-24: 1.5rem;
-  --space-32: 2rem;
-  --space-40: 2.5rem;
-  --space-48: 3rem;
-  --space-64: 4rem;
 }
 
 .display {

@@ -17,6 +17,7 @@ import type { CanvasSnapshot } from '@ks/scripts/types.ts';
 import {
   clipPage,
   defineBuilder,
+  defineRootHelpers,
   defineStyleHelpers,
   defineTemplateFillers,
   defineTemplateHelpers,
@@ -34,6 +35,7 @@ import {
   readCanvasExport,
   snapshotProblems,
   tokenColours,
+  usesDesignSystem,
 } from '@ks/scripts/design-export.mts';
 import { screenNames, snapshotNames } from '@ks/scripts/design-shots.mts';
 
@@ -151,6 +153,18 @@ describe('prepare and finish', () => {
         urls
       )
     ).toBe(`<head><script src="${urls.helpers}"></script></head>`);
+  });
+
+  it('a board uses the design system if it mounts a component or links its tokens', () => {
+    expect(
+      usesDesignSystem(
+        '<x-import component-from-global-scope="K.B"></x-import>'
+      )
+    ).toBe(true);
+    expect(
+      usesDesignSystem('<link rel="stylesheet" href="ds/kinscape/tokens.css">')
+    ).toBe(true);
+    expect(usesDesignSystem('<div style="gap: 4px"></div>')).toBe(false);
   });
 
   it('prepare loads a design system from files: React 18, its CSS as a style and its scripts', () => {
@@ -773,6 +787,7 @@ describe('mountImports', () => {
 describe('inlinePseudoStyles and inlineStyles', () => {
   beforeEach(() => {
     defineStyleHelpers();
+    defineRootHelpers();
   });
 
   it('writes the computed values of the declared properties onto every element a rule matches, then drops the stylesheet', () => {
@@ -791,6 +806,36 @@ describe('inlinePseudoStyles and inlineStyles', () => {
       '<p class="a" style="width: 5px; margin-top: 5px; border-top-color: transparent; padding-top: 5px;">out</p><x-import><i class="a" style="width: 5px; margin-top: 5px; border-top-color: transparent; padding-top: 5px;"><u class="b"></u></i><s class="c"></s></x-import>'
     );
     expect(document.querySelector('style')).toBeNull();
+  });
+
+  it('keeps a bundle :root name that :root lacks in <style data-root>', () => {
+    document.head.innerHTML =
+      '<title>T</title><style data-bundle>:root{--type-body-size:0.9375rem;--space-gap-m:1rem}.a{width:1px}</style>';
+    document.body.innerHTML = '<x-import><i class="a"></i></x-import>';
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      getPropertyValue: (name: string) =>
+        name === '--space-gap-m' ? ' 1rem ' : name === 'width' ? '5px' : '',
+    } as unknown as CSSStyleDeclaration);
+
+    inlineStyles([]);
+
+    expect(document.querySelector('style[data-bundle]')).toBeNull();
+    expect(document.querySelector('style[data-root]')?.textContent).toBe(
+      ':root{--type-body-size:0.9375rem;}'
+    );
+  });
+
+  it('adds no <style data-root> when :root has every name', () => {
+    document.head.innerHTML =
+      '<title>T</title><style data-bundle>:root{--x:1px}.a{width:1px}</style>';
+    document.body.innerHTML = '<x-import><i class="a"></i></x-import>';
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      getPropertyValue: () => '1px',
+    } as unknown as CSSStyleDeclaration);
+
+    inlineStyles([]);
+
+    expect(document.querySelector('style[data-root]')).toBeNull();
   });
 
   // A pseudo-element has no `style` attribute, so its rules stay as CSS with written-out values.
@@ -1089,6 +1134,26 @@ describe('pageHtml', () => {
 
     expect(pageHtml()).toBe(
       '<!doctype html>\n<html><head><title>T</title><link rel="stylesheet" href="fonts.css"></head><body><p style="margin-top: 8px; width: 40px;">A</p></body></html>\n'
+    );
+  });
+
+  it('writes a value from <style data-root> and removes that element', () => {
+    document.head.innerHTML =
+      '<title>T</title><style data-root>:root{--size:0.9375rem;}</style>';
+    document.body.innerHTML =
+      '<x-dc><p style="font-size: var(--size)">A</p></x-dc>';
+
+    expect(pageHtml()).toBe(
+      '<!doctype html>\n<html><head><title>T</title><link rel="stylesheet" href="fonts.css"></head><body><p style="font-size: 0.9375rem">A</p></body></html>\n'
+    );
+  });
+
+  it('keeps a board element that has a data-root attribute', () => {
+    document.head.innerHTML = '<title>T</title>';
+    document.body.innerHTML = '<x-dc><p data-root="">A</p></x-dc>';
+
+    expect(pageHtml()).toBe(
+      '<!doctype html>\n<html><head><title>T</title><link rel="stylesheet" href="fonts.css"></head><body><p data-root="">A</p></body></html>\n'
     );
   });
 

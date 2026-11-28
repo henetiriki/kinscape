@@ -11,6 +11,7 @@ import type * as samples from '#ks/lib/design/samples.mts';
 
 import {
   defineBuilder,
+  defineRootHelpers,
   defineStyleHelpers,
   defineTemplateFillers,
   defineTemplateHelpers,
@@ -88,6 +89,7 @@ const exportBoard = async (page: Page, board: string): Promise<string> => {
     await page.evaluate(defineBuilder);
     await page.evaluate(mountImports);
     await page.evaluate(defineStyleHelpers);
+    await page.evaluate(defineRootHelpers);
     await page.evaluate(inlinePseudoStyles, [...tokens]);
     await page.evaluate(inlineStyles, [...tokens]);
 
@@ -116,6 +118,23 @@ test('exports a board that uses <x-import> and var() as rendered HTML with writt
   expect(snapshot).toContain('width: 160px');
   // A text style the board takes from tokens.css by class, which has no link left in the snapshot.
   expect(snapshot).toMatch(/<h2 class="h2" style="[^"]*line-height: 32px/);
+});
+
+// A `--type-*` name comes from the bundle only, which the export removes before it reads each var().
+test('exports a board with var(--type-body-size) as the token value', async ({
+  page,
+}) => {
+  const snapshot = await exportBoard(
+    page,
+    board(
+      '<p style="font-size: var(--type-body-size)">Body</p><x-import component-from-global-scope="KinScape.Button" variant="primary">Save</x-import>',
+      '{}'
+    )
+  );
+
+  expect(snapshotProblems(snapshot, tokens)).toEqual([]);
+  expect(snapshot).toContain('font-size: 0.9375rem');
+  expect(snapshot).not.toContain('data-root');
 });
 
 // BND-04: the contested hatch is an rgba() colour, so a board can mount the DateDock and the Legend.

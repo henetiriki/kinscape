@@ -31,17 +31,6 @@ const ROLES = [
   'small',
   'title',
 ];
-/** Old role names that no other role reuses. A board class with one of them is stale. */
-const RETIRED = [
-  'body-l',
-  'button',
-  'button-s',
-  'h1-phone',
-  'link-s',
-  'mono-l',
-  'mono-m',
-  'overline-tight',
-];
 const camel = (name: string) =>
   name.replace(/-(\w)/g, (_, letter: string) => letter.toUpperCase());
 
@@ -133,13 +122,16 @@ describe('the type roles', () => {
     expect(variantsUsed.length).toBeGreaterThan(50);
     expect(varsUsed.filter(name => !ROLES.includes(name))).toEqual([]);
     expect(variantsUsed.filter(name => !variants.includes(name))).toEqual([]);
-    expect(classesUsed.filter(name => RETIRED.includes(name))).toEqual([]);
+    expect(classesUsed.length).toBeGreaterThan(20);
+    expect(classesUsed.filter(name => !ROLES.includes(name))).toEqual([]);
   });
 
   it('finds an unknown role name', () => {
-    const text = 'font-size: var(--type-body-l-size);';
+    const text = 'font-size: var(--type-body-xl-size);';
 
-    expect([...namesIn(text, /--type-([a-z0-9-]+)-size/g)]).toEqual(['body-l']);
-    expect(ROLES).not.toContain('body-l');
+    expect([...namesIn(text, /--type-([a-z0-9-]+)-size/g)]).toEqual([
+      'body-xl',
+    ]);
+    expect(ROLES).not.toContain('body-xl');
   });
 });

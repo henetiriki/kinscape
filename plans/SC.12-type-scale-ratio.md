@@ -145,7 +145,7 @@ On a phone, `TextField`, `TextAreaField` and `FuzzyDateField` switch to `body-l`
 
 ## Deviations
 
-- `type-roles.test.ts` reads each board `var(--type-*)` name, `KinScape.Text` variant and retired class after step 7. The CI build left it out because the boards held old names.
+- `type-roles.test.ts` reads each board `var(--type-*)` name, `KinScape.Text` variant and class after step 7. The CI build left it out because the boards held old names.
 - `design.test.ts` and `design-export.test.ts` hold the count 86 after the local session deleted `Type-scale.dc.html`.
 - `Spacing-and-controls.dc.html` still says "the Type scale board" in one sentence. The build changes no word of a board (Constraints).
 - `lib/design/large-text.json` is unchanged. `e2e/large-text.spec.ts` finds no new failure.

@@ -118,13 +118,7 @@ const HIT_CASES = [
 ] as const;
 
 // Controls under 44px with no 44px hit area on a phone. Each Bug holds its controls, as "card, caption, control".
-const UNDER_44: Record<string, readonly string[]> = {
-  // SC.13 (#1207): the grabber's 44px hit area reaches 4px into the date field below it. Moving the field down 4px changes each phone screen with the sheet. A Bug is to be filed.
-  'SC.13 follow-up': [
-    'DateDock, DateDock · phone sheet, input text Date shown',
-    'DateDock, DateDock · phone sheet · invalid date, input text Date shown',
-  ],
-};
+const UNDER_44: Record<string, readonly string[]> = {};
 const UNDER_44_KEYS: ReadonlySet<string> = new Set(
   Object.values(UNDER_44).flat()
 );

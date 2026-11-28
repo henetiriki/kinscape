@@ -142,7 +142,7 @@ A text `input` has no `::before`. The input already reaches over the box border 
 ## Deviations
 
 - D12 B is built. The `<label>` box covers the text field, the select and the date field. `TextAreaField` and `TokenField` keep their boxes: each is 44px or taller where it has an input.
-- Big: check 5 holds for each card but two. The grabber of the phone sheet reaches 4px into the date field below it. `UNDER_44` lists those two controls. A fix moves the field 4px down on each phone screen with the sheet. File a Bug.
+- Check 5 holds: `UNDER_44` is empty. The date row of the phone sheet starts 4px lower, so the grabber's hit area stays off the field. The `Map-phone-*` boards draw the old place: `npm run design:check` names each screen that differs.
 - `ZoomControls`: the buttons are 1px apart, so each hit area is 43px: its button and the gap below. `JumpTo` rows wrap 16px apart, not 8px.
 - Big: the local-session steps are not done: steps 3 to 5 and 7 of the design system change, the board deletion and the `Map-add-pin.dc.html` rows. Until then `npm run design:check` fails on the board screens that draw the old heights.
 - `size` in `lib/design/system.mts` uses resolved values: the design system does not allow an alias outside `color`.

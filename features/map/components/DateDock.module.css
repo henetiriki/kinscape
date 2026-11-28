@@ -43,10 +43,10 @@
   margin-left: auto;
 }
 
-/* The error callout clears the sheet: its 36px above the date row plus 12px. */
+/* The error callout clears the sheet: its 40px above the date row plus 12px. The row starts 4px below the sheet content. */
 .sheetField {
   display: contents;
-  --callout-lift: 48px;
+  --callout-lift: 52px;
 }
 
 /* The grabber's 44px hit area reaches 4px into the sheet, so the date row starts 4px lower. */

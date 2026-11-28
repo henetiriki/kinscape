@@ -151,3 +151,4 @@ A text `input` has no `::before`. The input already reaches over the box border 
 - `lib/design/large-text.json` needs no change: the 200% run gives the same list.
 - `Toast.module.css` hit area is `min-width: 100%` with a 44px width. A `calc(100% + 2px)` is an off-token size.
 - `Map-phone-states.dc.html` draws the account menu 74px from the top, from the pill (16), the search height (50) and the menu offset (8). The 52px pill put it at 76px. The tech lead allowed this edit after `design:check` named `map-account-menu-phone`.
+- The error callout of the phone sheet lifts 52px, not 48px, so it stays 12px above the sheet after the date row moves 4px down (`map-phone.spec.ts`).

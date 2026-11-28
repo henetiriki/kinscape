@@ -143,9 +143,9 @@ A text `input` has no `::before`. The input already reaches over the box border 
 ## Deviations
 
 - D12 B is built. The `<label>` box covers the text field, the select and the date field. `TextAreaField` and `TokenField` keep their boxes: each is 44px or taller where it has an input.
-- Check 5 holds: `UNDER_44` is empty. The date row of the phone sheet starts 4px lower, so the grabber's hit area stays off the field. The `Map-phone-*` boards draw the old place: `npm run design:check` names each screen that differs.
+- Check 5 holds: `UNDER_44` is empty. The date row of the phone sheet starts 4px lower, so the grabber's hit area stays off the field. `npm run design:check` named only `map-account-menu-phone`: see the `Map-phone-states.dc.html` line.
 - `ZoomControls`: the buttons are 1px apart, so each hit area is 43px: its button and the gap below. `JumpTo` rows wrap 16px apart, not 8px.
-- Big: the local-session steps are not done: steps 3 to 5 and 7 of the design system change, the board deletion and the `Map-add-pin.dc.html` rows. Until then `npm run design:check` fails on the board screens that draw the old heights.
+- The local-session steps are done: design system steps 2 to 5 and 7, the board deletion and the `Map-add-pin.dc.html` rows. The date row of the phone sheet follows its move through the published bundle.
 - `size` in `lib/design/system.mts` uses resolved values: the design system does not allow an alias outside `color`.
 - `lib/design/large-text.json` needs no change: the 200% run gives the same list.
 - `Toast.module.css` hit area is `min-width: 100%` with a 44px width. A `calc(100% + 2px)` is an off-token size.

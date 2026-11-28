@@ -151,6 +151,12 @@
   },
   {
     "count": 1,
+    "file": "app/components/foundation/hit-area.module.css",
+    "property": "width",
+    "value": "2px"
+  },
+  {
+    "count": 1,
     "file": "app/components/overlays/BottomSheet.module.css",
     "property": "height",
     "value": "4px"

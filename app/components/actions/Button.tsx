@@ -17,7 +17,7 @@ type Base = {
   icon?: IconName;
   /** Fully round, as Play. */
   round?: boolean;
-  /** Heights 50, 44, 40 and 36. */
+  /** Heights 50, 42, 30 and 30. */
   size?: 'l' | 'm' | 's' | 'xs';
   state?: ControlState;
   variant?: 'primary' | 'secondary';

@@ -94,7 +94,7 @@
   font-weight: var(--type-chip-weight);
   line-height: var(--type-chip-line);
   min-width: var(--count-min);
-  padding: 0 6px;
+  padding: 0 var(--space-inset-xs);
   text-align: center;
 }
 

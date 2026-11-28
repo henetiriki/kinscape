@@ -907,7 +907,7 @@ export declare const Panel: ({ bodyId, children, end, gap, label, onSelect, sele
     /** The legend, or "Clear filters". It sits at the end of the body, after the children. */
     end?: ReactNode;
     /** Space between the body's groups, as the tab draws it. */
-    gap?: 14 | 20;
+    gap?: "l" | "m";
     label: string;
     onSelect?: (value: string) => void;
     selected: string;

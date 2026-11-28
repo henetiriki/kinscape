@@ -336,6 +336,17 @@ it('closes the list when something outside it scrolls, and not when the list scr
   expect(screen.queryByRole('listbox')).toBeNull();
 });
 
+// NFR-05
+it('keeps the list open when the input scrolls its own text', () => {
+  const { field } = setup();
+
+  type(field, 'Exa');
+  fireEvent.scroll(field);
+  screen.getByRole('listbox');
+  fireEvent.scroll(document);
+  expect(screen.queryByRole('listbox')).toBeNull();
+});
+
 it('stops following the page when the list closes', () => {
   const { field } = setup();
   const remove = vi.spyOn(window, 'removeEventListener');

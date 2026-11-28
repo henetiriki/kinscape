@@ -72,7 +72,7 @@ const BoardPanel = () => (
   <Panel
     bodyId='map-panel-body'
     end={<Legend />}
-    gap={14}
+    gap='m'
     label='Layers and filters'
     onSelect={noop}
     selected='layers'

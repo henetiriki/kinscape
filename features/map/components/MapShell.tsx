@@ -296,6 +296,7 @@ const LayersTab = (props: LayerProps) => (
   <Panel
     bodyId={LAYERS_BODY_ID}
     end={<DrawnLegend />}
+    gap='m'
     label='Layers'
     selected='layers'
     tabs={LAYERS_TABS}>

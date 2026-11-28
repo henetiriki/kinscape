@@ -5,7 +5,7 @@
   box-shadow: var(--shadow-raised);
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: var(--border-hairline);
   width: var(--size-touch);
 }
 

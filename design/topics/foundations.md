@@ -84,6 +84,7 @@ The `$description` of each `radius` and `shadow` token says where it goes.
 | `easing`         | The curve of each motion: write it after the duration      |
 | `press-offset`   | Button press: 1px down                                     |
 | `rise-offset`    | Toast: starts 4px low and rises                            |
+| `autofill-hold`  | Field autofill: holds the field colour. Not a UI motion    |
 
 A map date change redraws at once. Do not animate it. Do not show a loader (NFR-01).
 

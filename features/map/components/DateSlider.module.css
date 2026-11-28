@@ -9,6 +9,8 @@
   --thumb-nudge: 1px; /* local: nudge */
   --thumb-ring: 4px; /* local: shape */
   --tick-width: 2px; /* local: shape */
+  --track-height: 4px; /* local: shape */
+  --range-height: 28px; /* local: shape */
   --track-top: 12px; /* local: shape */
   --years-top: 24px; /* local: shape */
   height: var(--size-control);
@@ -24,7 +26,7 @@
 .track {
   background: var(--track);
   border-radius: var(--radius-bar);
-  height: 4px;
+  height: var(--track-height);
   left: 0;
   position: absolute;
   right: 0;
@@ -101,12 +103,12 @@
 
 .slider input::-webkit-slider-runnable-track {
   background: transparent;
-  height: 28px;
+  height: var(--range-height);
 }
 
 .slider input::-moz-range-track {
   background: transparent;
-  height: 28px;
+  height: var(--range-height);
 }
 
 /* A brand dot inside a white ring, outlined in brand green. */

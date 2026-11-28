@@ -9,15 +9,15 @@
 }
 
 .table col:first-child {
-  width: 170px;
+  width: var(--layout-sources-layer);
 }
 
 .table col:nth-child(3) {
-  width: 150px;
+  width: var(--layout-sources-licence);
 }
 
 .table col:last-child {
-  width: 120px;
+  width: var(--layout-sources-checked);
 }
 
 .table th,
@@ -30,7 +30,7 @@
 
 .table thead th {
   color: var(--ink-3);
-  padding-block: 10px;
+  padding-block: var(--space-inset-s);
 }
 
 .date {

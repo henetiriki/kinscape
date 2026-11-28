@@ -6,12 +6,13 @@
 
 /* Names the dates for a screen reader. The row that holds it is `position: relative`, so the text adds no scroll height. */
 .hidden {
+  --clip-size: 1px; /* local: shape */
   border: 0;
-  height: 1px;
-  margin: -1px;
+  height: var(--clip-size);
+  margin: calc(-1 * var(--clip-size));
   overflow: hidden;
   padding: 0;
   position: absolute;
   white-space: nowrap;
-  width: 1px;
+  width: var(--clip-size);
 }

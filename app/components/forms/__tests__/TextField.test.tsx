@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
 import { TextField } from '@ks/app/components/forms/TextField';
+import { motion } from '@ks/design/tokens.generated.ts';
 
 const css = readFileSync(
   join(process.cwd(), 'app/components/forms/TextField.module.css'),
@@ -16,7 +17,9 @@ it('reaches the input and the select over a 2px border, but not in a token field
     /(\.box:not\(\.tokens\):is\([^{]*?> :is\(\.input, \.select\)) \{([^}]*)\}/
   );
 
-  expect(rule?.[2]).toContain('margin-block: -2px');
+  expect(rule?.[2]).toContain(
+    'margin-block: calc(-1 * var(--border-emphasis))'
+  );
   expect(rule?.[1]).toContain(':focus-within');
   expect(rule?.[1]).toContain("[data-state='focus']");
   expect(rule?.[1]).toContain('[data-mark]');
@@ -27,7 +30,10 @@ it('reaches the input and the select over a 2px border, but not in a token field
 it('keeps an autofilled input from painting over the border that it reaches', () => {
   const rule = css.match(/\.input:-webkit-autofill \{([^}]*)\}/);
 
-  expect(rule?.[1]).toContain('transition: background-color 0s 600000s');
+  expect(rule?.[1]).toContain(
+    'transition: background-color 0s var(--motion-autofill-hold)'
+  );
+  expect(motion['autofill-hold']).toBe('600000s');
 });
 
 // NFR-06

@@ -6,7 +6,7 @@
   overflow-y: auto;
   padding: var(--space-inset-2xs) 0;
   position: relative;
-  width: 480px;
+  width: var(--layout-person-list);
 }
 
 /* The panel body scrolls and would clip an absolute list, so the field fixes the list and sets its left and top. */
@@ -19,7 +19,7 @@
 .list[data-empty] {
   gap: var(--space-gap-2xs);
   padding: var(--space-inset-m);
-  width: 280px;
+  width: var(--layout-person-list-empty);
 }
 
 .item {

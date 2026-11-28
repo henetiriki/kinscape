@@ -1,7 +1,7 @@
 .rule {
   background: var(--line);
   border: 0;
-  height: 1px;
+  height: var(--border-hairline);
   margin: 0;
 }
 
@@ -14,7 +14,7 @@
 .line {
   background: var(--line);
   flex: 1;
-  height: 1px;
+  height: var(--border-hairline);
 }
 
 .label {

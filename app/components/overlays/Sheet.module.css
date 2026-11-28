@@ -8,7 +8,7 @@
   box-sizing: border-box;
   color: var(--ink);
   margin: auto 0 0;
-  max-height: 90dvh;
+  max-height: calc(100dvh - var(--layout-sheet-gap));
   max-width: none;
   overflow: auto;
   padding: 0;
@@ -55,7 +55,7 @@
   align-self: center;
   background: var(--line-strong);
   border-radius: var(--radius-full);
-  height: 4px;
+  height: var(--size-handle-height);
   width: var(--size-handle);
 }
 

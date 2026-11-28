@@ -23,7 +23,7 @@
   align-self: center;
   background: var(--line-strong);
   border-radius: var(--radius-full);
-  height: 4px;
+  height: var(--size-handle-height);
   width: var(--size-handle);
 }
 
@@ -130,7 +130,7 @@
 
 .chain li > :first-child {
   color: var(--ink-3);
-  padding-top: 3px;
+  padding-top: var(--space-inset-2xs);
 }
 
 .name {
@@ -165,7 +165,7 @@
   align-items: center;
   display: flex;
   gap: var(--space-gap-xs);
-  min-height: 32px;
+  min-height: var(--layout-popup-pin-min);
 }
 
 .pinText {

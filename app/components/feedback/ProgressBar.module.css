@@ -1,8 +1,9 @@
 .track {
+  --track-height: 6px; /* local: shape */
   background: var(--line);
   border-radius: 3px;
   display: block;
-  height: 6px;
+  height: var(--track-height);
   overflow: hidden;
   width: 100%;
 }

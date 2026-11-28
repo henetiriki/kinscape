@@ -1005,6 +1005,47 @@ test.describe('at 1440px', () => {
     ).toBe(380);
   });
 
+  // NFR-05: the field compensations are calc() values of tokens. At the default text size they keep their px values.
+  test('a field keeps its px compensations, and the TextAreaField gutter is 37px', async ({
+    page,
+  }) => {
+    await open(page, 'TextField');
+
+    const error = state(page, 'TextField · error').locator('input');
+
+    expect(await style(error.locator('..'), 'padding-left')).toBe('11px');
+    expect(await style(error, 'margin-top')).toBe('-2px');
+    expect(
+      await style(
+        state(page, 'TextField · default').locator('input'),
+        'margin-top'
+      )
+    ).toBe('-1px');
+    expect(
+      await style(
+        state(page, 'TextField · password').getByRole('button'),
+        'margin-right'
+      )
+    ).toBe('-10px');
+
+    await open(page, 'TextAreaField');
+    expect(
+      await style(
+        state(page, 'TextAreaField · error').locator('textarea').locator('..'),
+        'padding-right'
+      )
+    ).toBe('37px');
+  });
+
+  // NFR-05: calc(100dvh - 84px) is 760px on an 844px phone.
+  test('a Sheet at 390 × 844 has a 760px maximum height', async ({ page }) => {
+    await page.setViewportSize({ height: 844, width: 390 });
+    await open(page, 'Sheet');
+    expect(
+      await style(state(page, 'Sheet · open').locator('dialog'), 'max-height')
+    ).toBe('760px');
+  });
+
   test('a large notice card is no wider than a 320px container', async ({
     page,
   }) => {

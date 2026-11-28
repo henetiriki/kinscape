@@ -6,6 +6,7 @@ import type { Card, Slot, State } from '#ks/lib/design/types.ts';
 import { COLUMNS } from '#ks/app/components/layout/columns.mts';
 import { SLOTS } from '#ks/app/components/layout/slots.mts';
 import sources from '#ks/data/sources.json' with { type: 'json' };
+import tokens from '#ks/design/kinscape.tokens.json' with { type: 'json' };
 import {
   CHAIN,
   CLICK_POINT,
@@ -170,11 +171,11 @@ const one = (
 /** The width of the `Map` board's panel slot. A `Panel`, `LayerGroup` or `FilterFields` card box has it. */
 const PANEL_BOX = 'var(--size-panel)';
 
-/** The body of the centred dialog: 760px less 28px of padding on each side. The `SourcesList` card box has it. */
-const SOURCES_BOX = '704px';
+/** The body of the centred dialog: 760px less 32px of padding on each side. The `SourcesList` card box has it. */
+const SOURCES_BOX = '696px';
 
 /** The body of the sheet on a 390px phone, less 16px of padding on each side. The `list` state of `SourcesList` has it. */
-const SHEET_BOX = '358px';
+const SHEET_BOX = `${tokens.layout['phone-sample'].$value.value}px`;
 
 /** The 300px open card of `Credits`, and 120px at its left for the caption of its case: the card opens over the caption's row. */
 const CREDITS_BOX = '420px';
@@ -1056,6 +1057,7 @@ export const CARDS: Card[] = [
         'Panel · Layers tab',
         {
           bodyId: 'panel-layers',
+          gap: 'm',
           label: 'Layers and filters',
           selected: 'layers',
           tabs: panelTabs('panel-layers'),
@@ -1071,7 +1073,7 @@ export const CARDS: Card[] = [
         'Panel · Filters tab',
         {
           bodyId: 'panel-filters',
-          gap: 20,
+          gap: 'l',
           label: 'Layers and filters',
           selected: 'filters',
           tabs: panelTabs('panel-filters'),

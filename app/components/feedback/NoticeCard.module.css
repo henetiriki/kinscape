@@ -88,20 +88,29 @@
   gap: var(--space-gap-xs);
 }
 
-/* The buttons line up with the text, not the icon. */
-.card[data-icon]:not([data-size='large']) .actions {
-  padding-left: var(--space-inset-2xl);
+/* A label can wrap. At the default size, one line keeps the control height. */
+.actions > :is(button, a) {
+  height: auto;
+  min-height: var(--size-control-s);
+  padding-block: var(--space-inset-2xs);
+  white-space: normal;
 }
 
-/* The phone sample of its component card: 358 wide, 44 buttons. */
+/* The buttons line up with the text, not the icon. A spacer, not padding: a button that does not fit beside it wraps to a line with no indent. */
+.card[data-icon]:not([data-size='large']) .actions::before {
+  content: '';
+  flex: 0 0 calc(var(--space-inset-2xl) - var(--space-gap-xs));
+}
+
+/* The phone sample of its component card: 44 buttons. */
 .card[data-phone] {
-  width: 358px;
+  width: var(--layout-phone-sample);
 }
 
 .card[data-phone] .actions > :is(button, a) {
   font-size: var(--type-control-size);
-  height: var(--size-touch);
   line-height: var(--type-control-line);
+  min-height: var(--size-touch);
 }
 
 @media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
@@ -112,7 +121,7 @@
 
   .card .actions > :is(button, a) {
     font-size: var(--type-control-size);
-    height: var(--size-touch);
     line-height: var(--type-control-line);
+    min-height: var(--size-touch);
   }
 }

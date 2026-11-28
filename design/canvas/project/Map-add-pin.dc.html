@@ -49,7 +49,7 @@ class Component extends DCLogic {
 
     // The loading look of the edit panel: the 20px bars of the Pin popup, one for each field.
     const bar = width => `<span aria-hidden="true" style="display: block; width: ${width}px; max-width: 100%; height: 20px; border-radius: var(--radius-small); background: var(--line)"></span>`;
-    const loadingField = (name, width, tall) => `<div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">${TEXT('label', name)}<div style="display: flex; flex-direction: column; justify-content: center; gap: var(--space-gap-xs); min-height: ${tall ? 68 : 44}px">${bar(width)}${tall ? bar(width - 60) : ''}</div></div>`;
+    const loadingField = (name, width, tall) => `<div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">${TEXT('label', name)}<div style="display: flex; flex-direction: column; justify-content: center; gap: var(--space-gap-xs); min-height: ${tall ? 'calc(2 * var(--type-body-line) + 2 * var(--space-inset-xs) + 2 * var(--border-hairline))' : 'var(--size-field)'}">${bar(width)}${tall ? bar(width - 60) : ''}</div></div>`;
 
     // What each variant puts in the fields.
     const FILLED = { address: 'Farm Example, district Example', coordinates: '-28.742600, 25.311800', date: 'FROM 1890 TO 1905', event: 'residence', notes: 'Lived here with the Example family.', person: 'Maria Magdalena du Toit', precision: 'farm', sources: 'Example parish register, 1890.' };

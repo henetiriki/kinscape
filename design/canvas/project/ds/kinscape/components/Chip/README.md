@@ -2,7 +2,7 @@ A pill that turns one filter on or off, such as an Event type.
 
 ## Design
 
-- **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
+- **Chips** (event type filters): 30px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
 
 ## Props
 

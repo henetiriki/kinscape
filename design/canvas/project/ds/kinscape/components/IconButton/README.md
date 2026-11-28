@@ -2,7 +2,7 @@ An action shown only as an icon, such as zoom, close or step, named by its `labe
 
 ## Design
 
-- **Icon button:** raised variant: 48px, `--radius-panel`, `--shadow-raised`, no border. Same states as the plain one.
+- **Icon button:** raised variant: 50px, `--radius-panel`, `--shadow-raised`, no border. Same states as the plain one.
 
 ## Props
 

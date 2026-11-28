@@ -2,7 +2,7 @@
 
 - **Spec:** #1205
 - **Requirement IDs:** none. The Spec changes no look.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -54,7 +54,7 @@ Check 1 compares the snapshots before and after, with rem as px at a 16px root. 
 - **B.** A new Vitest test reads each board's `style` attributes with `rulesFor` and fails a literal that equals a token of its group. Cost: about 80 lines. #1209 then replaces it.
 - **Other:** your own.
 
-Recommended: A, because #1209 builds the same check in the exporter, and B keeps the logic in two places for one Spec.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

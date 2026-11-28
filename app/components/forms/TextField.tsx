@@ -157,7 +157,7 @@ export const TextField = ({
   mark?: 'error' | 'warning';
   /** A key that focuses the field when no text input has focus. A search field shows it as a hint. */
   shortcut?: string;
-  /** `l` is the 48px sign-in field. */
+  /** `l` is the 50px sign-in field. */
   size?: 'l';
   state?: ControlState;
   type?: 'email' | 'password' | 'search' | 'text';

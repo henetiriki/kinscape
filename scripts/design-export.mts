@@ -15,6 +15,7 @@ import type {
   CanvasExport,
   CanvasSnapshot,
   DesignExportDeps,
+  RootHelpers,
   StyleHelpers,
   StyleSelector,
 } from '#ks/scripts/types.ts';
@@ -612,7 +613,7 @@ export const pageHtml = (): string => {
   }
 
   // The links stay until here: `tokens.css` gives `:root` the values that `var()` reads.
-  document.querySelectorAll('link, [data-root]').forEach(n => n.remove());
+  document.querySelectorAll('link, style[data-root]').forEach(n => n.remove());
   title.insertAdjacentHTML(
     'afterend',
     '<link rel="stylesheet" href="fonts.css">'
@@ -861,6 +862,48 @@ export const defineStyleHelpers = (): void => {
 };
 
 /**
+ * Runs in the page, after `mountImports`: puts `kinscapeRoot` on `window`, the two steps that
+ * `inlineStyles` takes around the removal of the bundle. `page.evaluate` sends one function, so
+ * `inlineStyles` reads them from `window`, as it reads `kinscapeStyles`. Uses nothing from the module.
+ */
+export const defineRootHelpers = (): void => {
+  // Each custom property that the `:root` rules of a sheet declare.
+  const rootNamesOf: RootHelpers['rootNamesOf'] = sheet =>
+    Array.from(sheet.cssRules)
+      .filter(
+        (rule): rule is CSSStyleRule =>
+          'selectorText' in rule &&
+          (rule as CSSStyleRule).selectorText === ':root'
+      )
+      .flatMap(({ style }) =>
+        Array.from(style)
+          .filter(name => name.startsWith('--'))
+          .map(name => [name, style.getPropertyValue(name).trim()] as const)
+      );
+
+  // `pageHtml` reads each `var()` from `:root` after the bundle is gone. A name that `:root` lacks
+  // goes in `<style data-root>` until then.
+  const keepRootNames: RootHelpers['keepRootNames'] = names => {
+    const root = getComputedStyle(document.documentElement);
+    const missing = names.filter(
+      ([name]) => root.getPropertyValue(name).trim() === ''
+    );
+
+    if (missing.length > 0) {
+      const block = document.createElement('style');
+
+      block.dataset.root = '';
+      block.textContent = `:root{${missing.map(([name, value]) => `${name}:${value};`).join('')}}`;
+      document.head.append(block);
+    }
+  };
+
+  Object.assign(window, {
+    kinscapeRoot: { keepRootNames, rootNamesOf } satisfies RootHelpers,
+  });
+};
+
+/**
  * Runs in the page, after `defineStyleHelpers` and before `inlineStyles`, which drops the
  * stylesheet that the values here need. A pseudo-element has no `style` attribute. So the values
  * of its rules go in a `<style data-pseudo>` block, under a selector that names its element by a
@@ -952,6 +995,9 @@ export const inlineStyles = (tokens: string[]): void => {
   const { selectors, styleRules, written } = (
     window as unknown as { kinscapeStyles: StyleHelpers }
   ).kinscapeStyles;
+  const { keepRootNames, rootNamesOf } = (
+    window as unknown as { kinscapeRoot: RootHelpers }
+  ).kinscapeRoot;
   const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
 
   for (const { selectorText, style } of styleRules(bundle.sheet.cssRules)) {
@@ -973,34 +1019,11 @@ export const inlineStyles = (tokens: string[]): void => {
     }
   }
 
-  // `pageHtml` reads each `var()` from `:root` after the bundle is gone. A name that only the
-  // bundle gives (`--type-*`) goes in `<style data-root>` until then.
-  const own = Array.from(bundle.sheet.cssRules)
-    .filter(
-      (rule): rule is CSSStyleRule =>
-        'selectorText' in rule &&
-        (rule as CSSStyleRule).selectorText === ':root'
-    )
-    .flatMap(({ style }) =>
-      Array.from(style)
-        .filter(name => name.startsWith('--'))
-        .map(name => [name, style.getPropertyValue(name).trim()] as const)
-    );
+  // The bundle gives the names (`--type-*`) that `:root` lacks. Read them before the bundle goes.
+  const names = rootNamesOf(bundle.sheet);
 
   bundle.remove();
-
-  const root = getComputedStyle(document.documentElement);
-  const missing = own.filter(
-    ([name]) => root.getPropertyValue(name).trim() === ''
-  );
-
-  if (missing.length > 0) {
-    const block = document.createElement('style');
-
-    block.dataset.root = '';
-    block.textContent = `:root{${missing.map(([name, value]) => `${name}:${value};`).join('')}}`;
-    document.head.append(block);
-  }
+  keepRootNames(names);
 };
 
 /**
@@ -1225,6 +1248,7 @@ if (import.meta.main) {
           await page.evaluate(defineBuilder);
           await page.evaluate(mountImports);
           await page.evaluate(defineStyleHelpers);
+          await page.evaluate(defineRootHelpers);
           await page.evaluate(inlinePseudoStyles, tokens);
           await page.evaluate(inlineStyles, tokens);
           await page.evaluate(measureTranslates);

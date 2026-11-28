@@ -123,6 +123,15 @@ export type PrepareMapDataDeps = {
   ) => Promise<Uint8Array>;
 };
 
+/** The helpers that `defineRootHelpers` in `design-export.mts` puts on `window` for `inlineStyles`. */
+export type RootHelpers = {
+  keepRootNames: (names: RootName[]) => void;
+  rootNamesOf: (sheet: CSSStyleSheet) => RootName[];
+};
+
+/** A custom property of a `:root` rule, as its name and value. */
+export type RootName = readonly [name: string, value: string];
+
 /** A settings file in `.github/agent/`: its permission rules, and the command of its Bash hook. */
 export type Settings = { allow: string[]; deny: string[]; hook?: string };
 

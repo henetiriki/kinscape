@@ -11,6 +11,7 @@ import type * as samples from '#ks/lib/design/samples.mts';
 
 import {
   defineBuilder,
+  defineRootHelpers,
   defineStyleHelpers,
   defineTemplateFillers,
   defineTemplateHelpers,
@@ -88,6 +89,7 @@ const exportBoard = async (page: Page, board: string): Promise<string> => {
     await page.evaluate(defineBuilder);
     await page.evaluate(mountImports);
     await page.evaluate(defineStyleHelpers);
+    await page.evaluate(defineRootHelpers);
     await page.evaluate(inlinePseudoStyles, [...tokens]);
     await page.evaluate(inlineStyles, [...tokens]);
 

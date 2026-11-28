@@ -17,6 +17,7 @@ import type { CanvasSnapshot } from '@ks/scripts/types.ts';
 import {
   clipPage,
   defineBuilder,
+  defineRootHelpers,
   defineStyleHelpers,
   defineTemplateFillers,
   defineTemplateHelpers,
@@ -786,6 +787,7 @@ describe('mountImports', () => {
 describe('inlinePseudoStyles and inlineStyles', () => {
   beforeEach(() => {
     defineStyleHelpers();
+    defineRootHelpers();
   });
 
   it('writes the computed values of the declared properties onto every element a rule matches, then drops the stylesheet', () => {
@@ -1143,6 +1145,15 @@ describe('pageHtml', () => {
 
     expect(pageHtml()).toBe(
       '<!doctype html>\n<html><head><title>T</title><link rel="stylesheet" href="fonts.css"></head><body><p style="font-size: 0.9375rem">A</p></body></html>\n'
+    );
+  });
+
+  it('keeps a board element that has a data-root attribute', () => {
+    document.head.innerHTML = '<title>T</title>';
+    document.body.innerHTML = '<x-dc><p data-root="">A</p></x-dc>';
+
+    expect(pageHtml()).toBe(
+      '<!doctype html>\n<html><head><title>T</title><link rel="stylesheet" href="fonts.css"></head><body><p data-root="">A</p></body></html>\n'
     );
   });
 

@@ -37,7 +37,8 @@ On `main`, each board `var(--space-N)` has a name in its role at its value, once
 ```text
 Follow design/CANVAS.md › Changing the design system, step 7, for each board in design/canvas/project/.
 Use plans/SC.11.1-board-size-tokens.md › The mapping, and #1205 › Behaviour.
-In each inline style and each data-dc-script style, change a size to var(--token) if its part has a token with the same value at a 16px root.
+If a part has a token with the same value at a 16px root, change its size to var(--token).
+Do this in each inline style and each data-dc-script style.
 Change each var(--space-N) to its purpose name.
 Keep map drawing values, colours, shadows and SVG size attributes.
 Change no layout, word or part. Edit no <style> block.
@@ -55,6 +56,26 @@ Check 1 compares the snapshots before and after, with rem as px at a 16px root. 
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
+
+**D13 · How `Map-style` and `Map-style-phone` get tokens** · Decides: Tech lead
+
+Neither board links the design system, so no `var()` resolves on them.
+
+- **A.** Add a `<link>` to `tokens.css` and `bundle.css` in each `<head>`. Then use tokens. Cost: the Constraints name no `<head>` edit, and the export must load the design system for a board with no `<x-import>`.
+- **B.** Keep each literal. The PR lists them. Cost: both boards stay off the tokens until a Chore adds the link.
+- **Other:** your own.
+
+**Answer: A** (Tech lead)
+
+**D14 · The stacking value of the four menu panels** · Decides: Tech lead
+
+`Map.dc.html` and `Map-phone-states.dc.html` hold four menu panels with `z-index: 20`. `--z-popup` is 20 and `--z-menu` is 30.
+
+- **A.** Keep the literal 20. The PR lists it. Cost: the panels stay off the tokens.
+- **B.** Use `--z-menu` (30). Cost: the stacking value changes, and the four `map-account-menu*` JPGs change.
+- **Other:** your own.
+
+**Answer: B** (Tech lead)
 
 ## Alternatives considered
 
@@ -75,6 +96,8 @@ Check 1 compares the snapshots before and after, with rem as px at a 16px root. 
 | `scripts/design-export.mts`                                                                                          | changed       | `inlineStyles` keeps the bundle's `:root` names that `:root` lacks in `<style data-root>`. `pageHtml` removes it (D10).          |
 | `scripts/__tests__/design-export.test.ts`                                                                            | changed       | New tests: `inlineStyles` keeps only a missing `:root` name, and `pageHtml` writes its value and removes the element.            |
 | `e2e/design-export.spec.mts`                                                                                         | changed       | A board with `font-size: var(--type-body-size)` exports, and the snapshot holds `0.9375rem` (check 11).                          |
+| `scripts/types.ts`                                                                                                   | changed       | `RootHelpers` and `RootName` for the page helpers of `inlineStyles`.                                                             |
+| `design/CANVAS.md`                                                                                                   | changed       | The drawing rule names both ways to load the design system (D13).                                                                |
 | `design/topics/tokens.md`                                                                                            | changed       | › Names drops "A `space-N` token is deprecated."                                                                                 |
 | `design/canvas/project/*.dc.html`                                                                                    | changed       | The local session edits each board ([The board prompt](#the-board-prompt)).                                                      |
 | `.design-system/project/`, `design/canvas/project/ds/`, `design/canvas/project/canvas.json`, `design/canvas/VERSION` | changed       | The design system steps write them.                                                                                              |
@@ -122,10 +145,13 @@ Check 1 compares the snapshots before and after, with rem as px at a 16px root. 
 
 ## Deviations
 
-- Big: The CI build did not edit the boards or run steps 3 to 5 and 7. They need claude.ai. The boards still hold `var(--space-N)`, so the `design` job fails until step 7.
+- The CI build did not edit the boards. A local session ran steps 3 to 5 and 7.
 - `.design-system/` is gitignored, so step 4 commits no file.
-- Big: `Map-style.dc.html` and `Map-style-phone.dc.html` linked no design system, so no `var()` resolved on them. The tech lead allowed a `<link>` to `tokens.css` and `bundle.css` in each `<head>`. The Constraints name no `<head>` edit.
+- Big: `Map-style.dc.html` and `Map-style-phone.dc.html` get a `<link>` to `tokens.css` and `bundle.css` in each `<head>` (D13). The Constraints name no `<head>` edit.
 - `scripts/design-export.mts` gives the design system to a board that links `ds/kinscape/`, not only to one with an `<x-import>` (`usesDesignSystem`). The workflow export failed on the two style boards without it.
-- Big: The four menu panels on `Map.dc.html` and `Map-phone-states.dc.html` take `--z-menu` (30), not `--z-popup` (20). The tech lead chose this. It changes their stacking value.
+- `inlineStyles` splits into `rootNamesOf` and `keepRootNames`. The 60-line lint limit needs a second page function, `defineRootHelpers`, and `RootHelpers` in `scripts/types.ts`.
+- `pageHtml` removes only `style[data-root]`, not each `[data-root]`. The tech lead chose to build this unlikely case.
+- `design/CANVAS.md` names both ways to load the design system. `tokens.md` keeps its blank line.
+- Big: The four menu panels on `Map.dc.html` and `Map-phone-states.dc.html` take `--z-menu` (30), not 20 (D14). It changes their stacking value.
 - Big: The workflow snapshots of `map-desktop`, `map-desktop-filters` and `map-phone` write some literal colours as the board spells them, not as `rgb()` (check 1). Their sizes and JPGs are the same.
 - A one-off script made the board edits. It keeps a size literal where no token names the part (D4). The PR lists each one.

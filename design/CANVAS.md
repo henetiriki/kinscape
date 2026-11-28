@@ -116,7 +116,7 @@ The exporter checks each rule except the `<sc-for>` rule, which the HTML parser 
 - Add no `<script>` except the board's own `data-dc-script` and the canvas tags. Use no `http(s)` load and no CSS escape.
 - Put no `<sc-for>` in a `<table>`, `<tbody>` or `<tr>`. The HTML parser moves it out of the table.
 - Link to another board only if that board has a snapshot, or an entry in `links` in `design/canvas/export.json`.
-- Put `<x-import>` in the file of each board that needs the design system.
+- Give each board that needs the design system an `<x-import>` or a link to its `ds/kinscape/` files.
 
 Also follow these rules:
 

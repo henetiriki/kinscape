@@ -43,14 +43,14 @@ it('is an aside with a tablist and a scrolling tabpanel body', () => {
 
   expect(body.id).toBe('body');
   expect(body.textContent).toBe('Rows');
-  expect(body.dataset.gap).toBe('14');
+  expect(body.dataset.gap).toBe('l');
 
   rerender(
-    <Panel gap={20} label='Map panel' selected='layers' tabs={TABS}>
+    <Panel gap='m' label='Map panel' selected='layers' tabs={TABS}>
       Rows
     </Panel>
   );
-  expect(screen.getByRole('tabpanel').dataset.gap).toBe('20');
+  expect(screen.getByRole('tabpanel').dataset.gap).toBe('m');
 });
 
 it('puts the end node inside the tabpanel, after the children', () => {

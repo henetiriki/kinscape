@@ -37,7 +37,7 @@ A value can refer to another with `{group.name}`. A `$description` holds the usa
 
 `npm run tokens` runs Style Dictionary (`lib/design/style-dictionary.mts`). It writes `app/tokens.css` and `design/tokens.generated.ts`. Edit neither. It also rewrites each marked `@media` ([Breakpoints](#breakpoints)). `design.test.ts` fails if one is stale or the source breaks DTCG.
 
-`design/tokens.generated.ts` has an export for each group except `scale`, plus `*Px` and `motionMs` numbers. It also has `hatchLine`, the hatch stripe as `rgba()` text, and `breakpointQuery`.
+`design/tokens.generated.ts` has an export for each group except `scale`, plus `*Px` and `motionMs` numbers. It also has `hatchLine` and `breakpointQuery`.
 
 ## Scales
 
@@ -72,13 +72,13 @@ The property sets the spacing role:
 
 The suffix names the step: `2xs` (4px) to `5xl` (64px). A role has only the suffixes that it uses.
 
-If no name fits, make the size a [local value](#the-size-check). Do not add a name for one use.
+If no name fits, make the size a [local value](#the-size-check). Only a `layout` token can hold a size of one use.
 
 ## Units
 
-Text, line heights and spacing use rem, which follows the reader's text size. Other kinds use px. A rem group keeps px inputs. A rem token gets no `*Px` number. The checks compare px: `16px` equals `1rem`.
+Text, line heights and spacing use rem. Other kinds use px. A rem group keeps px inputs. A rem token gets no `*Px` number. The checks compare px: `16px` equals `1rem`.
 
-`e2e/large-text.spec.ts` opens each screen at 200% text. `lib/design/large-text.json` lists the failures. A new failure fails. So does a passing entry.
+`e2e/large-text.spec.ts` opens each screen at 200% text. A state in `DESKTOP_ONLY` runs at 1440px only. `lib/design/large-text.json` lists the failures. A new failure fails. So does a passing entry.
 
 ## Breakpoints
 
@@ -114,6 +114,7 @@ Each module outside tests that imports `design/tokens.generated.ts` or reads `de
   - `scripts/design-export.mts`
   - `scripts/design-system.mts`
   - `scripts/sizes.mts`
+  - `lib/design/states.mts`
 - `scripts/workflows-diagram.mts` colours the workflow diagram.
 - **Tool settings that skip the generated file.**
   - `eslint.config.mjs`

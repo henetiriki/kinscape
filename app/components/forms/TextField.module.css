@@ -49,19 +49,22 @@ label.box::before {
 
 .box:is(:focus-within, [data-state='focus']) {
   border: var(--border-emphasis) solid var(--brand);
-  padding: 0 11px;
+  padding: 0
+    calc(var(--space-inset-s) - var(--border-emphasis) + var(--border-hairline));
 }
 
 /* A pressed select is the open list: the focus border on surface-2. */
 .box:has(select)[data-state='active'] {
   background: var(--surface-2);
   border: var(--border-emphasis) solid var(--brand);
-  padding: 0 11px;
+  padding: 0
+    calc(var(--space-inset-s) - var(--border-emphasis) + var(--border-hairline));
 }
 
 .box[data-mark] {
   border: var(--border-emphasis) solid var(--error-border);
-  padding: 0 11px;
+  padding: 0
+    calc(var(--space-inset-s) - var(--border-emphasis) + var(--border-hairline));
 }
 
 .box[data-mark='warning'] {
@@ -90,7 +93,7 @@ label.box::before {
 .input {
   align-self: stretch;
   background: transparent;
-  margin-block: -1px;
+  margin-block: calc(-1 * var(--border-hairline));
   border: 0;
   color: inherit;
   flex: 1;
@@ -112,7 +115,7 @@ label.box::before {
 
 /* The input reaches over the border, and Chrome's opaque autofill colour would cover it: delay that colour for good. */
 .input:-webkit-autofill {
-  transition: background-color 0s 600000s;
+  transition: background-color 0s var(--motion-autofill-hold);
 }
 
 /* A 2px border: the input and the select reach over it. A token field keeps its height. */
@@ -123,7 +126,7 @@ label.box::before {
     :has(select)[data-state='active']
   )
   > :is(.input, .select) {
-  margin-block: -2px;
+  margin-block: calc(-1 * var(--border-emphasis));
 }
 
 .date {
@@ -150,7 +153,9 @@ label.box::before {
 
 .date > svg {
   position: absolute;
-  right: 9px;
+  right: calc(
+    var(--space-inset-s) - var(--border-emphasis) - var(--border-hairline)
+  );
 }
 
 /* The 50px sign-in size: 16 / 24 text. */
@@ -197,7 +202,7 @@ label.box::before {
   flex: none;
   height: var(--size-touch);
   justify-content: center;
-  margin: 0 -10px 0 auto;
+  margin: 0 calc(var(--border-emphasis) - var(--space-inset-s)) 0 auto;
   padding: 0;
   width: var(--size-touch);
 }
@@ -218,7 +223,7 @@ label.box::before {
   flex: 1;
   font-family: var(--type-body-font);
   font-size: var(--type-body-size);
-  margin-block: -1px;
+  margin-block: calc(-1 * var(--border-hairline));
   min-width: 0;
   outline: 0;
   padding: 0;

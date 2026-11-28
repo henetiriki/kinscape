@@ -29,10 +29,17 @@
     calc(var(--space-inset-s) - var(--border-emphasis) + var(--border-hairline));
 }
 
-/* In error the text takes the focus padding. The box keeps a 37px gutter on the right: 11px, the 18px icon and an 8px gap.
+/* In error the text takes the focus padding. The box keeps a 37px gutter on the right: 11px, the icon and an 8px gap.
    The textarea, and so its scrollbar, ends before the gutter. */
 .field > .box[data-mark] {
-  padding: 0 37px 0 0;
+  --mark-size: 18px; /* local: shape */
+  --mark-top: 8px; /* local: shape */
+  padding: 0
+    calc(
+      var(--space-inset-s) - var(--border-emphasis) + var(--border-hairline) +
+        var(--mark-size) + var(--space-gap-xs)
+    )
+    0 0;
 }
 
 .field > .box[data-mark] .area {
@@ -43,9 +50,10 @@
 }
 
 .field > .box[data-mark] > svg {
-  --mark-top: 8px; /* local: shape */
   position: absolute;
-  right: 11px;
+  right: calc(
+    var(--space-inset-s) - var(--border-emphasis) + var(--border-hairline)
+  );
   top: var(--mark-top);
 }
 

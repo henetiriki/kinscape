@@ -30,8 +30,8 @@
   padding: var(--space-inset-m);
 }
 
-.body[data-gap='14'] {
-  gap: 14px;
+.body[data-gap='m'] {
+  gap: var(--space-gap-m);
 }
 
 /* The legend or "Clear filters": the last block of the body, at its bottom edge. */

@@ -164,7 +164,7 @@ type PersonFieldArgs = {
 type Place = { left: number; top: number };
 
 // The list sits 4px under the field box, on its left edge, and follows the box on resize. A scroll
-// outside the list closes it, so it never floats away from a field that scrolled out of its panel.
+// outside the field and the list closes it (the input scrolls its own text to the caret), so it never floats away from a field that scrolled out of its panel.
 // It is placed before the first paint, so it never shows in the flow.
 const usePlace = (
   wrap: RefObject<HTMLDivElement | null>,
@@ -184,9 +184,16 @@ const usePlace = (
       setPlace({ left, top: bottom + 4 });
     };
     const closeOnScroll = (event: Event) => {
-      if (!document.getElementById(listId)!.contains(event.target as Node)) {
-        setOpen(false);
+      const target = event.target as Node;
+
+      if (
+        wrap.current!.contains(target) ||
+        document.getElementById(listId)!.contains(target)
+      ) {
+        return;
       }
+
+      setOpen(false);
     };
 
     follow();

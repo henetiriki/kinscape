@@ -12,7 +12,7 @@
   color: var(--credits);
   display: flex;
   font-size: var(--type-credits-size);
-  gap: 6px;
+  gap: var(--space-gap-xs);
   line-height: var(--type-credits-line);
   position: relative;
   white-space: nowrap;
@@ -62,9 +62,9 @@
   box-shadow: var(--shadow-floating);
   box-sizing: border-box;
   margin: 0;
-  padding: 10px 14px;
+  padding: var(--space-inset-s) var(--space-inset-m);
   position: absolute;
   right: 0;
   white-space: normal;
-  width: 300px;
+  width: var(--layout-credits-width);
 }

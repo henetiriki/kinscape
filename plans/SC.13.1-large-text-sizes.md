@@ -107,3 +107,10 @@ The 200% check skips 390px for a set of desktop-only states (D2). Two layout fix
 - The five inline sizes of `MapPinCountScreen.tsx` (#1202).
 
 ## Deviations
+
+- Big: `TextLink` `.anchor` keeps `1em` and `1px`. `TextLink.test.tsx` asserts that exact text and is not in Files that change. Its 2 entries stay in `off-token-sizes.json`, so the list holds 8 entries, not only _Stays_.
+- Big: the four `design/canvas/project/Map*.dc.html` board rows are not built: the build cannot edit `design/canvas/`. Design system steps 3 to 7 and Design: Render snapshots are not run. `npm run design:check` fails until they run.
+- `lib/design/states.mts` reads `design/kinscape.tokens.json`, not `design/tokens.generated.ts`: lint bars a `.ts` import in a `.mts` file.
+- `features/people/components/PersonForm.module.css`: `.dialogActions` wraps. The 32px `Dialog` padding left the "Leave without saving" button 23px too wide at 200% text.
+- `design/topics/foundations.md`: a `motion` row for `autofill-hold`. `system.test.ts` requires one row for each motion token.
+- `Panel.test.tsx` passes `gap='m'` in the second render, so the test shows a change from the default `'l'`.

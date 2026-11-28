@@ -107,7 +107,7 @@
   bottom: var(--space-inset-2xl);
   color: var(--ink-2);
   display: flex;
-  gap: 10px;
+  gap: var(--space-gap-s);
   left: var(--space-inset-4xl);
   position: absolute;
 }
@@ -122,7 +122,7 @@
 
 .dash {
   border-top-style: dashed;
-  margin-left: 10px;
+  margin-left: var(--space-gap-s);
 }
 
 @media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {

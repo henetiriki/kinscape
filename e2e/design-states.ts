@@ -110,6 +110,31 @@ const editReady = async (page: Page) => {
     .waitFor();
 };
 
+/** The states that need desktop UI. A phone page has no "Add a pin" button and no edit panel, and the People pages say "use a computer". The 200% check runs these at 1440px only. */
+export const DESKTOP_ONLY = new Set([
+  'person-errors',
+  'person-leave',
+  'person-saved-nothing',
+  'pin-edit',
+  'pin-edit-load-failed',
+  'pin-edit-loading',
+  'pin-edit-moved',
+  'pin-form',
+  'pin-form-empty',
+  'pin-form-errors',
+  'pin-form-existing-place',
+  'pin-form-no-people',
+  'pin-form-save-failed',
+  'pin-form-saving',
+  'relationship-cycle',
+  'relationship-details-parent',
+  'relationship-details-spouse',
+  'relationship-pick',
+  'relationship-pick-empty',
+  'relationship-pick-no-match',
+  'relationship-save-failed',
+]);
+
 /** Puts the page in the state a screen in `design/screens.json` names, before the screenshot. */
 export const states: Record<string, (page: Page) => Promise<void>> = {
   // The board draws the menu open with People hovered.

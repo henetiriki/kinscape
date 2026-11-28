@@ -34,7 +34,7 @@
   background: var(--line);
   flex: none;
   height: var(--divider-height);
-  width: 1px;
+  width: var(--border-hairline);
 }
 
 .field {

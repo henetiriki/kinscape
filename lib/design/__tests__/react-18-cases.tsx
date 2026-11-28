@@ -972,6 +972,7 @@ export const CASES: [string, ReactElement][] = [
     <Panel
       bodyId='panel-layers'
       end={<Legend />}
+      gap='m'
       key='layers'
       label='Layers and filters'
       onSelect={noop}
@@ -991,7 +992,7 @@ export const CASES: [string, ReactElement][] = [
     <Panel
       bodyId='panel-filters'
       end={<Button>Clear filters</Button>}
-      gap={20}
+      gap='l'
       key='filters'
       label='Layers and filters'
       onSelect={noop}

@@ -151,6 +151,14 @@ test.describe('the Layers panel on /', () => {
     await expect(panel.getByText('Contested claim')).toHaveCount(0);
     await expect(panel.getByText(/Uncertain date/)).toHaveCount(0);
   });
+
+  // NFR-05
+  test('has a 16px gap between the groups of its body', async ({ page }) => {
+    await page.goto('/');
+    await expect(
+      page.getByRole('complementary', { name: 'Layers' }).getByRole('tabpanel')
+    ).toHaveCSS('row-gap', '16px');
+  });
 });
 
 // NFR-05, NFR-06: the controls on the map carry hashed class names, not the plain ones.

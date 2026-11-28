@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { openScreen, wantedScreens } from '@ks/e2e/design-open';
-import { states } from '@ks/e2e/design-states';
+import { DESKTOP_ONLY, states } from '@ks/e2e/design-states';
 import { cutOffNow, LARGE_TEXT } from '@ks/e2e/large-text';
 import { wideNow } from '@ks/e2e/sideways';
 import { authStateFor, parseConfig } from '@ks/lib/design/check.mts';
@@ -30,7 +30,10 @@ for (const screen of wantedScreens(config.screens)) {
   test.describe(`large text: ${screen.name}`, () => {
     test.use({ storageState: authStateFor(screen.account) });
 
-    for (const size of SIZES) {
+    const sizes =
+      screen.state && DESKTOP_ONLY.has(screen.state) ? [SIZES[0]] : SIZES;
+
+    for (const size of sizes) {
       test(`large text: ${screen.name} at ${size.width}`, async ({ page }) => {
         await page.addInitScript(LARGE_TEXT);
 
@@ -62,6 +65,12 @@ for (const screen of wantedScreens(config.screens)) {
     }
   });
 }
+
+test('large text: each desktop-only name is a key of states', () => {
+  expect(
+    [...DESKTOP_ONLY].filter(name => !Object.hasOwn(states, name))
+  ).toEqual([]);
+});
 
 test.describe('large text: the rule', () => {
   test.use({ storageState: { cookies: [], origins: [] } });

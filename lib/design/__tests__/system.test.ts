@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { DtcgTree, SystemTokens } from '@ks/lib/design/types.ts';
 
+import { layoutPx, sizePx } from '@ks/design/tokens.generated.ts';
 import { colour } from '@ks/lib/design/__tests__/dtcg-fixtures.ts';
 import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '@ks/lib/design/bundle.mts';
 import { cssName } from '@ks/lib/design/css.mts';
@@ -97,10 +98,10 @@ describe('systemTokens', () => {
         value: follow(value),
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
-    expect(all(system).length).toBe(201);
+    expect(all(system).length).toBe(221);
   });
 
-  it('shows the purpose names, the border widths and the 8 motion tokens, and no step or space-N', () => {
+  it('shows the purpose names, the border widths and the 9 motion tokens, and no step or space-N', () => {
     const names = all(system).map(({ name }) => name);
 
     expect(names.filter(name => /^space-\d+$/.test(name))).toEqual([]);
@@ -120,6 +121,7 @@ describe('systemTokens', () => {
       'motion-toast',
       'motion-press-offset',
       'motion-rise-offset',
+      'motion-autofill-hold',
     ]);
     expect(
       system.motion.tokens.find(({ name }) => name === 'motion-easing')?.value
@@ -183,7 +185,7 @@ describe('systemTokens', () => {
       system.layout.tokens.length,
       system.breakpoint.tokens.length,
       system.z.tokens.length,
-    ]).toEqual([41, 2, 5]);
+    ]).toEqual([58, 2, 5]);
 
     for (const { name, usage, value } of [
       ...system.layout.tokens,
@@ -196,6 +198,29 @@ describe('systemTokens', () => {
     expect(system.layout.tokens.map(({ name }) => name)).not.toContain(
       'layout-dialog-top'
     );
+  });
+
+  it('gives each size of one use its px value, and the size tokens of the SC.13.1 rows', () => {
+    expect(layoutPx).toMatchObject({
+      'click-popup-min': 102,
+      'credits-width': 300,
+      'date-callout': 340,
+      'date-callout-lift': 52,
+      'dialog-gap': 80,
+      'people-failed': 560,
+      'people-filter': 480,
+      'people-no-match': 420,
+      'person-alert': 640,
+      'person-list': 480,
+      'person-list-empty': 280,
+      'phone-sample': 358,
+      'popup-pin-min': 32,
+      'sheet-gap': 84,
+      'sources-checked': 120,
+      'sources-layer': 170,
+      'sources-licence': 150,
+    });
+    expect(sizePx).toMatchObject({ 'handle-height': 4, 'row-xl': 60 });
   });
 
   it('writes layout-menu-offset as a resolved value, not an alias', () => {

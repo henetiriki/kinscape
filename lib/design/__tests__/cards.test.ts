@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { basename, dirname } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
+import { layout } from '@ks/design/tokens.generated.ts';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
 import {
   CARD_IMAGES,
@@ -246,12 +247,12 @@ describe('previewHtml', () => {
     const html = previewHtml(sources);
 
     expect(FORM_ATTRIBUTE).toBe('data-form');
-    expect(sources.box).toBe('704px');
+    expect(sources.box).toBe('696px');
     expect(sources.states.map(({ form }) => form)).toEqual([
       undefined,
-      { box: '358px', name: 'sheet' },
+      { box: layout['phone-sample'], name: 'sheet' },
     ]);
-    expect(html).toContain('width: 704px;');
+    expect(html).toContain('width: 696px;');
     expect(html).toContain('"form":{"box":"358px","name":"sheet"}');
     expect(html).toContain(
       "state.form ? { 'data-form': state.form.name, style: { width: state.form.box } } : {}"

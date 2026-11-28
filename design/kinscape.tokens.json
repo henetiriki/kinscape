@@ -1816,6 +1816,14 @@
       },
       "$description": "Tall rows in lists."
     },
+    "row-xl": {
+      "$type": "dimension",
+      "$value": {
+        "value": 60,
+        "unit": "px"
+      },
+      "$description": "Taller rows: a Person row on a phone, a Toast with an action, a relationships header."
+    },
     "checkbox": {
       "$type": "dimension",
       "$value": {
@@ -1831,6 +1839,14 @@
         "unit": "px"
       },
       "$description": "Width of the drag handle of a sheet, a Dialog and a popup on a phone."
+    },
+    "handle-height": {
+      "$type": "dimension",
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      },
+      "$description": "Height of the drag handle of a sheet, a Dialog and a popup on a phone."
     },
     "halo-hover": {
       "$type": "dimension",
@@ -1955,6 +1971,14 @@
         "unit": "px"
       },
       "$description": "How far a Toast starts below its place and rises."
+    },
+    "autofill-hold": {
+      "$type": "duration",
+      "$value": {
+        "value": 600000,
+        "unit": "s"
+      },
+      "$description": "Hold of the field colour while the browser autofills it. Not a UI motion."
     }
   },
   "layout": {
@@ -1965,6 +1989,142 @@
         "unit": "px"
       },
       "$description": "Width of the Popup."
+    },
+    "phone-sample": {
+      "$type": "dimension",
+      "$value": {
+        "value": 358,
+        "unit": "px"
+      },
+      "$description": "Width of a phone notice card sample."
+    },
+    "credits-width": {
+      "$type": "dimension",
+      "$value": {
+        "value": 300,
+        "unit": "px"
+      },
+      "$description": "Width of the Credits card."
+    },
+    "sources-layer": {
+      "$type": "dimension",
+      "$value": {
+        "value": 170,
+        "unit": "px"
+      },
+      "$description": "Width of the Layer column of the Sources dialog."
+    },
+    "sources-licence": {
+      "$type": "dimension",
+      "$value": {
+        "value": 150,
+        "unit": "px"
+      },
+      "$description": "Width of the Licence column of the Sources dialog."
+    },
+    "sources-checked": {
+      "$type": "dimension",
+      "$value": {
+        "value": 120,
+        "unit": "px"
+      },
+      "$description": "Width of the Checked column of the Sources dialog."
+    },
+    "people-filter": {
+      "$type": "dimension",
+      "$value": {
+        "value": 480,
+        "unit": "px"
+      },
+      "$description": "Width of the filter of the People list."
+    },
+    "people-no-match": {
+      "$type": "dimension",
+      "$value": {
+        "value": 420,
+        "unit": "px"
+      },
+      "$description": "Width of the notice of a People list filter with no match."
+    },
+    "people-failed": {
+      "$type": "dimension",
+      "$value": {
+        "value": 560,
+        "unit": "px"
+      },
+      "$description": "Width of the notice of a People list that failed to load."
+    },
+    "person-list": {
+      "$type": "dimension",
+      "$value": {
+        "value": 480,
+        "unit": "px"
+      },
+      "$description": "Width of the option list of the Person field."
+    },
+    "person-list-empty": {
+      "$type": "dimension",
+      "$value": {
+        "value": 280,
+        "unit": "px"
+      },
+      "$description": "Width of the option list of the Person field when it has no option."
+    },
+    "person-alert": {
+      "$type": "dimension",
+      "$value": {
+        "value": 640,
+        "unit": "px"
+      },
+      "$description": "Width of the alert of the Person form."
+    },
+    "date-callout": {
+      "$type": "dimension",
+      "$value": {
+        "value": 340,
+        "unit": "px"
+      },
+      "$description": "Width of the callout of the date dock."
+    },
+    "date-callout-lift": {
+      "$type": "dimension",
+      "$value": {
+        "value": 52,
+        "unit": "px"
+      },
+      "$description": "How far the callout of the date dock sits above it."
+    },
+    "dialog-gap": {
+      "$type": "dimension",
+      "$value": {
+        "value": 80,
+        "unit": "px"
+      },
+      "$description": "Space that a Dialog leaves of the viewport height."
+    },
+    "sheet-gap": {
+      "$type": "dimension",
+      "$value": {
+        "value": 84,
+        "unit": "px"
+      },
+      "$description": "Space above a Sheet: its maximum height is the viewport height less this gap."
+    },
+    "click-popup-min": {
+      "$type": "dimension",
+      "$value": {
+        "value": 102,
+        "unit": "px"
+      },
+      "$description": "Minimum height of the body of the click popup."
+    },
+    "popup-pin-min": {
+      "$type": "dimension",
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      },
+      "$description": "Minimum height of a Pin row in the Popup."
     },
     "menu-width": {
       "$type": "dimension",

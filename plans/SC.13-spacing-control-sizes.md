@@ -144,7 +144,7 @@ A text `input` has no `::before`. The input already reaches over the box border 
 
 - D12 B is built. The `<label>` box covers the text field, the select and the date field. `TextAreaField` and `TokenField` keep their boxes: each is 44px or taller where it has an input.
 - Check 5 holds: `UNDER_44` is empty. The date row of the phone sheet starts 4px lower, so the grabber's hit area stays off the field. `npm run design:check` named only `map-account-menu-phone`: see the `Map-phone-states.dc.html` line.
-- Big: acceptance check 5 asks for a 44px hit area. The `ZoomControls` buttons are 1px apart, so each hit area is 43px: its button and the gap below. The test point of the check lies in that gap. A 44px area would overlap its neighbour. Decide whether to accept 43px.
+- Acceptance check 5 asks for a 44px hit area. The `ZoomControls` buttons are 1px apart, so each hit area is 43px: its button and the gap below. The test point of the check lies in that gap. A 44px area would overlap its neighbour. The tech lead accepted 43px.
 - `JumpTo` rows wrap 16px apart, not 8px, so the 44px hit areas of the epoch buttons do not overlap.
 - The local-session steps are done: design system steps 2 to 5 and 7, the board deletion and the `Map-add-pin.dc.html` rows. The date row of the phone sheet follows its move through the published bundle.
 - `size` in `lib/design/system.mts` uses resolved values: the design system does not allow an alias outside `color`.

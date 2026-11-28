@@ -74,7 +74,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 
   <sc-if value="{{v.accountProposed}}" hint-placeholder-val="{{ false }}">
-    <div role="menu" aria-label="Account" style="z-index: 20; position: absolute; right: var(--space-inset-xl); top: 76px; width: 296px; background: #FFFFFF; border-radius: var(--radius-panel); box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); padding: var(--space-inset-2xs); box-sizing: border-box; display: flex; flex-direction: column">
+    <div role="menu" aria-label="Account" style="z-index: var(--z-menu); position: absolute; right: var(--space-inset-xl); top: 76px; width: 296px; background: #FFFFFF; border-radius: var(--radius-panel); box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); padding: var(--space-inset-2xs); box-sizing: border-box; display: flex; flex-direction: column">
       <div style="padding: var(--space-inset-s); display: flex; flex-direction: column; gap: var(--space-gap-2xs)">
         <span style="font-size: var(--type-caption-size); line-height: var(--type-caption-line); color: #4A544C">Signed in as</span>
         <span style="font-size: var(--type-label-size); line-height: var(--type-label-line); font-weight: var(--type-label-weight)">researcher@example.com</span>
@@ -98,7 +98,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 
   <sc-if value="{{v.account}}" hint-placeholder-val="{{ false }}">
-    <div style="z-index: 20; position: absolute; right: var(--size-gutter); top: calc(var(--space-inset-xl) + var(--size-touch) + var(--space-inset-xs))"><x-import component-from-global-scope="KinScape.MenuPanel" email="researcher@example.com" groups="{{accountMenu.groups}}" hovered="people"></x-import></div>
+    <div style="z-index: var(--z-menu); position: absolute; right: var(--size-gutter); top: calc(var(--space-inset-xl) + var(--size-touch) + var(--space-inset-xs))"><x-import component-from-global-scope="KinScape.MenuPanel" email="researcher@example.com" groups="{{accountMenu.groups}}" hovered="people"></x-import></div>
   </sc-if>
 
   <sc-if value="{{v.sources}}" hint-placeholder-val="{{ false }}">

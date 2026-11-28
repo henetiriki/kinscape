@@ -158,6 +158,88 @@ describe('buildTokens', () => {
     });
   });
 
+  // NFR-06
+  describe('a role with a breakpoint step', () => {
+    const withPhone = {
+      breakpoint: {
+        $extensions: {
+          kinscape: { queries: { phone: '(max-width: {breakpoint.width})' } },
+        },
+        width: { $type: 'dimension', $value: px(640) },
+      },
+      type: {
+        h1: {
+          $extensions: {
+            kinscape: {
+              breakpoints: {
+                phone: { line: '{type.h1.line}', size: '{type.h1.size}' },
+              },
+            },
+          },
+          line: { $type: 'dimension', $value: px(40) },
+          size: { $type: 'dimension', $value: px(31) },
+        },
+      },
+    };
+
+    it('writes a marked @media block with the two values after :root', async () => {
+      const css = (await buildTokens(withPhone, OUT))[OUT.css];
+
+      expect(css).toContain(
+        [
+          '@media (max-width: 640px) /* breakpoint: phone */ {',
+          '  :root {',
+          '    --type-h1-size: 31px;',
+          '    --type-h1-line: 40px;',
+          '  }',
+          '}',
+        ].join('\n')
+      );
+      expect(css.indexOf('@media')).toBeGreaterThan(css.indexOf('\n}\n'));
+    });
+
+    it('writes no block when no role names a breakpoint', async () => {
+      expect((await buildTokens(tokens, OUT))[OUT.css]).not.toContain('@media');
+    });
+
+    it('writes no token for the breakpoints setting', async () => {
+      const text = (await buildTokens(withPhone, OUT))[OUT.ts];
+
+      expect(text).not.toContain('"breakpoints"');
+    });
+
+    it('throws, naming the role, on a breakpoint with no size or line reference', async () => {
+      const noLine = structuredClone(withPhone);
+      const literal = structuredClone(withPhone);
+
+      noLine.type.h1.$extensions.kinscape.breakpoints = {
+        phone: { size: '{type.h1.size}' },
+      } as never;
+      literal.type.h1.$extensions.kinscape.breakpoints = {
+        phone: { line: '{type.h1.line}', size: '31px' },
+      } as never;
+
+      await expect(buildTokens(noLine, OUT)).rejects.toThrow(
+        'type.h1: breakpoint "phone" needs a line reference'
+      );
+      await expect(buildTokens(literal, OUT)).rejects.toThrow(
+        'type.h1: breakpoint "phone" needs a size reference'
+      );
+    });
+
+    it('throws on a breakpoint that the file has no query for', async () => {
+      const bad = structuredClone(withPhone);
+
+      bad.type.h1.$extensions.kinscape.breakpoints = {
+        tablet: { line: '{type.h1.line}', size: '{type.h1.size}' },
+      } as never;
+
+      await expect(buildTokens(bad, OUT)).rejects.toThrow(
+        'type.h1: unknown breakpoint "tablet"'
+      );
+    });
+  });
+
   describe('the TypeScript module', () => {
     const build = async () => (await buildTokens(tokens, OUT))[OUT.ts];
 

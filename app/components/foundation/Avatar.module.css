@@ -10,12 +10,12 @@
   color: var(--white);
   cursor: pointer;
   display: inline-flex;
-  font-family: var(--type-button-font);
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
+  font-family: var(--type-control-font);
+  font-size: var(--type-control-size);
+  font-weight: var(--type-control-weight);
   height: var(--size-touch);
   justify-content: center;
-  line-height: var(--type-button-line);
+  line-height: var(--type-control-line);
   padding: 0;
   width: var(--size-touch);
 }

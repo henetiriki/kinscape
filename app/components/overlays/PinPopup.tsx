@@ -87,7 +87,7 @@ const Dates = ({
 }: Pick<PinPopupArgs, 'reading' | 'recorded'>) => (
   <div className={styles.dates}>
     <Text variant='title'>{reading}</Text>
-    <Text variant='mono'>{recorded}</Text>
+    <Text variant='monoCaption'>{recorded}</Text>
   </div>
 );
 

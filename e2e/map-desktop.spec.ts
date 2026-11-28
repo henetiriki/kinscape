@@ -74,7 +74,7 @@ for (const width of WIDTHS) {
     }) => {
       const scale = page.locator('.maplibregl-ctrl-scale');
 
-      await expect(scale).toHaveCSS('font-size', '11px');
+      await expect(scale).toHaveCSS('font-size', '10px');
       await expect(scale).toHaveCSS('color', 'rgb(36, 48, 43)');
       await expect(scale).toHaveCSS('border-bottom-width', '1px');
       await expect(scale).toHaveCSS('line-height', '16px');

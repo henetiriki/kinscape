@@ -44,7 +44,7 @@ export const ClickPopup = ({
         <div className={styles.body}>
           <PopupTop onClose={onClose}>
             <Text variant='overline'>Point on the map</Text>
-            <Text variant='mono'>{pointText(point)}</Text>
+            <Text variant='monoCaption'>{pointText(point)}</Text>
           </PopupTop>
           <Text variant='small'>
             The panel opens with this point filled in.

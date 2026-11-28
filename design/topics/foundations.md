@@ -28,34 +28,30 @@ Components set these styles with `<Text variant>` (`app/components/foundation/Te
 
 All three are OFL fonts. The app and the snapshots load the same `@fontsource` files, pinned in `package-lock.json`. Map labels need Public Sans Regular, SemiBold and Italic as glyph PBFs too (see [Map style](map.md#map-style)).
 
-| Style                             | Font · size / line · weight                | Used for                           |
-| --------------------------------- | ------------------------------------------ | ---------------------------------- |
-| Display (`display`)               | Bricolage 52 / 56 · 700 · tracking −0.02em | Sign-in headline                   |
-| H1 (`h1`)                         | Bricolage 32 / 40 · 500 · −0.015em         | Page title                         |
-| H1 phone (`h1-phone`)             | Bricolage 28 / 32 · 500 · −0.015em         | Page title on a phone              |
-| H2 (`h2`)                         | Bricolage 24 / 32 · 700                    | Dialog and section titles          |
-| H3 (`h3`)                         | Bricolage 22 / 28 · 700                    | Place name in a popup, cards       |
-| Title (`title`)                   | Public Sans 15 / 22 · 600                  | Notice titles, row titles          |
-| Body L (`body-l`)                 | Public Sans 16 / 24 · 400                  | Sign-in, fields                    |
-| Body (`body`)                     | Public Sans 15 / 22 · 400                  | Panels, popups                     |
-| Label (`label`)                   | Public Sans 14 / 20 · 600                  | Field labels, layer rows           |
-| Small (`small`)                   | Public Sans 13 / 20 · 400, `--ink-3`       | Helper text                        |
-| Caption (`caption`)               | Public Sans 12.5 / 18 · 400, `--ink-3`     | Credits, footnotes                 |
-| Credits (`credits`)               | Public Sans 11 / 16 · 400, `--credits`     | Credits line and scale bar         |
-| Overline (`overline`)             | Public Sans 11 / 16 · 600, caps, 0.1em     | Section headings                   |
-| Overline tight (`overline-tight`) | Public Sans 11 / 12 · 600, caps, 0.1em     | Layer group headings               |
-| Button (`button`)                 | Public Sans 16 / 24 · 600                  | 50px buttons (sign-in)             |
-| Control (`control`)               | Public Sans 15 / 22 · 600                  | 44px buttons and controls          |
-| Chip (`chip`)                     | Public Sans 13.5 / 20 · 600                | Chip that is on                    |
-| Chip off (`chip-off`)             | Public Sans 13.5 / 20 · 400                | Chip that is off                   |
-| Button S (`button-s`)             | Public Sans 14 / 20 · 600                  | 40px and 36px buttons              |
-| Link (`link`)                     | Public Sans 15 / 22 · 500                  | Links in running text              |
-| Link S (`link-s`)                 | Public Sans 13 / 20 · 500                  | Links in helper text and footnotes |
-| Mono L (`mono-l`)                 | JetBrains Mono 22 / 28 · 500               | Map date field                     |
-| Mono M (`mono-m`)                 | JetBrains Mono 15 / 22 · 400               | Fuzzy date field                   |
-| Mono (`mono`)                     | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists     |
+| Style                           | Font · size / line · weight                | Used for                           |
+| ------------------------------- | ------------------------------------------ | ---------------------------------- |
+| Display (`display`)             | Bricolage 49 / 60 · 700 · tracking −0.02em | Sign-in headline                   |
+| H1 (`h1`)                       | Bricolage 39 / 48 · 500 · −0.015em         | Page title; 31 / 40 on a phone     |
+| H2 (`h2`)                       | Bricolage 25 / 32 · 700                    | Dialog and section titles          |
+| H3 (`h3`)                       | Bricolage 20 / 24 · 700                    | Place name in a popup, cards       |
+| Title (`title`)                 | Public Sans 16 / 24 · 600                  | Notice titles, row titles          |
+| Body (`body`)                   | Public Sans 16 / 24 · 400                  | Panels, popups, sign-in, fields    |
+| Label (`label`)                 | Public Sans 13 / 20 · 600                  | Field labels, layer rows           |
+| Small (`small`)                 | Public Sans 13 / 20 · 400, `--ink-3`       | Helper text                        |
+| Caption (`caption`)             | Public Sans 10 / 16 · 400, `--ink-3`       | Credits, footnotes                 |
+| Credits (`credits`)             | Public Sans 10 / 16 · 400, `--credits`     | Credits line and scale bar         |
+| Overline (`overline`)           | Public Sans 10 / 16 · 600, caps, 0.1em     | Section headings, layer groups     |
+| Control (`control`)             | Public Sans 16 / 24 · 600                  | 50px and 44px buttons, controls    |
+| Control small (`control-small`) | Public Sans 13 / 20 · 600                  | 40px and 36px buttons              |
+| Chip (`chip`)                   | Public Sans 13 / 20 · 600                  | Chip that is on                    |
+| Chip off (`chip-off`)           | Public Sans 13 / 20 · 400                  | Chip that is off                   |
+| Link (`link`)                   | Public Sans 16 / 24 · 500                  | Links in running text              |
+| Link small (`link-small`)       | Public Sans 13 / 20 · 500                  | Links in helper text and footnotes |
+| Mono title (`mono-title`)       | JetBrains Mono 20 / 32 · 500               | Map date field                     |
+| Mono (`mono`)                   | JetBrains Mono 16 / 24 · 400               | Fuzzy date field                   |
+| Mono caption (`mono-caption`)   | JetBrains Mono 10 / 16 · 400               | Dates and coordinates in lists     |
 
-Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line.
+A size is 16px × 1.25ⁿ, rounded to a pixel. A line height is the size × 1.25 for a heading role and × 1.5 for each other role, rounded to the nearest multiple of 4px. A halfway value takes the larger multiple. Keep running text under 68 characters a line.
 
 ## Colours
 

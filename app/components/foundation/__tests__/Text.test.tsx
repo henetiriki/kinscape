@@ -16,20 +16,20 @@ it('renders a heading style as the element it is given', () => {
   expect(heading.classList.contains('h3')).toBe(true);
 });
 
-it('defaults body and body L to a paragraph, and the rest to a span', () => {
+it('defaults body to a paragraph, and the rest to a span', () => {
   render(
     <>
       <Text variant='body'>Body</Text>
-      <Text variant='bodyL'>Body L</Text>
       <Text variant='label'>Label</Text>
-      <Text variant='monoL'>Mono L</Text>
+      <Text variant='monoTitle'>Mono title</Text>
     </>
   );
 
   expect(screen.getByText('Body').tagName).toBe('P');
-  expect(screen.getByText('Body L').tagName).toBe('P');
   expect(screen.getByText('Label').tagName).toBe('SPAN');
-  expect(screen.getByText('Mono L').classList.contains('monoL')).toBe(true);
+  expect(screen.getByText('Mono title').classList.contains('monoTitle')).toBe(
+    true
+  );
 });
 
 it('lets a non-heading style take another element and passes props through', () => {

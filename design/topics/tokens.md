@@ -48,10 +48,13 @@ The settings of a group are in `$extensions.kinscape`: `mode`, `unit` and these 
 - **ratio:** `base`, `ratio`, `below`, `above`, `round`.
 - **hybrid:** `grid`, `limit`, `ratio`, `above`.
 - **explicit:** `values`.
+- **derived:** `from` (a step group), `ratio`, `round`.
 
 `npm run tokens` writes the steps. To change a scale, edit its settings. `design.test.ts` fails on a step that differs.
 
 A step name is a 100-based number. Grid, hybrid and explicit mode start at 100. In ratio mode, the base is 400. A name below 100 fails.
+
+A role takes a breakpoint step in `$extensions.kinscape.breakpoints.<name>`. `npm run tokens` writes a marked `@media` block.
 
 Step n is base × ratioⁿ, then rounded to the nearest multiple of the rounding unit. A halfway value rounds to the larger multiple.
 
@@ -127,8 +130,7 @@ The rule is the "Tokens are the one source" row in [`docs/architecture.md`](../.
 
 ## The size check
 
-`lib/design/sizes.mts` reads each size in each `.module.css` file, in `app/globals.css` and in each inline `style` prop of a `.tsx` file outside tests. A size is a length, a duration, a z-index, an opacity or a font weight. It is also a length in `@media` or in a custom property. The check does not read SVG attributes.
-
+`lib/design/sizes.mts` reads each size in each `.module.css` file, in `app/globals.css` and in each inline `style` prop of a `.tsx` file outside tests. A size is a length, a duration, a z-index, an opacity or a font weight. It is also a length in `@media` or in a custom property.
 A size passes in these cases:
 
 - It is `0`, a percentage, an `fr`, a keyword, `100vw`, `100vh`, `100dvh` or a `* 1px` multiplier.
@@ -142,7 +144,7 @@ A local value is a custom property with `/* local: <reason> */`. The reason is `
 
 An entry holds a file, a property, a value and a `count`. The test fails if a count differs from the code. After a change, run `npm run sizes`.
 
-In a `style` prop, the check reads only literals. It skips an identifier, a call and a template with an expression.
+In a `style` prop, the check reads only literals.
 
 ## Change a value
 

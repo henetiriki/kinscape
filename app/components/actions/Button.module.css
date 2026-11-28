@@ -22,14 +22,14 @@
 }
 
 .btn[data-size='l'] {
-  font-size: var(--type-button-size);
+  font-size: var(--type-control-size);
   height: var(--size-control-l);
-  line-height: var(--type-button-line);
+  line-height: var(--type-control-line);
 }
 
 .btn:is([data-size='s'], [data-size='xs']) {
-  font-size: var(--type-button-s-size);
-  line-height: var(--type-button-s-line);
+  font-size: var(--type-control-small-size);
+  line-height: var(--type-control-small-line);
 }
 
 .btn[data-size='s'] {

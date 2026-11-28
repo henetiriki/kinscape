@@ -49,7 +49,7 @@ const Pins = ({ pins }: { pins: PopupPin[] }) => (
           </span>
           <Text variant='small'>{people}</Text>
         </span>
-        <Text variant='mono'>{date}</Text>
+        <Text variant='monoCaption'>{date}</Text>
       </div>
     ))}
   </>
@@ -72,7 +72,7 @@ const Header = ({
       <Text as='h3' variant='h3'>
         {place}
       </Text>
-      <Text variant='mono'>{coordinates}</Text>
+      <Text variant='monoCaption'>{coordinates}</Text>
     </div>
   </div>
 );

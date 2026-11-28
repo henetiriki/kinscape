@@ -30,43 +30,43 @@
       </div>
 
       <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-gap-xl); align-items: start; padding: var(--space-inset-xs) var(--space-inset-l); border-top: var(--border-hairline) solid var(--line)">
-        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">self</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Refusal</x-import></div>
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="monoCaption" as="span">self</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Refusal</x-import></div>
         <x-import component-from-global-scope="KinScape.Alert" tone="error" title="A person can't be their own relative">Choose someone else.</x-import>
         <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">None</x-import>
       </div>
 
       <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-gap-xl); align-items: start; padding: var(--space-inset-xs) var(--space-inset-l); border-top: var(--border-hairline) solid var(--line)">
-        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">cycle</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Refusal</x-import></div>
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="monoCaption" as="span">cycle</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Refusal</x-import></div>
         <x-import component-from-global-scope="KinScape.Alert" tone="error" title="This link isn't possible">This would make {name} their own ancestor.</x-import>
         <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">None</x-import>
       </div>
 
       <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-gap-xl); align-items: start; padding: var(--space-inset-xs) var(--space-inset-l); border-top: var(--border-hairline) solid var(--line)">
-        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">biological parents</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Refusal</x-import></div>
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="monoCaption" as="span">biological parents</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Refusal</x-import></div>
         <x-import component-from-global-scope="KinScape.Alert" tone="error" title="Too many biological parents">A person has at most two. Choose adoptive or step, or edit a link.</x-import>
         <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">None</x-import>
       </div>
 
       <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-gap-xl); align-items: start; padding: var(--space-inset-xs) var(--space-inset-l); border-top: var(--border-hairline) solid var(--line)">
-        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">duplicate</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Refusal</x-import></div>
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="monoCaption" as="span">duplicate</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Refusal</x-import></div>
         <x-import component-from-global-scope="KinScape.Alert" tone="error" title="These people are already linked">They already have this link. Edit it from the list.</x-import>
         <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">None</x-import>
       </div>
 
       <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-gap-xl); align-items: start; padding: var(--space-inset-xs) var(--space-inset-l); border-top: var(--border-hairline) solid var(--line)">
-        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">tree-full</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Error</x-import></div>
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="monoCaption" as="span">tree-full</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Error</x-import></div>
         <x-import component-from-global-scope="KinScape.Alert" tone="error" title="Your Tree holds the most links it can">Nothing was saved.</x-import>
         <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">None</x-import>
       </div>
 
       <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-gap-xl); align-items: start; padding: var(--space-inset-xs) var(--space-inset-l); border-top: var(--border-hairline) solid var(--line)">
-        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">conflict</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Error</x-import></div>
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="monoCaption" as="span">conflict</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Error</x-import></div>
         <x-import component-from-global-scope="KinScape.Alert" tone="error" title="This link changed while you were editing">Nothing was saved. Reload to see the latest version, then make your changes again.</x-import>
         <div><x-import component-from-global-scope="KinScape.Button" variant="secondary">Reload</x-import></div>
       </div>
 
       <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-gap-xl); align-items: start; padding: var(--space-inset-xs) var(--space-inset-l); border-top: var(--border-hairline) solid var(--line)">
-        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">not-found</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Error</x-import></div>
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="monoCaption" as="span">not-found</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Error</x-import></div>
         <x-import component-from-global-scope="KinScape.Alert" tone="error" title="This person or link no longer exists">Nothing was saved. It may have been deleted.</x-import>
         <div><x-import component-from-global-scope="KinScape.Button" variant="secondary" href="People-list.dc.html">Go to People</x-import></div>
       </div>

@@ -52,7 +52,7 @@ export type IconSize = 14 | 16 | 18 | 20 | 24 | 28;
 export type LinkComponent = 'a' | ComponentType<{
     href: string;
 } & ComponentPropsWithoutRef<'a'>>;
-export type Other = 'body' | 'bodyL' | 'button' | 'buttonS' | 'caption' | 'chip' | 'chipOff' | 'control' | 'credits' | 'h1Phone' | 'label' | 'link' | 'linkS' | 'mono' | 'monoL' | 'overline' | 'overlineTight' | 'small' | 'title';
+export type Other = 'body' | 'caption' | 'chip' | 'chipOff' | 'control' | 'controlSmall' | 'credits' | 'label' | 'link' | 'linkSmall' | 'mono' | 'monoCaption' | 'monoTitle' | 'overline' | 'small' | 'title';
 export type SurfaceLevel = 'floating' | 'modal' | 'raised' | 'sheet';
 export type Tone = 'error' | 'info' | 'warning';
 

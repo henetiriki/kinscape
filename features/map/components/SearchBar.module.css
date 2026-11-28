@@ -47,10 +47,10 @@
   border: 0;
   color: var(--ink);
   flex: 1;
-  font-family: var(--type-body-l-font);
-  font-size: var(--type-body-l-size);
+  font-family: var(--type-body-font);
+  font-size: var(--type-body-size);
   height: var(--size-field);
-  line-height: var(--type-body-l-line);
+  line-height: var(--type-body-line);
   min-width: 0;
   outline: 0;
   padding: 0;

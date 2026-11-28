@@ -30,7 +30,7 @@ export const LayerGroup = ({
 
   return (
     <div aria-labelledby={id} className={styles.group} role='group'>
-      <Text as='h3' id={id} variant='overlineTight'>
+      <Text as='h3' id={id} variant='overline'>
         {heading}
       </Text>
       {rows.map(({ id: key, onChange, ...row }) => (

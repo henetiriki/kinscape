@@ -50,7 +50,7 @@
   box-sizing: border-box;
   color: inherit;
   flex: 1;
-  font-family: var(--type-body-l-font);
+  font-family: var(--type-body-font);
   font-size: var(--type-body-size);
   line-height: var(--type-body-line);
   min-width: 0;
@@ -67,12 +67,4 @@
 .area:disabled {
   cursor: default;
   resize: none;
-}
-
-/* 16px on phones, so the browser doesn't zoom in. */
-@media (max-width: 639.98px), (max-height: 499.98px) /* breakpoint: phone */ {
-  .area {
-    font-size: var(--type-body-l-size);
-    line-height: var(--type-body-l-line);
-  }
 }

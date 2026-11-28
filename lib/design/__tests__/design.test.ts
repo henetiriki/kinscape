@@ -143,7 +143,7 @@ describe('the design snapshots', () => {
   );
 
   it('are all checked', () => {
-    expect(snapshots).toHaveLength(87);
+    expect(snapshots).toHaveLength(86);
   });
 
   it.each(snapshots)('%s uses only token colours', name => {
@@ -261,10 +261,10 @@ describe('layout tokens', () => {
 
 // The only type styles under 12.5px, each with the reason it is small.
 const SMALL_TYPE: Record<string, { reason: string; size: number }> = {
-  credits: { reason: 'Credits line and scale bar', size: 11 },
-  mono: { reason: 'Dates and coordinates in lists', size: 12 },
-  overline: { reason: 'Section headings', size: 11 },
-  'overline-tight': { reason: 'Layer group headings', size: 11 },
+  caption: { reason: 'Credits and footnotes', size: 10 },
+  credits: { reason: 'Credits line and scale bar', size: 10 },
+  'mono-caption': { reason: 'Dates and coordinates in lists', size: 10 },
+  overline: { reason: 'Section headings', size: 10 },
 };
 
 describe('design/kinscape.tokens.json and design/tokens.generated.ts', () => {
@@ -318,6 +318,66 @@ describe('design/kinscape.tokens.json and design/tokens.generated.ts', () => {
       Object.fromEntries(
         Object.entries(SMALL_TYPE).map(([name, entry]) => [name, entry.size])
       )
+    );
+  });
+
+  // NFR-06
+  it('sets each type size to 16 × 1.25ⁿ, rounded to a pixel, from step 200 to 900', () => {
+    const px = (name: string) =>
+      Number.parseFloat(resolvedText(source, `scale.text.${name}`)) * 16;
+
+    expect(
+      [200, 300, 400, 500, 600, 700, 800, 900].map(step => px(String(step)))
+    ).toEqual(
+      [-2, -1, 0, 1, 2, 3, 4, 5].map(power => Math.round(16 * 1.25 ** power))
+    );
+  });
+
+  // NFR-06
+  it('sets each line height to 1.5 × its size on a body role, 1.25 × on a heading, in steps of 4px', () => {
+    const px = (path: string) =>
+      Number.parseFloat(resolvedText(source, path)) * 16;
+    const roundTo4 = (value: number) => Math.floor(value / 4 + 0.5) * 4;
+
+    for (const [name, role] of Object.entries<{
+      font: { $value: string };
+      line: { $value: string };
+      size: { $value: string };
+    }>(source.type)) {
+      const heading = role.font.$value === '{font.display}';
+      const ratio = heading ? 1.25 : 1.5;
+      const text = px(`type.${name}.size`);
+
+      expect(px(`type.${name}.line`), name).toBe(roundTo4(text * ratio));
+    }
+  });
+
+  // NFR-06
+  it('gives each line of a role the step of its size, in the group of its font', () => {
+    for (const [name, role] of Object.entries<{
+      font: { $value: string };
+      line: { $value: string };
+      size: { $value: string };
+    }>(source.type)) {
+      const step = role.size.$value.slice(0, -1).split('.').at(-1);
+      const group =
+        role.font.$value === '{font.display}' ? 'line-heading' : 'line';
+
+      expect(role.line.$value, name).toBe(`{scale.${group}.${step}}`);
+    }
+  });
+
+  // NFR-06
+  it('sets the page title to step 800, and step 700 on a phone', () => {
+    const phone = source.type.h1.$extensions.kinscape.breakpoints.phone;
+
+    expect(source.type.h1.size.$value).toBe('{scale.text.800}');
+    expect(phone).toEqual({
+      line: '{scale.line-heading.700}',
+      size: '{scale.text.700}',
+    });
+    expect(read(OUTPUTS.css)).toContain(
+      '--type-h1-size: 1.9375rem;\n    --type-h1-line: 2.5rem;'
     );
   });
 

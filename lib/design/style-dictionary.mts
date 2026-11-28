@@ -19,7 +19,7 @@ import {
   MAP_SHARED,
   systemName,
 } from '#ks/lib/design/css.mts';
-import { cssText, referenceIn } from '#ks/lib/design/dtcg.mts';
+import { cssText, referenceIn, resolvedText } from '#ks/lib/design/dtcg.mts';
 
 const HEADER =
   '/* Generated from design/kinscape.tokens.json by `npm run tokens`. Do not edit. */';
@@ -52,16 +52,73 @@ const cssValue = (token: TransformedToken): string => {
     : String(token.$value);
 };
 
-const css = ({ dictionary }: FormatFnArguments): string =>
-  [
-    HEADER,
-    ':root {',
-    ...dictionary.allTokens
-      .filter(inCss)
-      .map(token => `  --${token.name}: ${cssValue(token)};`),
+const BREAKPOINT_PROPS = ['size', 'line'] as const;
+
+/**
+ * One `@media` block for each breakpoint that a `type` role names in `$extensions.kinscape.breakpoints`
+ * (NFR-06, #1206 plan D14). It re-sets the `size` and `line` properties of the role, so `var(--type-h1-size)` follows the viewport.
+ */
+const breakpointBlocks = (
+  tokens: DtcgTree,
+  queries: Record<string, string>
+): string[] => {
+  const blocks = new Map<string, string[]>();
+
+  for (const [role, group] of Object.entries(
+    (tokens.type ?? {}) as Record<string, DtcgTree>
+  )) {
+    const named = (
+      group.$extensions as
+        | {
+            kinscape?: { breakpoints?: Record<string, Record<string, string>> };
+          }
+        | undefined
+    )?.kinscape?.breakpoints;
+
+    for (const [name, refs] of Object.entries(named ?? {})) {
+      if (!Object.hasOwn(queries, name)) {
+        throw new Error(`type.${role}: unknown breakpoint "${name}"`);
+      }
+
+      blocks.set(name, [
+        ...(blocks.get(name) ?? []),
+        ...BREAKPOINT_PROPS.map(prop => {
+          const reference = referenceIn(refs[prop]);
+
+          if (reference === undefined) {
+            throw new Error(
+              `type.${role}: breakpoint "${name}" needs a ${prop} reference`
+            );
+          }
+
+          return `    --${systemName(['type', role, prop])}: ${resolvedText(tokens, reference)};`;
+        }),
+      ]);
+    }
+  }
+
+  return [...blocks].flatMap(([name, lines]) => [
+    `@media ${queries[name]} /* breakpoint: ${name} */ {`,
+    '  :root {',
+    ...lines,
+    '  }',
     '}',
-    '',
-  ].join('\n');
+  ]);
+};
+
+const css =
+  (tokens: DtcgTree, queries: Record<string, string>) =>
+  ({ dictionary }: FormatFnArguments): string =>
+    [
+      HEADER,
+      ':root {',
+      ...dictionary.allTokens
+        .filter(inCss)
+        .map(token => `  --${token.name}: ${cssValue(token)};`),
+      '}',
+      ...breakpointBlocks(tokens, queries),
+      '',
+    ].join('\n');
 
 const put = (tree: Tree, path: string[], value: number | string): void => {
   const node = path
@@ -166,11 +223,12 @@ export const buildTokens = async (
   tokens: DesignTokens,
   out: { css: string; ts: string }
 ): Promise<Record<string, string>> => {
+  const queries = queriesOf(tokens as DtcgTree);
   const dictionary = new StyleDictionary({
     hooks: {
       formats: {
-        'kinscape/css': css,
-        'kinscape/typescript': typescript(queriesOf(tokens as DtcgTree)),
+        'kinscape/css': css(tokens as DtcgTree, queries),
+        'kinscape/typescript': typescript(queries),
       },
       transforms: {
         'kinscape/css-text': {

@@ -209,8 +209,8 @@
 
 .display {
   font-family: var(--font-display);
-  font-size: 3.25rem;
-  line-height: 3.5rem;
+  font-size: 3.0625rem;
+  line-height: 3.75rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   font-style: normal;
@@ -218,17 +218,8 @@
 
 .h1 {
   font-family: var(--font-display);
-  font-size: 2rem;
-  line-height: 2.5rem;
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  font-style: normal;
-}
-
-.h1-phone {
-  font-family: var(--font-display);
-  font-size: 1.75rem;
-  line-height: 2rem;
+  font-size: 2.4375rem;
+  line-height: 3rem;
   font-weight: 500;
   letter-spacing: -0.015em;
   font-style: normal;
@@ -236,7 +227,7 @@
 
 .h2 {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.5625rem;
   line-height: 2rem;
   font-weight: 700;
   letter-spacing: 0;
@@ -245,8 +236,8 @@
 
 .h3 {
   font-family: var(--font-display);
-  font-size: 1.375rem;
-  line-height: 1.75rem;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
   font-weight: 700;
   letter-spacing: 0;
   font-style: normal;
@@ -254,14 +245,14 @@
 
 .title {
   font-family: var(--font-body);
-  font-size: 0.9375rem;
-  line-height: 1.375rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
   font-weight: 600;
   letter-spacing: 0;
   font-style: normal;
 }
 
-.body-l {
+.body {
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5rem;
@@ -270,18 +261,9 @@
   font-style: normal;
 }
 
-.body {
-  font-family: var(--font-body);
-  font-size: 0.9375rem;
-  line-height: 1.375rem;
-  font-weight: 400;
-  letter-spacing: 0;
-  font-style: normal;
-}
-
 .label {
   font-family: var(--font-body);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   line-height: 1.25rem;
   font-weight: 600;
   letter-spacing: 0;
@@ -299,8 +281,8 @@
 
 .caption {
   font-family: var(--font-body);
-  font-size: 0.78125rem;
-  line-height: 1.125rem;
+  font-size: 0.625rem;
+  line-height: 1rem;
   font-weight: 400;
   letter-spacing: 0;
   font-style: normal;
@@ -308,7 +290,7 @@
 
 .credits {
   font-family: var(--font-body);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   line-height: 1rem;
   font-weight: 400;
   letter-spacing: 0;
@@ -317,23 +299,14 @@
 
 .overline {
   font-family: var(--font-body);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   line-height: 1rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   font-style: normal;
 }
 
-.overline-tight {
-  font-family: var(--font-body);
-  font-size: 0.6875rem;
-  line-height: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  font-style: normal;
-}
-
-.button {
+.control {
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5rem;
@@ -342,18 +315,9 @@
   font-style: normal;
 }
 
-.control {
-  font-family: var(--font-body);
-  font-size: 0.9375rem;
-  line-height: 1.375rem;
-  font-weight: 600;
-  letter-spacing: 0;
-  font-style: normal;
-}
-
 .chip {
   font-family: var(--font-body);
-  font-size: 0.84375rem;
+  font-size: 0.8125rem;
   line-height: 1.25rem;
   font-weight: 600;
   letter-spacing: 0;
@@ -362,16 +326,16 @@
 
 .chip-off {
   font-family: var(--font-body);
-  font-size: 0.84375rem;
+  font-size: 0.8125rem;
   line-height: 1.25rem;
   font-weight: 400;
   letter-spacing: 0;
   font-style: normal;
 }
 
-.button-s {
+.control-small {
   font-family: var(--font-body);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   line-height: 1.25rem;
   font-weight: 600;
   letter-spacing: 0;
@@ -380,14 +344,14 @@
 
 .link {
   font-family: var(--font-body);
-  font-size: 0.9375rem;
-  line-height: 1.375rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
   font-weight: 500;
   letter-spacing: 0;
   font-style: normal;
 }
 
-.link-s {
+.link-small {
   font-family: var(--font-body);
   font-size: 0.8125rem;
   line-height: 1.25rem;
@@ -396,27 +360,27 @@
   font-style: normal;
 }
 
-.mono-l {
+.mono-title {
   font-family: var(--font-mono);
-  font-size: 1.375rem;
-  line-height: 1.75rem;
+  font-size: 1.25rem;
+  line-height: 2rem;
   font-weight: 500;
-  letter-spacing: 0;
-  font-style: normal;
-}
-
-.mono-m {
-  font-family: var(--font-mono);
-  font-size: 0.9375rem;
-  line-height: 1.375rem;
-  font-weight: 400;
   letter-spacing: 0;
   font-style: normal;
 }
 
 .mono {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.mono-caption {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
   line-height: 1rem;
   font-weight: 400;
   letter-spacing: 0;

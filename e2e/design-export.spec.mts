@@ -133,7 +133,7 @@ test('exports a board with var(--type-body-size) as the token value', async ({
   );
 
   expect(snapshotProblems(snapshot, tokens)).toEqual([]);
-  expect(snapshot).toContain('font-size: 0.9375rem');
+  expect(snapshot).toContain('font-size: 1rem');
   expect(snapshot).not.toContain('data-root');
 });
 

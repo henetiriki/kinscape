@@ -109,6 +109,89 @@ describe('stepsOf', () => {
   });
 });
 
+// NFR-06
+describe('a derived group', () => {
+  const text = {
+    above: 1,
+    base: 16,
+    below: 1,
+    mode: 'ratio',
+    ratio: 1.25,
+    round: 1,
+    unit: 'rem',
+  };
+  const derived = (ratio: number, from = 'text') => ({
+    from,
+    mode: 'derived',
+    ratio,
+    round: 4,
+    unit: 'rem',
+  });
+  const treeWith = (line: Record<string, unknown>): Tree => ({
+    scale: {
+      line: { $extensions: { kinscape: line } },
+      text: { $extensions: { kinscape: text } },
+    },
+  });
+  const lineSteps = (line: Record<string, unknown>) =>
+    (
+      withSteps(treeWith(line)) as {
+        scale: { line: Record<string, { $value: { value: number } }> };
+      }
+    ).scale.line;
+
+  it('writes each step of its from group times the ratio, rounded', () => {
+    // Text steps 300, 400, 500 are 13, 16 and 20px.
+    const steps = lineSteps(derived(1.5));
+
+    expect(
+      Object.fromEntries(
+        Object.entries(steps)
+          .filter(([key]) => !key.startsWith('$'))
+          .map(([key, step]) => [key, step.$value.value * 16])
+      )
+    ).toEqual({ '300': 20, '400': 24, '500': 32 });
+  });
+
+  it('rounds a halfway value to the larger multiple', () => {
+    // 13 × 1.5 = 19.5 rounds to 20; 20 × 1.5 = 30 is halfway between 28 and 32.
+    expect(lineSteps(derived(1.5))['500'].$value.value * 16).toBe(32);
+  });
+
+  it('throws, naming the group, on a from group that is missing', () => {
+    expect(() => withSteps(treeWith(derived(1.5, 'nope')))).toThrow(
+      'scale.line: the from group "nope" has no settings'
+    );
+  });
+
+  it('throws, naming the group, on a from group that is derived', () => {
+    expect(() => withSteps(treeWith(derived(1.5, 'line')))).toThrow(
+      'scale.line: the from group "line" is derived, so it cannot be a source'
+    );
+    expect(() =>
+      withSteps({
+        scale: {
+          heading: { $extensions: { kinscape: derived(1.25, 'line') } },
+          line: { $extensions: { kinscape: derived(1.5, 'heading') } },
+        },
+      })
+    ).toThrow('is derived, so it cannot be a source');
+  });
+
+  it('throws on a call with no tree to find the from group in', () => {
+    expect(() =>
+      stepsOf('line', derived(1.5) as Parameters<typeof stepsOf>[1])
+    ).toThrow('scale.line: the from group "text" has no settings');
+    expect(() =>
+      stepsOf('line', derived(1.5) as Parameters<typeof stepsOf>[1], {})
+    ).toThrow('scale.line: the from group "text" has no settings');
+  });
+
+  it('is empty of problems when the steps match', () => {
+    expect(scaleProblems(withSteps(treeWith(derived(1.25))))).toEqual([]);
+  });
+});
+
 describe('withSteps', () => {
   it('writes a token for each step, with its type and a note', () => {
     const out = withSteps(

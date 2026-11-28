@@ -136,7 +136,7 @@ export type Rule = {
 
 /**
  * The settings of a step group, in `$extensions.kinscape` (#1238 plan D13). `unit` is the DTCG unit of
- * each step. A `rem` group takes px inputs and writes each step as px ÷ 16. `grid` counts steps of one `grid`; `ratio` and `hybrid` multiply by `ratio`.
+ * each step. A `rem` group takes px inputs and writes each step as px ÷ 16. `grid` counts steps of one `grid`; `ratio` and `hybrid` multiply by `ratio`. `derived` takes each step of the group `from`, times `ratio`, rounded to `round`.
  */
 export type ScaleSettings = (
   | {
@@ -153,6 +153,12 @@ export type ScaleSettings = (
       limit: number;
       mode: 'hybrid';
       ratio: number;
+    }
+  | {
+      from: string;
+      mode: 'derived';
+      ratio: number;
+      round: number;
     }
   | { grid: number; mode: 'grid'; steps: number }
   | { mode: 'explicit'; values: number[] }

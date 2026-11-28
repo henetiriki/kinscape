@@ -1,129 +1,85 @@
 {
   "scale": {
     "text": {
-      "100": {
-        "$description": "Explicit list, value 1.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 0.6875
-        }
-      },
       "200": {
-        "$description": "Explicit list, value 2.",
+        "$description": "Base 16px, ratio 1.25 to the power -2, rounded to 1px.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
-          "value": 0.75
+          "value": 0.625
         }
       },
       "300": {
-        "$description": "Explicit list, value 3.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 0.78125
-        }
-      },
-      "400": {
-        "$description": "Explicit list, value 4.",
+        "$description": "Base 16px, ratio 1.25 to the power -1, rounded to 1px.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
           "value": 0.8125
         }
       },
-      "500": {
-        "$description": "Explicit list, value 5.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 0.84375
-        }
-      },
-      "600": {
-        "$description": "Explicit list, value 6.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 0.875
-        }
-      },
-      "700": {
-        "$description": "Explicit list, value 7.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 0.9375
-        }
-      },
-      "800": {
-        "$description": "Explicit list, value 8.",
+      "400": {
+        "$description": "Base 16px, ratio 1.25 to the power 0, rounded to 1px.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
           "value": 1
         }
       },
+      "500": {
+        "$description": "Base 16px, ratio 1.25 to the power 1, rounded to 1px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 1.25
+        }
+      },
+      "600": {
+        "$description": "Base 16px, ratio 1.25 to the power 2, rounded to 1px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 1.5625
+        }
+      },
+      "700": {
+        "$description": "Base 16px, ratio 1.25 to the power 3, rounded to 1px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 1.9375
+        }
+      },
+      "800": {
+        "$description": "Base 16px, ratio 1.25 to the power 4, rounded to 1px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 2.4375
+        }
+      },
       "900": {
-        "$description": "Explicit list, value 9.",
+        "$description": "Base 16px, ratio 1.25 to the power 5, rounded to 1px.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
-          "value": 1.375
-        }
-      },
-      "1000": {
-        "$description": "Explicit list, value 10.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 1.5
-        }
-      },
-      "1100": {
-        "$description": "Explicit list, value 11.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 1.75
-        }
-      },
-      "1200": {
-        "$description": "Explicit list, value 12.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 2
-        }
-      },
-      "1300": {
-        "$description": "Explicit list, value 13.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 3.25
+          "value": 3.0625
         }
       },
       "$extensions": {
         "kinscape": {
-          "mode": "explicit",
-          "unit": "rem",
-          "values": [11, 12, 12.5, 13, 13.5, 14, 15, 16, 22, 24, 28, 32, 52]
+          "above": 5,
+          "base": 16,
+          "below": 2,
+          "mode": "ratio",
+          "ratio": 1.25,
+          "round": 1,
+          "unit": "rem"
         }
       }
     },
     "line": {
-      "100": {
-        "$description": "Explicit list, value 1.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 0.75
-        }
-      },
       "200": {
-        "$description": "Explicit list, value 2.",
+        "$description": "Step 200 of scale.text times 1.5, rounded to 4px.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
@@ -131,15 +87,90 @@
         }
       },
       "300": {
-        "$description": "Explicit list, value 3.",
+        "$description": "Step 300 of scale.text times 1.5, rounded to 4px.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
-          "value": 1.125
+          "value": 1.25
         }
       },
       "400": {
-        "$description": "Explicit list, value 4.",
+        "$description": "Step 400 of scale.text times 1.5, rounded to 4px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 1.5
+        }
+      },
+      "500": {
+        "$description": "Step 500 of scale.text times 1.5, rounded to 4px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 2
+        }
+      },
+      "600": {
+        "$description": "Step 600 of scale.text times 1.5, rounded to 4px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 2.25
+        }
+      },
+      "700": {
+        "$description": "Step 700 of scale.text times 1.5, rounded to 4px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 3
+        }
+      },
+      "800": {
+        "$description": "Step 800 of scale.text times 1.5, rounded to 4px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 3.75
+        }
+      },
+      "900": {
+        "$description": "Step 900 of scale.text times 1.5, rounded to 4px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 4.5
+        }
+      },
+      "$extensions": {
+        "kinscape": {
+          "from": "text",
+          "mode": "derived",
+          "ratio": 1.5,
+          "round": 4,
+          "unit": "rem"
+        }
+      }
+    },
+    "line-heading": {
+      "200": {
+        "$description": "Step 200 of scale.text times 1.25, rounded to 4px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 0.75
+        }
+      },
+      "300": {
+        "$description": "Step 300 of scale.text times 1.25, rounded to 4px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 1
+        }
+      },
+      "400": {
+        "$description": "Step 400 of scale.text times 1.25, rounded to 4px.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
@@ -147,58 +178,52 @@
         }
       },
       "500": {
-        "$description": "Explicit list, value 5.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 1.375
-        }
-      },
-      "600": {
-        "$description": "Explicit list, value 6.",
+        "$description": "Step 500 of scale.text times 1.25, rounded to 4px.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
           "value": 1.5
         }
       },
-      "700": {
-        "$description": "Explicit list, value 7.",
-        "$type": "dimension",
-        "$value": {
-          "unit": "rem",
-          "value": 1.75
-        }
-      },
-      "800": {
-        "$description": "Explicit list, value 8.",
+      "600": {
+        "$description": "Step 600 of scale.text times 1.25, rounded to 4px.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
           "value": 2
         }
       },
-      "900": {
-        "$description": "Explicit list, value 9.",
+      "700": {
+        "$description": "Step 700 of scale.text times 1.25, rounded to 4px.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
           "value": 2.5
         }
       },
-      "1000": {
-        "$description": "Explicit list, value 10.",
+      "800": {
+        "$description": "Step 800 of scale.text times 1.25, rounded to 4px.",
         "$type": "dimension",
         "$value": {
           "unit": "rem",
-          "value": 3.5
+          "value": 3
+        }
+      },
+      "900": {
+        "$description": "Step 900 of scale.text times 1.25, rounded to 4px.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "rem",
+          "value": 3.75
         }
       },
       "$extensions": {
         "kinscape": {
-          "mode": "explicit",
-          "unit": "rem",
-          "values": [12, 16, 18, 20, 22, 24, 28, 32, 40, 56]
+          "from": "text",
+          "mode": "derived",
+          "ratio": 1.25,
+          "round": 4,
+          "unit": "rem"
         }
       }
     },
@@ -1054,11 +1079,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.1300}"
+        "$value": "{scale.text.900}"
       },
       "line": {
         "$type": "dimension",
-        "$value": "{scale.line.1000}"
+        "$value": "{scale.line-heading.900}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1070,41 +1095,28 @@
       }
     },
     "h1": {
-      "$description": "Page title.",
+      "$description": "Page title, on a desktop and on a phone.",
+      "$extensions": {
+        "kinscape": {
+          "breakpoints": {
+            "phone": {
+              "size": "{scale.text.700}",
+              "line": "{scale.line-heading.700}"
+            }
+          }
+        }
+      },
       "font": {
         "$type": "fontFamily",
         "$value": "{font.display}"
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.1200}"
+        "$value": "{scale.text.800}"
       },
       "line": {
         "$type": "dimension",
-        "$value": "{scale.line.900}"
-      },
-      "weight": {
-        "$type": "fontWeight",
-        "$value": 500
-      },
-      "tracking": {
-        "$type": "number",
-        "$value": -0.015
-      }
-    },
-    "h1-phone": {
-      "$description": "Page title on a phone.",
-      "font": {
-        "$type": "fontFamily",
-        "$value": "{font.display}"
-      },
-      "size": {
-        "$type": "dimension",
-        "$value": "{scale.text.1100}"
-      },
-      "line": {
-        "$type": "dimension",
-        "$value": "{scale.line.800}"
+        "$value": "{scale.line-heading.800}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1123,11 +1135,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.1000}"
+        "$value": "{scale.text.600}"
       },
       "line": {
         "$type": "dimension",
-        "$value": "{scale.line.800}"
+        "$value": "{scale.line-heading.600}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1146,11 +1158,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.900}"
+        "$value": "{scale.text.500}"
       },
       "line": {
         "$type": "dimension",
-        "$value": "{scale.line.700}"
+        "$value": "{scale.line-heading.500}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1169,76 +1181,7 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.700}"
-      },
-      "line": {
-        "$type": "dimension",
-        "$value": "{scale.line.500}"
-      },
-      "weight": {
-        "$type": "fontWeight",
-        "$value": 600
-      },
-      "tracking": {
-        "$type": "number",
-        "$value": 0
-      }
-    },
-    "body-l": {
-      "$description": "Sign-in text and fields.",
-      "font": {
-        "$type": "fontFamily",
-        "$value": "{font.body}"
-      },
-      "size": {
-        "$type": "dimension",
-        "$value": "{scale.text.800}"
-      },
-      "line": {
-        "$type": "dimension",
-        "$value": "{scale.line.600}"
-      },
-      "weight": {
-        "$type": "fontWeight",
-        "$value": 400
-      },
-      "tracking": {
-        "$type": "number",
-        "$value": 0
-      }
-    },
-    "body": {
-      "$description": "Panels and popups.",
-      "font": {
-        "$type": "fontFamily",
-        "$value": "{font.body}"
-      },
-      "size": {
-        "$type": "dimension",
-        "$value": "{scale.text.700}"
-      },
-      "line": {
-        "$type": "dimension",
-        "$value": "{scale.line.500}"
-      },
-      "weight": {
-        "$type": "fontWeight",
-        "$value": 400
-      },
-      "tracking": {
-        "$type": "number",
-        "$value": 0
-      }
-    },
-    "label": {
-      "$description": "Field labels and layer rows.",
-      "font": {
-        "$type": "fontFamily",
-        "$value": "{font.body}"
-      },
-      "size": {
-        "$type": "dimension",
-        "$value": "{scale.text.600}"
+        "$value": "{scale.text.400}"
       },
       "line": {
         "$type": "dimension",
@@ -1253,8 +1196,8 @@
         "$value": 0
       }
     },
-    "small": {
-      "$description": "Helper text.",
+    "body": {
+      "$description": "Panels, popups, sign-in and fields.",
       "font": {
         "$type": "fontFamily",
         "$value": "{font.body}"
@@ -1276,8 +1219,31 @@
         "$value": 0
       }
     },
-    "caption": {
-      "$description": "Credits and footnotes.",
+    "label": {
+      "$description": "Field labels and layer rows.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "{scale.text.300}"
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": "{scale.line.300}"
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "small": {
+      "$description": "Helper text.",
       "font": {
         "$type": "fontFamily",
         "$value": "{font.body}"
@@ -1299,6 +1265,29 @@
         "$value": 0
       }
     },
+    "caption": {
+      "$description": "Credits and footnotes.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "{scale.text.200}"
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": "{scale.line.200}"
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
     "credits": {
       "$description": "Credits line on the map.",
       "font": {
@@ -1307,7 +1296,7 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.100}"
+        "$value": "{scale.text.200}"
       },
       "line": {
         "$type": "dimension",
@@ -1323,14 +1312,14 @@
       }
     },
     "overline": {
-      "$description": "Section headings.",
+      "$description": "Section headings, and layer group headings in the map panel.",
       "font": {
         "$type": "fontFamily",
         "$value": "{font.body}"
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.100}"
+        "$value": "{scale.text.200}"
       },
       "line": {
         "$type": "dimension",
@@ -1345,65 +1334,19 @@
         "$value": 0.1
       }
     },
-    "overline-tight": {
-      "$description": "Layer group headings in the map panel.",
-      "font": {
-        "$type": "fontFamily",
-        "$value": "{font.body}"
-      },
-      "size": {
-        "$type": "dimension",
-        "$value": "{scale.text.100}"
-      },
-      "line": {
-        "$type": "dimension",
-        "$value": "{scale.line.100}"
-      },
-      "weight": {
-        "$type": "fontWeight",
-        "$value": 600
-      },
-      "tracking": {
-        "$type": "number",
-        "$value": 0.1
-      }
-    },
-    "button": {
-      "$description": "Large buttons on sign-in.",
-      "font": {
-        "$type": "fontFamily",
-        "$value": "{font.body}"
-      },
-      "size": {
-        "$type": "dimension",
-        "$value": "{scale.text.800}"
-      },
-      "line": {
-        "$type": "dimension",
-        "$value": "{scale.line.600}"
-      },
-      "weight": {
-        "$type": "fontWeight",
-        "$value": 600
-      },
-      "tracking": {
-        "$type": "number",
-        "$value": 0
-      }
-    },
     "control": {
-      "$description": "Medium buttons and controls.",
+      "$description": "Large buttons on sign-in, medium buttons and controls.",
       "font": {
         "$type": "fontFamily",
         "$value": "{font.body}"
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.700}"
+        "$value": "{scale.text.400}"
       },
       "line": {
         "$type": "dimension",
-        "$value": "{scale.line.500}"
+        "$value": "{scale.line.400}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1422,11 +1365,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.500}"
+        "$value": "{scale.text.300}"
       },
       "line": {
         "$type": "dimension",
-        "$value": "{scale.line.400}"
+        "$value": "{scale.line.300}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1445,11 +1388,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.500}"
+        "$value": "{scale.text.300}"
       },
       "line": {
         "$type": "dimension",
-        "$value": "{scale.line.400}"
+        "$value": "{scale.line.300}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1460,7 +1403,7 @@
         "$value": 0
       }
     },
-    "button-s": {
+    "control-small": {
       "$description": "Small and extra-small buttons.",
       "font": {
         "$type": "fontFamily",
@@ -1468,11 +1411,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.600}"
+        "$value": "{scale.text.300}"
       },
       "line": {
         "$type": "dimension",
-        "$value": "{scale.line.400}"
+        "$value": "{scale.line.300}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1485,29 +1428,6 @@
     },
     "link": {
       "$description": "Links in running text.",
-      "font": {
-        "$type": "fontFamily",
-        "$value": "{font.body}"
-      },
-      "size": {
-        "$type": "dimension",
-        "$value": "{scale.text.700}"
-      },
-      "line": {
-        "$type": "dimension",
-        "$value": "{scale.line.500}"
-      },
-      "weight": {
-        "$type": "fontWeight",
-        "$value": 500
-      },
-      "tracking": {
-        "$type": "number",
-        "$value": 0
-      }
-    },
-    "link-s": {
-      "$description": "Links in helper text and footnotes.",
       "font": {
         "$type": "fontFamily",
         "$value": "{font.body}"
@@ -1529,19 +1449,19 @@
         "$value": 0
       }
     },
-    "mono-l": {
-      "$description": "Map date field.",
+    "link-small": {
+      "$description": "Links in helper text and footnotes.",
       "font": {
         "$type": "fontFamily",
-        "$value": "{font.mono}"
+        "$value": "{font.body}"
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.900}"
+        "$value": "{scale.text.300}"
       },
       "line": {
         "$type": "dimension",
-        "$value": "{scale.line.700}"
+        "$value": "{scale.line.300}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1552,7 +1472,30 @@
         "$value": 0
       }
     },
-    "mono-m": {
+    "mono-title": {
+      "$description": "Map date field.",
+      "font": {
+        "$type": "fontFamily",
+        "$value": "{font.mono}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "{scale.text.500}"
+      },
+      "line": {
+        "$type": "dimension",
+        "$value": "{scale.line.500}"
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": 500
+      },
+      "tracking": {
+        "$type": "number",
+        "$value": 0
+      }
+    },
+    "mono": {
       "$description": "Fuzzy date field.",
       "font": {
         "$type": "fontFamily",
@@ -1560,11 +1503,11 @@
       },
       "size": {
         "$type": "dimension",
-        "$value": "{scale.text.700}"
+        "$value": "{scale.text.400}"
       },
       "line": {
         "$type": "dimension",
-        "$value": "{scale.line.500}"
+        "$value": "{scale.line.400}"
       },
       "weight": {
         "$type": "fontWeight",
@@ -1575,7 +1518,7 @@
         "$value": 0
       }
     },
-    "mono": {
+    "mono-caption": {
       "$description": "Dates and coordinates in lists.",
       "font": {
         "$type": "fontFamily",

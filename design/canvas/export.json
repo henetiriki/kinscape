@@ -408,11 +408,6 @@
       "viewport": { "height": 1240, "width": 1440 }
     },
     {
-      "file": "Type-scale.dc.html",
-      "name": "type-scale",
-      "viewport": { "height": 2340, "width": 1440 }
-    },
-    {
       "file": "Spacing-and-controls.dc.html",
       "name": "spacing-and-controls",
       "viewport": { "height": 1401, "width": 1440 }

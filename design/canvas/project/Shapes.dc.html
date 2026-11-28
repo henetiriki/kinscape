@@ -32,23 +32,23 @@
         <div style="display: flex; gap: var(--space-gap-xl)">
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
           <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: var(--radius-small)"></div>
-          <div class="mono" style="color: var(--ink-3)">4 px</div>
+          <div class="mono-caption" style="color: var(--ink-3)">4 px</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
           <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: var(--radius-control)"></div>
-          <div class="mono" style="color: var(--ink-3)">8 px</div>
+          <div class="mono-caption" style="color: var(--ink-3)">8 px</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
           <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: var(--radius-panel)"></div>
-          <div class="mono" style="color: var(--ink-3)">12 px</div>
+          <div class="mono-caption" style="color: var(--ink-3)">12 px</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
           <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: 16px"></div>
-          <div class="mono" style="color: var(--ink-3)">16 px</div>
+          <div class="mono-caption" style="color: var(--ink-3)">16 px</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs); width: 96px">
           <div style="box-sizing: border-box; width: 96px; height: 96px; background: var(--surface); border: var(--border-hairline) solid var(--line-strong); border-radius: var(--radius-full)"></div>
-          <div class="mono" style="color: var(--ink-3)">full · 999 px</div>
+          <div class="mono-caption" style="color: var(--ink-3)">full · 999 px</div>
         </div>
         </div>
       </div>
@@ -62,11 +62,11 @@
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
           <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Segmented control</x-import>
           <div style="display: flex; gap: 0; padding: var(--space-inset-2xs); border-radius: var(--radius-panel); background: var(--segment)">
-            <div class="button-s" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: var(--radius-control); background: var(--brand); color: var(--white)">Day</div>
-            <div class="button-s" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: var(--radius-control); color: var(--ink-2)">Month</div>
-            <div class="button-s" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: var(--radius-control); color: var(--ink-2)">Year</div>
+            <div class="control-small" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: var(--radius-control); background: var(--brand); color: var(--white)">Day</div>
+            <div class="control-small" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: var(--radius-control); color: var(--ink-2)">Month</div>
+            <div class="control-small" style="box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 72px; height: 36px; border-radius: var(--radius-control); color: var(--ink-2)">Year</div>
           </div>
-          <div class="mono" style="color: var(--ink-3)">outer 12 − gap 4 = inner 8</div>
+          <div class="mono-caption" style="color: var(--ink-3)">outer 12 − gap 4 = inner 8</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
           <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Chip in a panel</x-import>
@@ -74,7 +74,7 @@
             <div class="chip" style="box-sizing: border-box; display: flex; align-items: center; height: 28px; padding: 0 var(--space-inset-xs); border-radius: var(--radius-small); background: var(--brand-tint); color: var(--brand)">Farm</div>
             <div class="chip" style="box-sizing: border-box; display: flex; align-items: center; height: 28px; padding: 0 var(--space-inset-xs); border-radius: var(--radius-small); background: var(--brand-tint); color: var(--brand)">Church</div>
           </div>
-          <div class="mono" style="color: var(--ink-3)">outer 12 − gap 8 = inner 4</div>
+          <div class="mono-caption" style="color: var(--ink-3)">outer 12 − gap 8 = inner 4</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-xs)">
           <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Popup</x-import>
@@ -83,7 +83,7 @@
             <div class="control" style="box-sizing: border-box; display: flex; align-items: center; height: 36px; padding: 0 var(--space-inset-s); border-radius: var(--radius-control); color: var(--ink)">Move pin</div>
             <div class="control" style="box-sizing: border-box; display: flex; align-items: center; height: 36px; padding: 0 var(--space-inset-s); border-radius: var(--radius-control); color: var(--ink)">Remove pin</div>
           </div>
-          <div class="mono" style="color: var(--ink-3)">outer 12 − gap 4 = inner 8</div>
+          <div class="mono-caption" style="color: var(--ink-3)">outer 12 − gap 4 = inner 8</div>
         </div>
         </div>
       </div>
@@ -96,15 +96,15 @@
         <div style="display: flex; gap: var(--space-gap-xl)">
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-s)">
           <div style="box-sizing: border-box; width: 200px; height: 72px; margin: 4px; background: var(--surface); border-radius: var(--radius-control); border: var(--border-hairline) solid var(--line-strong)"></div>
-          <div class="mono" style="color: var(--ink-3)">border.hairline · 1px</div>
+          <div class="mono-caption" style="color: var(--ink-3)">border.hairline · 1px</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-s)">
           <div style="box-sizing: border-box; width: 200px; height: 72px; margin: 4px; background: var(--surface); border-radius: var(--radius-control); border: var(--border-emphasis) solid var(--ink)"></div>
-          <div class="mono" style="color: var(--ink-3)">border.emphasis · 2px</div>
+          <div class="mono-caption" style="color: var(--ink-3)">border.emphasis · 2px</div>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--space-gap-s)">
           <div style="box-sizing: border-box; width: 200px; height: 72px; margin: 4px; background: var(--surface); border-radius: var(--radius-control); outline: var(--focus-width) solid var(--focus-ring); outline-offset: var(--focus-offset)"></div>
-          <div class="mono" style="color: var(--ink-3)">focus.width · 2px, focus.offset · 2px</div>
+          <div class="mono-caption" style="color: var(--ink-3)">focus.width · 2px, focus.offset · 2px</div>
         </div>
         </div>
       </div>

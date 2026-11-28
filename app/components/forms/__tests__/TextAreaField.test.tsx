@@ -114,9 +114,9 @@ it('joins a given aria-describedby with the helper id, and marks nothing without
 });
 
 // PPL-01
-it('takes the text field box, padding 10 12, and 16 / 24 text on a phone', () => {
+it('takes the text field box, padding 10 12, and 16 / 24 text', () => {
   expect(css).toContain("composes: box from '@ks/app/components/forms/");
   expect(css).toContain('padding: 10px var(--space-inset-s)');
-  expect(css).toMatch(/@media[^{]*\/\* breakpoint: phone \*\//);
-  expect(css).toContain('var(--type-body-l-size)');
+  expect(css).toContain('var(--type-body-size)');
+  expect(css).not.toContain('@media');
 });

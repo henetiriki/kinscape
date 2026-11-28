@@ -53,7 +53,7 @@ type Search = ReturnType<typeof usePeopleSearch>;
 const Top = ({ count, phone }: { count: null | string; phone: boolean }) => (
   <div className={styles.top}>
     <div className={styles.heading}>
-      <Text as='h1' variant={phone ? 'h1Phone' : 'h1'}>
+      <Text as='h1' variant='h1'>
         People
       </Text>
       {count && (

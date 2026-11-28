@@ -2,7 +2,7 @@ A GEDCOM date typed as text.
 
 ## Design
 
-- **Fuzzy date field:** a label, a 44px input and one line under it, in `type.mono-m` (`type.body-l` size on phones), ligatures off. 1px `--field-border`, `radius.control`. Hover, focus and error follow the Text field. The line shows the helper, the reading or the error: see Fuzzy date field.
+- **Fuzzy date field:** a label, a 44px input and one line under it, in `type.mono`, ligatures off. 1px `--field-border`, `radius.control`. Hover, focus and error follow the Text field. The line shows the helper, the reading or the error: see Fuzzy date field.
 
 ## Props
 

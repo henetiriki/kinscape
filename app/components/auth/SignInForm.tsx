@@ -66,17 +66,11 @@ const useSignIn = (action: SignInAction) => {
 
 type SignIn = ReturnType<typeof useSignIn>;
 
-const Head = ({ phone, titleId }: { phone: boolean; titleId: string }) => (
+const Head = ({ titleId }: { titleId: string }) => (
   <div className={styles.head}>
-    {phone ? (
-      <Text as='h1' id={titleId} variant='h1Phone'>
-        Sign in
-      </Text>
-    ) : (
-      <Text as='h1' id={titleId} variant='h1'>
-        Sign in
-      </Text>
-    )}
+    <Text as='h1' id={titleId} variant='h1'>
+      Sign in
+    </Text>
     <div className={styles.lede}>
       <Text variant='body'>Your tree is private. Sign in to open the map.</Text>
     </div>
@@ -140,7 +134,7 @@ export const SignInForm = ({
       className={styles.form}
       data-form={phone ? 'phone' : 'desktop'}
       noValidate>
-      <Head phone={phone} titleId={titleId} />
+      <Head titleId={titleId} />
       {form.state && (
         <Alert tone='error'>{form.refused ? REFUSED : UNAVAILABLE}</Alert>
       )}

@@ -11,7 +11,6 @@ const FULL_PAGE = new Set([
   'fuzzy-date-readings',
   'map-style',
   'spacing-and-controls',
-  'type-scale',
 ]);
 
 /** Phone screens and the tall boards each have their own size. */
